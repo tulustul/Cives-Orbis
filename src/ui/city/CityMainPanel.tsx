@@ -2,7 +2,7 @@ import {
   CityDetailsChanneled,
   CityProductChanneled,
 } from "@/core/serialization/channel";
-import { ProgressBar, Icon, Tooltip } from "@/ui/components";
+import { ProgressBar, AtlasIcon, Tooltip, Button } from "@/ui/components";
 import clsx from "clsx";
 
 import { bridge } from "@/bridge";
@@ -132,9 +132,9 @@ function CityYields({ city }: Props) {
       </div>
 
       <div className="flex justify-center mt-2">
-        <button className="margin-h margin-top" onClick={optimizeYields}>
+        <Button className="margin-h margin-top" onClick={optimizeYields}>
           Optimize yields
-        </button>
+        </Button>
       </div>
     </>
   );
@@ -194,7 +194,7 @@ function CityProduct({ city }: Props) {
         >
           <div className="w-full flex justify-between items-center">
             <span className="flex items-center">
-              <Icon name={city.product.definition.id} scale={0.3} />
+              <AtlasIcon name={city.product.definition.id} scale={0.3} />
               <span className="font-bold ml-2">
                 {city.product.definition.name}
               </span>
@@ -241,7 +241,7 @@ function CityProductsList({ city }: Props) {
               onClick={() => produce(product)}
             >
               <span className="flex items-center">
-                <Icon name={product.definition.id} scale={0.3} />
+                <AtlasIcon name={product.definition.id} scale={0.3} />
                 <span className="ml-2">{product.definition.name}</span>
               </span>
               <span className="text-sm">

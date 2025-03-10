@@ -1,25 +1,21 @@
 import { bridge } from "@/bridge";
 import { importSave, loadGameData } from "@/saving";
-import { Modal, Spinner } from "@/ui/components";
+import { Button, Modal, Spinner } from "@/ui/components";
 import { useRef, useState } from "react";
 import { useUiState } from "../uiState";
 import styles from "./GameMenu.module.css";
 import { useMenu } from "./gameMenuStore";
 import { SavesList } from "./SavesList";
+import { MenuScreen } from "./MenuScreen";
 
 export function LoadMenu() {
-  const [saveName, setSaveName] = useState("");
   const [waiting, setWaiting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const menu = useMenu();
   const uiState = useUiState();
 
-  async function load() {
-    if (!saveName) {
-      return;
-    }
-
+  async function load(saveName: string) {
     const data = loadGameData(saveName);
     if (!data) {
       return;
@@ -48,7 +44,12 @@ export function LoadMenu() {
   }
 
   return (
-    <>
+    <MenuScreen
+      title="Load the game"
+      extraActions={
+        <Button onClick={() => fileInputRef.current?.click()}>Import</Button>
+      }
+    >
       <input
         ref={fileInputRef}
         type="file"
@@ -56,17 +57,7 @@ export function LoadMenu() {
         onChange={(event) => _import(event.nativeEvent)}
       />
 
-      <h2>Load the game</h2>
-
-      <SavesList selectedSave={saveName} onSelect={setSaveName} />
-
-      <div className={styles.actions}>
-        <button onClick={() => menu.setView("main-menu")}>Back</button>
-        <button onClick={() => fileInputRef.current?.click()}>Import</button>
-        <button disabled={!saveName} onClick={load}>
-          Load
-        </button>
-      </div>
+      <SavesList onSelect={load} action="Load" />
 
       {waiting && (
         <Modal>
@@ -76,6 +67,6 @@ export function LoadMenu() {
           </div>
         </Modal>
       )}
-    </>
+    </MenuScreen>
   );
 }

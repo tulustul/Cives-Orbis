@@ -13,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@tabler/icons-react": "^3.31.0",
     "@tailwindcss/vite": "^4.0.12",
     "alea": "^1.0.1",
     "clsx": "^2.1.1",

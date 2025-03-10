@@ -1,45 +1,8 @@
-import * as atlasIcons from "@/assets/atlas-icons.json";
-import clsx from "clsx";
-import { CSSProperties } from "react";
-import styles from "./Icon.module.css";
+import { Icon as TablerIcon } from "@tabler/icons-react";
 
 type Props = {
-  name: string;
-  tint?: string;
-  scale?: number;
-  className?: string;
+  icon: TablerIcon;
 };
-
-export function Icon({ name, tint, className, scale = 1 }: Props) {
-  function getFrame(name: string) {
-    return (atlasIcons.frames as any)[name + ".png"]?.frame;
-  }
-
-  const frame = getFrame(name) || getFrame("undefined");
-
-  const position = `-${frame.x * scale}px -${frame.y * scale}px`;
-  const size = `${atlasIcons.meta.size.w * scale}px ${
-    atlasIcons.meta.size.h * scale
-  }px`;
-
-  const style: CSSProperties = {
-    width: `${frame.w * scale}px`,
-    height: `${frame.h * scale}px`,
-    backgroundPosition: position,
-    backgroundSize: size,
-    ...(tint
-      ? {
-          backgroundColor: tint,
-          maskPosition: position,
-          maskSize: size,
-        }
-      : {}),
-  };
-
-  return (
-    <div
-      className={clsx(className, styles.icon, { [styles.tint]: !!tint })}
-      style={style}
-    />
-  );
+export function Icon({ icon: Icon_ }: Props) {
+  return <Icon_ size={22} color="white" stroke={2} />;
 }

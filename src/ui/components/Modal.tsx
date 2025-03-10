@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 import { Panel } from "./Panel";
 import styles from "./Modal.module.css";
 import clsx from "clsx";
+import { Button } from "./Button";
 
 type Props = PropsWithChildren & {
   className?: string;
@@ -24,11 +25,7 @@ export function Modal({
     return (
       <div className="flex pb-2 mb-2 items-center border-b-1">
         <h2 className="grow text-3xl">{title}</h2>
-        {showCloseButton && (
-          <button className="" onClick={onClose}>
-            Close
-          </button>
-        )}
+        {showCloseButton && <Button onClick={onClose}>Close</Button>}
       </div>
     );
   }

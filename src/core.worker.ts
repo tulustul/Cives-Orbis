@@ -308,7 +308,7 @@ function unitDoAction(data: UnitDoActionOptions) {
 
 export type UnitSetOrderOptions = {
   unitId: number;
-  order: UnitOrder;
+  order: UnitOrder | null;
 };
 function unitSetOrder(data: UnitSetOrderOptions) {
   const unit = game.unitsManager.unitsMap.get(data.unitId);

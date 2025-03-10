@@ -93,7 +93,7 @@ interface UnitSerialized {
   health: number;
   supplies: number;
   player: number;
-  order: UnitOrder;
+  order: UnitOrder | null;
   path: number[][] | null;
   parent: number | null;
 }

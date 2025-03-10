@@ -1,6 +1,6 @@
 import { TileImprovement } from "@/core/tile-improvements";
 import { Climate, LandForm, SeaLevel } from "@/shared";
-import { Option, Radio } from "@/ui/components";
+import { Button, Option, Radio } from "@/ui/components";
 import { useEffect, useRef, useState } from "react";
 import {
   CLIMATE_OPTIONS,
@@ -131,12 +131,12 @@ export function TilesPainter() {
 
     const filteredPaintData = Object.fromEntries(
       Object.entries(paintData).filter(
-        ([key, value]) => value !== undefined && key !== "size",
-      ),
+        ([key, value]) => value !== undefined && key !== "size"
+      )
     );
 
     bridge.tiles.bulkUpdate(
-      tiles.map((tile) => ({ id: tile.id, ...filteredPaintData })),
+      tiles.map((tile) => ({ id: tile.id, ...filteredPaintData }))
     );
   }
 
@@ -211,7 +211,7 @@ export function TilesPainter() {
         />
       </div>
 
-      <button onClick={reset}>Reset</button>
+      <Button onClick={reset}>Reset</Button>
     </div>
   );
 }

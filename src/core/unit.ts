@@ -7,7 +7,7 @@ import { UnitsManager } from "./unit-manager";
 import { getMoveCost, getMoveResult, MoveResult } from "./movement";
 import { SuppliesBlocker, SuppliesProducer } from "./supplies";
 
-export type UnitOrder = "go" | "skip" | "sleep" | null;
+export type UnitOrder = "go" | "skip" | "sleep";
 
 export class UnitCore {
   id!: number;
@@ -18,7 +18,7 @@ export class UnitCore {
   parent: UnitCore | null = null;
   children: UnitCore[] = [];
 
-  order: UnitOrder = null;
+  order: UnitOrder | null = null;
 
   zoc: TileCore[] = [];
 
@@ -51,6 +51,10 @@ export class UnitCore {
       return false;
     }
 
+    return this.checkActionRequirements(action);
+  }
+
+  checkActionRequirements(action: UnitAction): boolean {
     if (!this.definition.actions.includes(action)) {
       return false;
     }
@@ -70,7 +74,7 @@ export class UnitCore {
       .map((r) => r.id);
   }
 
-  setOrder(order: UnitOrder) {
+  setOrder(order: UnitOrder | null) {
     this.order = order;
     this.player.updateUnitsWithoutOrders();
     collector.units.add(this);

@@ -1,8 +1,12 @@
-import { UnitChanneled } from "@/core/serialization/channel";
-import { Icon } from "./components/Icon";
+import {
+  UnitChanneled,
+  UnitDetailsChanneled,
+} from "@/core/serialization/channel";
+import { AtlasIcon } from "./components/AtlasIcon";
 import styles from "./UnitIcon.module.css";
 import clsx from "clsx";
 import { mapUi } from "./mapUi";
+import { UnitType } from "@/core/data.interface";
 
 type Props = {
   unit: UnitChanneled;
@@ -22,15 +26,34 @@ export function UnitIcon({ unit, isSelected }: Props) {
       })}
       onClick={select}
     >
-      <div className={styles.unit}>
-        <Icon
-          className={styles.icon}
-          name={`unitBackground-${unit.type}`}
-          scale={0.5}
-          tint={unit.cssColor}
-        />
-        <Icon className={styles.icon} name={unit.definitionId} scale={0.5} />
-      </div>
+      <RawUnitIcon
+        type={unit.type}
+        cssColor={unit.cssColor}
+        definitionId={unit.definitionId}
+      />
+    </div>
+  );
+}
+
+type RawUnitIconProps = {
+  type: string;
+  cssColor: string;
+  definitionId: string;
+};
+export function RawUnitIcon({
+  type,
+  cssColor,
+  definitionId,
+}: RawUnitIconProps) {
+  return (
+    <div className={styles.unit}>
+      <AtlasIcon
+        className={styles.icon}
+        name={`unitBackground-${type}`}
+        scale={0.5}
+        tint={cssColor}
+      />
+      <AtlasIcon className={styles.icon} name={definitionId} scale={0.5} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { CityDetailsChanneled } from "@/core/serialization/channel";
 
 import { mapUi } from "../mapUi";
+import { Button } from "../components";
 
 type Props = {
   city: CityDetailsChanneled;
@@ -8,12 +9,12 @@ type Props = {
 export function CityName({ city }: Props) {
   return (
     <div className="flex flex-col items-center pt-5">
-      <button
+      <Button
         className="pointer-events-auto mb-8"
         onClick={() => mapUi.selectCity(null)}
       >
         Return
-      </button>
+      </Button>
       <div
         style={{
           background:

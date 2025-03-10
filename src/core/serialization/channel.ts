@@ -16,6 +16,7 @@ import {
 } from "../data.interface";
 import { CombatSimulation } from "../combat";
 import { Bonuses } from "../bonus";
+import { UnitAction } from "../unit-actions";
 
 export interface GameChanneled {
   turn: number;
@@ -183,7 +184,7 @@ export interface UnitChanneled {
   supplies: number;
   playerId: number;
   canControl: boolean;
-  order: UnitOrder;
+  order: UnitOrder | null;
 }
 
 export type UnitPathChanneled = {
@@ -204,11 +205,12 @@ export type UnitDetailsChanneled = {
   actionPointsLeft: number;
   health: number;
   supplies: number;
-  order: UnitOrder;
+  order: UnitOrder | null;
   path: UnitPathChanneled | null;
   isSupplied: boolean;
   playerId: number;
   canControl: boolean;
+  actions: UnitAction[];
 };
 
 export type TileCoordsWithUnits = TileCoords & {
@@ -462,6 +464,9 @@ export function unitDetailsToChannel(unit: UnitCore): UnitDetailsChanneled {
     isSupplied: unit.isSupplied,
     playerId: unit.player.id,
     canControl: unit.player === unit.player.game.trackedPlayer,
+    actions: unit.definition.actions.filter((action) =>
+      unit.checkActionRequirements(action)
+    ),
   };
 }
 

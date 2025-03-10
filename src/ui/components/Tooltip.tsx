@@ -5,8 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
-
-import styles from "./Tooltip.module.css";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 
 type Props = PropsWithChildren & {
@@ -31,13 +30,10 @@ export function Tooltip({ children, content, className }: Props) {
     }
     const box = elRef.current.getBoundingClientRect()!;
     let left = box.left + box.width / 2;
-    const overflow = left + 250 > window.outerWidth;
-    if (overflow) {
-      left -= left + 250 - window.outerWidth;
+    if (left - box.width / 2 < 0) {
+      left += left - box.width / 2 + 20;
     }
-    if (left < 125) {
-      left = 125;
-    }
+    console.log(left);
 
     let topTransform = "-100%";
     let top = box.top;
@@ -49,7 +45,7 @@ export function Tooltip({ children, content, className }: Props) {
     return {
       left: `${left}px`,
       top: `${top}px`,
-      transform: `translate(${overflow ? "0" : "-50%"}, ${topTransform})`,
+      transform: `translate(-50%, ${topTransform})`,
     };
   }
 
@@ -57,17 +53,22 @@ export function Tooltip({ children, content, className }: Props) {
     <>
       <div
         ref={elRef}
-        className={clsx(className, styles.child)}
+        className={clsx(className)}
         onMouseEnter={show}
         onMouseLeave={hide}
       >
         {children}
       </div>
-      {visible && (
-        <div className={styles.tooltip} style={computePosition()}>
-          {content}
-        </div>
-      )}
+      {visible &&
+        createPortal(
+          <div
+            className="absolute px-4 py-1 max-w-72 rounded-md text-white bg-[#222] border-1 border-[#111] z-50 "
+            style={computePosition()}
+          >
+            {content}
+          </div>,
+          document.body
+        )}
     </>
   );
 }

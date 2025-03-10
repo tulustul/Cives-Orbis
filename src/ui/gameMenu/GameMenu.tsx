@@ -26,7 +26,7 @@ export function GameMenu() {
 
   return (
     <div className={styles.backdrop}>
-      <Panel className={styles.menu}>{getContent()}</Panel>
+      <Panel className="w-[500px]">{getContent()}</Panel>
     </div>
   );
 }

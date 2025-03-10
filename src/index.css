@@ -6,11 +6,17 @@
   --color-culture: #d883ff;
   --color-publicWorks: #e4d1b8;
 
+  --color-success: #29aa3a;
+  --color-warning: #a7761b;
+  --color-danger: #d12727;
+
   --color-primary-100: #9491a6;
   --color-primary-300: #636078;
   --color-primary-500: #514e64;
   --color-primary-600: #3c3a4a;
   --color-primary-800: #22212b;
+
+  --shadow-md: 0 0 7px 0 rgba(0, 0, 0, 0.25);
 }
 
 :root {
@@ -74,30 +80,6 @@ h3 {
 h4 {
   margin: 0;
   margin-bottom: 10px;
-}
-
-button {
-  border: 0;
-  padding: 5px 15px;
-  cursor: pointer;
-  border-radius: 4px;
-  background-color: var(--color-primary-3);
-  color: white;
-  outline: none;
-}
-button:hover {
-  background-color: var(--color-primary-4);
-}
-button.btn-primary {
-  padding: 8px 35px;
-  font-size: 18px;
-}
-button.btn-danger {
-  background-color: var(--color-danger-text);
-}
-button.disabled {
-  color: var(--color-secondary-text);
-  background-color: var(--color-primary-3);
 }
 
 .small {

@@ -44,11 +44,14 @@ export function NextTurnButton() {
   }
 
   return (
-    <button
-      className={clsx(getCssClass(), "h-11 text-xl")}
+    <div
+      className={clsx(
+        getCssClass(),
+        "w-full h-11 text-xl flex items-center justify-center cursor-pointer bg-gray-800 hover:bg-gray-700"
+      )}
       onClick={() => nextTurnService.next()}
     >
       {getLabel()}
-    </button>
+    </div>
   );
 }

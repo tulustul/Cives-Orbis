@@ -1,7 +1,6 @@
 import { bridge } from "@/bridge";
 import {
   CityDetailsChanneled,
-  TileChanneled,
   TileCoords,
   TileDetailsChanneled,
   TileHoverDetails,
@@ -269,6 +268,7 @@ export class MapUi {
 
   private clearSelectedUnit() {
     this._selectedUnit$.next(null);
+    this._activePath$.next(null);
   }
 
   private async selectFirstUnitFromTile(tile: TileDetailsChanneled) {

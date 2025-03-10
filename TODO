@@ -16,9 +16,11 @@ Bugs:
   ✔ yields change received when using pathfinding @done(20-06-09 20:01)
   ✔ land units can access sea and vice versa under some cirmumstances @done(21-04-03 12:41)
   ☐ disembark + attack is broken
+  ☐ fix not existing workers showing up on the map
+  ☐ fix destroying units doesn't update the units occupying the same tile
 
 Performance:
-  ☐ optimize workers AI
+  ✔ optimize workers AI @done(25-03-10 23:14)
 
 Refactor:
   ✔ renderer: still a mess @done(25-02-25 23:32)
@@ -27,7 +29,7 @@ Minor features:
   ✔ selected unit marker @done(25-03-01 14:24)
   ✔ show on map that using is sleeping/skipping move @done(25-03-01 14:24)
   ☐ store game settings in local storage
-  ☐ style city view
+  ✔ style city view @done(25-03-10 23:14)
   ☐ minimap autoscale to explored area
   ☐ limit map panning/zoom to explored map area
   ☐ nicer rendering of out of map area
@@ -49,7 +51,7 @@ Major features:
   ✔ naval units @done(20-06-06 15:05)
   ☐ AI combat
   ☐ AI exploring
-  ☐ statistics and charts
+  ✔ statistics and charts @done(25-03-10 23:15)
   ☐ resources - increase tile yields
   ☐ happiness
   ✔ `fog of war` - grey out tiles not visible by units and cities @done(20-06-07 23:03)

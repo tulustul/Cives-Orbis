@@ -1,4 +1,4 @@
-import { Switch, Tab, Tabs } from "@/ui/components";
+import { Button, Switch, Tab, Tabs } from "@/ui/components";
 import { useUiState } from "../uiState";
 
 import { useObservable } from "@/utils";
@@ -51,7 +51,7 @@ export function Editor() {
               onChange={() => (mapUi.fogOfWarEnabled = !fogOfWarEnabled)}
             />
           </div>
-          <button onClick={() => uiState.setMode("map")}>Close</button>
+          <Button onClick={() => uiState.setMode("map")}>Close</Button>
         </div>
       </div>
     </div>

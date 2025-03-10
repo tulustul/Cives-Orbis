@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import styles from "./Panel.module.css";
 import { clsx } from "clsx";
+import { Background } from "./Background";
 
 type Props = PropsWithChildren & {
   corner?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
@@ -9,8 +10,10 @@ type Props = PropsWithChildren & {
 
 export function Panel({ children, corner, className }: Props) {
   return (
-    <div className={clsx(styles.panel, corner && styles[corner], className)}>
+    <Background
+      className={clsx(styles.panel, corner && styles[corner], className)}
+    >
       {children}
-    </div>
+    </Background>
   );
 }

@@ -24,8 +24,9 @@ export class UnitsDrawer {
     bridge.units.destroyed$.subscribe((unitId) => {
       const drawer = this.units.get(unitId);
       if (drawer) {
-        drawer.destroy();
         this.units.delete(unitId);
+        this.updateNeighbours(drawer, drawer.unit.tile);
+        drawer.destroy();
       }
     });
 

@@ -179,7 +179,7 @@ export const ACTIONS: Record<UnitAction, ActionDefinition> = {
   },
   buildFarm: {
     action: "buildFarm",
-    name: "Build a farm",
+    name: "Farm",
     fn: (_, unit) => buildImprovement(unit, TileImprovement.farm),
     requirements: [
       new OwnTileRequirement(),
@@ -190,7 +190,7 @@ export const ACTIONS: Record<UnitAction, ActionDefinition> = {
   },
   buildMine: {
     action: "buildMine",
-    name: "Build a mine",
+    name: "Mine",
     fn: (_, unit) => buildImprovement(unit, TileImprovement.mine),
     requirements: [
       new OwnTileRequirement(),
@@ -201,7 +201,7 @@ export const ACTIONS: Record<UnitAction, ActionDefinition> = {
   },
   buildSawmill: {
     action: "buildSawmill",
-    name: "Build a sawmill",
+    name: "Sawmill",
     fn: (_, unit) => buildImprovement(unit, TileImprovement.sawmill),
     requirements: [
       new OwnTileRequirement(),
@@ -212,7 +212,7 @@ export const ACTIONS: Record<UnitAction, ActionDefinition> = {
   },
   buildRoad: {
     action: "buildRoad",
-    name: "Build a road",
+    name: "Road",
     fn: (_, unit) => buildRoad(unit),
     requirements: [
       new NoRoadRequirement(),

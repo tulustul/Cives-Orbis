@@ -3,36 +3,22 @@ import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren & {
   className?: string;
+  disabled?: boolean;
   onClick?: () => void;
 };
 
-export function Button({ children, className, onClick }: Props) {
+export function Button({ children, className, disabled, onClick }: Props) {
   return (
     <button
-      className={clsx(className, "py-5 px-15 rounded-sm")}
+      className={clsx(
+        className,
+        "text-white px-4 h-8 bg-linear-to-b from-gray-600 to-gray-700 rounded-md outline-0 inset-shadow-gray-500  duration-100 disabled:opacity-40",
+        !disabled && "cursor-pointer hover:inset-shadow-sm active:scale-95"
+      )}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
   );
 }
-
-// button {
-//   border: 0;
-//   padding: 5px 15px;
-//   cursor: pointer;
-//   border-radius: 4px;
-//   background-color: var(--color-primary-3);
-//   color: white;
-//   outline: none;
-// }
-// button:hover {
-//   background-color: var(--color-primary-4);
-// }
-// button.btn-danger {
-//   background-color: var(--color-danger-text);
-// }
-// button.disabled {
-//   color: var(--color-secondary-text);
-//   background-color: var(--color-primary-3);
-// }
