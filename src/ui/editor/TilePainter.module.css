@@ -1,7 +1,0 @@
-.wrapper {
-  display: flex;
-  align-items: flex-start;
-}
-.wrapper > * {
-  margin-right: 50px;
-}

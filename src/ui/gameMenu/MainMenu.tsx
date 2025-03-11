@@ -1,12 +1,11 @@
 import { bridge } from "@/bridge";
 import { useUiState } from "@/ui/uiState";
 import { useObservable } from "@/utils";
-import styles from "./GameMenu.module.css";
+import { PropsWithChildren } from "react";
 import { useMenu } from "./gameMenuStore";
 
 export function MainMenu() {
   const uiState = useUiState();
-
   const menu = useMenu();
 
   const startInfo = useObservable(bridge.game.start$);
@@ -29,28 +28,33 @@ export function MainMenu() {
 
   return (
     <>
-      <div className={styles.item} onClick={() => start(false)}>
-        Quick Start
+      <div className="font-bold text-5xl text-center tracking-widest py-5">
+        Cives Orbis
       </div>
-      <div className={styles.item} onClick={() => menu.setView("new-game")}>
-        New
-      </div>
-      <div className={styles.item} onClick={() => start(true)}>
-        AI match
-      </div>
-      <div className={styles.item} onClick={() => menu.setView("load")}>
-        Load
-      </div>
+      <Item onClick={() => start(false)}>Quick Start</Item>
+      <Item onClick={() => menu.setView("new-game")}>New</Item>
+      <Item onClick={() => start(true)}>AI match</Item>
+      <Item onClick={() => menu.setView("load")}>Load</Item>
       {startInfo && (
         <>
-          <div className={styles.item} onClick={() => menu.setView("save")}>
-            Save
-          </div>
-          <div className={styles.item} onClick={menu.hide}>
-            Return
-          </div>
+          <Item onClick={() => menu.setView("save")}>Save</Item>
+          <Item onClick={menu.hide}>Return</Item>
         </>
       )}
     </>
+  );
+}
+
+type ItemProps = PropsWithChildren & {
+  onClick: () => void;
+};
+function Item({ children, onClick }: ItemProps) {
+  return (
+    <div
+      className="p-5 text-center cursor-pointer hover:bg-gray-700/40 font-bold text-xl"
+      onClick={onClick}
+    >
+      {children}
+    </div>
   );
 }

@@ -42,6 +42,7 @@ export function UnitsPainter() {
       />
 
       <Radio
+        label="Units"
         options={definitionOptions}
         value={unitDefinition}
         onChange={setUnitDefinition}

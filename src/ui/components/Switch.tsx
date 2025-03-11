@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import styles from "./Switch.module.css";
 
 interface Props {
   label: string;
@@ -10,7 +9,12 @@ interface Props {
 export function Switch({ label, checked, onChange }: Props) {
   return (
     <div
-      className={clsx(styles.switch, { [styles.checked]: checked })}
+      className={clsx(
+        "h-8 px-4 flex justify-center items-center rounded-md cursor-pointer bg-black",
+        {
+          ["bg-success/50"]: checked,
+        }
+      )}
       onClick={() => onChange(!checked)}
     >
       {label}

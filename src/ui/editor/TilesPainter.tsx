@@ -20,7 +20,6 @@ import { controls } from "@/renderer/controls";
 import { renderer } from "@/renderer/renderer";
 import { useSubscription } from "@/utils";
 import { mapUi } from "../mapUi";
-import styles from "./TilePainter.module.css";
 import { useStateRef } from "@/utils/useStateRef";
 
 type PaintData = {
@@ -145,71 +144,55 @@ export function TilesPainter() {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div>
-        <h4>Sea level</h4>
-        <Radio
-          options={SIZE_OPTIONS}
-          value={paintData.size}
-          onChange={(size) => setPaintData({ ...paintData, size })}
-        />
-      </div>
+    <div className="flex gap-4 items-start mb-4">
+      <Radio
+        label="Brush size"
+        options={SIZE_OPTIONS}
+        value={paintData.size}
+        onChange={(size) => setPaintData({ ...paintData, size })}
+      />
 
-      <div>
-        <h4>Sea level</h4>
-        <Radio
-          options={_SEA_LEVEL_OPTIONS}
-          value={paintData.seaLevel}
-          onChange={(seaLevel) => setPaintData({ ...paintData, seaLevel })}
-        />
-      </div>
+      <Radio
+        label="Sea level"
+        options={_SEA_LEVEL_OPTIONS}
+        value={paintData.seaLevel}
+        onChange={(seaLevel) => setPaintData({ ...paintData, seaLevel })}
+      />
 
-      <div>
-        <h4>Land form</h4>
-        <Radio
-          options={_LAND_FORM_OPTIONS}
-          value={paintData.landForm}
-          onChange={(landForm) => setPaintData({ ...paintData, landForm })}
-        />
-      </div>
+      <Radio
+        label="Land form"
+        options={_LAND_FORM_OPTIONS}
+        value={paintData.landForm}
+        onChange={(landForm) => setPaintData({ ...paintData, landForm })}
+      />
 
-      <div>
-        <h4>Climate</h4>
-        <Radio
-          options={_CLIMATE_OPTIONS}
-          value={paintData.climate}
-          onChange={(climate) => setPaintData({ ...paintData, climate })}
-        />
-      </div>
+      <Radio
+        label="Climate"
+        options={_CLIMATE_OPTIONS}
+        value={paintData.climate}
+        onChange={(climate) => setPaintData({ ...paintData, climate })}
+      />
 
-      <div>
-        <h4>Forest</h4>
-        <Radio
-          options={_FOREST_OPTIONS}
-          value={paintData.forest}
-          onChange={(forest) => setPaintData({ ...paintData, forest })}
-        />
-      </div>
+      <Radio
+        label="Forest"
+        options={_FOREST_OPTIONS}
+        value={paintData.forest}
+        onChange={(forest) => setPaintData({ ...paintData, forest })}
+      />
 
-      <div>
-        <h4>Wetlands</h4>
-        <Radio
-          options={_WETLANDS_OPTIONS}
-          value={paintData.wetlands}
-          onChange={(wetlands) => setPaintData({ ...paintData, wetlands })}
-        />
-      </div>
+      <Radio
+        label="Wetlands"
+        options={_WETLANDS_OPTIONS}
+        value={paintData.wetlands}
+        onChange={(wetlands) => setPaintData({ ...paintData, wetlands })}
+      />
 
-      <div>
-        <h4>Improvements</h4>
-        <Radio
-          options={_IMPROVEMENT_OPTIONS}
-          value={paintData.improvement}
-          onChange={(improvement) =>
-            setPaintData({ ...paintData, improvement })
-          }
-        />
-      </div>
+      <Radio
+        label="Improvements"
+        options={_IMPROVEMENT_OPTIONS}
+        value={paintData.improvement}
+        onChange={(improvement) => setPaintData({ ...paintData, improvement })}
+      />
 
       <Button onClick={reset}>Reset</Button>
     </div>

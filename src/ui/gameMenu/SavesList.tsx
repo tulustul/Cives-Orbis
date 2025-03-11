@@ -31,7 +31,7 @@ export function SavesList({ onSelect, action }: Props) {
       {saves.map((save) => (
         <div
           key={save}
-          className="flex items-center bg-gray-900/50 p-2 rounded-md"
+          className="flex items-center bg-black/30 p-2 pl-4 rounded-md"
         >
           <div className="font-bold grow">{save}</div>
           <div className="flex gap-2 items-center">

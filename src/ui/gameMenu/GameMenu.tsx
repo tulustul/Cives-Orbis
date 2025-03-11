@@ -1,5 +1,4 @@
 import { Panel } from "@/ui/components";
-import styles from "./GameMenu.module.css";
 import { useMenu } from "./gameMenuStore";
 import { MainMenu } from "./MainMenu";
 import { NewGameMenu } from "./NewGameMenu";
@@ -25,7 +24,7 @@ export function GameMenu() {
   }
 
   return (
-    <div className={styles.backdrop}>
+    <div className="absolute w-full h-full flex items-center justify-center z-10 bg-black/70">
       <Panel className="w-[500px]">{getContent()}</Panel>
     </div>
   );

@@ -1,5 +1,4 @@
 import { Multiselect, Radio } from "@/ui/components";
-import styles from "./TileEditor.module.css";
 
 import { bridge } from "@/bridge";
 import { useObservable } from "@/utils";
@@ -30,103 +29,71 @@ export function TileEditor() {
   }
 
   return (
-    <div className={styles.tile}>
-      <div>
-        <h4>Sea level</h4>
-        <Radio
-          options={SEA_LEVEL_OPTIONS}
-          value={tile.seaLevel}
-          onChange={(seaLevel) =>
-            bridge.tiles.update({ id: tile!.id, seaLevel })
-          }
-        />
-      </div>
-
-      <div>
-        <h4>Land form</h4>
-        <Radio
-          options={LAND_FORM_OPTIONS}
-          value={tile.landForm}
-          onChange={(landForm) =>
-            bridge.tiles.update({ id: tile!.id, landForm })
-          }
-        />
-      </div>
-
-      <div>
-        <h4>Climate</h4>
-        <Radio
-          options={CLIMATE_OPTIONS}
-          value={tile.climate}
-          onChange={(climate) => bridge.tiles.update({ id: tile!.id, climate })}
-        />
-      </div>
-
-      <div>
-        <h4>Forest</h4>
-        <Radio
-          options={FOREST_OPTIONS}
-          value={tile.forest}
-          onChange={(forest) => bridge.tiles.update({ id: tile!.id, forest })}
-        />
-      </div>
-
-      <div>
-        <h4>Wetlands</h4>
-        <Radio
-          options={WETLANDS_OPTIONS}
-          value={tile.wetlands}
-          onChange={(wetlands) =>
-            bridge.tiles.update({ id: tile!.id, wetlands })
-          }
-        />
-      </div>
-
-      <div>
-        <h4>Improvements</h4>
-        <Radio
-          options={IMPROVEMENT_OPTIONS}
-          value={tile.improvement}
-          onChange={(improvement) =>
-            bridge.tiles.update({ id: tile!.id, improvement })
-          }
-        />
-      </div>
-
-      <div>
-        <h4>Road</h4>
-        <Radio
-          options={ROAD_OPTIONS}
-          value={tile.road}
-          onChange={(road) => bridge.tiles.update({ id: tile!.id, road })}
-        />
-      </div>
-
-      <div>
-        <h4>River</h4>
-        <Multiselect
-          options={RIVER_OPTIONS}
-          value={tile.riverParts}
-          onChange={(riverParts) =>
-            bridge.tiles.update({ id: tile!.id, riverParts })
-          }
-        />
-      </div>
-
-      <div>
-        <h4>Resource</h4>
-        <Radio
-          options={RESOURCE_OPTIONS}
-          value={tile.resource?.id ?? null}
-          onChange={(resourceId) =>
-            bridge.tiles.setResource({
-              tileId: tile!.id,
-              resourceId,
-              quantity: 1,
-            })
-          }
-        />
-      </div>
+    <div className="flex gap-4 items-start mb-4">
+      <Radio
+        label="Sea level"
+        options={SEA_LEVEL_OPTIONS}
+        value={tile.seaLevel}
+        onChange={(seaLevel) => bridge.tiles.update({ id: tile!.id, seaLevel })}
+      />
+      <Radio
+        label="Land form"
+        options={LAND_FORM_OPTIONS}
+        value={tile.landForm}
+        onChange={(landForm) => bridge.tiles.update({ id: tile!.id, landForm })}
+      />
+      <Radio
+        label="Climate"
+        options={CLIMATE_OPTIONS}
+        value={tile.climate}
+        onChange={(climate) => bridge.tiles.update({ id: tile!.id, climate })}
+      />
+      <Radio
+        label="Forest"
+        options={FOREST_OPTIONS}
+        value={tile.forest}
+        onChange={(forest) => bridge.tiles.update({ id: tile!.id, forest })}
+      />
+      <Radio
+        label="Wetlands"
+        options={WETLANDS_OPTIONS}
+        value={tile.wetlands}
+        onChange={(wetlands) => bridge.tiles.update({ id: tile!.id, wetlands })}
+      />
+      <Radio
+        label="Improvements"
+        options={IMPROVEMENT_OPTIONS}
+        value={tile.improvement}
+        onChange={(improvement) =>
+          bridge.tiles.update({ id: tile!.id, improvement })
+        }
+      />
+      <Radio
+        label="Road"
+        options={ROAD_OPTIONS}
+        value={tile.road}
+        onChange={(road) => bridge.tiles.update({ id: tile!.id, road })}
+      />
+      <Multiselect
+        label="River"
+        options={RIVER_OPTIONS}
+        value={tile.riverParts}
+        onChange={(riverParts) =>
+          bridge.tiles.update({ id: tile!.id, riverParts })
+        }
+      />
+      <Radio
+        label="Resource"
+        options={RESOURCE_OPTIONS}
+        value={tile.resource?.id ?? null}
+        onChange={(resourceId) =>
+          bridge.tiles.setResource({
+            tileId: tile!.id,
+            resourceId,
+            quantity: 1,
+          })
+        }
+      />
     </div>
   );
 }

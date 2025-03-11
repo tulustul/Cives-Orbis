@@ -3,7 +3,6 @@ import { importSave, loadGameData } from "@/saving";
 import { Button, Modal, Spinner } from "@/ui/components";
 import { useRef, useState } from "react";
 import { useUiState } from "../uiState";
-import styles from "./GameMenu.module.css";
 import { useMenu } from "./gameMenuStore";
 import { SavesList } from "./SavesList";
 import { MenuScreen } from "./MenuScreen";
