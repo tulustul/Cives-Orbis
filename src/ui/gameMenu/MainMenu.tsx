@@ -11,12 +11,12 @@ export function MainMenu() {
 
   const startInfo = useObservable(bridge.game.start$);
 
-  async function start() {
+  async function start(aiOnly: boolean) {
     await bridge.game.new({
       aiPlayersCount: 5,
       width: 30,
       height: 20,
-      humanPlayersCount: 0,
+      humanPlayersCount: aiOnly ? 0 : 1,
       resources: 0.2,
       seaLevel: -0.1,
       uniformity: 0.5,
@@ -29,11 +29,14 @@ export function MainMenu() {
 
   return (
     <>
-      <div className={styles.item} onClick={start}>
+      <div className={styles.item} onClick={() => start(false)}>
         Quick Start
       </div>
       <div className={styles.item} onClick={() => menu.setView("new-game")}>
         New
+      </div>
+      <div className={styles.item} onClick={() => start(true)}>
+        AI match
       </div>
       <div className={styles.item} onClick={() => menu.setView("load")}>
         Load

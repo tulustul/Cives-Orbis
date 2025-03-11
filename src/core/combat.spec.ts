@@ -1,5 +1,5 @@
 import { LandForm, TileDirection } from "../shared";
-import { attack, simulateCombat } from "./combat";
+import { attack, getDamage, simulateCombat } from "./combat";
 import {
   alterGame,
   GameFactoryOptions,
@@ -349,5 +349,28 @@ describe("combat system", () => {
     // TODO this actually requires a move action
     // expect(attacker.tile.x).toBe(city.tile.x);
     // expect(attacker.tile.y).toBe(city.tile.y);
+  });
+
+  it("getDamage", () => {
+    expect(getDamage(0, 1)).toBe(0);
+    expect(getDamage(1, 0)).toBe(100);
+
+    expect(getDamage(1, 2)).toBe(13);
+    expect(getDamage(2, 1)).toBe(69);
+
+    expect(getDamage(1, 3)).toBe(8);
+    expect(getDamage(3, 1)).toBe(100);
+
+    expect(getDamage(1, 1)).toBe(30);
+    expect(getDamage(2, 2)).toBe(30);
+
+    expect(getDamage(3, 2)).toBe(49);
+    expect(getDamage(2, 3)).toBe(18);
+
+    expect(getDamage(1, 10)).toBe(2);
+    expect(getDamage(10, 1)).toBe(100);
+
+    expect(getDamage(5, 7.5)).toBe(18);
+    expect(getDamage(7.5, 5)).toBe(49);
   });
 });
