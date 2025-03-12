@@ -1,7 +1,7 @@
 import { TileImprovement } from "@/core/tile-improvements";
 import { Climate, LandForm, SeaLevel } from "@/shared";
 import { Button, Option, Radio } from "@/ui/components";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   CLIMATE_OPTIONS,
   FOREST_OPTIONS,
@@ -19,8 +19,8 @@ import {
 import { controls } from "@/renderer/controls";
 import { renderer } from "@/renderer/renderer";
 import { useSubscription } from "@/utils";
-import { mapUi } from "../mapUi";
 import { useStateRef } from "@/utils/useStateRef";
+import { mapUi } from "../mapUi";
 
 type PaintData = {
   size: number;

@@ -81,7 +81,7 @@ export class ExploringAI extends AISystem {
     );
 
     if (inaccessibleAreas.length > 0 && navalTransports.length > 0) {
-      this.planNavalExploration(inaccessibleAreas, navalTransports, explorels);
+      this.planNavalExploration(inaccessibleAreas, navalTransports);
     }
 
     // Standard exploration for units already in their target areas
@@ -182,8 +182,8 @@ export class ExploringAI extends AISystem {
    */
   private planNavalExploration(
     inaccessibleAreas: PassableArea[],
-    navalTransports: UnitCore[],
-    explorersByArea: Map<number, UnitCore[]>
+    navalTransports: UnitCore[]
+    // explorersByArea: Map<number, UnitCore[]>
   ) {
     // Get available land explorers (not already on a transport)
     const availableExplorers = this.ai.player.units.filter(

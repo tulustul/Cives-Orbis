@@ -1,4 +1,5 @@
 import { bridge } from "@/bridge";
+import { UnitDetailsChanneled } from "@/core/serialization/channel";
 import { UnitOrder } from "@/core/unit";
 import { ACTIONS, UnitAction } from "@/core/unit-actions";
 import { useObservable } from "@/utils";
@@ -11,12 +12,10 @@ import {
   IconZzz,
   Icon as TablerIcon,
 } from "@tabler/icons-react";
-import clsx from "clsx";
 import { Button, IconButton, Panel, ProgressBar, Tooltip } from "./components";
+import { Icon } from "./components/Icon";
 import { mapUi } from "./mapUi";
 import { RawUnitIcon } from "./UnitIcon";
-import { Icon } from "./components/Icon";
-import { UnitDetailsChanneled } from "@/core/serialization/channel";
 
 const ORDER_TO_ICON: Record<UnitOrder, TablerIcon> = {
   sleep: IconZzz,

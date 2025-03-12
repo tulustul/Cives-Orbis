@@ -10,7 +10,7 @@ const symbolCallbacks: SymbolCallbacks = {
   C: (game, tile) => {
     game.citiesManager.spawn(tile, game.players[0], true)!;
   },
-  r: (game, tile) => {
+  r: (_, tile) => {
     tile.road = TileRoad.road;
   },
 };

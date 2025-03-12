@@ -1,12 +1,8 @@
-import {
-  UnitChanneled,
-  UnitDetailsChanneled,
-} from "@/core/serialization/channel";
-import { AtlasIcon } from "./components/AtlasIcon";
-import styles from "./UnitIcon.module.css";
+import { UnitChanneled } from "@/core/serialization/channel";
 import clsx from "clsx";
+import { AtlasIcon } from "./components/AtlasIcon";
 import { mapUi } from "./mapUi";
-import { UnitType } from "@/core/data.interface";
+import styles from "./UnitIcon.module.css";
 
 type Props = {
   unit: UnitChanneled;

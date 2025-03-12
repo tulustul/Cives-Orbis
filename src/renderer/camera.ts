@@ -1,13 +1,12 @@
-import { BehaviorSubject, skip } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
+import { bridge } from "@/bridge";
+import { PlayerViewBoundingBox } from "@/core/player";
+import { GameInfo, TileCoords } from "@/core/serialization/channel";
 import { Application } from "pixi.js";
 import { Animation, Animations } from "./animation";
 import { TILE_SIZE } from "./constants";
 import { getTileCoords } from "./utils";
-import { GameInfo, TileCoords } from "@/core/serialization/channel";
-import { bridge } from "@/bridge";
-import { PlayerViewBoundingBox } from "@/core/player";
-import { mapUi } from "@/ui/mapUi";
 
 export interface Transform {
   x: number;

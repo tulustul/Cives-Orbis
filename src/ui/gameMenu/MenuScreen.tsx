@@ -1,7 +1,7 @@
-import { PropsWithChildren } from "react";
-import { Button, IconButton } from "../components";
-import { useMenu } from "./gameMenuStore";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { PropsWithChildren } from "react";
+import { IconButton } from "../components";
+import { useMenu } from "./gameMenuStore";
 
 type Props = PropsWithChildren & {
   title: string;

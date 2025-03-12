@@ -2,12 +2,11 @@ import { CityCore } from "@/core/city";
 import { getUnitById } from "@/core/data-manager";
 import { UnitDefinition, UnitTrait, UnitType } from "@/core/data.interface";
 import { findPath } from "@/core/pathfinding";
+import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { AISystem } from "./ai-system";
-import { PlayerCore } from "@/core/player";
 import { SeaLevel } from "@/shared";
-import { c } from "node_modules/vite/dist/node/moduleRunnerTransport.d-CXw_Ws6P";
+import { AISystem } from "./ai-system";
 
 type AttackTarget = {
   score: number;
@@ -477,26 +476,26 @@ export class MilitaryAI extends AISystem {
     }
   }
 
-  private findClosestFriendlyCity(fromTile: TileCore): CityCore | null {
-    if (this.player.cities.length === 0) {
-      return null;
-    }
+  // private findClosestFriendlyCity(fromTile: TileCore): CityCore | null {
+  //   if (this.player.cities.length === 0) {
+  //     return null;
+  //   }
 
-    let closestCity = this.player.cities[0];
-    let closestDistance = fromTile.getDistanceTo(closestCity.tile);
+  //   let closestCity = this.player.cities[0];
+  //   let closestDistance = fromTile.getDistanceTo(closestCity.tile);
 
-    for (let i = 1; i < this.player.cities.length; i++) {
-      const city = this.player.cities[i];
-      const distance = fromTile.getDistanceTo(city.tile);
+  //   for (let i = 1; i < this.player.cities.length; i++) {
+  //     const city = this.player.cities[i];
+  //     const distance = fromTile.getDistanceTo(city.tile);
 
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestCity = city;
-      }
-    }
+  //     if (distance < closestDistance) {
+  //       closestDistance = distance;
+  //       closestCity = city;
+  //     }
+  //   }
 
-    return closestCity;
-  }
+  //   return closestCity;
+  // }
 
   private updateAssignedDefenses() {
     const assignedUnitsByTile = new Map<TileCore, UnitCore[]>();

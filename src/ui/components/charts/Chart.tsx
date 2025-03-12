@@ -6,9 +6,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { DataSeries } from "./types";
-import { drawLineChart } from "./line";
 import { ChartContext } from "./context";
+import { drawLineChart } from "./line";
+import { DataSeries } from "./types";
 
 const Y_AXIS_LABELS = 15;
 
@@ -102,7 +102,7 @@ export function Chart({ children }: PropsWithChildren) {
       </div>
       <div className="relative grow">
         <div className="flex flex-col justify-between h-full">
-          {dataSeriesProcessed.yAxisLabels.map((value, index) => (
+          {dataSeriesProcessed.yAxisLabels.map((_, index) => (
             <div className="w-full h-[1px] bg-gray-600" key={index} />
           ))}
         </div>
