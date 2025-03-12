@@ -83,8 +83,8 @@ export class UnitsManager {
       // Heal unit if on friendly territory
       if (
         unit.health < 100 &&
-        unit.tile.areaOf?.player === unit.player &&
-        unit.supplies >= 100
+        unit.tile.areaOf?.player === unit.player
+        // unit.supplies >= 100
       ) {
         unit.health = Math.min(100, unit.health + 10);
         collector.units.add(unit);
