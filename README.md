@@ -2,7 +2,7 @@
 
 ## A turn-based strategy game inspired by Civilization series for the web.
 
-- Try it [here](https://tulustul.github.io/Cives-Orbis/).
+- Try it [here](https://cives-orbis.vercel.app/).
 
 - Read [game design document](wiki/gdd.md).
 
