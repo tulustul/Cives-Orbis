@@ -7,6 +7,7 @@ import {
   MapGeneratorOptions,
   StatsGetChanneled,
   StatsGetOptions,
+  TilesExploredChanneled,
   TileGetHoverDetailsOptions,
   TileGetInRangeOptions,
   TileSetResourceOptions,
@@ -69,13 +70,16 @@ export const bridge = {
   },
   tiles: {
     updated$: makeObservable<TileChanneled[]>("tiles.updated"),
-    explored$: makeObservable<TileCoords[]>("trackedPlayer.tilesExplored"),
+    explored$: makeObservable<TilesExploredChanneled>(
+      "trackedPlayer.tilesExplored"
+    ),
     showed$: makeObservable<TileCoords[]>("trackedPlayer.tilesShowed"),
     showedAdded$: makeObservable<TileCoords[]>(
       "trackedPlayer.tilesShowedAdded"
     ),
     getAll: () => makeCommand<TileChanneled[]>("tile.getAll"),
-    getAllExplored: () => makeCommand<TileCoords[]>("tile.getAllExplored"),
+    getAllExplored: () =>
+      makeCommand<TilesExploredChanneled>("tile.getAllExplored"),
     getAllVisible: () => makeCommand<TileCoords[]>("tile.getAllVisible"),
     getDetails: (tileId: number) =>
       makeCommand<TileDetailsChanneled>("tile.getDetails", tileId),

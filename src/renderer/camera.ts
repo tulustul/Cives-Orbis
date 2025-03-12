@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, skip } from "rxjs";
 
 import { Application } from "pixi.js";
 import { Animation, Animations } from "./animation";
@@ -6,6 +6,8 @@ import { TILE_SIZE } from "./constants";
 import { getTileCoords } from "./utils";
 import { GameInfo, TileCoords } from "@/core/serialization/channel";
 import { bridge } from "@/bridge";
+import { PlayerViewBoundingBox } from "@/core/player";
+import { mapUi } from "@/ui/mapUi";
 
 export interface Transform {
   x: number;
@@ -42,10 +44,48 @@ export class Camera {
 
   gameInfo: GameInfo | null = null;
 
+  playerBbox: PlayerViewBoundingBox = {
+    minX: 0,
+    maxX: 0,
+    minY: 0,
+    maxY: 0,
+  };
+
   constructor() {
     bridge.game.start$.subscribe((gameStartInfo) => {
       this.gameInfo = gameStartInfo.gameInfo;
     });
+
+    // bridge.tiles.explored$.subscribe((explored) => {
+    //   this.playerBbox = explored.viewBoundingBox;
+    //   this.update();
+    // });
+
+    // bridge.player.tracked$.subscribe(async () => {
+    //   if (mapUi.fogOfWarEnabled) {
+    //     const explored = await bridge.tiles.getAllExplored();
+    //     this.playerBbox = explored.viewBoundingBox;
+    //     this.update();
+    //   }
+    // });
+
+    // mapUi.fogOfWarEnabled$.pipe(skip(1)).subscribe(async (enabled) => {
+    //   if (enabled) {
+    //     const explored = await bridge.tiles.getAllExplored();
+    //     this.playerBbox = explored.viewBoundingBox;
+    //     this.update();
+    //   } else {
+    //     if (this.gameInfo) {
+    //       this.playerBbox = {
+    //         minX: 0,
+    //         maxX: this.gameInfo.mapWidth - 1,
+    //         minY: 0,
+    //         maxY: this.gameInfo.mapHeight - 1,
+    //       };
+    //       this.update();
+    //     }
+    //   }
+    // });
   }
 
   setApp(app: Application) {
@@ -61,15 +101,61 @@ export class Camera {
   moveBy(x: number, y: number) {
     this.transform.x -= x / this.transform.scale;
     this.transform.y -= y / this.transform.scale;
-    this.transformChanged = true;
-    this.updateBoundingBox();
+    this.update();
   }
 
   moveTo(x: number, y: number) {
     this.transform.x = x;
     this.transform.y = y;
+    this.update();
+  }
+
+  private update() {
+    // this.clampTransform();
     this.transformChanged = true;
     this.updateBoundingBox();
+  }
+
+  // clampTransform() {
+  //   if (!this.gameInfo) {
+  //     return;
+  //   }
+
+  //   // this.clampScale();
+
+  //   const t = this.transform;
+
+  //   const [minX, minY] = this.screenToTileCoords(0, 0);
+  //   const [maxX, maxY] = this.screenToTileCoords(
+  //     this.app.canvas.width,
+  //     this.app.canvas.height
+  //   );
+
+  //   const width = Math.floor(this.app.canvas.width / t.scale);
+  //   const height = Math.floor(this.app.canvas.height / t.scale) * 0.75;
+
+  //   // const minX = this.playerBbox.minX - 5; //- width / 2;
+  //   // const maxX = this.playerBbox.maxX + 5; //- width / 2;
+  //   // const minY = this.playerBbox.minY - 5; //- height / 2;
+  //   // const maxY = this.playerBbox.maxY + 5; //- height / 2;
+
+  //   // t.x = Math.max(minX, Math.min(maxX, t.x));
+  //   // t.y = Math.max(minY / 0.75, Math.min(maxY / 0.75, t.y));
+  // }
+
+  clampScale() {
+    // const [w, h] = [
+    //   this.playerBbox.maxX - this.playerBbox.minX + 1,
+    //   this.playerBbox.maxY - this.playerBbox.minY + 1,
+    // ];
+    // const minScale = Math.max(
+    //   this.MIN_ZOOM,
+    //   (TILE_SIZE / Math.max(w, h * 0.75)) * 1.5
+    // );
+    // this.transform.scale = Math.max(
+    //   minScale,
+    //   Math.min(this.MAX_ZOOM, this.transform.scale)
+    // );
   }
 
   refresh() {
@@ -93,7 +179,7 @@ export class Camera {
     newScale: number,
     screenPivotX: number,
     screenPivotY: number,
-    duration = 600,
+    duration = 600
   ) {
     const t = this.transform;
 
@@ -115,7 +201,7 @@ export class Camera {
     scaleFactor: number,
     screenPivotX: number,
     screenPivotY: number,
-    duration = 600,
+    duration = 600
   ) {
     const t = this.transform;
     const currentScale = this.scaleAnimation?.options.to || t.scale;
@@ -128,15 +214,14 @@ export class Camera {
     const [x1, y1] = this.screenToCanvas(screenPivotX, screenPivotY);
 
     t.scale = Math.max(this.MIN_ZOOM, Math.min(this.MAX_ZOOM, scale));
+    this.clampScale();
 
     const [x2, y2] = this.screenToCanvas(screenPivotX, screenPivotY);
 
     t.x += x1 - x2;
     t.y += y1 - y2;
 
-    this.transformChanged = true;
-
-    this.updateBoundingBox();
+    this.update();
   }
 
   moveToTile(tile: TileCoords) {

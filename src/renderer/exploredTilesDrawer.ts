@@ -9,7 +9,7 @@ export class ExploredTilesDrawer {
     this.hexDrawer = new HexDrawer(this.container);
 
     bridge.tiles.showedAdded$.subscribe((tiles) =>
-      this.hexDrawer.addTiles(tiles),
+      this.hexDrawer.addTiles(tiles)
     );
 
     bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
@@ -23,6 +23,6 @@ export class ExploredTilesDrawer {
 
   private async bindToTrackedPlayer() {
     const exploredTiles = await bridge.tiles.getAllExplored();
-    this.hexDrawer.setTiles(exploredTiles);
+    this.hexDrawer.setTiles(exploredTiles.tiles);
   }
 }

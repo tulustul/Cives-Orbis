@@ -289,6 +289,7 @@ function loadPlayer(game: Game, data: PlayerSerialized) {
   for (const tileId of data.exploredTiles) {
     player.exploredTiles.add(game.map.tilesMap.get(tileId)!);
   }
+  player.updateViewBoundingBox(player.exploredTiles);
   player.yields.total = data.yieldsTotal;
   player.updateYields();
   return player;

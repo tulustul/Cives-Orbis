@@ -27,9 +27,8 @@ function Minimap_() {
     const app = new Application();
     await app.init({
       canvas,
-      width: minimap.width,
-      height: minimap.height,
       autoStart: false,
+      ...minimap.canvasSize,
     });
 
     minimap.create(app);
@@ -39,8 +38,10 @@ function Minimap_() {
     if (event.buttons === 1) {
       const canvasRect = minimap.app.canvas.getBoundingClientRect();
       camera.moveTo(
-        (event.clientX - canvasRect.x) / minimap.scale,
-        (event.clientY - canvasRect.y) / minimap.scale,
+        (event.clientX - canvasRect.x - minimap.transform.x) /
+          minimap.transform.scale,
+        (event.clientY - canvasRect.y - minimap.transform.y) /
+          minimap.transform.scale
       );
     }
   }

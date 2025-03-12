@@ -1,7 +1,7 @@
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 import { CityCore } from "./city";
-import { PlayerCore } from "./player";
+import { PlayerCore, PlayerViewBoundingBox } from "./player";
 import {
   tileToChannel,
   unitToChannel,
@@ -46,6 +46,8 @@ class Collector {
   tilesShowed = new Set<TileCore>();
   tilesShowedAdded = new Set<TileCore>();
 
+  viewBoundingBox: PlayerViewBoundingBox | null = null;
+
   turn: number | undefined;
 
   flush() {
@@ -63,7 +65,7 @@ class Collector {
         type: "city.updated",
         data: Array.from(this.cities)
           .filter((city) =>
-            city.player.game.trackedPlayer.exploredTiles.has(city.tile),
+            city.player.game.trackedPlayer.exploredTiles.has(city.tile)
           )
           .map((city) => cityToChannel(city)),
       });
@@ -112,7 +114,10 @@ class Collector {
     if (this.tilesExplored.size) {
       changes.push({
         type: "trackedPlayer.tilesExplored",
-        data: Array.from(this.tilesExplored).map(tileToTileCoords),
+        data: {
+          tiles: Array.from(this.tilesExplored).map(tileToTileCoords),
+          viewBoundingBox: this.viewBoundingBox,
+        },
       });
     }
     if (this.tilesShowed.size) {
@@ -153,6 +158,8 @@ class Collector {
     this.changes = [];
 
     this.turn = undefined;
+
+    this.viewBoundingBox = null;
 
     return changes;
   }

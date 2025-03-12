@@ -22,6 +22,13 @@ export const PLAYER_COLORS: number[] = [
   0x79583c, 0xb6bbe6, 0xb6bce6,
 ];
 
+export type PlayerViewBoundingBox = {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+};
+
 export class PlayerCore {
   id!: number;
 
@@ -57,6 +64,13 @@ export class PlayerCore {
 
   cssColor: string;
 
+  viewBoundingBox: PlayerViewBoundingBox = {
+    minX: Infinity,
+    minY: Infinity,
+    maxX: -Infinity,
+    maxY: -Infinity,
+  };
+
   constructor(public game: Game, public color: number) {
     this.area = this.game.areasManager.make(this.color);
     this.cssColor = "#" + color.toString(16).padStart(6, "0");
@@ -76,6 +90,10 @@ export class PlayerCore {
           }
         }
       }
+    }
+    this.updateViewBoundingBox(tiles);
+    if (this.id === this.game.trackedPlayer.id) {
+      collector.viewBoundingBox = this.viewBoundingBox;
     }
   }
 
@@ -163,5 +181,14 @@ export class PlayerCore {
   isEnemyWith(player: PlayerCore) {
     // It's a deathmatch for now.
     return this !== player;
+  }
+
+  updateViewBoundingBox(tiles: Iterable<TileCore>) {
+    for (const tile of tiles) {
+      this.viewBoundingBox.minX = Math.min(this.viewBoundingBox.minX, tile.x);
+      this.viewBoundingBox.minY = Math.min(this.viewBoundingBox.minY, tile.y);
+      this.viewBoundingBox.maxX = Math.max(this.viewBoundingBox.maxX, tile.x);
+      this.viewBoundingBox.maxY = Math.max(this.viewBoundingBox.maxY, tile.y);
+    }
   }
 }

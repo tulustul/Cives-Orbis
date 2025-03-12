@@ -13,6 +13,8 @@ import { camera, Transform } from "./camera";
 import { renderer } from "./renderer";
 import { drawHex } from "./utils";
 import { skip } from "rxjs";
+import { PlayerViewBoundingBox } from "@/core/player";
+import { mapUi } from "@/ui/mapUi";
 
 const SEA_COLORS: Record<SeaLevel, number> = {
   [SeaLevel.deep]: 0x25619a,
@@ -33,16 +35,19 @@ const MOUNTAIN_COLOR = 0x666666;
 
 const maxSize = 300;
 
+type Size = { width: number; height: number };
+
 export class MinimapRenderer {
-  width = 0;
-  height = 0;
-  scale = 1;
+  canvasSize: Size = { width: 0, height: 0 };
+  mapSize: Size = { width: 0, height: 0 };
 
   public container = new Container();
 
   private mapScene = new Container();
 
   private cameraGraphics = new Graphics();
+
+  public transform: Transform = { x: 0, y: 0, scale: 1 };
 
   private mapSprite = new Sprite();
 
@@ -58,20 +63,44 @@ export class MinimapRenderer {
       this.build();
     });
 
-    bridge.tiles.explored$.subscribe((tiles) => {
-      this.reveal(tiles);
+    bridge.tiles.explored$.subscribe((explored) => {
+      this.reveal(explored.tiles);
+      if (mapUi.fogOfWarEnabled) {
+        this.updateTransform(explored.viewBoundingBox);
+      }
       this.updateMap();
     });
 
     bridge.player.tracked$.subscribe(async () => {
-      this.hideAllTiles();
-      const tiles = await bridge.tiles.getAllExplored();
-      this.reveal(tiles);
-      this.updateMap();
+      if (mapUi.fogOfWarEnabled) {
+        this.setAllTilesVisibility(false);
+        const explored = await bridge.tiles.getAllExplored();
+        this.reveal(explored.tiles);
+        this.updateTransform(explored.viewBoundingBox);
+        this.updateMap();
+      }
     });
 
     bridge.tiles.updated$.subscribe((tiles) => {
       this.drawTiles(tiles);
+      this.updateMap();
+    });
+
+    mapUi.fogOfWarEnabled$.pipe(skip(1)).subscribe(async (enabled) => {
+      if (enabled) {
+        this.setAllTilesVisibility(false);
+        const explored = await bridge.tiles.getAllExplored();
+        this.reveal(explored.tiles);
+        this.updateTransform(explored.viewBoundingBox);
+      } else {
+        this.setAllTilesVisibility(true);
+        this.updateTransform({
+          minX: 0,
+          maxX: this.mapSize.width - 1,
+          minY: 0,
+          maxY: this.mapSize.height - 1,
+        });
+      }
       this.updateMap();
     });
 
@@ -85,16 +114,17 @@ export class MinimapRenderer {
     const w = startInfo.gameInfo.mapWidth;
     const h = startInfo.gameInfo.mapHeight;
 
+    this.mapSize.width = w;
+    this.mapSize.height = h;
+
     if (w > h) {
-      this.width = maxSize;
-      this.height = maxSize / (w / h);
-      this.scale = maxSize / w;
+      this.canvasSize.width = maxSize;
+      this.canvasSize.height = maxSize / (w / h);
     } else {
-      this.width = maxSize / (h / w);
-      this.height = maxSize;
-      this.scale = maxSize / h;
+      this.canvasSize.width = maxSize / (h / w);
+      this.canvasSize.height = maxSize;
     }
-    this.height *= 0.75;
+    this.canvasSize.height *= 0.75;
   }
 
   async create(app: Application) {
@@ -104,15 +134,15 @@ export class MinimapRenderer {
     this.app = app;
 
     this.mapTexture = RenderTexture.create({
-      width: this.width,
-      height: this.height,
+      width: this.canvasSize.width,
+      height: this.canvasSize.height,
     });
     this.mapSprite.texture = this.mapTexture;
 
     this.app.stage.addChild(this.container);
 
-    camera.transform$.subscribe((transform) => {
-      this.updateCamera(transform);
+    camera.transform$.subscribe(() => {
+      this.updateCamera();
     });
 
     await this.build();
@@ -122,9 +152,10 @@ export class MinimapRenderer {
     const allTiles = await bridge.tiles.getAll();
     this.drawTiles(allTiles);
 
-    this.hideAllTiles();
-    const exploredTiles = await bridge.tiles.getAllExplored();
-    this.reveal(exploredTiles);
+    this.setAllTilesVisibility(false);
+    const explored = await bridge.tiles.getAllExplored();
+    this.reveal(explored.tiles);
+    this.updateTransform(explored.viewBoundingBox);
 
     this.updateMap();
   }
@@ -145,9 +176,9 @@ export class MinimapRenderer {
     this.mapSprite.destroy();
   }
 
-  private hideAllTiles() {
+  private setAllTilesVisibility(visible: boolean) {
     for (const g of this.tilesMap.values()) {
-      g.visible = false;
+      g.visible = visible;
     }
   }
 
@@ -160,18 +191,62 @@ export class MinimapRenderer {
     }
   }
 
-  private updateCamera(t: Transform) {
+  private updateTransform(bbox: PlayerViewBoundingBox) {
+    const [wq, hq] = [bbox.maxX - bbox.minX + 1, bbox.maxY - bbox.minY + 1];
+    const [w, h] = [
+      Math.max(15, wq),
+      Math.max(
+        Math.floor(15 / (this.canvasSize.width / this.canvasSize.height)),
+        hq
+      ),
+    ];
+
+    if (w / h >= this.canvasSize.width / (this.canvasSize.height / 0.75)) {
+      this.transform.scale = this.canvasSize.width / w;
+    } else {
+      this.transform.scale = this.canvasSize.height / h / 0.75;
+    }
+
+    const maxW = Math.floor(this.canvasSize.width / this.transform.scale);
+    const maxH = Math.floor(
+      this.canvasSize.height / this.transform.scale / 0.75
+    );
+    const offsetX = Math.min(bbox.minX, wq < maxW ? (maxW - wq) / 2 : 0);
+    const offsetY = Math.min(bbox.minY, hq < maxH ? (maxH - hq) / 2 : 0);
+
+    const minOffsetX = maxW - this.mapSize.width;
+    const minOffsetY = maxH - this.mapSize.height;
+
+    const x = Math.max(minOffsetX, -bbox.minX + offsetX) - 0.25;
+    const y = Math.max(minOffsetY, -bbox.minY + offsetY) - 0.25;
+
+    this.transform.x = x * this.transform.scale;
+    this.transform.y = y * this.transform.scale * 0.75;
+
+    this.mapScene.position.set(this.transform.x, this.transform.y);
+    this.mapScene.scale.set(this.transform.scale);
+
+    this.updateCamera();
+  }
+
+  private updateCamera() {
+    const t = camera.transform;
     const width = renderer.canvas.width / t.scale;
     const height = renderer.canvas.height / t.scale;
 
-    const xStart = (t.x - width / 2) * this.scale;
-    const yStart = (t.y - height / 2) * this.scale;
+    const xStart = (t.x - width / 2) * this.transform.scale + this.transform.x;
+    const yStart = (t.y - height / 2) * this.transform.scale + this.transform.y;
 
     this.cameraGraphics.clear();
 
     this.cameraGraphics.setStrokeStyle({ width: 1, color: 0xffffff });
     this.cameraGraphics
-      .rect(xStart, yStart, width * this.scale, height * this.scale)
+      .rect(
+        xStart,
+        yStart,
+        width * this.transform.scale,
+        height * this.transform.scale
+      )
       .stroke();
 
     if (this.app) {
@@ -216,8 +291,6 @@ export class MinimapRenderer {
     }
 
     g.clear();
-    g.scale.x = this.scale;
-    g.scale.y = this.scale;
 
     drawHex(g, tile.x, tile.y);
     g.fill({ color });
@@ -264,6 +337,6 @@ export class MinimapRenderer {
       }
     }
 
-    graphics.stroke({ width: 0.3, color: SEA_COLORS[SeaLevel.deep] });
+    graphics.stroke({ width: 0.2, color: SEA_COLORS[SeaLevel.deep] });
   }
 }

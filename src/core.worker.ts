@@ -15,7 +15,11 @@ import { ResourceDefinition } from "./core/data.interface";
 import { Game } from "./core/game";
 import { moveAlongPath } from "./core/movement";
 import { findPath } from "./core/pathfinding";
-import { PLAYER_COLORS, PlayerCore } from "./core/player";
+import {
+  PLAYER_COLORS,
+  PlayerCore,
+  PlayerViewBoundingBox,
+} from "./core/player";
 import { getFailedWeakRequirements } from "./core/requirements";
 import { ResourceCore } from "./core/resources";
 import {
@@ -29,6 +33,7 @@ import {
   PlayerChanneled,
   playerToChannel,
   TileChanneled,
+  TileCoords,
   TileDetailsChanneled,
   tileDetailsToChannel,
   TileHoverDetails,
@@ -407,8 +412,18 @@ export function tileGetAll(): TileChanneled[] {
   return Array.from(game.map.tilesMap.values()).map(tileToChannel);
 }
 
-export function tileGetAllExplored() {
-  return Array.from(game.trackedPlayer.exploredTiles).map(tileToTileCoords);
+export type TilesExploredChanneled = {
+  tiles: TileCoords[];
+  viewBoundingBox: PlayerViewBoundingBox;
+};
+export function tileGetAllExplored(): TilesExploredChanneled {
+  const tiles = Array.from(game.trackedPlayer.exploredTiles).map(
+    tileToTileCoords
+  );
+  return {
+    tiles,
+    viewBoundingBox: game.trackedPlayer.viewBoundingBox,
+  };
 }
 
 export function tileGetAllVisible() {

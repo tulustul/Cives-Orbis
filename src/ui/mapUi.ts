@@ -167,10 +167,6 @@ export class MapUi {
 
     bridge.player.tracked$.subscribe(() => {
       this._selectedUnit$.next(null);
-      // const tileOfInterest = player?.units[0]?.tile || player?.cities[0]?.tile;
-      // if (tileOfInterest) {
-      //   camera.moveToTile(tileOfInterest);
-      // }
       this.setPath(null);
     });
 
@@ -178,6 +174,10 @@ export class MapUi {
       if (!nextTurnService.autoplayEnabled) {
         this.selectCity(city.id);
       }
+    });
+
+    bridge.game.start$.subscribe(() => {
+      this._fogOfWarEnabled$.next(true);
     });
 
     bridge.game.turn$.subscribe(() => {
@@ -195,13 +195,7 @@ export class MapUi {
         this.clearSelectedUnit();
       }
     });
-
-    // game.stop$.subscribe(() => this.clear());
   }
-
-  // update() {
-  // this._yieldsVisible$.next(camera.transform.scale > 40);
-  // }
 
   get hoveredTile() {
     return this._hoveredTile$.value;
@@ -229,7 +223,6 @@ export class MapUi {
   async selectCity(cityId: number | null) {
     if (cityId === null) {
       this._selectedCity$.next(null);
-      // this.allowMapPanning = true;
       return;
     }
 
@@ -237,7 +230,6 @@ export class MapUi {
     if (city?.visibilityLevel === "all") {
       this._selectedCity$.next(city);
       camera.moveToTileWithEasing(city.tile);
-      // this.allowMapPanning = false;
     }
   }
 

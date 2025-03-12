@@ -45,7 +45,7 @@ export function NewGameMenu() {
   async function start() {
     const humanPlayersCount = aiOnly ? 0 : 1;
     await bridge.game.new({
-      aiPlayersCount: mapSize.players - humanPlayersCount,
+      aiPlayersCount: playersCount - humanPlayersCount,
       width: mapSize.width,
       height: mapSize.height,
       humanPlayersCount,
@@ -86,7 +86,7 @@ export function NewGameMenu() {
       </div>
 
       <input
-        className="accent-success/50 outline-0 "
+        className="accent-success/50 outline-0"
         type="range"
         min={1}
         max={16}
