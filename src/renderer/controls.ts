@@ -2,9 +2,8 @@ import { BehaviorSubject } from "rxjs";
 
 import { bridge } from "@/bridge";
 import { GameInfo, TileCoords } from "@/core/serialization/channel";
-import { useMenu } from "@/ui/gameMenu";
+import { processKeybindings } from "@/ui/keybindings";
 import { mapUi } from "@/ui/mapUi";
-import { nextTurnService } from "@/ui/nextTurn";
 import { camera } from "./camera";
 
 export class Controls {
@@ -14,6 +13,8 @@ export class Controls {
   private hasMouseMoved = false;
 
   gameInfo: GameInfo | null = null;
+
+  lastKey: string | null = null;
 
   constructor() {
     bridge.game.start$.subscribe((gameStartInfo) => {
@@ -114,36 +115,15 @@ export class Controls {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    const menu = useMenu.getState();
-    if (mapUi.selectedCity) {
-      if (event.key === "Escape") {
-        mapUi.selectCity(null);
-      }
-    } else if (menu.enabled) {
-      if (event.key === "Escape" && this.gameInfo) {
-        menu.hide();
-      }
-    } else {
-      if (event.key === "Enter") {
-        nextTurnService.next();
-      } else if (event.key === "Escape") {
-        menu.show();
-      } else if (mapUi.selectedUnit) {
-        if (event.key === "s" || event.key === "f") {
-          bridge.units
-            .setOrder({ unitId: mapUi.selectedUnit.id, order: "sleep" })
-            .then(() => mapUi["_selectedUnit$"].next(mapUi.selectedUnit));
-        } else if (event.key === " ") {
-          bridge.units
-            .setOrder({ unitId: mapUi.selectedUnit.id, order: "skip" })
-            .then(() => mapUi["_selectedUnit$"].next(mapUi.selectedUnit));
-        } else if (event.key === "b") {
-          bridge.units
-            .doAction({ unitId: mapUi.selectedUnit.id, action: "foundCity" })
-            .then(() => mapUi["_selectedUnit$"].next(mapUi.selectedUnit));
-        }
-      }
+    event.preventDefault();
+    if (event.key !== this.lastKey) {
+      this.lastKey = event.key;
+      processKeybindings(event);
     }
+  }
+
+  onKeyUp() {
+    this.lastKey = null;
   }
 
   getTileFromMouseEvent(event: MouseEvent): TileCoords | null {

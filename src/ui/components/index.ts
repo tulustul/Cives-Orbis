@@ -10,6 +10,8 @@ export * from "./Switch";
 export * from "./AtlasIcon";
 export * from "./Tooltip";
 export * from "./Button";
+export * from "./CommandButton";
+export * from "./IconCommandButton";
 export * from "./IconButton";
 export * from "./charts";
 export * from "./Bonuses";

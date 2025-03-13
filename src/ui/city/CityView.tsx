@@ -3,11 +3,26 @@ import { CityBuildings } from "./CityBuldings";
 import { CityMainPanel } from "./CityMainPanel";
 import { CityName } from "./CityName";
 import { Background } from "@/ui/components";
+import { useEffect } from "react";
+import { mapUi } from "../mapUi";
 
 type Props = {
   city: CityDetailsChanneled;
 };
 export function CityView({ city }: Props) {
+  useEffect(() => {
+    const wereYieldsEnabled = mapUi.yieldsEnabled;
+    if (!wereYieldsEnabled) {
+      mapUi.yieldsEnabled = true;
+    }
+
+    return () => {
+      if (!wereYieldsEnabled) {
+        mapUi.yieldsEnabled = false;
+      }
+    };
+  }, []);
+
   return (
     <div className="flex w-full h-full absolute">
       <Background className="text-white pointer-events-auto border-gray-900 border-r-3 w-80">

@@ -12,10 +12,18 @@ import {
   IconZzz,
   Icon as TablerIcon,
 } from "@tabler/icons-react";
-import { Button, IconButton, Panel, ProgressBar, Tooltip } from "./components";
+import {
+  Button,
+  IconButton,
+  IconCommandButton,
+  Panel,
+  ProgressBar,
+  Tooltip,
+} from "./components";
 import { Icon } from "./components/Icon";
 import { mapUi } from "./mapUi";
 import { RawUnitIcon } from "./UnitIcon";
+import { Commands } from "./commands";
 
 const ORDER_TO_ICON: Record<UnitOrder, TablerIcon> = {
   sleep: IconZzz,
@@ -29,16 +37,6 @@ export function UnitPanel() {
   function destroy() {
     if (unit) {
       bridge.units.disband(unit.id);
-    }
-  }
-
-  async function setOrder(order: UnitOrder) {
-    if (!unit) {
-      return;
-    }
-    const updatedUnit = await bridge.units.setOrder({ unitId: unit.id, order });
-    if (updatedUnit) {
-      mapUi.setUnitDetails(updatedUnit);
     }
   }
 
@@ -89,16 +87,17 @@ export function UnitPanel() {
           <IconButton icon={IconSkull} danger onClick={destroy} />
         </Tooltip>
 
-        <Tooltip content="Skip move">
-          <IconButton
-            icon={IconHourglassEmpty}
-            onClick={() => setOrder("skip")}
-          />
-        </Tooltip>
+        <IconCommandButton
+          tooltip="Skip move"
+          icon={IconHourglassEmpty}
+          command={Commands.unitSkip}
+        />
 
-        <Tooltip content="Sleep">
-          <IconButton icon={IconZzz} onClick={() => setOrder("sleep")} />
-        </Tooltip>
+        <IconCommandButton
+          tooltip="Sleep"
+          icon={IconZzz}
+          command={Commands.unitSleep}
+        />
       </div>
 
       <UnitActions unit={unit} />

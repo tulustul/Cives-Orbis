@@ -77,6 +77,9 @@ export class UnitCore {
   setOrder(order: UnitOrder | null) {
     this.order = order;
     this.player.updateUnitsWithoutOrders();
+    if (order !== "go") {
+      this.path = null;
+    }
     collector.units.add(this);
   }
 

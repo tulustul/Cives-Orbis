@@ -2,14 +2,19 @@ import { Icon as TablerIcon } from "@tabler/icons-react";
 import clsx from "clsx";
 import { Icon } from "./Icon";
 
-type Props = {
+export type IconButtonProps = {
   className?: string;
   icon: TablerIcon;
   danger?: boolean;
   onClick?: () => void;
 };
 
-export function IconButton({ className, icon, danger, onClick }: Props) {
+export function IconButton({
+  className,
+  icon,
+  danger,
+  onClick,
+}: IconButtonProps) {
   return (
     <button
       className={clsx(

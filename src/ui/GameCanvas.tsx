@@ -6,6 +6,7 @@ import { useEventListener } from "usehooks-ts";
 
 function GameCanvas_() {
   useEventListener("keydown", (event) => controls.onKeyDown(event));
+  useEventListener("keyup", () => controls.onKeyUp());
 
   useEventListener("resize", () => {
     renderer.resize(window.innerWidth, window.innerHeight);
