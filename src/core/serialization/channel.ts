@@ -11,12 +11,14 @@ import { UnitMoveCore } from "../collector";
 import {
   ProductDefinition,
   ProductType,
+  Technology,
   UnitDefinition,
   UnitTrait,
 } from "../data.interface";
 import { CombatSimulation } from "../combat";
 import { Bonuses } from "../bonus";
 import { UnitAction } from "../unit-actions";
+import { TECHNOLOGIES } from "../data-manager";
 
 export interface GameChanneled {
   turn: number;
@@ -545,5 +547,27 @@ export function cityProductToChannel(
       productionCost: product.productionCost,
       bonuses: product.bonuses,
     },
+  };
+}
+
+export type TechnologyProductChanneled = {
+  id: string;
+  name: string;
+};
+export type TechnologyChanneled = {
+  id: string;
+  name: string;
+  cost: number;
+  requiredTechs: string[];
+  products: TechnologyProductChanneled[];
+};
+
+export function techToChannel(tech: Technology): TechnologyChanneled {
+  return {
+    id: tech.id,
+    name: tech.name,
+    cost: tech.cost,
+    requiredTechs: tech.requiredTechnologies.map((t) => t.id),
+    products: tech.products.map((p) => ({ id: p.id, name: p.name })),
   };
 }

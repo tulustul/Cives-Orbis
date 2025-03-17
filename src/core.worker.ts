@@ -10,6 +10,7 @@ import {
   getIdleProductById,
   getResourceDefinitionById,
   getUnitById,
+  TECHNOLOGIES,
 } from "./core/data-manager";
 import { ResourceDefinition } from "./core/data.interface";
 import { Game } from "./core/game";
@@ -32,6 +33,7 @@ import {
   gameToGameStartInfo,
   PlayerChanneled,
   playerToChannel,
+  techToChannel,
   TileChanneled,
   TileCoords,
   TileDetailsChanneled,
@@ -106,6 +108,9 @@ const HANDLERS = {
   "entity.getFailedWeakRequirements": entityGetFailedWeakRequirements,
 
   "stats.get": statsGet,
+
+  "tech.getAll": techGetAll,
+  "tech.select": techSelect,
 };
 
 addEventListener("message", ({ data }) => {
@@ -725,4 +730,12 @@ export function statsGet(options: StatsGetOptions): StatsGetChanneled[] {
       data: game.stats.data.get(player)![options.type],
     } as StatsGetChanneled;
   });
+}
+
+function techGetAll() {
+  return TECHNOLOGIES.map(techToChannel);
+}
+
+function techSelect() {
+  //TODO
 }

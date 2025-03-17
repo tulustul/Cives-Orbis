@@ -33,7 +33,6 @@ export function Tooltip({ children, content, className }: Props) {
     if (left - box.width / 2 < 0) {
       left += left - box.width / 2 + 20;
     }
-    console.log(left);
 
     let topTransform = "-100%";
     let top = box.top;

@@ -28,8 +28,6 @@ export class FogOfWarDrawer {
 
   private async bindToTrackedPlayer() {
     const visibleTiles = await bridge.tiles.getAllVisible();
-
-    console.log(visibleTiles.length);
     this.hexDrawer.clear();
     this.hexDrawer.setTiles(visibleTiles);
   }

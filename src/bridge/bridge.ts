@@ -27,6 +27,7 @@ import {
   GameInfo,
   GameStartInfo,
   PlayerChanneled,
+  TechnologyChanneled,
   TileChanneled,
   TileCoords,
   TileDetailsChanneled,
@@ -151,5 +152,10 @@ export const bridge = {
     getAll: () => makeCommand<AreaChanneled[]>("area.getAll"),
     getTiles: (areaId: number) =>
       makeCommand<TilesCoordsWithNeighbours[]>("area.getTiles", areaId),
+  },
+  technologies: {
+    getAll: () => makeCommand<TechnologyChanneled[]>("tech.getAll"),
+    select: (technology: TechnologyChanneled) =>
+      makeCommand<void>("tech.select", technology),
   },
 };

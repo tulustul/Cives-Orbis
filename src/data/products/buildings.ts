@@ -1,7 +1,7 @@
-import { Building } from "@/core/data.interface";
+import { RawBuilding } from "@/core/data.interface";
 import { CityHaveBuildingRequirement } from "@/core/requirements";
 
-export const BUILDINGS: Building[] = [
+export const BUILDINGS: RawBuilding[] = [
   {
     id: "building_granary",
     productType: "building",
@@ -10,6 +10,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldValue: { food: 3 } },
     strongRequirements: [],
     weakRequirements: [],
+    technology: "tech_pottery",
   },
   {
     id: "building_well",
@@ -19,6 +20,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldValue: { food: 1 } },
     strongRequirements: [],
     weakRequirements: [],
+    technology: "tech_agriculture",
   },
   {
     id: "building_big_granary",
@@ -28,6 +30,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldFactor: { food: 0.2 } },
     strongRequirements: [new CityHaveBuildingRequirement("building_granary")],
     weakRequirements: [],
+    technology: "tech_irrigation",
   },
   {
     id: "building_workshop",
@@ -37,6 +40,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldValue: { production: 5 } },
     strongRequirements: [],
     weakRequirements: [],
+    technology: "tech_bronzeWorking",
   },
   {
     id: "building_big_workshop",
@@ -46,6 +50,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldFactor: { production: 0.2 } },
     strongRequirements: [new CityHaveBuildingRequirement("building_workshop")],
     weakRequirements: [],
+    technology: "tech_machinery",
   },
   {
     id: "building_slave_market",
@@ -55,6 +60,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldValue: { publicWorks: 2 } },
     strongRequirements: [],
     weakRequirements: [],
+    technology: "tech_agriculture",
   },
   {
     id: "building_monument",
@@ -64,6 +70,7 @@ export const BUILDINGS: Building[] = [
     bonuses: { yieldValue: { culture: 2 } },
     strongRequirements: [],
     weakRequirements: [],
+    technology: "tech_agriculture",
   },
   {
     id: "building_all_doing_building",
@@ -79,5 +86,6 @@ export const BUILDINGS: Building[] = [
       new CityHaveBuildingRequirement("building_big_workshop"),
     ],
     weakRequirements: [],
+    technology: "tech_engineering",
   },
 ];

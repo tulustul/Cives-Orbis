@@ -1,6 +1,6 @@
-import { IdleProduct } from "@/core/data.interface";
+import { RawIdleProduct } from "@/core/data.interface";
 
-export const IDLE_PRODUCTS: IdleProduct[] = [
+export const IDLE_PRODUCTS: RawIdleProduct[] = [
   {
     id: "idle_product_growth",
     productType: "idleProduct",
@@ -9,6 +9,7 @@ export const IDLE_PRODUCTS: IdleProduct[] = [
     strongRequirements: [],
     weakRequirements: [],
     bonuses: { transferProductionToFood: 0.25 },
+    technology: "tech_agriculture",
   },
   {
     id: "idle_product_culture",
@@ -18,6 +19,7 @@ export const IDLE_PRODUCTS: IdleProduct[] = [
     strongRequirements: [],
     weakRequirements: [],
     bonuses: { transferProductionToCulture: 0.25 },
+    technology: "tech_poetry",
   },
   {
     id: "idle_product_public_works",
@@ -27,5 +29,6 @@ export const IDLE_PRODUCTS: IdleProduct[] = [
     strongRequirements: [],
     weakRequirements: [],
     bonuses: { transferProductionToPublicWorks: 0.25 },
+    technology: "tech_engineering",
   },
 ];

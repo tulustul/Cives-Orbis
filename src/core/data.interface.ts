@@ -21,14 +21,25 @@ export type HaveBonuses = {
   bonuses: Bonuses;
 };
 
+export type RequireRawTech = {
+  technology: string;
+};
+
+export type RequireTech = {
+  technology: Technology;
+};
+
 export type ProductType = "unit" | "building" | "idleProduct";
 
-export type ProductDefinition = Entity &
+export type BaseProductDefinition = Entity &
   HaveRequirements &
   HaveBonuses & {
     productType: ProductType;
     productionCost: number;
   };
+
+export type RawProductDefinition = BaseProductDefinition & RequireRawTech;
+export type ProductDefinition = BaseProductDefinition & RequireTech;
 
 export enum UnitType {
   land,
@@ -43,7 +54,7 @@ export enum UnitTrait {
   supply,
 }
 
-export type UnitDefinition = ProductDefinition & {
+type _UnitDef = {
   productType: "unit";
   actionPoints: number;
   strength: number;
@@ -54,8 +65,20 @@ export type UnitDefinition = ProductDefinition & {
   supplyRange: number;
 };
 
+export type RawUnitDefinition = RawProductDefinition &
+  _UnitDef &
+  RequireRawTech;
+export type UnitDefinition = ProductDefinition & _UnitDef & RequireTech;
+
+export type RawBuilding = RawProductDefinition & {
+  productType: "building";
+};
 export type Building = ProductDefinition & {
   productType: "building";
+};
+
+export type RawIdleProduct = RawProductDefinition & {
+  productType: "idleProduct";
 };
 export type IdleProduct = ProductDefinition & {
   productType: "idleProduct";
@@ -109,3 +132,14 @@ export type PolicyArea = Entity & { options: PolicyArea[] };
 export type PolicyOption = Entity & HaveBonuses & HaveRequirements;
 
 export type Law = Entity & HaveBonuses & HaveRequirements;
+
+export type RawTechnology = Entity & {
+  requiredTechnologies: string[];
+  cost: number;
+};
+
+export type Technology = Entity & {
+  requiredTechnologies: Technology[];
+  cost: number;
+  products: ProductDefinition[];
+};

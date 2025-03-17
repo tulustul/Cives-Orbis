@@ -1,11 +1,11 @@
-import { UnitDefinition, UnitType, UnitTrait } from "@/core/data.interface";
+import { RawUnitDefinition, UnitType, UnitTrait } from "@/core/data.interface";
 import {
   CityHaveBuildingRequirement,
   CitySizeRequirement,
   CoastlineCityRequirement,
 } from "@/core/requirements";
 
-export const UNITS_DEFINITIONS: UnitDefinition[] = [
+export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
   {
     id: "unit_settler",
     productType: "unit",
@@ -24,6 +24,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
       new CitySizeRequirement(3),
     ],
     bonuses: {},
+    technology: "tech_pottery",
   },
   {
     id: "unit_worker",
@@ -40,6 +41,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [],
     weakRequirements: [new CitySizeRequirement(2)],
     bonuses: {},
+    technology: "tech_agriculture",
   },
   {
     id: "unit_scout",
@@ -56,6 +58,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [],
     weakRequirements: [],
     bonuses: {},
+    technology: "tech_agriculture",
   },
   {
     id: "unit_warrior",
@@ -72,6 +75,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [],
     weakRequirements: [],
     bonuses: {},
+    technology: "tech_agriculture",
   },
   {
     id: "unit_uber_warrior",
@@ -88,6 +92,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [],
     weakRequirements: [],
     bonuses: {},
+    technology: "tech_ironWorking",
   },
   {
     id: "unit_tireme",
@@ -104,6 +109,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [new CoastlineCityRequirement()],
     weakRequirements: [],
     bonuses: {},
+    technology: "tech_sailing",
   },
   {
     id: "unit_galley",
@@ -120,6 +126,7 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [new CoastlineCityRequirement()],
     weakRequirements: [],
     bonuses: {},
+    technology: "tech_sailing",
   },
   {
     id: "unit_scout_ship",
@@ -136,21 +143,23 @@ export const UNITS_DEFINITIONS: UnitDefinition[] = [
     strongRequirements: [new CoastlineCityRequirement()],
     weakRequirements: [],
     bonuses: {},
+    technology: "tech_sailing",
   },
-  {
-    id: "unit_supply_wagon",
-    productType: "unit",
-    name: "Supply wagon",
-    type: UnitType.land,
-    trait: UnitTrait.supply,
-    actionPoints: 1,
-    strength: 0,
-    actions: [],
-    productionCost: 30,
-    capacity: 0,
-    supplyRange: 4,
-    strongRequirements: [],
-    weakRequirements: [],
-    bonuses: {},
-  },
+  // {
+  //   id: "unit_supply_wagon",
+  //   productType: "unit",
+  //   name: "Supply wagon",
+  //   type: UnitType.land,
+  //   trait: UnitTrait.supply,
+  //   actionPoints: 1,
+  //   strength: 0,
+  //   actions: [],
+  //   productionCost: 30,
+  //   capacity: 0,
+  //   supplyRange: 4,
+  //   strongRequirements: [],
+  //   weakRequirements: [],
+  //   bonuses: {},
+  //   technology: "tech_",
+  // },
 ];
