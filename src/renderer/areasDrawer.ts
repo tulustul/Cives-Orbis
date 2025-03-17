@@ -93,6 +93,7 @@ export class AreasDrawer {
     mapUi.selectedCity$.subscribe((city) => this.onSelectedCity(city));
     mapUi.hoveredCity$.subscribe((city) => this.onHoveredCity(city));
     mapUi.selectedUnit$.subscribe((unit) => this.onSelectedUnit(unit));
+    mapUi.destroyed$.subscribe(() => this.clear());
 
     bridge.game.start$.subscribe(() => this.clear());
   }

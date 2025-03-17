@@ -9,11 +9,14 @@ import {
   UnitPathChanneled,
 } from "@/core/serialization/channel";
 import { camera } from "@/renderer/camera";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs/operators";
 import { nextTurnService } from "./nextTurn";
 
 export class MapUi {
+  private _destroyed$ = new Subject<void>();
+  destroyed$ = this._destroyed$.asObservable();
+
   private _hoveredTile$ = new BehaviorSubject<TileCoords | null>(null);
   hoveredTile$ = this._hoveredTile$.asObservable().pipe(distinctUntilChanged());
 
@@ -206,6 +209,10 @@ export class MapUi {
     if (!enable) {
       this._selectedTile$.next(null);
     }
+  }
+
+  destroy() {
+    this._destroyed$.next();
   }
 
   clickTile(tile: TileCoords) {

@@ -6,6 +6,7 @@ import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { putContainerAtTile, putSpriteAtTileCentered } from "./utils";
+import { mapUi } from "@/ui/mapUi";
 
 const SEA_TEXTURES: Record<SeaLevel, string> = {
   [SeaLevel.deep]: "hexWaterDeep.png",
@@ -85,6 +86,8 @@ export class MapDrawer {
     bridge.game.start$.subscribe(() => {
       measureTime("build map", () => this.build());
     });
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   clear() {

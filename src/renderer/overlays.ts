@@ -20,12 +20,14 @@ export class OverlaysRenderer {
     this.buildSelectedTileGraphics();
 
     mapUi.hoveredTile$.subscribe((tile) =>
-      this.displayAtTile(this.hoveredTileGraphics, tile),
+      this.displayAtTile(this.hoveredTileGraphics, tile)
     );
 
     mapUi.selectedTile$.subscribe((tile) => {
       this.displayAtTile(this.selectedTileGraphics, tile);
     });
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   private displayAtTile(obj: Container, tile: TileCoords | null) {

@@ -9,6 +9,7 @@ import { EditorMode } from "./ui/EditorMode";
 
 import styles from "./App.module.css";
 import { Stats } from "./ui/stats";
+import { LoadingScreen } from "./ui/LoadingScreen";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,10 @@ function App() {
       return null;
     }
 
+    if (uiState.mode === "loading") {
+      return <LoadingScreen />;
+    }
+
     return (
       <div className={styles.wrapper}>
         <div className={styles.mapMode}>
@@ -50,9 +55,9 @@ function App() {
 
   return (
     <>
-      {menu.enabled && <GameMenu />}
+      {menu.enabled && uiState.mode !== "loading" && <GameMenu />}
       <GameCanvas />
-      <CitiesLayer />
+      {uiState.mode === "map" && <CitiesLayer />}
       {getContent()}
     </>
   );

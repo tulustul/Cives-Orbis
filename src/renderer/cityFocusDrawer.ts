@@ -15,6 +15,8 @@ export class CityFocusDrawer {
       }
       this.hexDrawer.setTiles(city.tiles);
     });
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   clear() {

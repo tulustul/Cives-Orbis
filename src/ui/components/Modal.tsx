@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 import { Panel } from "./Panel";
-import styles from "./Modal.module.css";
 import clsx from "clsx";
 import { Button } from "./Button";
 
@@ -31,8 +30,8 @@ export function Modal({
   }
 
   return (
-    <div className={styles.modal}>
-      <Panel className={clsx(className, styles.content)}>
+    <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+      <Panel className={clsx("px-6 py-4", className)}>
         {getTopBar()}
         {children}
       </Panel>

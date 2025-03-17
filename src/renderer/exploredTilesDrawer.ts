@@ -1,6 +1,7 @@
 import { bridge } from "@/bridge";
 import { Container } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";
+import { mapUi } from "@/ui/mapUi";
 
 export class ExploredTilesDrawer {
   private hexDrawer: HexDrawer;
@@ -15,6 +16,8 @@ export class ExploredTilesDrawer {
     bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
 
     bridge.game.start$.subscribe(() => this.bindToTrackedPlayer());
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   clear() {

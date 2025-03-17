@@ -6,6 +6,7 @@ import { useUiState } from "../uiState";
 import { useMenu } from "./gameMenuStore";
 import { SavesList } from "./SavesList";
 import { MenuScreen } from "./MenuScreen";
+import { mapUi } from "../mapUi";
 
 export function LoadMenu() {
   const [waiting, setWaiting] = useState(false);
@@ -15,6 +16,9 @@ export function LoadMenu() {
   const uiState = useUiState();
 
   async function load(saveName: string) {
+    uiState.setMode("loading");
+    mapUi.destroy();
+
     const data = loadGameData(saveName);
     if (!data) {
       return;

@@ -51,16 +51,16 @@ export class MinimapRenderer {
 
   private mapSprite = new Sprite();
 
-  private mapTexture!: RenderTexture;
+  private mapTexture: RenderTexture | null = null;
 
   private tilesMap = new Map<number, Graphics>();
 
-  public app!: Application;
+  public app: Application | null = null;
 
   constructor() {
-    bridge.game.start$.pipe(skip(1)).subscribe(() => {
+    bridge.game.start$.pipe(skip(1)).subscribe(async () => {
       this.clear();
-      this.build();
+      await this.build();
     });
 
     bridge.tiles.explored$.subscribe((explored) => {
@@ -68,7 +68,7 @@ export class MinimapRenderer {
       if (mapUi.fogOfWarEnabled) {
         this.updateTransform(explored.viewBoundingBox);
       }
-      this.updateMap();
+      this.render();
     });
 
     bridge.player.tracked$.subscribe(async () => {
@@ -77,13 +77,13 @@ export class MinimapRenderer {
         const explored = await bridge.tiles.getAllExplored();
         this.reveal(explored.tiles);
         this.updateTransform(explored.viewBoundingBox);
-        this.updateMap();
+        this.render();
       }
     });
 
     bridge.tiles.updated$.subscribe((tiles) => {
       this.drawTiles(tiles);
-      this.updateMap();
+      this.render();
     });
 
     mapUi.fogOfWarEnabled$.pipe(skip(1)).subscribe(async (enabled) => {
@@ -101,7 +101,7 @@ export class MinimapRenderer {
           maxY: this.mapSize.height - 1,
         });
       }
-      this.updateMap();
+      this.render();
     });
 
     this.container.addChild(this.mapSprite);
@@ -157,7 +157,7 @@ export class MinimapRenderer {
     this.reveal(explored.tiles);
     this.updateTransform(explored.viewBoundingBox);
 
-    this.updateMap();
+    this.render();
   }
 
   clear() {
@@ -172,7 +172,7 @@ export class MinimapRenderer {
       return;
     }
     this.clear();
-    this.mapTexture.destroy();
+    this.mapTexture?.destroy();
     this.mapSprite.destroy();
   }
 
@@ -254,7 +254,10 @@ export class MinimapRenderer {
     }
   }
 
-  private updateMap() {
+  private render() {
+    if (!this.app || !this.mapTexture) {
+      return;
+    }
     this.app.renderer.render({
       container: this.mapScene,
       target: this.mapTexture,

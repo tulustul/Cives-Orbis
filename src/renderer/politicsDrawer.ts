@@ -1,6 +1,7 @@
 import { bridge } from "@/bridge";
 import { Container } from "pixi.js";
 import { Area } from "./area";
+import { mapUi } from "@/ui/mapUi";
 
 export class PoliticsDrawer {
   areas = new Map<number, Area>();
@@ -21,6 +22,8 @@ export class PoliticsDrawer {
     });
 
     bridge.game.start$.subscribe(() => this.build());
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   async build() {

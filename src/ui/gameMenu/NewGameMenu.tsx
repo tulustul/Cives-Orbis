@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useUiState } from "../uiState";
 import { useMenu } from "./gameMenuStore";
 import { MenuScreen } from "./MenuScreen";
+import { mapUi } from "../mapUi";
 
 type MapSize = {
   width: number;
@@ -43,6 +44,9 @@ export function NewGameMenu() {
   }, [mapSize]);
 
   async function start() {
+    uiState.setMode("loading");
+    mapUi.destroy();
+
     const humanPlayersCount = aiOnly ? 0 : 1;
     await bridge.game.new({
       aiPlayersCount: playersCount - humanPlayersCount,

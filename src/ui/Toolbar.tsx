@@ -1,13 +1,9 @@
 import { bridge } from "@/bridge";
-import { useMenu } from "./gameMenu";
-import { useUiState } from "./uiState";
 import { useObservable } from "@/utils";
-import { Button, CommandButton } from "./components";
 import { Commands } from "./commands";
+import { CommandButton } from "./components";
 
 export function Toolbar() {
-  const menu = useMenu();
-  const uiState = useUiState();
   const turn = useObservable(bridge.game.turn$);
 
   return (
@@ -16,8 +12,8 @@ export function Toolbar() {
       <CommandButton command={Commands.showStats} tooltip="Statistics">
         Stats
       </CommandButton>
-      <Button onClick={() => uiState.setMode("editor")}>Editor</Button>
-      <Button onClick={menu.show}>Menu</Button>
+      <CommandButton command={Commands.toggleEditor}>Editor</CommandButton>
+      <CommandButton command={Commands.handleEsc}>Menu</CommandButton>
     </div>
   );
 }

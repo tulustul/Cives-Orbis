@@ -3,6 +3,7 @@ import { useUiState } from "@/ui/uiState";
 import { useObservable } from "@/utils";
 import { PropsWithChildren } from "react";
 import { useMenu } from "./gameMenuStore";
+import { mapUi } from "../mapUi";
 
 export function MainMenu() {
   const uiState = useUiState();
@@ -11,6 +12,8 @@ export function MainMenu() {
   const startInfo = useObservable(bridge.game.start$);
 
   async function start(aiOnly: boolean) {
+    mapUi.destroy();
+
     await bridge.game.new({
       aiPlayersCount: 5,
       width: 30,

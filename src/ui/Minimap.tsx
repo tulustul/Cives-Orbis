@@ -35,6 +35,9 @@ function Minimap_() {
   }
 
   function moveViewport(event: MouseEvent<HTMLCanvasElement>) {
+    if (!minimap.app) {
+      return;
+    }
     if (event.buttons === 1) {
       const canvasRect = minimap.app.canvas.getBoundingClientRect();
       camera.moveTo(
@@ -55,7 +58,7 @@ function Minimap_() {
       }}
       onMouseMove={moveViewport}
       onMouseDown={moveViewport}
-    ></canvas>
+    />
   );
 }
 

@@ -17,12 +17,18 @@ export class SelectedUnitDrawer {
     this.container.addChild(this.g);
 
     mapUi.selectedUnit$.subscribe((unit) => {
-      this.g.clear();
+      this.clear();
 
       if (unit) {
         this.drawSpinner(unit);
       }
     });
+
+    mapUi.destroyed$.subscribe(() => this.clear());
+  }
+
+  clear() {
+    this.g.clear();
   }
 
   private drawSpinner(unit: UnitDetailsChanneled) {

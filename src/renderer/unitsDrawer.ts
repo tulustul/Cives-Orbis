@@ -69,6 +69,8 @@ export class UnitsDrawer {
         drawer.select();
       }
     });
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   private updateUnit(unit: UnitChanneled) {

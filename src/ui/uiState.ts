@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type UiMode = "none" | "map" | "editor";
+export type UiMode = "none" | "loading" | "map" | "editor";
 export type UiView = "none" | "stats";
 
 export type UiState = {

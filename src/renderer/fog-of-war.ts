@@ -1,6 +1,7 @@
 import { bridge } from "@/bridge";
 import { Container } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";
+import { mapUi } from "@/ui/mapUi";
 
 export class FogOfWarDrawer {
   private hexDrawer: HexDrawer;
@@ -11,12 +12,14 @@ export class FogOfWarDrawer {
     bridge.tiles.showed$.subscribe(() => this.bindToTrackedPlayer());
 
     bridge.tiles.showedAdded$.subscribe((tiles) =>
-      this.hexDrawer.addTiles(tiles),
+      this.hexDrawer.addTiles(tiles)
     );
 
     bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
 
     bridge.game.start$.subscribe(() => this.bindToTrackedPlayer());
+
+    mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   clear() {
@@ -25,6 +28,9 @@ export class FogOfWarDrawer {
 
   private async bindToTrackedPlayer() {
     const visibleTiles = await bridge.tiles.getAllVisible();
+
+    console.log(visibleTiles.length);
+    this.hexDrawer.clear();
     this.hexDrawer.setTiles(visibleTiles);
   }
 }

@@ -31,6 +31,8 @@ export class PathRenderer {
       this.clear();
     });
 
+    mapUi.destroyed$.subscribe(() => this.clear());
+
     camera.transform$.subscribe((t) => {
       this.labelsContainer.visible = t.scale > 30;
       if (Math.abs(1 - t.scale / this.lastScale) > 0.5) {

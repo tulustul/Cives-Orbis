@@ -115,7 +115,9 @@ export class Controls {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    event.preventDefault();
+    // if (!event.key.startsWith("F")) {
+    //   event.preventDefault();
+    // }
     if (event.key !== this.lastKey) {
       this.lastKey = event.key;
       processKeybindings(event);
