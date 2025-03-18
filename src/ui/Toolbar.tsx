@@ -12,8 +12,8 @@ export function Toolbar() {
       <CommandButton command={Commands.showStats} tooltip="Statistics">
         Stats
       </CommandButton>
-      <CommandButton command={Commands.showTechTree} tooltip="Techs">
-        Technologies
+      <CommandButton command={Commands.showTechTree} tooltip="Technologies">
+        Techs
       </CommandButton>
       <CommandButton command={Commands.toggleEditor}>Editor</CommandButton>
       <CommandButton command={Commands.handleEsc}>Menu</CommandButton>

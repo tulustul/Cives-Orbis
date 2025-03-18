@@ -7,18 +7,18 @@ import { TilesMapCore } from "@/core/tiles-map";
 import { UnitCore, UnitOrder } from "@/core/unit";
 import { Yields } from "@/core/yields";
 import { BaseTile, PlayerYields } from "@/shared";
+import { Bonuses } from "../bonus";
 import { UnitMoveCore } from "../collector";
+import { CombatSimulation } from "../combat";
 import {
   ProductDefinition,
   ProductType,
+  TechEra,
   Technology,
   UnitDefinition,
   UnitTrait,
 } from "../data.interface";
-import { CombatSimulation } from "../combat";
-import { Bonuses } from "../bonus";
 import { UnitAction } from "../unit-actions";
-import { TECHNOLOGIES } from "../data-manager";
 
 export interface GameChanneled {
   turn: number;
@@ -560,6 +560,7 @@ export type TechnologyChanneled = {
   cost: number;
   requiredTechs: string[];
   products: TechnologyProductChanneled[];
+  era: TechEra;
 };
 
 export function techToChannel(tech: Technology): TechnologyChanneled {
@@ -569,5 +570,6 @@ export function techToChannel(tech: Technology): TechnologyChanneled {
     cost: tech.cost,
     requiredTechs: tech.requiredTechnologies.map((t) => t.id),
     products: tech.products.map((p) => ({ id: p.id, name: p.name })),
+    era: tech.era,
   };
 }

@@ -22,7 +22,7 @@ export function Modal({
     }
 
     return (
-      <div className="flex pb-2 mb-2 items-center border-b-1">
+      <div className="flex pb-2 mb-2 items-center">
         <h2 className="grow text-3xl">{title}</h2>
         {showCloseButton && <Button onClick={onClose}>Close</Button>}
       </div>
