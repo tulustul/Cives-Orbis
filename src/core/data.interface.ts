@@ -1,10 +1,18 @@
+import { Climate, LandForm, SeaLevel } from "../shared";
 import { Bonuses } from "./bonus";
 import { Requirement } from "./requirements";
 import { TileImprovement } from "./tile-improvements";
-import { SeaLevel, Climate, LandForm } from "../shared";
 import { UnitAction } from "./unit-actions";
 
+export type EntityType =
+  | "unit"
+  | "building"
+  | "idleProduct"
+  | "resource"
+  | "technology";
+
 export type Entity = {
+  entityType: EntityType;
   id: string;
   name: string;
 };
@@ -34,7 +42,7 @@ export type ProductType = "unit" | "building" | "idleProduct";
 export type BaseProductDefinition = Entity &
   HaveRequirements &
   HaveBonuses & {
-    productType: ProductType;
+    entityType: ProductType;
     productionCost: number;
   };
 
@@ -55,7 +63,7 @@ export enum UnitTrait {
 }
 
 type _UnitDef = {
-  productType: "unit";
+  entityType: "unit";
   actionPoints: number;
   strength: number;
   actions: UnitAction[];
@@ -71,17 +79,17 @@ export type RawUnitDefinition = RawProductDefinition &
 export type UnitDefinition = ProductDefinition & _UnitDef & RequireTech;
 
 export type RawBuilding = RawProductDefinition & {
-  productType: "building";
+  entityType: "building";
 };
 export type Building = ProductDefinition & {
-  productType: "building";
+  entityType: "building";
 };
 
 export type RawIdleProduct = RawProductDefinition & {
-  productType: "idleProduct";
+  entityType: "idleProduct";
 };
 export type IdleProduct = ProductDefinition & {
-  productType: "idleProduct";
+  entityType: "idleProduct";
 };
 
 export enum GovernmentSection {
@@ -133,16 +141,16 @@ export type PolicyOption = Entity & HaveBonuses & HaveRequirements;
 
 export type Law = Entity & HaveBonuses & HaveRequirements;
 
-export type TechEra = 
-  "Stone Age" | 
-  "Bronze Age" | 
-  "Iron Age" | 
-  "Gunpowder Age" | 
-  "Coal Age" | 
-  "Industrial Age" | 
-  "Electric Age" | 
-  "Information Age" | 
-  "AI Age";
+export type TechEra =
+  | "Stone Age"
+  | "Bronze Age"
+  | "Iron Age"
+  | "Gunpowder Age"
+  | "Coal Age"
+  | "Industrial Age"
+  | "Electric Age"
+  | "Information Age"
+  | "AI Age";
 
 export type RawTechnology = Entity & {
   requiredTechnologies: string[];
@@ -151,6 +159,7 @@ export type RawTechnology = Entity & {
 };
 
 export type Technology = Entity & {
+  entityType: "technology";
   requiredTechnologies: Technology[];
   cost: number;
   era: TechEra;

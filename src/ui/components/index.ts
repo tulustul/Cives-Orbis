@@ -16,3 +16,5 @@ export * from "./IconButton";
 export * from "./charts";
 export * from "./Bonuses";
 export * from "./Background";
+export * from "./ImageIcon";
+export * from "./Value";

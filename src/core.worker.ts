@@ -12,7 +12,15 @@ import {
   getUnitById,
   TECHNOLOGIES,
 } from "./core/data-manager";
-import { ResourceDefinition } from "./core/data.interface";
+import {
+  Building,
+  Entity,
+  HaveRequirements,
+  IdleProduct,
+  ResourceDefinition,
+  Technology,
+  UnitDefinition,
+} from "./core/data.interface";
 import { Game } from "./core/game";
 import { moveAlongPath } from "./core/movement";
 import { findPath } from "./core/pathfinding";
@@ -25,10 +33,13 @@ import { getFailedWeakRequirements } from "./core/requirements";
 import { ResourceCore } from "./core/resources";
 import {
   AreaChanneled,
+  buildingToChannel,
   CityDetailsChanneled,
   cityDetailsToChannel,
   cityToChannel,
   CombatSimulationChanneled,
+  EntityChanneled,
+  entityToChannel,
   GameStartInfo,
   gameToGameStartInfo,
   PlayerChanneled,
@@ -45,6 +56,7 @@ import {
   tileToTileCoords,
   trackedPlayerToChannel,
   UnitChanneled,
+  unitDefToChannel,
   unitDetailsToChannel,
   unitToChannel,
 } from "./core/serialization/channel";
@@ -106,6 +118,7 @@ const HANDLERS = {
   "area.getTiles": getAreaTiles,
 
   "entity.getFailedWeakRequirements": entityGetFailedWeakRequirements,
+  "entity.getDetails": entityGetDetails,
 
   "stats.get": statsGet,
 
@@ -572,7 +585,7 @@ export function getCityDetails(cityId: number): CityDetailsChanneled | null {
 export type CityProduceOptions = {
   cityId: number;
   productId: string;
-  productType: "building" | "unit" | "idleProduct";
+  entityType: "building" | "unit" | "idleProduct";
 };
 export function cityProduce(options: CityProduceOptions) {
   const city = game.citiesManager.citiesMap.get(options.cityId);
@@ -582,9 +595,9 @@ export function cityProduce(options: CityProduceOptions) {
   }
 
   city.produce;
-  if (options.productType === "building") {
+  if (options.entityType === "building") {
     city.produce(getBuildingById(options.productId)!);
-  } else if (options.productType === "unit") {
+  } else if (options.entityType === "unit") {
     city.produce(getUnitById(options.productId)!);
   } else {
     city.produce(getIdleProductById(options.productId)!);
@@ -704,7 +717,12 @@ export function entityGetFailedWeakRequirements(
   const cityId: number | null = data.cityId;
 
   const entity = getEntityById(entityId);
-  if (!entity) {
+
+  if (
+    entity.entityType !== "unit" &&
+    entity.entityType !== "building" &&
+    entity.entityType !== "idleProduct"
+  ) {
     return [];
   }
 
@@ -713,7 +731,15 @@ export function entityGetFailedWeakRequirements(
     city = game.citiesManager.citiesMap.get(cityId)!;
   }
 
-  return getFailedWeakRequirements(entity, game.trackedPlayer, city);
+  return getFailedWeakRequirements(
+    entity as Entity & HaveRequirements,
+    game.trackedPlayer,
+    city
+  );
+}
+
+export function entityGetDetails(entityId: string): EntityChanneled {
+  return entityToChannel(getEntityById(entityId));
 }
 
 export type StatsGetOptions = {

@@ -35,21 +35,23 @@ type RawUnitIconProps = {
   type: string;
   cssColor: string;
   definitionId: string;
+  scale?: number;
 };
 export function RawUnitIcon({
   type,
   cssColor,
   definitionId,
+  scale = 0.5,
 }: RawUnitIconProps) {
   return (
     <div className={styles.unit}>
       <AtlasIcon
         className={styles.icon}
         name={`unitBackground-${type}`}
-        scale={0.5}
+        scale={scale}
         tint={cssColor}
       />
-      <AtlasIcon className={styles.icon} name={definitionId} scale={0.5} />
+      <AtlasIcon className={styles.icon} name={definitionId} scale={scale} />
     </div>
   );
 }

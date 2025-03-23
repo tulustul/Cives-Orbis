@@ -14,7 +14,12 @@ import {
 } from "./data.interface";
 
 const technologies: Technology[] = TECH_DEFINITIONS.map((tech) => {
-  return { ...tech, requiredTechnologies: [], products: [] };
+  return {
+    ...tech,
+    requiredTechnologies: [],
+    products: [],
+    entityType: "technology",
+  };
 });
 const TECHS_MAP = new Map<string, Technology>();
 export const TECHNOLOGIES: Technology[] = [];
@@ -49,6 +54,7 @@ for (const rawDef of UNITS_DEFINITIONS) {
   UNITS_MAP.set(def.id, def);
   ENTITIES_MAP.set(def.id, def);
 }
+export const unitDefs = Array.from(UNITS_MAP.values());
 
 const BUILDINGS_MAP = new Map<string, Building>();
 for (const rawDef of BUILDINGS) {
@@ -59,6 +65,7 @@ for (const rawDef of BUILDINGS) {
   BUILDINGS_MAP.set(def.id, def);
   ENTITIES_MAP.set(def.id, def);
 }
+export const buildingDefs = Array.from(BUILDINGS_MAP.values());
 
 const IDLE_PRODUCTS_MAP = new Map<string, IdleProduct>();
 for (const rawDef of IDLE_PRODUCTS) {
@@ -69,6 +76,7 @@ for (const rawDef of IDLE_PRODUCTS) {
   IDLE_PRODUCTS_MAP.set(def.id, def);
   ENTITIES_MAP.set(def.id, def);
 }
+export const idleProductDefs = Array.from(IDLE_PRODUCTS_MAP.values());
 
 for (const product of [
   ...UNITS_MAP.values(),
@@ -83,7 +91,7 @@ for (const definition of RESOURCES_DEFINITIONS) {
   RESOURCES_MAP.set(definition.id, definition);
 }
 
-export function getEntityById(id: string): Entity & HaveRequirements {
+export function getEntityById(id: string): Entity {
   const entityDef = ENTITIES_MAP.get(id);
   if (!entityDef) {
     throw Error(`DataManager: No entity with id "${id}"`);

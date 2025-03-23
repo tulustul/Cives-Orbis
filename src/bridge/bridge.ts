@@ -24,6 +24,7 @@ import {
   AreaChanneled,
   CityChanneled,
   CityDetailsChanneled,
+  EntityChanneled,
   GameInfo,
   GameStartInfo,
   PlayerChanneled,
@@ -98,6 +99,8 @@ export const bridge = {
   entities: {
     getFailedWeakRequirements: (options: EntityGetFailedWeakRequirements) =>
       makeCommand<[string, any][]>("entity.getFailedWeakRequirements", options),
+    getDetails: (entityId: string) =>
+      makeCommand<EntityChanneled | null>("entity.getDetails", entityId),
   },
   units: {
     updated$: makeObservable<UnitChanneled>("unit.updated"),

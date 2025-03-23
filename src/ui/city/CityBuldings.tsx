@@ -1,5 +1,6 @@
 import { CityDetailsChanneled } from "@/core/serialization/channel";
-import { ProductTooltip } from "./ProductTooltip";
+import { EntityTooltip } from "../entity";
+import { ImageIcon } from "../components";
 
 type Props = {
   city: CityDetailsChanneled;
@@ -19,9 +20,16 @@ export function CityBuildings({ city }: Props) {
           key={building.id}
           className="border-t-2 border-primary-500 cursor-pointer hover:bg-primary-500 last:border-b-2"
         >
-          <ProductTooltip city={city} product={building.definition}>
-            <div className="py-2 px-4">{building.name}</div>
-          </ProductTooltip>
+          <EntityTooltip
+            entityId={building.id}
+            placementHorizontal="left"
+            placementVertical="center"
+          >
+            <div className="h-12 px-1 flex items-center justify-between">
+              <ImageIcon name={building.id} size="small" />
+              <div className="py-2 px-4">{building.name}</div>
+            </div>
+          </EntityTooltip>
         </div>
       ))}
     </>

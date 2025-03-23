@@ -8,13 +8,32 @@ import {
 import { createPortal } from "react-dom";
 import clsx from "clsx";
 
-type Props = PropsWithChildren & {
-  content: ReactNode;
-  className?: string;
+export type TooltipPlacement = {
+  placementHorizontal?: "left" | "right" | "center";
+  placementVertical?: "top" | "bottom" | "center";
 };
-export function Tooltip({ children, content, className }: Props) {
+
+type Props = PropsWithChildren &
+  TooltipPlacement & {
+    content: ReactNode;
+    className?: string;
+    contentClassName?: string;
+    margin?: number;
+    noPadding?: boolean;
+  };
+export function Tooltip({
+  children,
+  content,
+  className,
+  contentClassName,
+  placementHorizontal = "center",
+  placementVertical = "bottom",
+  margin = 10,
+  noPadding,
+}: Props) {
   const [visible, setVisible] = useState(false);
   const elRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   function show() {
     setVisible(true);
@@ -25,27 +44,42 @@ export function Tooltip({ children, content, className }: Props) {
   }
 
   function computePosition(): CSSProperties | undefined {
-    if (!visible || !elRef.current) {
+    if (!visible || !elRef.current || !contentRef.current) {
       return;
     }
-    const box = elRef.current.getBoundingClientRect()!;
-    let left = box.left + box.width / 2;
-    if (left - box.width / 2 < 0) {
-      left += left - box.width / 2 + 20;
+
+    const elBox = elRef.current.getBoundingClientRect()!;
+    const contentBox = contentRef.current.getBoundingClientRect()!;
+    let top: number;
+    let left: number;
+
+    if (placementVertical === "bottom") {
+      top = elBox.bottom + margin;
+    } else if (placementVertical === "top") {
+      top = elBox.top - margin - contentBox.height;
+    } else {
+      top = elBox.top + elBox.height / 2 - contentBox.height / 2;
     }
 
-    let topTransform = "-100%";
-    let top = box.top;
-    if (box.top < 100) {
-      topTransform = "10px";
-      top = box.bottom;
+    if (placementHorizontal === "left") {
+      left = elBox.left - contentBox.width - margin;
+    } else if (placementHorizontal === "right") {
+      left = elBox.right + margin;
+    } else {
+      left = elBox.left + elBox.width / 2 - contentBox.width / 2;
     }
 
-    return {
-      left: `${left}px`,
-      top: `${top}px`,
-      transform: `translate(-50%, ${topTransform})`,
-    };
+    top = Math.max(
+      margin,
+      Math.min(top, window.innerHeight - contentBox.height - margin)
+    );
+    left = Math.max(
+      margin,
+      Math.min(left, window.innerWidth - contentBox.width - margin)
+    );
+
+    contentRef.current.style.left = `${left}px`;
+    contentRef.current.style.top = `${top}px`;
   }
 
   return (
@@ -61,8 +95,15 @@ export function Tooltip({ children, content, className }: Props) {
       {visible &&
         createPortal(
           <div
-            className="absolute px-4 py-1 max-w-72 rounded-md text-white bg-[#222] border-1 border-[#111] z-50 "
-            style={computePosition()}
+            ref={(el) => {
+              contentRef.current = el;
+              setTimeout(() => computePosition(), 10);
+            }}
+            className={clsx(
+              "absolute max-w-72 rounded-md text-white bg-[#222] border-1 border-[#111] z-50 shadow-md",
+              !noPadding ? "px-4 py-1" : "",
+              contentClassName
+            )}
           >
             {content}
           </div>,

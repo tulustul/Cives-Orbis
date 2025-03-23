@@ -11,12 +11,17 @@ import { Bonuses } from "../bonus";
 import { UnitMoveCore } from "../collector";
 import { CombatSimulation } from "../combat";
 import {
+  Building,
+  Entity,
+  EntityType,
+  IdleProduct,
   ProductDefinition,
   ProductType,
   TechEra,
   Technology,
   UnitDefinition,
   UnitTrait,
+  UnitType,
 } from "../data.interface";
 import { UnitAction } from "../unit-actions";
 
@@ -98,12 +103,6 @@ export interface CityChanneled {
   productName: string | null;
 }
 
-export type CityBuildingChanneled = {
-  id: string;
-  name: string;
-  definition: ProductDefinitionChanneled;
-};
-
 export interface CityDetailsChanneled {
   id: number;
   visibilityLevel: CityVisibility;
@@ -127,7 +126,7 @@ export interface CityDetailsChanneled {
   yields: Yields;
   perTurn: Yields;
 
-  buildings: CityBuildingChanneled[];
+  buildings: BuildingChanneled[];
 
   tiles: TileCoords[];
   workedTiles: TilesCoordsWithNeighbours[];
@@ -141,12 +140,12 @@ export interface CityDetailsChanneled {
 export type CityProductChanneled = {
   enabled: boolean;
   turnsToProduce: number;
-  definition: ProductDefinitionChanneled;
+  definition: ProductChanneled;
 };
 
 export type ProductDefinitionChanneled = {
   id: string;
-  productType: ProductType;
+  entityType: ProductType;
   name: string;
   productionCost: number;
   bonuses: Bonuses;
@@ -368,17 +367,7 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
 
     totalProduction: city.totalProduction,
     turnsToProductionEnd: city.turnsToProductionEnd,
-    buildings: city.buildings.map((b) => ({
-      id: b.id,
-      name: b.name,
-      definition: {
-        id: b.id,
-        productType: b.productType,
-        name: b.name,
-        productionCost: b.productionCost,
-        bonuses: b.bonuses,
-      },
-    })),
+    buildings: city.buildings.map(buildingToChannel),
     cultureToExpand: city.getCultureToExpand(),
     foodConsumed: city.foodConsumed,
     perTurn: city.perTurn,
@@ -540,36 +529,118 @@ export function cityProductToChannel(
   return {
     enabled: disabledProducts ? !disabledProducts.has(product) : true,
     turnsToProduce: Math.ceil(product.productionCost / city.yields.production),
-    definition: {
-      id: product.id,
-      productType: product.productType,
-      name: product.name,
-      productionCost: product.productionCost,
-      bonuses: product.bonuses,
-    },
+    definition: productToChannel(product),
   };
 }
 
-export type TechnologyProductChanneled = {
+export type EntityMinimalChanneled = {
   id: string;
   name: string;
+  entityType: EntityType;
 };
-export type TechnologyChanneled = {
-  id: string;
-  name: string;
+
+export type TechnologyChanneled = EntityMinimalChanneled & {
+  entityType: "technology";
   cost: number;
   requiredTechs: string[];
-  products: TechnologyProductChanneled[];
+  products: EntityMinimalChanneled[];
   era: TechEra;
 };
 
-export function techToChannel(tech: Technology): TechnologyChanneled {
+export function entityToMinimalChannel(entity: Entity): EntityMinimalChanneled {
   return {
-    id: tech.id,
-    name: tech.name,
-    cost: tech.cost,
-    requiredTechs: tech.requiredTechnologies.map((t) => t.id),
-    products: tech.products.map((p) => ({ id: p.id, name: p.name })),
-    era: tech.era,
+    id: entity.id,
+    name: entity.name,
+    entityType: entity.entityType,
   };
 }
+
+export function techToChannel(entity: Technology): TechnologyChanneled {
+  return {
+    id: entity.id,
+    entityType: entity.entityType,
+    name: entity.name,
+    cost: entity.cost,
+    requiredTechs: entity.requiredTechnologies.map((t) => t.id),
+    products: entity.products.map(entityToMinimalChannel),
+    era: entity.era,
+  };
+}
+
+export type UnitDefChanneled = EntityMinimalChanneled & {
+  entityType: "unit";
+  cost: number;
+  technology: EntityMinimalChanneled | null;
+  actionPoints: number;
+  strength: number;
+  type: UnitType;
+  trait: UnitTrait;
+  capacity: number;
+};
+
+export function unitDefToChannel(entity: UnitDefinition): UnitDefChanneled {
+  return {
+    id: entity.id,
+    entityType: entity.entityType,
+    name: entity.name,
+    cost: entity.productionCost,
+    technology: entity.technology
+      ? entityToMinimalChannel(entity.technology)
+      : null,
+    type: entity.type,
+    trait: entity.trait,
+    actionPoints: entity.actionPoints,
+    strength: entity.strength,
+    capacity: entity.capacity,
+  };
+}
+
+export type BuildingChanneled = EntityMinimalChanneled & {
+  entityType: "building" | "idleProduct";
+  cost: number;
+  technology: EntityMinimalChanneled | null;
+  bonuses: Bonuses;
+};
+
+export function buildingToChannel(
+  entity: Building | IdleProduct
+): BuildingChanneled {
+  return {
+    id: entity.id,
+    entityType: entity.entityType,
+    name: entity.name,
+    cost: entity.productionCost,
+    technology: entity.technology
+      ? entityToMinimalChannel(entity.technology)
+      : null,
+    bonuses: entity.bonuses,
+  };
+}
+
+export function productToChannel(entity: Entity): ProductChanneled {
+  if (entity.entityType === "unit") {
+    return unitDefToChannel(entity as UnitDefinition);
+  }
+
+  if (entity.entityType === "building") {
+    return buildingToChannel(entity as Building);
+  }
+
+  if (entity.entityType === "idleProduct") {
+    return buildingToChannel(entity as IdleProduct);
+  }
+
+  throw new Error(`Unknown entity type ${entity.entityType}`);
+}
+
+export function entityToChannel(entity: Entity): EntityChanneled {
+  if (entity.entityType === "technology") {
+    return techToChannel(entity as Technology);
+  }
+
+  return productToChannel(entity);
+}
+
+export type ProductChanneled = BuildingChanneled | UnitDefChanneled;
+
+export type EntityChanneled = TechnologyChanneled | ProductChanneled;

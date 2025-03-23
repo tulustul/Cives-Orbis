@@ -1,13 +1,14 @@
 import { bridge } from "@/bridge";
 import {
   CityDetailsChanneled,
-  ProductDefinitionChanneled,
+  ProductChanneled,
 } from "@/core/serialization/channel";
 import { useEffect, useState } from "react";
+import { Value } from "@/ui/components";
 
 type Props = {
   city: CityDetailsChanneled;
-  product: ProductDefinitionChanneled;
+  product: ProductChanneled;
 };
 
 export function ProductRequirements({ city, product }: Props) {
@@ -39,17 +40,17 @@ export function ProductRequirements({ city, product }: Props) {
 function Requirement({ type, context }: { type: string; context: any }) {
   if (type === "building") {
     return (
-      <div>
+      <Value>
         <b>{context.buildingId}</b> is required
-      </div>
+      </Value>
     );
   }
 
   if (type === "size") {
     return (
-      <div>
+      <Value>
         City size should be at least <b>{context.size}</b>
-      </div>
+      </Value>
     );
   }
 

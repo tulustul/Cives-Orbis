@@ -2,6 +2,9 @@ import { TechnologyChanneled } from "@/core/serialization/channel";
 
 import styles from "./TechTree.module.css";
 
+import { ImageIcon } from "@/ui/components";
+import { EntityTooltip } from "@/ui/entity";
+
 type Props = {
   tech: TechnologyChanneled;
 };
@@ -61,28 +64,32 @@ export function Tech({ tech }: Props) {
 
   return (
     <div
-      className={`w-80 ${styles.techNode} ${
-        styles[`era-${tech.era?.replace(/\s+/g, "")}`]
-      }`}
+      className={
+        "flex items-center w-100 bg-black/50 rounded-l-[50px] rounded-r-xl border-2 border-black"
+      }
       data-tech-id={tech.id}
       data-era={tech.era}
       data-prereqs={tech.requiredTechs.join(",")}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={styles.techHeader}>
-        <div className={styles.techName}>{tech.name}</div>
-        <div className={styles.techTurns}>{tech.cost} science</div>
-      </div>
-      {tech.products.length > 0 && (
-        <div className={styles.techProducts}>
+      <ImageIcon name={tech.id} size="medium" />
+
+      <div className="flex flex-col justify-between px-4 py-1 w-full h-full">
+        <div className={styles.techHeader}>
+          <div className={styles.techName}>{tech.name}</div>
+          <div className={styles.techTurns}>{tech.cost} science</div>
+        </div>
+        <div className="flex">
           {tech.products.map((p) => (
-            <div key={p.id} className={styles.techProduct}>
-              {p.name}
-            </div>
+            <EntityTooltip key={p.id} entityId={p.id}>
+              <div className="px-1">
+                <ImageIcon name={p.id} size="small" />
+              </div>
+            </EntityTooltip>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

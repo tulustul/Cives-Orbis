@@ -4,7 +4,7 @@ import { CityHaveBuildingRequirement } from "@/core/requirements";
 export const BUILDINGS: RawBuilding[] = [
   {
     id: "building_granary",
-    productType: "building",
+    entityType: "building",
     name: "Granary",
     productionCost: 40,
     bonuses: { yieldValue: { food: 3 } },
@@ -14,7 +14,7 @@ export const BUILDINGS: RawBuilding[] = [
   },
   {
     id: "building_well",
-    productType: "building",
+    entityType: "building",
     name: "Well",
     productionCost: 20,
     bonuses: { yieldValue: { food: 1 } },
@@ -24,7 +24,7 @@ export const BUILDINGS: RawBuilding[] = [
   },
   {
     id: "building_big_granary",
-    productType: "building",
+    entityType: "building",
     name: "Grand granary",
     productionCost: 100,
     bonuses: { yieldFactor: { food: 0.2 } },
@@ -34,7 +34,7 @@ export const BUILDINGS: RawBuilding[] = [
   },
   {
     id: "building_workshop",
-    productType: "building",
+    entityType: "building",
     name: "Workshop",
     productionCost: 80,
     bonuses: { yieldValue: { production: 5 } },
@@ -44,7 +44,7 @@ export const BUILDINGS: RawBuilding[] = [
   },
   {
     id: "building_big_workshop",
-    productType: "building",
+    entityType: "building",
     name: "Grand workshop",
     productionCost: 200,
     bonuses: { yieldFactor: { production: 0.2 } },
@@ -54,7 +54,7 @@ export const BUILDINGS: RawBuilding[] = [
   },
   {
     id: "building_slave_market",
-    productType: "building",
+    entityType: "building",
     name: "Slave market",
     productionCost: 50,
     bonuses: { yieldValue: { publicWorks: 2 } },
@@ -64,17 +64,17 @@ export const BUILDINGS: RawBuilding[] = [
   },
   {
     id: "building_monument",
-    productType: "building",
+    entityType: "building",
     name: "Monument",
     productionCost: 30,
     bonuses: { yieldValue: { culture: 2 } },
     strongRequirements: [],
     weakRequirements: [],
-    technology: "tech_agriculture",
+    technology: "tech_society",
   },
   {
     id: "building_all_doing_building",
-    productType: "building",
+    entityType: "building",
     name: "All doing building",
     productionCost: 500,
     bonuses: {

@@ -3,7 +3,7 @@ import { RawIdleProduct } from "@/core/data.interface";
 export const IDLE_PRODUCTS: RawIdleProduct[] = [
   {
     id: "idle_product_growth",
-    productType: "idleProduct",
+    entityType: "idleProduct",
     name: "Growth",
     productionCost: Infinity,
     strongRequirements: [],
@@ -13,7 +13,7 @@ export const IDLE_PRODUCTS: RawIdleProduct[] = [
   },
   {
     id: "idle_product_culture",
-    productType: "idleProduct",
+    entityType: "idleProduct",
     name: "Culture",
     productionCost: Infinity,
     strongRequirements: [],
@@ -23,7 +23,7 @@ export const IDLE_PRODUCTS: RawIdleProduct[] = [
   },
   {
     id: "idle_product_public_works",
-    productType: "idleProduct",
+    entityType: "idleProduct",
     name: "Public works",
     productionCost: Infinity,
     strongRequirements: [],

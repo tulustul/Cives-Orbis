@@ -33,18 +33,6 @@ export function TechTree() {
       return null;
     }
 
-    // Group techs by era
-    const techsByEra = techs.reduce((acc, tech) => {
-      if (!tech.era) {
-        return acc;
-      }
-      if (!acc[tech.era]) {
-        acc[tech.era] = [];
-      }
-      acc[tech.era].push(tech);
-      return acc;
-    }, {} as Record<TechEra, TechnologyChanneled[]>);
-
     // Organize techs into columns within each era
     const columnsByEra: Record<string, TechnologyChanneled[][]> = {};
 

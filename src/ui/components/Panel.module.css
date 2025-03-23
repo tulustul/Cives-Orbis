@@ -9,6 +9,9 @@
   border-width: var(--border-width);
   z-index: 10;
 }
+.panel.rounded {
+  --border-radius: 48px;
+}
 .bottom-right {
   border-radius: var(--border-radius) 0 0 0;
   border-width: var(--border-width) 0 0 var(--border-width);

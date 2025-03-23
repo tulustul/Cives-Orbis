@@ -3,56 +3,64 @@ import { RawTechnology } from "@/core/data.interface";
 export const TECH_DEFINITIONS: RawTechnology[] = [
   // Stone Age
   {
-    id: "tech_agriculture",
-    name: "Agriculture",
+    id: "tech_society",
+    entityType: "technology",
+    name: "Society",
     requiredTechnologies: [],
+    cost: 0,
+    era: "Stone Age",
+  },
+  {
+    id: "tech_agriculture",
+    entityType: "technology",
+    name: "Agriculture",
+    requiredTechnologies: ["tech_society"],
     cost: 20,
     era: "Stone Age",
   },
   {
     id: "tech_animalHusbandry",
+    entityType: "technology",
     name: "Animal Husbandry",
-    requiredTechnologies: ["tech_agriculture"],
+    requiredTechnologies: ["tech_society"],
     cost: 20,
     era: "Stone Age",
   },
   {
     id: "tech_pottery",
+    entityType: "technology",
     name: "Pottery",
     requiredTechnologies: ["tech_agriculture"],
     cost: 20,
     era: "Stone Age",
   },
   {
-    id: "tech_mining",
-    name: "Mining",
-    requiredTechnologies: ["tech_agriculture"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_fishing",
-    name: "Fishing",
-    requiredTechnologies: ["tech_agriculture"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_weaving",
-    name: "Weaving",
+    id: "tech_wheel",
+    entityType: "technology",
+    name: "Wheel",
     requiredTechnologies: ["tech_animalHusbandry"],
     cost: 25,
     era: "Stone Age",
   },
   {
-    id: "tech_writing",
-    name: "Writing",
-    requiredTechnologies: ["tech_pottery"],
-    cost: 40,
+    id: "tech_mining",
+    entityType: "technology",
+    name: "Mining",
+    requiredTechnologies: ["tech_society"],
+    cost: 20,
+    era: "Stone Age",
+  },
+  {
+    id: "tech_fishing",
+    entityType: "technology",
+    name: "Fishing",
+    requiredTechnologies: ["tech_society"],
+    cost: 20,
     era: "Stone Age",
   },
   {
     id: "tech_masonry",
+    entityType: "technology",
     name: "Masonry",
     requiredTechnologies: ["tech_mining"],
     cost: 35,
@@ -60,27 +68,23 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_sailing",
+    entityType: "technology",
     name: "Sailing",
     requiredTechnologies: ["tech_fishing"],
     cost: 25,
     era: "Stone Age",
   },
   {
-    id: "tech_wheel",
-    name: "Wheel",
-    requiredTechnologies: ["tech_agriculture"],
-    cost: 25,
-    era: "Stone Age",
-  },
-  {
     id: "tech_hunting",
+    entityType: "technology",
     name: "Hunting",
-    requiredTechnologies: ["tech_agriculture"],
+    requiredTechnologies: ["tech_society"],
     cost: 20,
     era: "Stone Age",
   },
   {
     id: "tech_archery",
+    entityType: "technology",
     name: "Archery",
     requiredTechnologies: ["tech_hunting"],
     cost: 30,
@@ -89,14 +93,32 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
 
   // Bronze Age
   {
+    id: "tech_writing",
+    entityType: "technology",
+    name: "Writing",
+    requiredTechnologies: ["tech_pottery"],
+    cost: 40,
+    era: "Bronze Age",
+  },
+  {
+    id: "tech_chariotry",
+    entityType: "technology",
+    name: "Chariotry",
+    requiredTechnologies: ["tech_wheel"],
+    cost: 50,
+    era: "Bronze Age",
+  },
+  {
     id: "tech_bronzeWorking",
+    entityType: "technology",
     name: "Bronze Working",
-    requiredTechnologies: ["tech_mining"],
+    requiredTechnologies: ["tech_masonry"],
     cost: 30,
     era: "Bronze Age",
   },
   {
     id: "tech_calendar",
+    entityType: "technology",
     name: "Calendar",
     requiredTechnologies: ["tech_writing"],
     cost: 40,
@@ -104,6 +126,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_mathematics",
+    entityType: "technology",
     name: "Mathematics",
     requiredTechnologies: ["tech_writing"],
     cost: 45,
@@ -111,6 +134,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_astrology",
+    entityType: "technology",
     name: "Astrology",
     requiredTechnologies: ["tech_calendar"],
     cost: 45,
@@ -118,6 +142,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_irrigation",
+    entityType: "technology",
     name: "Irrigation",
     requiredTechnologies: ["tech_wheel", "tech_calendar"],
     cost: 50,
@@ -125,6 +150,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_construction",
+    entityType: "technology",
     name: "Construction",
     requiredTechnologies: ["tech_masonry"],
     cost: 60,
@@ -132,13 +158,15 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_horsebackRiding",
+    entityType: "technology",
     name: "Horseback Riding",
-    requiredTechnologies: ["tech_animalHusbandry"],
+    requiredTechnologies: ["tech_chariotry"],
     cost: 50,
     era: "Bronze Age",
   },
   {
     id: "tech_currency",
+    entityType: "technology",
     name: "Currency",
     requiredTechnologies: ["tech_mathematics"],
     cost: 50,
@@ -146,6 +174,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_engineering",
+    entityType: "technology",
     name: "Engineering",
     requiredTechnologies: ["tech_masonry", "tech_mathematics"],
     cost: 60,
@@ -153,6 +182,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_optics",
+    entityType: "technology",
     name: "Optics",
     requiredTechnologies: ["tech_sailing"],
     cost: 50,
@@ -160,6 +190,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_shipbuilding",
+    entityType: "technology",
     name: "Shipbuilding",
     requiredTechnologies: ["tech_sailing", "tech_engineering"],
     cost: 65,
@@ -169,6 +200,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // Iron Age
   {
     id: "tech_ironWorking",
+    entityType: "technology",
     name: "Iron Working",
     requiredTechnologies: ["tech_bronzeWorking"],
     cost: 60,
@@ -176,6 +208,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_philosophy",
+    entityType: "technology",
     name: "Philosophy",
     requiredTechnologies: ["tech_writing"],
     cost: 70,
@@ -183,6 +216,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_poetry",
+    entityType: "technology",
     name: "Drama and Poetry",
     requiredTechnologies: ["tech_philosophy"],
     cost: 70,
@@ -190,6 +224,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_astronomy",
+    entityType: "technology",
     name: "Astronomy",
     requiredTechnologies: ["tech_astrology", "tech_mathematics"],
     cost: 90,
@@ -197,6 +232,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_compass",
+    entityType: "technology",
     name: "Compass",
     requiredTechnologies: ["tech_astronomy", "tech_shipbuilding"],
     cost: 95,
@@ -204,6 +240,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_metallurgy",
+    entityType: "technology",
     name: "Metallurgy",
     requiredTechnologies: ["tech_ironWorking"],
     cost: 80,
@@ -211,6 +248,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_machinery",
+    entityType: "technology",
     name: "Machinery",
     requiredTechnologies: ["tech_engineering", "tech_metallurgy"],
     cost: 85,
@@ -218,6 +256,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_theology",
+    entityType: "technology",
     name: "Theology",
     requiredTechnologies: ["tech_philosophy"],
     cost: 90,
@@ -225,6 +264,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_education",
+    entityType: "technology",
     name: "Education",
     requiredTechnologies: ["tech_theology"],
     cost: 100,
@@ -232,6 +272,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_feudalism",
+    entityType: "technology",
     name: "Feudalism",
     requiredTechnologies: ["tech_horsebackRiding", "tech_currency"],
     cost: 85,
@@ -239,6 +280,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_guilds",
+    entityType: "technology",
     name: "Guilds",
     requiredTechnologies: ["tech_currency", "tech_metallurgy"],
     cost: 90,
@@ -246,6 +288,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_chivalry",
+    entityType: "technology",
     name: "Chivalry",
     requiredTechnologies: ["tech_feudalism", "tech_horsebackRiding"],
     cost: 95,
@@ -253,6 +296,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_civilService",
+    entityType: "technology",
     name: "Civil Service",
     requiredTechnologies: ["tech_currency", "tech_writing"],
     cost: 95,
@@ -262,6 +306,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // Gunpowder Age
   {
     id: "tech_physics",
+    entityType: "technology",
     name: "Physics",
     requiredTechnologies: ["tech_mathematics", "tech_machinery"],
     cost: 100,
@@ -269,6 +314,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_chemistry",
+    entityType: "technology",
     name: "Chemistry",
     requiredTechnologies: ["tech_metallurgy", "tech_education"],
     cost: 105,
@@ -276,6 +322,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_banking",
+    entityType: "technology",
     name: "Banking",
     requiredTechnologies: ["tech_guilds", "tech_mathematics"],
     cost: 110,
@@ -283,6 +330,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_printing",
+    entityType: "technology",
     name: "Printing",
     requiredTechnologies: ["tech_machinery", "tech_education"],
     cost: 115,
@@ -290,6 +338,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_economics",
+    entityType: "technology",
     name: "Economics",
     requiredTechnologies: ["tech_banking", "tech_printing"],
     cost: 125,
@@ -297,6 +346,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_navigation",
+    entityType: "technology",
     name: "Navigation",
     requiredTechnologies: ["tech_compass", "tech_astronomy"],
     cost: 120,
@@ -304,6 +354,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_cartography",
+    entityType: "technology",
     name: "Cartography",
     requiredTechnologies: ["tech_navigation"],
     cost: 125,
@@ -311,6 +362,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_gunpowder",
+    entityType: "technology",
     name: "Gunpowder",
     requiredTechnologies: ["tech_chemistry", "tech_physics"],
     cost: 130,
@@ -318,6 +370,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_architecture",
+    entityType: "technology",
     name: "Architecture",
     requiredTechnologies: ["tech_construction", "tech_engineering"],
     cost: 110,
@@ -327,6 +380,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // Coal Age
   {
     id: "tech_steamPower",
+    entityType: "technology",
     name: "Steam Power",
     requiredTechnologies: ["tech_physics", "tech_metallurgy"],
     cost: 140,
@@ -334,6 +388,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_ballistics",
+    entityType: "technology",
     name: "Ballistics",
     requiredTechnologies: ["tech_gunpowder", "tech_physics"],
     cost: 145,
@@ -341,6 +396,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_rifling",
+    entityType: "technology",
     name: "Rifling",
     requiredTechnologies: ["tech_gunpowder"],
     cost: 150,
@@ -348,6 +404,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_biology",
+    entityType: "technology",
     name: "Biology",
     requiredTechnologies: ["tech_education", "tech_navigation"],
     cost: 155,
@@ -355,6 +412,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_nationalism",
+    entityType: "technology",
     name: "Nationalism",
     requiredTechnologies: ["tech_printing", "tech_civilService"],
     cost: 160,
@@ -362,6 +420,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_militaryScience",
+    entityType: "technology",
     name: "Military Science",
     requiredTechnologies: ["tech_rifling", "tech_nationalism"],
     cost: 170,
@@ -369,6 +428,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_railroad",
+    entityType: "technology",
     name: "Railroad",
     requiredTechnologies: ["tech_steamPower"],
     cost: 165,
@@ -376,6 +436,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_industrialization",
+    entityType: "technology",
     name: "Industrialization",
     requiredTechnologies: ["tech_steamPower", "tech_economics"],
     cost: 180,
@@ -383,6 +444,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_sanitation",
+    entityType: "technology",
     name: "Sanitation",
     requiredTechnologies: ["tech_biology"],
     cost: 175,
@@ -392,6 +454,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // Industrial Age
   {
     id: "tech_electricity",
+    entityType: "technology",
     name: "Electricity",
     requiredTechnologies: ["tech_physics", "tech_industrialization"],
     cost: 200,
@@ -399,6 +462,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_steel",
+    entityType: "technology",
     name: "Steel",
     requiredTechnologies: ["tech_industrialization", "tech_chemistry"],
     cost: 210,
@@ -406,6 +470,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_combustionEngine",
+    entityType: "technology",
     name: "Combustion Engine",
     requiredTechnologies: ["tech_steamPower", "tech_chemistry"],
     cost: 220,
@@ -413,6 +478,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_radio",
+    entityType: "technology",
     name: "Radio",
     requiredTechnologies: ["tech_electricity"],
     cost: 230,
@@ -420,6 +486,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_flight",
+    entityType: "technology",
     name: "Flight",
     requiredTechnologies: ["tech_combustionEngine", "tech_physics"],
     cost: 240,
@@ -427,6 +494,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_assembly",
+    entityType: "technology",
     name: "Assembly Line",
     requiredTechnologies: ["tech_industrialization", "tech_electricity"],
     cost: 235,
@@ -434,6 +502,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_massProduction",
+    entityType: "technology",
     name: "Mass Production",
     requiredTechnologies: ["tech_assembly"],
     cost: 250,
@@ -441,6 +510,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_refrigeration",
+    entityType: "technology",
     name: "Refrigeration",
     requiredTechnologies: ["tech_electricity", "tech_chemistry"],
     cost: 245,
@@ -448,6 +518,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_syntheticMaterials",
+    entityType: "technology",
     name: "Synthetic Materials",
     requiredTechnologies: ["tech_chemistry", "tech_industrialization"],
     cost: 255,
@@ -457,6 +528,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // Electric Age
   {
     id: "tech_electronics",
+    entityType: "technology",
     name: "Electronics",
     requiredTechnologies: ["tech_electricity", "tech_radio"],
     cost: 270,
@@ -464,6 +536,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_nuclearFission",
+    entityType: "technology",
     name: "Nuclear Fission",
     requiredTechnologies: ["tech_physics", "tech_chemistry"],
     cost: 290,
@@ -471,6 +544,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_rocketry",
+    entityType: "technology",
     name: "Rocketry",
     requiredTechnologies: ["tech_flight", "tech_ballistics"],
     cost: 285,
@@ -478,6 +552,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_radar",
+    entityType: "technology",
     name: "Radar",
     requiredTechnologies: ["tech_radio", "tech_flight"],
     cost: 280,
@@ -485,6 +560,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_computers",
+    entityType: "technology",
     name: "Computers",
     requiredTechnologies: ["tech_electronics", "tech_mathematics"],
     cost: 300,
@@ -492,6 +568,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_satellites",
+    entityType: "technology",
     name: "Satellites",
     requiredTechnologies: ["tech_rocketry", "tech_radar"],
     cost: 310,
@@ -499,6 +576,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_lasers",
+    entityType: "technology",
     name: "Lasers",
     requiredTechnologies: ["tech_electronics", "tech_optics"],
     cost: 320,
@@ -506,6 +584,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_robotics",
+    entityType: "technology",
     name: "Robotics",
     requiredTechnologies: ["tech_computers", "tech_electronics"],
     cost: 330,
@@ -513,6 +592,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_nuclearPower",
+    entityType: "technology",
     name: "Nuclear Power",
     requiredTechnologies: ["tech_nuclearFission"],
     cost: 340,
@@ -522,6 +602,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // Information Age
   {
     id: "tech_internet",
+    entityType: "technology",
     name: "Internet",
     requiredTechnologies: ["tech_computers", "tech_satellites"],
     cost: 360,
@@ -529,6 +610,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_mobileCommunication",
+    entityType: "technology",
     name: "Mobile Communication",
     requiredTechnologies: ["tech_electronics", "tech_satellites"],
     cost: 370,
@@ -536,6 +618,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_fiberOptics",
+    entityType: "technology",
     name: "Fiber Optics",
     requiredTechnologies: ["tech_lasers", "tech_electronics"],
     cost: 380,
@@ -543,6 +626,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_nanotechnology",
+    entityType: "technology",
     name: "Nanotechnology",
     requiredTechnologies: ["tech_computers", "tech_syntheticMaterials"],
     cost: 390,
@@ -550,6 +634,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_geneticEngineering",
+    entityType: "technology",
     name: "Genetic Engineering",
     requiredTechnologies: ["tech_biology", "tech_computers"],
     cost: 400,
@@ -557,6 +642,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_renewableEnergy",
+    entityType: "technology",
     name: "Renewable Energy",
     requiredTechnologies: ["tech_electronics", "tech_syntheticMaterials"],
     cost: 410,
@@ -564,6 +650,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_advancedMaterials",
+    entityType: "technology",
     name: "Advanced Materials",
     requiredTechnologies: ["tech_syntheticMaterials", "tech_nanotechnology"],
     cost: 420,
@@ -571,6 +658,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_quantumComputing",
+    entityType: "technology",
     name: "Quantum Computing",
     requiredTechnologies: ["tech_computers", "tech_nanotechnology"],
     cost: 430,
@@ -580,6 +668,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   // AI Age
   {
     id: "tech_artificialIntelligence",
+    entityType: "technology",
     name: "Artificial Intelligence",
     requiredTechnologies: ["tech_quantumComputing", "tech_internet"],
     cost: 450,
@@ -587,6 +676,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_virtualReality",
+    entityType: "technology",
     name: "Virtual Reality",
     requiredTechnologies: ["tech_computers", "tech_internet"],
     cost: 460,
@@ -594,6 +684,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_neuralInterfaces",
+    entityType: "technology",
     name: "Neural Interfaces",
     requiredTechnologies: [
       "tech_artificialIntelligence",
@@ -604,6 +695,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_fusionPower",
+    entityType: "technology",
     name: "Fusion Power",
     requiredTechnologies: ["tech_nuclearPower", "tech_advancedMaterials"],
     cost: 480,
@@ -611,6 +703,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_spaceColonization",
+    entityType: "technology",
     name: "Space Colonization",
     requiredTechnologies: ["tech_satellites", "tech_advancedMaterials"],
     cost: 490,
@@ -618,6 +711,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_quantumTeleportation",
+    entityType: "technology",
     name: "Quantum Teleportation",
     requiredTechnologies: ["tech_quantumComputing", "tech_nanotechnology"],
     cost: 500,
@@ -625,6 +719,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_superintelligence",
+    entityType: "technology",
     name: "Superintelligence",
     requiredTechnologies: [
       "tech_artificialIntelligence",
@@ -635,6 +730,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
   },
   {
     id: "tech_mindUploading",
+    entityType: "technology",
     name: "Mind Uploading",
     requiredTechnologies: ["tech_neuralInterfaces", "tech_superintelligence"],
     cost: 520,

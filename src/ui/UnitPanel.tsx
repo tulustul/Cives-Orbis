@@ -16,6 +16,7 @@ import {
   Button,
   IconButton,
   IconCommandButton,
+  ImageIcon,
   Panel,
   ProgressBar,
   Tooltip,
@@ -44,38 +45,39 @@ export function UnitPanel() {
     return null;
   }
 
-  let barColor = "food";
+  let barColor = "[--progress-bar-color:theme(colors.food)]";
   if (unit.health < 35) {
-    barColor = "danger";
+    barColor = "[--progress-bar-color:theme(colors.danger)]";
   } else if (unit.health < 70) {
-    barColor = "warning";
+    barColor = "[--progress-bar-color:theme(colors.warning)]";
   }
 
   return (
-    <Panel corner="bottom-left" className="p-2 w-80">
-      {unit.health < 100 && (
-        <Tooltip
-          className="pb-2"
-          content={<div>Health: {unit.health} / 100</div>}
-        >
-          <ProgressBar
-            className={`[--progress-bar-color:theme(colors.${barColor})] [--progress-bar-height:5px]`}
-            progress={unit.health}
-            total={100}
-            nextProgress={unit.health}
-          />
-        </Tooltip>
-      )}
+    <Panel corner="bottom-left" className="p-2 w-80" rounded>
       <div className="flex items-start justify-between gap-2">
         <div>
           <div className="text-2xl mb-1">{unit.definition.name}</div>
+          {unit.health < 100 && (
+            <Tooltip
+              className="w-46 pb-2"
+              content={<div>Health: {unit.health} / 100</div>}
+              placementVertical="top"
+            >
+              <ProgressBar
+                className={`${barColor} [--progress-bar-height:5px]`}
+                progress={unit.health}
+                total={100}
+                nextProgress={unit.health}
+              />
+            </Tooltip>
+          )}
           <UnitSummaryBar unit={unit} />
         </div>
 
-        <RawUnitIcon
-          definitionId={unit.definition.id}
-          type={unit.type}
-          cssColor={unit.cssColor}
+        <ImageIcon
+          className="absolute -z-1 -right-2 -top-2"
+          name={unit.definition.id}
+          size="large"
         />
       </div>
 
@@ -83,18 +85,20 @@ export function UnitPanel() {
       {/* {!unit.isSupplied && <div>Out of range of supply lines</div>} */}
 
       <div className="flex gap-2 mt-4">
-        <Tooltip content="Disband">
+        <Tooltip content="Disband" placementVertical="top">
           <IconButton icon={IconSkull} danger onClick={destroy} />
         </Tooltip>
 
         <IconCommandButton
           tooltip="Skip move"
+          placementVertical="top"
           icon={IconHourglassEmpty}
           command={Commands.unitSkip}
         />
 
         <IconCommandButton
           tooltip="Sleep"
+          placementVertical="top"
           icon={IconZzz}
           command={Commands.unitSleep}
         />

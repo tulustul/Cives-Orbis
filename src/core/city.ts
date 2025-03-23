@@ -25,6 +25,7 @@ import { checkRequirements } from "./requirements";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
 import { CitiesNetwork } from "./cities-network";
+import { buildingDefs, idleProductDefs, unitDefs } from "./data-manager";
 
 export type CityVisibility = "all" | "basic" | "hidden";
 
@@ -110,13 +111,13 @@ export class CityCore {
     this.totalProduction += this.yields.production;
 
     if (this.totalProduction >= this.product.productionCost) {
-      if (this.product.productType === "unit") {
+      if (this.product.entityType === "unit") {
         this.player.game.unitsManager.spawn(
           this.product.id,
           this.tile,
           this.player
         );
-      } else if (this.product.productType === "building") {
+      } else if (this.product.entityType === "building") {
         this.buildings.push(this.product as Building);
         this.buildingsIds.add(this.product.id);
       }
@@ -189,18 +190,18 @@ export class CityCore {
   }
 
   produce(product: ProductDefinition) {
-    if (product.productType === "unit") {
+    if (product.entityType === "unit") {
       this.produceUnit(product as UnitDefinition);
-    } else if (product.productType === "building") {
+    } else if (product.entityType === "building") {
       this.produceBuilding(product as Building);
-    } else if (product.productType === "idleProduct") {
+    } else if (product.entityType === "idleProduct") {
       this.workOnIdleProduct(product as IdleProduct);
     }
   }
 
   cancelProduction() {
     if (this.product) {
-      const type = this.product.productType;
+      const type = this.product.entityType;
       this.product = null;
       if (type === "idleProduct") {
         this.updateYields();
@@ -268,7 +269,7 @@ export class CityCore {
       this.applyBonuses(building.bonuses);
     }
 
-    if (this.product?.productType === "idleProduct") {
+    if (this.product?.entityType === "idleProduct") {
       const idleProduct = this.product as IdleProduct;
       this.applyBonuses(idleProduct.bonuses);
     }
@@ -463,17 +464,16 @@ export class CityCore {
   }
 
   updateProductsList() {
-    this.availableUnits =
-      this.getAvailableProducts<UnitDefinition>(UNITS_DEFINITIONS);
+    this.availableUnits = this.getAvailableProducts<UnitDefinition>(unitDefs);
 
-    const notBuildBuildings = BUILDINGS.filter(
+    const notBuildBuildings = buildingDefs.filter(
       (b) => this.product !== b && !this.buildings.includes(b)
     );
 
     this.availableBuildings =
       this.getAvailableProducts<Building>(notBuildBuildings);
 
-    this.availableIdleProducts = IDLE_PRODUCTS;
+    this.availableIdleProducts = idleProductDefs;
 
     this.disabledProducts = this.getDisabledProducts<ProductDefinition>([
       ...this.availableUnits,

@@ -2,14 +2,21 @@ import {
   CityDetailsChanneled,
   CityProductChanneled,
 } from "@/core/serialization/channel";
-import { ProgressBar, AtlasIcon, Tooltip, Button } from "@/ui/components";
+import {
+  AtlasIcon,
+  Button,
+  ImageIcon,
+  ProgressBar,
+  Tooltip,
+} from "@/ui/components";
 import clsx from "clsx";
 
 import { bridge } from "@/bridge";
-import { mapUi } from "../mapUi";
-import { ProductTooltip } from "./ProductTooltip";
 import { formatTurns } from "@/utils";
 import { PropsWithChildren } from "react";
+import { EntityTooltip } from "../entity";
+import { mapUi } from "../mapUi";
+import { RawUnitIcon, UnitIcon } from "../UnitIcon";
 
 type Props = {
   city: CityDetailsChanneled;
@@ -33,7 +40,7 @@ export function CityMainPanel({ city }: Props) {
       <div className="grow flex flex-col justify-end">
         <div className="text-xl text-center mb-2">Production</div>
         <CityProductsList city={city} />
-        <div className="mt-5">
+        <div>
           <CityProduct city={city} />
         </div>
       </div>
@@ -183,27 +190,33 @@ function CityExpansion({ city }: Props) {
 }
 
 function CityProduct({ city }: Props) {
+  if (!city.product) {
+    return null;
+  }
   return (
-    city.product && (
-      <ProductTooltip city={city} product={city.product.definition}>
-        <ProgressBar
-          className="[--progress-bar-color:theme(colors.production)]"
-          progress={city.totalProduction}
-          nextProgress={city.totalProduction + city.perTurn.production}
-          total={city.product.definition.productionCost}
-        >
-          <div className="w-full flex justify-between items-center">
-            <span className="flex items-center">
-              <AtlasIcon name={city.product.definition.id} scale={0.3} />
-              <span className="font-bold ml-2">
-                {city.product.definition.name}
-              </span>
+    <EntityTooltip
+      entityId={city.product.definition.id}
+      context={{ city }}
+      placementHorizontal="right"
+      placementVertical="center"
+    >
+      <ProgressBar
+        className="[--progress-bar-color:theme(colors.production)] [--progress-bar-height:60px]"
+        progress={city.totalProduction}
+        nextProgress={city.totalProduction + city.perTurn.production}
+        total={city.product.definition.cost}
+      >
+        <div className="w-full flex justify-between items-center">
+          <span className="flex items-center">
+            <ProductIcon product={city.product} />
+            <span className="font-bold ml-2 text-xl">
+              {city.product.definition.name}
             </span>
-            <span className="text-sm">{city.turnsToProductionEnd} turns</span>
-          </div>
-        </ProgressBar>
-      </ProductTooltip>
-    )
+          </span>
+          <span className="text-lg">{city.turnsToProductionEnd} turns</span>
+        </div>
+      </ProgressBar>
+    </EntityTooltip>
   );
 }
 
@@ -215,7 +228,7 @@ function CityProductsList({ city }: Props) {
     const updatedCity = await bridge.cities.produce({
       cityId: city.id,
       productId: product.definition.id,
-      productType: product.definition.productType,
+      entityType: product.definition.entityType,
     });
 
     if (updatedCity) {
@@ -224,33 +237,54 @@ function CityProductsList({ city }: Props) {
   }
 
   return (
-    <div>
-      {city.availableProducts.map((product) => (
-        <div
-          key={product.definition.id}
-          className={clsx(
-            "border-t-2 last:border-b-2 border-primary-500 cursor-pointer",
-            product.enabled
-              ? "hover:bg-primary-500"
-              : "bg-primary-600 text-gray-400"
-          )}
-        >
-          <ProductTooltip city={city} product={product.definition}>
-            <div
-              className="py-2 px-4 flex items-center justify-between"
-              onClick={() => produce(product)}
+    <div className="grow relative">
+      <div className="overflow-y-auto scroll-1 absolute w-full h-full ">
+        {city.availableProducts.map((product) => (
+          <div
+            key={product.definition.id}
+            className={clsx(
+              "border-t-2 last:border-b-2 border-primary-500 cursor-pointer",
+              product.enabled
+                ? "hover:bg-primary-500"
+                : "bg-gray-900 opacity-40"
+            )}
+          >
+            <EntityTooltip
+              entityId={product.definition.id}
+              context={{ city }}
+              placementHorizontal="right"
+              placementVertical="center"
             >
-              <span className="flex items-center">
-                <AtlasIcon name={product.definition.id} scale={0.3} />
-                <span className="ml-2">{product.definition.name}</span>
-              </span>
-              <span className="text-sm">
-                {formatTurns(product.turnsToProduce)} turns
-              </span>
-            </div>
-          </ProductTooltip>
-        </div>
-      ))}
+              <div
+                className="h-12 px-1 flex items-center justify-between"
+                onClick={() => produce(product)}
+              >
+                <span className="flex items-center">
+                  <ProductIcon product={product} />
+                  <span className="ml-2">{product.definition.name}</span>
+                </span>
+                <span className="text-sm">
+                  {formatTurns(product.turnsToProduce)} turns
+                </span>
+              </div>
+            </EntityTooltip>
+          </div>
+        ))}
+      </div>
     </div>
   );
+}
+
+function ProductIcon({ product }: { product: CityProductChanneled }) {
+  if (product.definition.entityType === "unit")
+    return (
+      <RawUnitIcon
+        type={product.definition.strength ? "military" : "civilian"}
+        definitionId={product.definition.id}
+        cssColor="#ff0000"
+        scale={0.4}
+      />
+    );
+
+  return <ImageIcon name={product.definition.id} size="small" />;
 }
