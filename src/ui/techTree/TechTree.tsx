@@ -7,7 +7,6 @@ import { Tech } from "./Tech";
 import { TechLinks } from "./TechLinks";
 import styles from "./TechTree.module.css";
 import { eras, erasColors } from "./const";
-import { organizeTechsIntoColumns } from "./organizeTechs";
 
 export function TechTree() {
   const [techs, setTechs] = useState<TechnologyChanneled[] | null>(null);
@@ -32,16 +31,6 @@ export function TechTree() {
       return null;
     }
 
-    // Organize techs into columns within each era
-    const columnsByEra: Record<string, TechnologyChanneled[][]> = {};
-
-    for (const era of eras) {
-      // Filter techs for just this era
-      const eraTechs = techs.filter((tech) => tech.era === era);
-      // Organize into columns using the existing function
-      columnsByEra[era] = organizeTechsIntoColumns(eraTechs);
-    }
-
     return (
       <div className="rounded-4xl overflow-hidden">
         <div
@@ -52,30 +41,22 @@ export function TechTree() {
           <div className="flex relative" ref={techTreeRef}>
             <TechLinks techs={techs} />
 
-            <div className="flex ">
-              {eras.map((era) => {
-                const eraColumns = columnsByEra[era];
+            {techs.map((tech) => (
+              <Tech key={tech.id} tech={tech} />
+            ))}
 
+            <div className="flex h-280">
+              {eras.map((era) => {
                 return (
                   <div
                     key={era}
-                    className="flex flex-col px-8"
+                    className="flex flex-col px-8 w-[1500px]"
                     style={{
                       background: `linear-gradient(${erasColors[era]}, transparent`,
                     }}
                   >
                     <div className="p-4 text-2xl text-center font-light tracking-widest">
                       {era}
-                    </div>
-
-                    <div className={styles.techColumns}>
-                      {eraColumns.map((column, i) => (
-                        <div key={i} className={styles.techColumn}>
-                          {column.map((tech) => (
-                            <Tech key={tech.id} tech={tech} />
-                          ))}
-                        </div>
-                      ))}
                     </div>
                   </div>
                 );

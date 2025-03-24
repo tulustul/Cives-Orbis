@@ -65,8 +65,13 @@ export function Tech({ tech }: Props) {
   return (
     <div
       className={
-        "flex items-center w-100 bg-black/50 rounded-l-[50px] rounded-r-xl border-2 border-black"
+        "absolute flex items-center w-100 bg-black/50 rounded-l-[50px] rounded-r-xl border-2 border-black"
       }
+      style={{
+        top: `${tech.layout.y}px`,
+        left: `${tech.layout.x}px`,
+        // transform: "translate(-50%, -50%)",
+      }}
       data-tech-id={tech.id}
       data-era={tech.era}
       data-prereqs={tech.requiredTechs.join(",")}

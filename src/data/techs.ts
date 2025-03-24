@@ -1,739 +1,613 @@
 import { RawTechnology } from "@/core/data.interface";
 
 export const TECH_DEFINITIONS: RawTechnology[] = [
-  // Stone Age
-  {
-    id: "tech_society",
-    entityType: "technology",
-    name: "Society",
-    requiredTechnologies: [],
-    cost: 0,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_agriculture",
-    entityType: "technology",
-    name: "Agriculture",
-    requiredTechnologies: ["tech_society"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_animalHusbandry",
-    entityType: "technology",
-    name: "Animal Husbandry",
-    requiredTechnologies: ["tech_society"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_pottery",
-    entityType: "technology",
-    name: "Pottery",
-    requiredTechnologies: ["tech_agriculture"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_wheel",
-    entityType: "technology",
-    name: "Wheel",
-    requiredTechnologies: ["tech_animalHusbandry"],
-    cost: 25,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_mining",
-    entityType: "technology",
-    name: "Mining",
-    requiredTechnologies: ["tech_society"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_fishing",
-    entityType: "technology",
-    name: "Fishing",
-    requiredTechnologies: ["tech_society"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_masonry",
-    entityType: "technology",
-    name: "Masonry",
-    requiredTechnologies: ["tech_mining"],
-    cost: 35,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_sailing",
-    entityType: "technology",
-    name: "Sailing",
-    requiredTechnologies: ["tech_fishing"],
-    cost: 25,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_hunting",
-    entityType: "technology",
-    name: "Hunting",
-    requiredTechnologies: ["tech_society"],
-    cost: 20,
-    era: "Stone Age",
-  },
-  {
-    id: "tech_archery",
-    entityType: "technology",
-    name: "Archery",
-    requiredTechnologies: ["tech_hunting"],
-    cost: 30,
-    era: "Stone Age",
-  },
-
-  // Bronze Age
-  {
-    id: "tech_writing",
-    entityType: "technology",
-    name: "Writing",
-    requiredTechnologies: ["tech_pottery"],
-    cost: 40,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_chariotry",
-    entityType: "technology",
-    name: "Chariotry",
-    requiredTechnologies: ["tech_wheel"],
-    cost: 50,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_bronzeWorking",
-    entityType: "technology",
-    name: "Bronze Working",
-    requiredTechnologies: ["tech_masonry"],
-    cost: 30,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_calendar",
-    entityType: "technology",
-    name: "Calendar",
-    requiredTechnologies: ["tech_writing"],
-    cost: 40,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_mathematics",
-    entityType: "technology",
-    name: "Mathematics",
-    requiredTechnologies: ["tech_writing"],
-    cost: 45,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_astrology",
-    entityType: "technology",
-    name: "Astrology",
-    requiredTechnologies: ["tech_calendar"],
-    cost: 45,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_irrigation",
-    entityType: "technology",
-    name: "Irrigation",
-    requiredTechnologies: ["tech_wheel", "tech_calendar"],
-    cost: 50,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_construction",
-    entityType: "technology",
-    name: "Construction",
-    requiredTechnologies: ["tech_masonry"],
-    cost: 60,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_horsebackRiding",
-    entityType: "technology",
-    name: "Horseback Riding",
-    requiredTechnologies: ["tech_chariotry"],
-    cost: 50,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_currency",
-    entityType: "technology",
-    name: "Currency",
-    requiredTechnologies: ["tech_mathematics"],
-    cost: 50,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_engineering",
-    entityType: "technology",
-    name: "Engineering",
-    requiredTechnologies: ["tech_masonry", "tech_mathematics"],
-    cost: 60,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_optics",
-    entityType: "technology",
-    name: "Optics",
-    requiredTechnologies: ["tech_sailing"],
-    cost: 50,
-    era: "Bronze Age",
-  },
-  {
-    id: "tech_shipbuilding",
-    entityType: "technology",
-    name: "Shipbuilding",
-    requiredTechnologies: ["tech_sailing", "tech_engineering"],
-    cost: 65,
-    era: "Bronze Age",
-  },
-
-  // Iron Age
-  {
-    id: "tech_ironWorking",
-    entityType: "technology",
-    name: "Iron Working",
-    requiredTechnologies: ["tech_bronzeWorking"],
-    cost: 60,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_philosophy",
-    entityType: "technology",
-    name: "Philosophy",
-    requiredTechnologies: ["tech_writing"],
-    cost: 70,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_poetry",
-    entityType: "technology",
-    name: "Drama and Poetry",
-    requiredTechnologies: ["tech_philosophy"],
-    cost: 70,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_astronomy",
-    entityType: "technology",
-    name: "Astronomy",
-    requiredTechnologies: ["tech_astrology", "tech_mathematics"],
-    cost: 90,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_compass",
-    entityType: "technology",
-    name: "Compass",
-    requiredTechnologies: ["tech_astronomy", "tech_shipbuilding"],
-    cost: 95,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_metallurgy",
-    entityType: "technology",
-    name: "Metallurgy",
-    requiredTechnologies: ["tech_ironWorking"],
-    cost: 80,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_machinery",
-    entityType: "technology",
-    name: "Machinery",
-    requiredTechnologies: ["tech_engineering", "tech_metallurgy"],
-    cost: 85,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_theology",
-    entityType: "technology",
-    name: "Theology",
-    requiredTechnologies: ["tech_philosophy"],
-    cost: 90,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_education",
-    entityType: "technology",
-    name: "Education",
-    requiredTechnologies: ["tech_theology"],
-    cost: 100,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_feudalism",
-    entityType: "technology",
-    name: "Feudalism",
-    requiredTechnologies: ["tech_horsebackRiding", "tech_currency"],
-    cost: 85,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_guilds",
-    entityType: "technology",
-    name: "Guilds",
-    requiredTechnologies: ["tech_currency", "tech_metallurgy"],
-    cost: 90,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_chivalry",
-    entityType: "technology",
-    name: "Chivalry",
-    requiredTechnologies: ["tech_feudalism", "tech_horsebackRiding"],
-    cost: 95,
-    era: "Iron Age",
-  },
-  {
-    id: "tech_civilService",
-    entityType: "technology",
-    name: "Civil Service",
-    requiredTechnologies: ["tech_currency", "tech_writing"],
-    cost: 95,
-    era: "Iron Age",
-  },
-
-  // Gunpowder Age
-  {
-    id: "tech_physics",
-    entityType: "technology",
-    name: "Physics",
-    requiredTechnologies: ["tech_mathematics", "tech_machinery"],
-    cost: 100,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_chemistry",
-    entityType: "technology",
-    name: "Chemistry",
-    requiredTechnologies: ["tech_metallurgy", "tech_education"],
-    cost: 105,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_banking",
-    entityType: "technology",
-    name: "Banking",
-    requiredTechnologies: ["tech_guilds", "tech_mathematics"],
-    cost: 110,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_printing",
-    entityType: "technology",
-    name: "Printing",
-    requiredTechnologies: ["tech_machinery", "tech_education"],
-    cost: 115,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_economics",
-    entityType: "technology",
-    name: "Economics",
-    requiredTechnologies: ["tech_banking", "tech_printing"],
-    cost: 125,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_navigation",
-    entityType: "technology",
-    name: "Navigation",
-    requiredTechnologies: ["tech_compass", "tech_astronomy"],
-    cost: 120,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_cartography",
-    entityType: "technology",
-    name: "Cartography",
-    requiredTechnologies: ["tech_navigation"],
-    cost: 125,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_gunpowder",
-    entityType: "technology",
-    name: "Gunpowder",
-    requiredTechnologies: ["tech_chemistry", "tech_physics"],
-    cost: 130,
-    era: "Gunpowder Age",
-  },
-  {
-    id: "tech_architecture",
-    entityType: "technology",
-    name: "Architecture",
-    requiredTechnologies: ["tech_construction", "tech_engineering"],
-    cost: 110,
-    era: "Gunpowder Age",
-  },
-
-  // Coal Age
-  {
-    id: "tech_steamPower",
-    entityType: "technology",
-    name: "Steam Power",
-    requiredTechnologies: ["tech_physics", "tech_metallurgy"],
-    cost: 140,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_ballistics",
-    entityType: "technology",
-    name: "Ballistics",
-    requiredTechnologies: ["tech_gunpowder", "tech_physics"],
-    cost: 145,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_rifling",
-    entityType: "technology",
-    name: "Rifling",
-    requiredTechnologies: ["tech_gunpowder"],
-    cost: 150,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_biology",
-    entityType: "technology",
-    name: "Biology",
-    requiredTechnologies: ["tech_education", "tech_navigation"],
-    cost: 155,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_nationalism",
-    entityType: "technology",
-    name: "Nationalism",
-    requiredTechnologies: ["tech_printing", "tech_civilService"],
-    cost: 160,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_militaryScience",
-    entityType: "technology",
-    name: "Military Science",
-    requiredTechnologies: ["tech_rifling", "tech_nationalism"],
-    cost: 170,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_railroad",
-    entityType: "technology",
-    name: "Railroad",
-    requiredTechnologies: ["tech_steamPower"],
-    cost: 165,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_industrialization",
-    entityType: "technology",
-    name: "Industrialization",
-    requiredTechnologies: ["tech_steamPower", "tech_economics"],
-    cost: 180,
-    era: "Coal Age",
-  },
-  {
-    id: "tech_sanitation",
-    entityType: "technology",
-    name: "Sanitation",
-    requiredTechnologies: ["tech_biology"],
-    cost: 175,
-    era: "Coal Age",
-  },
-
-  // Industrial Age
-  {
-    id: "tech_electricity",
-    entityType: "technology",
-    name: "Electricity",
-    requiredTechnologies: ["tech_physics", "tech_industrialization"],
-    cost: 200,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_steel",
-    entityType: "technology",
-    name: "Steel",
-    requiredTechnologies: ["tech_industrialization", "tech_chemistry"],
-    cost: 210,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_combustionEngine",
-    entityType: "technology",
-    name: "Combustion Engine",
-    requiredTechnologies: ["tech_steamPower", "tech_chemistry"],
-    cost: 220,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_radio",
-    entityType: "technology",
-    name: "Radio",
-    requiredTechnologies: ["tech_electricity"],
-    cost: 230,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_flight",
-    entityType: "technology",
-    name: "Flight",
-    requiredTechnologies: ["tech_combustionEngine", "tech_physics"],
-    cost: 240,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_assembly",
-    entityType: "technology",
-    name: "Assembly Line",
-    requiredTechnologies: ["tech_industrialization", "tech_electricity"],
-    cost: 235,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_massProduction",
-    entityType: "technology",
-    name: "Mass Production",
-    requiredTechnologies: ["tech_assembly"],
-    cost: 250,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_refrigeration",
-    entityType: "technology",
-    name: "Refrigeration",
-    requiredTechnologies: ["tech_electricity", "tech_chemistry"],
-    cost: 245,
-    era: "Industrial Age",
-  },
-  {
-    id: "tech_syntheticMaterials",
-    entityType: "technology",
-    name: "Synthetic Materials",
-    requiredTechnologies: ["tech_chemistry", "tech_industrialization"],
-    cost: 255,
-    era: "Industrial Age",
-  },
-
-  // Electric Age
-  {
-    id: "tech_electronics",
-    entityType: "technology",
-    name: "Electronics",
-    requiredTechnologies: ["tech_electricity", "tech_radio"],
-    cost: 270,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_nuclearFission",
-    entityType: "technology",
-    name: "Nuclear Fission",
-    requiredTechnologies: ["tech_physics", "tech_chemistry"],
-    cost: 290,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_rocketry",
-    entityType: "technology",
-    name: "Rocketry",
-    requiredTechnologies: ["tech_flight", "tech_ballistics"],
-    cost: 285,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_radar",
-    entityType: "technology",
-    name: "Radar",
-    requiredTechnologies: ["tech_radio", "tech_flight"],
-    cost: 280,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_computers",
-    entityType: "technology",
-    name: "Computers",
-    requiredTechnologies: ["tech_electronics", "tech_mathematics"],
-    cost: 300,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_satellites",
-    entityType: "technology",
-    name: "Satellites",
-    requiredTechnologies: ["tech_rocketry", "tech_radar"],
-    cost: 310,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_lasers",
-    entityType: "technology",
-    name: "Lasers",
-    requiredTechnologies: ["tech_electronics", "tech_optics"],
-    cost: 320,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_robotics",
-    entityType: "technology",
-    name: "Robotics",
-    requiredTechnologies: ["tech_computers", "tech_electronics"],
-    cost: 330,
-    era: "Electric Age",
-  },
-  {
-    id: "tech_nuclearPower",
-    entityType: "technology",
-    name: "Nuclear Power",
-    requiredTechnologies: ["tech_nuclearFission"],
-    cost: 340,
-    era: "Electric Age",
-  },
-
-  // Information Age
-  {
-    id: "tech_internet",
-    entityType: "technology",
-    name: "Internet",
-    requiredTechnologies: ["tech_computers", "tech_satellites"],
-    cost: 360,
-    era: "Information Age",
-  },
-  {
-    id: "tech_mobileCommunication",
-    entityType: "technology",
-    name: "Mobile Communication",
-    requiredTechnologies: ["tech_electronics", "tech_satellites"],
-    cost: 370,
-    era: "Information Age",
-  },
-  {
-    id: "tech_fiberOptics",
-    entityType: "technology",
-    name: "Fiber Optics",
-    requiredTechnologies: ["tech_lasers", "tech_electronics"],
-    cost: 380,
-    era: "Information Age",
-  },
-  {
-    id: "tech_nanotechnology",
-    entityType: "technology",
-    name: "Nanotechnology",
-    requiredTechnologies: ["tech_computers", "tech_syntheticMaterials"],
-    cost: 390,
-    era: "Information Age",
-  },
-  {
-    id: "tech_geneticEngineering",
-    entityType: "technology",
-    name: "Genetic Engineering",
-    requiredTechnologies: ["tech_biology", "tech_computers"],
-    cost: 400,
-    era: "Information Age",
-  },
-  {
-    id: "tech_renewableEnergy",
-    entityType: "technology",
-    name: "Renewable Energy",
-    requiredTechnologies: ["tech_electronics", "tech_syntheticMaterials"],
-    cost: 410,
-    era: "Information Age",
-  },
-  {
-    id: "tech_advancedMaterials",
-    entityType: "technology",
-    name: "Advanced Materials",
-    requiredTechnologies: ["tech_syntheticMaterials", "tech_nanotechnology"],
-    cost: 420,
-    era: "Information Age",
-  },
-  {
-    id: "tech_quantumComputing",
-    entityType: "technology",
-    name: "Quantum Computing",
-    requiredTechnologies: ["tech_computers", "tech_nanotechnology"],
-    cost: 430,
-    era: "Information Age",
-  },
-
-  // AI Age
-  {
-    id: "tech_artificialIntelligence",
-    entityType: "technology",
-    name: "Artificial Intelligence",
-    requiredTechnologies: ["tech_quantumComputing", "tech_internet"],
-    cost: 450,
-    era: "AI Age",
-  },
-  {
-    id: "tech_virtualReality",
-    entityType: "technology",
-    name: "Virtual Reality",
-    requiredTechnologies: ["tech_computers", "tech_internet"],
-    cost: 460,
-    era: "AI Age",
-  },
-  {
-    id: "tech_neuralInterfaces",
-    entityType: "technology",
-    name: "Neural Interfaces",
-    requiredTechnologies: [
-      "tech_artificialIntelligence",
-      "tech_geneticEngineering",
-    ],
-    cost: 470,
-    era: "AI Age",
-  },
-  {
-    id: "tech_fusionPower",
-    entityType: "technology",
-    name: "Fusion Power",
-    requiredTechnologies: ["tech_nuclearPower", "tech_advancedMaterials"],
-    cost: 480,
-    era: "AI Age",
-  },
-  {
-    id: "tech_spaceColonization",
-    entityType: "technology",
-    name: "Space Colonization",
-    requiredTechnologies: ["tech_satellites", "tech_advancedMaterials"],
-    cost: 490,
-    era: "AI Age",
-  },
-  {
-    id: "tech_quantumTeleportation",
-    entityType: "technology",
-    name: "Quantum Teleportation",
-    requiredTechnologies: ["tech_quantumComputing", "tech_nanotechnology"],
-    cost: 500,
-    era: "AI Age",
-  },
-  {
-    id: "tech_superintelligence",
-    entityType: "technology",
-    name: "Superintelligence",
-    requiredTechnologies: [
-      "tech_artificialIntelligence",
-      "tech_quantumComputing",
-    ],
-    cost: 510,
-    era: "AI Age",
-  },
-  {
-    id: "tech_mindUploading",
-    entityType: "technology",
-    name: "Mind Uploading",
-    requiredTechnologies: ["tech_neuralInterfaces", "tech_superintelligence"],
-    cost: 520,
-    era: "AI Age",
-  },
+  {
+    "id": "tech_society",
+    "entityType": "technology",
+    "name": "Society",
+    "requiredTechnologies": [],
+    "cost": 0,
+    "era": "Copper Age",
+    "layout": {
+      "x": 50.0,
+      "y": 537.5,
+      "linksMiddlePoint": {
+        "tech_agriculture": 100.0,
+        "tech_animalHusbandry": 100.0,
+        "tech_copperWorking": 100.0,
+        "tech_hunting": 100.0,
+        "tech_fishing": 100.0
+      }
+    }
+  },
+  {
+    "id": "tech_agriculture",
+    "entityType": "technology",
+    "name": "Agriculture",
+    "requiredTechnologies": ["tech_society"],
+    "cost": 20,
+    "era": "Copper Age",
+    "layout": {
+      "x": 550.0,
+      "y": 237.5,
+      "linksMiddlePoint": {
+        "tech_pottery": 300.0,
+        "tech_irrigation": 400.0
+      }
+    }
+  },
+  {
+    "id": "tech_animalHusbandry",
+    "entityType": "technology",
+    "name": "Animal Husbandry",
+    "requiredTechnologies": ["tech_society"],
+    "cost": 20,
+    "era": "Copper Age",
+    "layout": {
+      "x": 550.0,
+      "y": 437.5,
+      "linksMiddlePoint": {
+        "tech_wheel": 300.0
+      }
+    }
+  },
+  {
+    "id": "tech_pottery",
+    "entityType": "technology",
+    "name": "Pottery",
+    "requiredTechnologies": ["tech_agriculture"],
+    "cost": 20,
+    "era": "Copper Age",
+    "layout": {
+      "x": 1050.0,
+      "y": 287.5,
+      "linksMiddlePoint": {
+        "tech_writing": 500.0,
+        "tech_irrigation": 500.0
+      }
+    }
+  },
+  {
+    "id": "tech_wheel",
+    "entityType": "technology",
+    "name": "Wheel",
+    "requiredTechnologies": ["tech_animalHusbandry"],
+    "cost": 25,
+    "era": "Copper Age",
+    "layout": {
+      "x": 1050.0,
+      "y": 437.5,
+      "linksMiddlePoint": {
+        "tech_chariotry": 500.0
+      }
+    }
+  },
+  {
+    "id": "tech_fishing",
+    "entityType": "technology",
+    "name": "Fishing",
+    "requiredTechnologies": ["tech_society"],
+    "cost": 20,
+    "era": "Copper Age",
+    "layout": {
+      "x": 550.0,
+      "y": 837.5,
+      "linksMiddlePoint": {
+        "tech_sailing": 300.0
+      }
+    }
+  },
+  {
+    "id": "tech_masonry",
+    "entityType": "technology",
+    "name": "Masonry",
+    "requiredTechnologies": ["tech_copperWorking"],
+    "cost": 35,
+    "era": "Copper Age",
+    "layout": {
+      "x": 1050.0,
+      "y": 675.0,
+      "linksMiddlePoint": {
+        "tech_bronzeWorking": 500.0,
+        "tech_construction": 500.0
+      }
+    }
+  },
+  {
+    "id": "tech_sailing",
+    "entityType": "technology",
+    "name": "Sailing",
+    "requiredTechnologies": ["tech_fishing"],
+    "cost": 25,
+    "era": "Copper Age",
+    "layout": {
+      "x": 1050.0,
+      "y": 875.0,
+      "linksMiddlePoint": {
+        "tech_shipbuilding": 600.0
+      }
+    }
+  },
+  {
+    "id": "tech_hunting",
+    "entityType": "technology",
+    "name": "Hunting",
+    "requiredTechnologies": ["tech_society"],
+    "cost": 20,
+    "era": "Copper Age",
+    "layout": {
+      "x": 550.0,
+      "y": 537.5,
+      "linksMiddlePoint": {
+        "tech_archery": 300.0
+      }
+    }
+  },
+  {
+    "id": "tech_archery",
+    "entityType": "technology",
+    "name": "Archery",
+    "requiredTechnologies": ["tech_hunting"],
+    "cost": 30,
+    "era": "Copper Age",
+    "layout": {
+      "x": 1050.0,
+      "y": 537.5,
+      "linksMiddlePoint": {
+        "tech_chariotry": 500.0
+      }
+    }
+  },
+  {
+    "id": "tech_copperWorking",
+    "entityType": "technology",
+    "name": "Copper Working",
+    "requiredTechnologies": ["tech_society"],
+    "cost": 20,
+    "era": "Copper Age",
+    "layout": {
+      "x": 550.0,
+      "y": 637.5,
+      "linksMiddlePoint": {
+        "tech_masonry": 300.0
+      }
+    }
+  },
+  {
+    "id": "tech_writing",
+    "entityType": "technology",
+    "name": "Writing",
+    "requiredTechnologies": ["tech_pottery"],
+    "cost": 40,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 1550.0,
+      "y": 287.5,
+      "linksMiddlePoint": {
+        "tech_calendar": 700.0,
+        "tech_mathematics": 700.0,
+        "tech_literature": 700.0
+      }
+    }
+  },
+  {
+    "id": "tech_chariotry",
+    "entityType": "technology",
+    "name": "Chariotry",
+    "requiredTechnologies": ["tech_wheel", "tech_archery"],
+    "cost": 50,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 1550.0,
+      "y": 487.5,
+      "linksMiddlePoint": {
+        "tech_horsebackRiding": 800.0
+      }
+    }
+  },
+  {
+    "id": "tech_bronzeWorking",
+    "entityType": "technology",
+    "name": "Bronze Working",
+    "requiredTechnologies": ["tech_masonry"],
+    "cost": 30,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 1550.0,
+      "y": 625.0,
+      "linksMiddlePoint": {
+        "tech_metallurgy": 700.0
+      }
+    }
+  },
+  {
+    "id": "tech_calendar",
+    "entityType": "technology",
+    "name": "Calendar",
+    "requiredTechnologies": ["tech_writing", "tech_irrigation"],
+    "cost": 40,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2050.0,
+      "y": 187.5,
+      "linksMiddlePoint": {
+        "tech_astrology": 900.0
+      }
+    }
+  },
+  {
+    "id": "tech_mathematics",
+    "entityType": "technology",
+    "name": "Mathematics",
+    "requiredTechnologies": ["tech_writing"],
+    "cost": 45,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2050.0,
+      "y": 287.5,
+      "linksMiddlePoint": {
+        "tech_astrology": 900.0,
+        "tech_currency": 900.0
+      }
+    }
+  },
+  {
+    "id": "tech_astrology",
+    "entityType": "technology",
+    "name": "Astrology",
+    "requiredTechnologies": ["tech_calendar", "tech_mathematics"],
+    "cost": 45,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2550.0,
+      "y": 187.5,
+      "linksMiddlePoint": {
+        "tech_astronomy": 1100.0
+      }
+    }
+  },
+  {
+    "id": "tech_irrigation",
+    "entityType": "technology",
+    "name": "Irrigation",
+    "requiredTechnologies": ["tech_agriculture", "tech_pottery"],
+    "cost": 50,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 1550.0,
+      "y": 187.5,
+      "linksMiddlePoint": {
+        "tech_calendar": 700.0
+      }
+    }
+  },
+  {
+    "id": "tech_construction",
+    "entityType": "technology",
+    "name": "Constructions",
+    "requiredTechnologies": ["tech_masonry"],
+    "cost": 60,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 1550.0,
+      "y": 725.0,
+      "linksMiddlePoint": {
+        "tech_shipbuilding": 700.0
+      }
+    }
+  },
+  {
+    "id": "tech_horsebackRiding",
+    "entityType": "technology",
+    "name": "Horseback Riding",
+    "requiredTechnologies": ["tech_chariotry"],
+    "cost": 50,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2550.0,
+      "y": 650.0,
+      "linksMiddlePoint": {
+        "tech_stirrup": 1200.0
+      }
+    }
+  },
+  {
+    "id": "tech_currency",
+    "entityType": "technology",
+    "name": "Currency",
+    "requiredTechnologies": ["tech_mathematics"],
+    "cost": 50,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2550.0,
+      "y": 287.5,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_engineering",
+    "entityType": "technology",
+    "name": "Engineering",
+    "requiredTechnologies": ["tech_ironWorking"],
+    "cost": 60,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 3550.0,
+      "y": 625.0,
+      "linksMiddlePoint": {
+        "tech_mechanics": 1500.0,
+        "tech_cropRotation": 1500.0
+      }
+    }
+  },
+  {
+    "id": "tech_optics",
+    "entityType": "technology",
+    "name": "Optics",
+    "requiredTechnologies": ["tech_glassBlowing"],
+    "cost": 50,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 3550.0,
+      "y": 875.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_shipbuilding",
+    "entityType": "technology",
+    "name": "Ship Building",
+    "requiredTechnologies": ["tech_sailing", "tech_construction"],
+    "cost": 65,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2050.0,
+      "y": 875.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_literature",
+    "entityType": "technology",
+    "name": "Literature",
+    "requiredTechnologies": ["tech_writing"],
+    "cost": 50,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2050.0,
+      "y": 412.5,
+      "linksMiddlePoint": {
+        "tech_cartography": 900.0,
+        "tech_philosophy": 1000.0,
+        "tech_poetry": 1000.0
+      }
+    }
+  },
+  {
+    "id": "tech_metallurgy",
+    "entityType": "technology",
+    "name": "Metallurgy",
+    "requiredTechnologies": ["tech_bronzeWorking"],
+    "cost": 80,
+    "era": "Iron Age",
+    "layout": {
+      "x": 2050.0,
+      "y": 725.0,
+      "linksMiddlePoint": {
+        "tech_jewelry": 900.0,
+        "tech_ironWorking": 1005.0
+      }
+    }
+  },
+  {
+    "id": "tech_cartography",
+    "entityType": "technology",
+    "name": "Cartography",
+    "requiredTechnologies": ["tech_literature"],
+    "cost": 60,
+    "era": "Bronze Age",
+    "layout": {
+      "x": 2550.0,
+      "y": 550.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_ironWorking",
+    "entityType": "technology",
+    "name": "Iron Working",
+    "requiredTechnologies": ["tech_metallurgy"],
+    "cost": 60,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3075.0,
+      "y": 725.0,
+      "linksMiddlePoint": {
+        "tech_stirrup": 1305.0,
+        "tech_engineering": 1305.0,
+        "tech_metalArmor": 1305.0
+      }
+    }
+  },
+  {
+    "id": "tech_philosophy",
+    "entityType": "technology",
+    "name": "Philosophy",
+    "requiredTechnologies": ["tech_literature"],
+    "cost": 70,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3050.0,
+      "y": 362.5,
+      "linksMiddlePoint": {
+        "tech_education": 1300.0,
+        "tech_anatomy": 1300.0
+      }
+    }
+  },
+  {
+    "id": "tech_poetry",
+    "entityType": "technology",
+    "name": "Drama and Poetry",
+    "requiredTechnologies": ["tech_literature"],
+    "cost": 70,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3050.0,
+      "y": 462.5,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_astronomy",
+    "entityType": "technology",
+    "name": "Astronomy",
+    "requiredTechnologies": ["tech_astrology"],
+    "cost": 90,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3050.0,
+      "y": 187.5,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_stirrup",
+    "entityType": "technology",
+    "name": "Stirrup",
+    "requiredTechnologies": ["tech_horsebackRiding", "tech_ironWorking"],
+    "cost": 90,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3550.0,
+      "y": 525.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_jewelry",
+    "entityType": "technology",
+    "name": "Jewelry",
+    "requiredTechnologies": ["tech_metallurgy"],
+    "cost": 80,
+    "era": "Iron Age",
+    "layout": {
+      "x": 2550.0,
+      "y": 825.0,
+      "linksMiddlePoint": {
+        "tech_glassBlowing": 1105.0
+      }
+    }
+  },
+  {
+    "id": "tech_education",
+    "entityType": "technology",
+    "name": "Education",
+    "requiredTechnologies": ["tech_philosophy"],
+    "cost": 100,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3550.0,
+      "y": 312.5,
+      "linksMiddlePoint": {
+        "tech_alchemy": 1500.0,
+        "tech_medicine": 1500.0
+      }
+    }
+  },
+  {
+    "id": "tech_anatomy",
+    "entityType": "technology",
+    "name": "Anatomy",
+    "requiredTechnologies": ["tech_philosophy"],
+    "cost": 90,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3550.0,
+      "y": 212.5,
+      "linksMiddlePoint": {
+        "tech_medicine": 1500.0
+      }
+    }
+  },
+  {
+    "id": "tech_metalArmor",
+    "entityType": "technology",
+    "name": "Metal Armor",
+    "requiredTechnologies": ["tech_ironWorking"],
+    "cost": 80,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3550.0,
+      "y": 725.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_glassBlowing",
+    "entityType": "technology",
+    "name": "Glass Blowing",
+    "requiredTechnologies": ["tech_jewelry"],
+    "cost": 85,
+    "era": "Iron Age",
+    "layout": {
+      "x": 3075.0,
+      "y": 875.0,
+      "linksMiddlePoint": {
+        "tech_optics": 1305.0
+      }
+    }
+  },
+  {
+    "id": "tech_mechanics",
+    "entityType": "technology",
+    "name": "Mechanics",
+    "requiredTechnologies": ["tech_engineering"],
+    "cost": 90,
+    "era": "Iron Age",
+    "layout": {
+      "x": 4050.0,
+      "y": 625.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_cropRotation",
+    "entityType": "technology",
+    "name": "Crop Rotation",
+    "requiredTechnologies": ["tech_engineering"],
+    "cost": 90,
+    "era": "Iron Age",
+    "layout": {
+      "x": 4050.0,
+      "y": 500.0,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_medicine",
+    "entityType": "technology",
+    "name": "Medicine",
+    "requiredTechnologies": ["tech_anatomy", "tech_education"],
+    "cost": 100,
+    "era": "Iron Age",
+    "layout": {
+      "x": 4050.0,
+      "y": 212.5,
+      "linksMiddlePoint": {}
+    }
+  },
+  {
+    "id": "tech_alchemy",
+    "entityType": "technology",
+    "name": "Alchemy",
+    "requiredTechnologies": ["tech_education"],
+    "cost": 100,
+    "era": "Iron Age",
+    "layout": {
+      "x": 4050.0,
+      "y": 312.5,
+      "linksMiddlePoint": {}
+    }
+  }
 ];

@@ -18,6 +18,7 @@ import {
   ProductDefinition,
   ProductType,
   TechEra,
+  TechLayout,
   Technology,
   UnitDefinition,
   UnitTrait,
@@ -545,6 +546,7 @@ export type TechnologyChanneled = EntityMinimalChanneled & {
   requiredTechs: string[];
   products: EntityMinimalChanneled[];
   era: TechEra;
+  layout: TechLayout;
 };
 
 export function entityToMinimalChannel(entity: Entity): EntityMinimalChanneled {
@@ -564,6 +566,7 @@ export function techToChannel(entity: Technology): TechnologyChanneled {
     requiredTechs: entity.requiredTechnologies.map((t) => t.id),
     products: entity.products.map(entityToMinimalChannel),
     era: entity.era,
+    layout: entity.layout,
   };
 }
 

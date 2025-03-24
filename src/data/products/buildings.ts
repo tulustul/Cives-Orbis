@@ -10,7 +10,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldValue: { food: 3 } },
     strongRequirements: [],
     weakRequirements: [],
-    technology: "tech_pottery",
+    technology: "tech_pottery"
   },
   {
     id: "building_well",
@@ -20,7 +20,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldValue: { food: 1 } },
     strongRequirements: [],
     weakRequirements: [],
-    technology: "tech_agriculture",
+    technology: "tech_agriculture"
   },
   {
     id: "building_big_granary",
@@ -30,7 +30,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldFactor: { food: 0.2 } },
     strongRequirements: [new CityHaveBuildingRequirement("building_granary")],
     weakRequirements: [],
-    technology: "tech_irrigation",
+    technology: "tech_irrigation"
   },
   {
     id: "building_workshop",
@@ -40,7 +40,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldValue: { production: 5 } },
     strongRequirements: [],
     weakRequirements: [],
-    technology: "tech_bronzeWorking",
+    technology: "tech_bronzeWorking"
   },
   {
     id: "building_big_workshop",
@@ -50,7 +50,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldFactor: { production: 0.2 } },
     strongRequirements: [new CityHaveBuildingRequirement("building_workshop")],
     weakRequirements: [],
-    technology: "tech_machinery",
+    technology: "tech_mechanics"
   },
   {
     id: "building_slave_market",
@@ -60,7 +60,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldValue: { publicWorks: 2 } },
     strongRequirements: [],
     weakRequirements: [],
-    technology: "tech_agriculture",
+    technology: "tech_agriculture"
   },
   {
     id: "building_monument",
@@ -70,7 +70,7 @@ export const BUILDINGS: RawBuilding[] = [
     bonuses: { yieldValue: { culture: 2 } },
     strongRequirements: [],
     weakRequirements: [],
-    technology: "tech_society",
+    technology: "tech_society"
   },
   {
     id: "building_all_doing_building",
@@ -79,13 +79,13 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 500,
     bonuses: {
       yieldValue: { food: 1, production: 1 },
-      yieldFactor: { food: 0.1, production: 0.1 },
+      yieldFactor: { food: 0.1, production: 0.1 }
     },
     strongRequirements: [
       new CityHaveBuildingRequirement("building_big_granary"),
-      new CityHaveBuildingRequirement("building_big_workshop"),
+      new CityHaveBuildingRequirement("building_big_workshop")
     ],
     weakRequirements: [],
-    technology: "tech_engineering",
-  },
+    technology: "tech_engineering"
+  }
 ];

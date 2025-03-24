@@ -143,7 +143,7 @@ export type PolicyOption = Entity & HaveBonuses & HaveRequirements;
 export type Law = Entity & HaveBonuses & HaveRequirements;
 
 export type TechEra =
-  | "Stone Age"
+  | "Copper Age"
   | "Bronze Age"
   | "Iron Age"
   | "Gunpowder Age"
@@ -153,10 +153,17 @@ export type TechEra =
   | "Information Age"
   | "AI Age";
 
+export type TechLayout = {
+  x: number;
+  y: number;
+  linksMiddlePoint: Record<string, number>;
+};
+
 export type RawTechnology = Entity & {
   requiredTechnologies: string[];
   cost: number;
   era: TechEra;
+  layout: TechLayout;
 };
 
 export type Technology = Entity & {
@@ -165,4 +172,5 @@ export type Technology = Entity & {
   cost: number;
   era: TechEra;
   products: ProductDefinition[];
+  layout: TechLayout;
 };
