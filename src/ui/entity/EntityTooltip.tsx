@@ -106,6 +106,7 @@ const entityTypeRenderers: Record<
       <Value>Cost: {entity.cost}</Value>
     </>
   ),
-  resource: (entity) => null,
-  technology: (entity) => null,
+  resource: () => null,
+  technology: () => null,
+  nation: () => null,
 };

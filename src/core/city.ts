@@ -1,31 +1,28 @@
-import { TileCore } from "./tile";
-import { PlayerCore } from "./player";
-import {
-  UnitDefinition,
-  ProductDefinition,
-  Building,
-  IdleProduct,
-  ResourceDefinition,
-} from "./data.interface";
 import { Bonuses } from "./bonus";
 import {
-  EMPTY_YIELDS,
-  Yields,
-  zeroYields,
+  Building,
+  IdleProduct,
+  ProductDefinition,
+  ResourceDefinition,
+  UnitDefinition,
+} from "./data.interface";
+import { PlayerCore } from "./player";
+import { TileCore } from "./tile";
+import {
   addYields,
   copyYields,
+  EMPTY_YIELDS,
   roundYields,
+  Yields,
+  zeroYields,
 } from "./yields";
 
+import { CitiesNetwork } from "./cities-network";
 import { collector } from "./collector";
-import { BUILDINGS } from "../data/products/buildings";
-import { UNITS_DEFINITIONS } from "../data/products/units";
-import { IDLE_PRODUCTS } from "../data/products/idle-products";
+import { buildingDefs, idleProductDefs, unitDefs } from "./data-manager";
 import { checkRequirements } from "./requirements";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
-import { CitiesNetwork } from "./cities-network";
-import { buildingDefs, idleProductDefs, unitDefs } from "./data-manager";
 
 export type CityVisibility = "all" | "basic" | "hidden";
 

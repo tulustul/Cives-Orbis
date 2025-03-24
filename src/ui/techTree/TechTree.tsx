@@ -3,12 +3,11 @@ import { TechnologyChanneled } from "@/core/serialization/channel";
 import { Modal } from "@/ui/components";
 import { useUiState } from "@/ui/uiState";
 import { useEffect, useRef, useState } from "react";
-import styles from "./TechTree.module.css";
 import { Tech } from "./Tech";
 import { TechLinks } from "./TechLinks";
-import { organizeTechsIntoColumns } from "./organizeTechs";
+import styles from "./TechTree.module.css";
 import { eras, erasColors } from "./const";
-import { TechEra } from "@/core/data.interface";
+import { organizeTechsIntoColumns } from "./organizeTechs";
 
 export function TechTree() {
   const [techs, setTechs] = useState<TechnologyChanneled[] | null>(null);

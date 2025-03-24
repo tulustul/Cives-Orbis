@@ -12,6 +12,7 @@ import {
   IconZzz,
   Icon as TablerIcon,
 } from "@tabler/icons-react";
+import { Commands } from "./commands";
 import {
   Button,
   IconButton,
@@ -23,8 +24,6 @@ import {
 } from "./components";
 import { Icon } from "./components/Icon";
 import { mapUi } from "./mapUi";
-import { RawUnitIcon } from "./UnitIcon";
-import { Commands } from "./commands";
 
 const ORDER_TO_ICON: Record<UnitOrder, TablerIcon> = {
   sleep: IconZzz,

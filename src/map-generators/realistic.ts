@@ -328,7 +328,7 @@ export class RealisticMapGenerator implements MapGenerator {
             newHumidity += humidityContribution / contributingNeighbors;
 
             // Land consumes some moisture based on climate and features
-            let consumptionRate = 0.05; // Base consumption
+            const consumptionRate = 0.05; // Base consumption
 
             // Apply consumption
             newHumidity = Math.max(

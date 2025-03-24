@@ -13,13 +13,9 @@ import {
   TECHNOLOGIES,
 } from "./core/data-manager";
 import {
-  Building,
   Entity,
   HaveRequirements,
-  IdleProduct,
   ResourceDefinition,
-  Technology,
-  UnitDefinition,
 } from "./core/data.interface";
 import { Game } from "./core/game";
 import { moveAlongPath } from "./core/movement";
@@ -33,7 +29,6 @@ import { getFailedWeakRequirements } from "./core/requirements";
 import { ResourceCore } from "./core/resources";
 import {
   AreaChanneled,
-  buildingToChannel,
   CityDetailsChanneled,
   cityDetailsToChannel,
   cityToChannel,
@@ -56,7 +51,6 @@ import {
   tileToTileCoords,
   trackedPlayerToChannel,
   UnitChanneled,
-  unitDefToChannel,
   unitDetailsToChannel,
   unitToChannel,
 } from "./core/serialization/channel";
@@ -594,7 +588,6 @@ export function cityProduce(options: CityProduceOptions) {
     return;
   }
 
-  city.produce;
   if (options.entityType === "building") {
     city.produce(getBuildingById(options.productId)!);
   } else if (options.entityType === "unit") {

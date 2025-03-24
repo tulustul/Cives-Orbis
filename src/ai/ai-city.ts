@@ -6,7 +6,7 @@ export class CityAI extends AISystem {
   plan() {
     this.operations = [];
     for (const city of this.player.cities) {
-      if (city.product?.productType === "idleProduct" && Math.random() > 0.9) {
+      if (city.product?.entityType === "idleProduct" && Math.random() > 0.9) {
         city.cancelProduction();
       }
     }
@@ -38,7 +38,7 @@ export class CityAI extends AISystem {
         group: "city-produce",
         entityId: city.id,
         focus: "economy",
-        priority: product.productType === "idleProduct" ? 10 : 100,
+        priority: product.entityType === "idleProduct" ? 10 : 100,
         perform: () => city.produce(product),
       });
     }

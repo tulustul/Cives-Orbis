@@ -9,7 +9,8 @@ export type EntityType =
   | "building"
   | "idleProduct"
   | "resource"
-  | "technology";
+  | "technology"
+  | "nation";
 
 export type Entity = {
   entityType: EntityType;

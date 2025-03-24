@@ -261,4 +261,4 @@ export class GameRenderer {
   }
 }
 
-export let renderer = new GameRenderer();
+export const renderer = new GameRenderer();

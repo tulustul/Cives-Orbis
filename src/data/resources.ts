@@ -5,6 +5,7 @@ import { SeaLevel, LandForm, Climate } from "@/shared";
 export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   {
     id: "resource_stone",
+    entityType: "resource",
     name: "Stone",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
@@ -25,6 +26,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_copper",
+    entityType: "resource",
     name: "Copper",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
@@ -45,6 +47,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_iron",
+    entityType: "resource",
     name: "Iron",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
@@ -65,6 +68,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_wheat",
+    entityType: "resource",
     name: "Wheat",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
@@ -86,6 +90,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_corn",
+    entityType: "resource",
     name: "Corn",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
@@ -106,6 +111,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_rice",
+    entityType: "resource",
     name: "Rice",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
@@ -126,6 +132,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_fish",
+    entityType: "resource",
     name: "Fish",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
@@ -146,6 +153,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_gold",
+    entityType: "resource",
     name: "Gold",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
@@ -166,6 +174,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   },
   {
     id: "resource_silver",
+    entityType: "resource",
     name: "Silver",
     requiredImprovement: TileImprovement.mine,
     bonuses: {

@@ -27,7 +27,7 @@ export class CitiesNetworks {
       const visitedTiles = new Set<TileCore>();
       const queue: TileCore[][] = [[city.tile]];
       while (queue.length > 0) {
-        let tiles = queue.shift()!;
+        const tiles = queue.shift()!;
         const tile = tiles[tiles.length - 1];
 
         if (tile.city && tile.city !== city) {

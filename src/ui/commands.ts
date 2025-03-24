@@ -81,7 +81,11 @@ export class Commands {
     }
 
     const menu = useMenu.getState();
-    menu.enabled ? menu.hide() : menu.show();
+    if (menu.enabled) {
+      menu.hide();
+    } else {
+      menu.show();
+    }
   }
 
   @keybinding({ keybinding: ["escape", "tab"], context: "city" })

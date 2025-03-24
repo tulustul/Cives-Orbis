@@ -2,13 +2,7 @@ import {
   CityDetailsChanneled,
   CityProductChanneled,
 } from "@/core/serialization/channel";
-import {
-  AtlasIcon,
-  Button,
-  ImageIcon,
-  ProgressBar,
-  Tooltip,
-} from "@/ui/components";
+import { Button, ImageIcon, ProgressBar, Tooltip } from "@/ui/components";
 import clsx from "clsx";
 
 import { bridge } from "@/bridge";
@@ -16,7 +10,7 @@ import { formatTurns } from "@/utils";
 import { PropsWithChildren } from "react";
 import { EntityTooltip } from "../entity";
 import { mapUi } from "../mapUi";
-import { RawUnitIcon, UnitIcon } from "../UnitIcon";
+import { RawUnitIcon } from "../UnitIcon";
 
 type Props = {
   city: CityDetailsChanneled;

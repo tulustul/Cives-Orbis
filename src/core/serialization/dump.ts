@@ -349,7 +349,7 @@ function dumpCity(city: CityCore): CitySerialized {
     totalCulture: city.totalCulture,
     product: city.product
       ? {
-          type: city.product.productType,
+          type: city.product.entityType,
           id: city.product.id,
         }
       : null,

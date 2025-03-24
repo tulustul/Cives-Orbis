@@ -225,7 +225,7 @@ class TileDrawer {
 
     this.improvementSprite.visible = true;
 
-    let textureName = IMPROVEMENT_TEXTURES[this.tile.improvement];
+    const textureName = IMPROVEMENT_TEXTURES[this.tile.improvement];
     this.improvementSprite.texture = this.tilesTextures[textureName];
     putContainerAtTile(this.improvementSprite, this.tile);
   }
