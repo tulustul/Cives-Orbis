@@ -50,6 +50,7 @@ def extract_tech_tree(file_path: str):
             if geometry is not None:
                 x = float(geometry.get("x", 0))
                 y = float(geometry.get("y", 0))
+                width = float(geometry.get("width", 0))
 
                 # Store block information
                 blocks.append(
@@ -66,7 +67,7 @@ def extract_tech_tree(file_path: str):
 
                 # Store mapping for links
                 cell_id_to_name[cell_id] = name
-                cell_id_to_geometry[cell_id] = (x, y)
+                cell_id_to_geometry[cell_id] = (x, y, width)
 
     # Extract links (cells with edgeStyle)
     for cell in root_cell.findall("./mxCell"):
@@ -81,21 +82,27 @@ def extract_tech_tree(file_path: str):
 
                 # Check if there are specific points defined in the path
                 mid_point = None
-                array_points = cell.find('./Array[@as="points"]')
+                array_points = cell.find('.//Array[@as="points"]')
                 if array_points is not None:
                     # Use the first point's x coordinate as the midpoint
                     points = array_points.findall("./mxPoint")
                     if points:
+                        source_x = cell_id_to_geometry[source_id][0]
+                        target_x = cell_id_to_geometry[target_id][0]
+                        source_width = cell_id_to_geometry[source_id][2]
+                        original_mid_point = (source_x + source_width + target_x) / 2
                         mid_point = float(points[0].get("x", 0))
+                        import pdb
+
+                        pdb.set_trace()
+                        mid_point = mid_point - original_mid_point
 
                 # If no array points, calculate the midpoint
                 if mid_point is None:
-                    source_x = cell_id_to_geometry[source_id][0]
-                    target_x = cell_id_to_geometry[target_id][0]
-                    mid_point = (source_x + target_x) / 2
+                    mid_point = 0
 
                 layout = blocks_by_name[source_name]["layout"]
-                layout["linksMiddlePoint"][target_name] = mid_point
+                layout["linksMiddlePoint"][target_name] = mid_point * 2.5
 
     return blocks
 
@@ -132,7 +139,7 @@ def update_techs_file(diagram_techs: list[dict], techs_file_path: str):
             "x": (diagram_tech["layout"]["x"]) * 2.5 + 50,
             "y": (diagram_tech["layout"]["y"]) * 2.5,
             "linksMiddlePoint": {
-                name_to_id[name]: value
+                name_to_id[name]: value * 2.5
                 for name, value in diagram_tech["layout"]["linksMiddlePoint"].items()
             },
         }

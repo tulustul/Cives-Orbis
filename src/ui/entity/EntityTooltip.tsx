@@ -68,7 +68,12 @@ function EntityHeader({ entity }: { entity: EntityChanneled }) {
   return (
     <>
       <div className="text-xl center tracking-wider mb-2">{entity.name}</div>
-      <ImageIcon className="mb-2" name={entity.id} size="large" />
+      <ImageIcon
+        className="mb-2"
+        name={entity.id}
+        size="large"
+        frameType={entity.entityType}
+      />
     </>
   );
 }

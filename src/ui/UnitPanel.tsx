@@ -52,9 +52,9 @@ export function UnitPanel() {
   }
 
   return (
-    <Panel corner="bottom-left" className="p-2 w-80" rounded>
+    <Panel corner="bottom-left" className="p-2 w-90 min-h-40" rounded>
       <div className="flex items-start justify-between gap-2">
-        <div>
+        <div className="flex flex-col gap-4">
           <div className="text-2xl mb-1">{unit.definition.name}</div>
           {unit.health < 100 && (
             <Tooltip
@@ -73,17 +73,15 @@ export function UnitPanel() {
           <UnitSummaryBar unit={unit} />
         </div>
 
-        <ImageIcon
-          className="absolute -z-1 -right-2 -top-2"
-          name={unit.definition.id}
-          size="large"
-        />
+        <div className="absolute -z-1 right-1 top-1">
+          <ImageIcon name={unit.definition.id} size="large" frameType="unit" />
+        </div>
       </div>
 
       {/* <div>Supplies: {unit.supplies}</div> */}
       {/* {!unit.isSupplied && <div>Out of range of supply lines</div>} */}
 
-      <div className="flex gap-2 mt-4">
+      <div className="flex gap-2 mt-8">
         <Tooltip content="Disband" placementVertical="top">
           <IconButton icon={IconSkull} danger onClick={destroy} />
         </Tooltip>

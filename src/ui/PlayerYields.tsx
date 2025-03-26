@@ -1,6 +1,6 @@
 import { bridge } from "@/bridge";
 import { useObservable } from "@/utils";
-import { Tooltip } from "./components";
+import { ImageIcon, Tooltip } from "./components";
 
 export function PlayerYields() {
   const yields = useObservable(bridge.player.yields$);
@@ -10,7 +10,7 @@ export function PlayerYields() {
   }
 
   return (
-    <div>
+    <div className="flex gap-4 px-4 h-12 items-center">
       <Tooltip
         content={
           <>
@@ -20,9 +20,18 @@ export function PlayerYields() {
           </>
         }
       >
-        Public works: {yields.total.publicWorks} (
-        {yields.perTurn.publicWorks >= 0 ? "+" : ""}
-        {yields.perTurn.publicWorks})
+        <div className="text-publicWorks">
+          Public works: {yields.total.publicWorks} (
+          {yields.perTurn.publicWorks >= 0 ? "+" : ""}
+          {yields.perTurn.publicWorks})
+        </div>
+      </Tooltip>
+
+      <Tooltip content={<div>Knowledge</div>}>
+        <div className="text-knowledge flex items-center gap-2 font-semibold">
+          <ImageIcon name="yield_knowledge" size="tiny" />
+          {yields.perTurn.knowledge}
+        </div>
       </Tooltip>
     </div>
   );

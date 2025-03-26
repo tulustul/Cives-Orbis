@@ -127,6 +127,9 @@ function CityYields({ city }: Props) {
         <Yield className="text-culture" label="Culture">
           {city.perTurn.culture}
         </Yield>
+        <Yield className="text-knowledge" label="Knowledge">
+          {city.perTurn.knowledge}
+        </Yield>
         <Yield className="text-publicWorks" label="Public works">
           {city.perTurn.publicWorks}
         </Yield>
@@ -280,5 +283,11 @@ function ProductIcon({ product }: { product: CityProductChanneled }) {
       />
     );
 
-  return <ImageIcon name={product.definition.id} size="small" />;
+  return (
+    <ImageIcon
+      name={product.definition.id}
+      size="small"
+      frameType={product.definition.entityType}
+    />
+  );
 }

@@ -45,7 +45,7 @@ export function TechTree() {
               <Tech key={tech.id} tech={tech} />
             ))}
 
-            <div className="flex h-280">
+            <div className="flex h-[85vh]">
               {eras.map((era) => {
                 return (
                   <div

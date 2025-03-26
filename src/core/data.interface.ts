@@ -48,7 +48,7 @@ export type BaseProductDefinition = Entity &
   };
 
 export type RawProductDefinition = BaseProductDefinition & RequireRawTech;
-export type ProductDefinition = BaseProductDefinition & RequireTech;
+type _ProductDefinition = BaseProductDefinition & RequireTech;
 
 export enum UnitType {
   land,
@@ -77,21 +77,23 @@ type _UnitDef = {
 export type RawUnitDefinition = RawProductDefinition &
   _UnitDef &
   RequireRawTech;
-export type UnitDefinition = ProductDefinition & _UnitDef & RequireTech;
+export type UnitDefinition = _ProductDefinition & _UnitDef & RequireTech;
 
 export type RawBuilding = RawProductDefinition & {
   entityType: "building";
 };
-export type Building = ProductDefinition & {
+export type Building = _ProductDefinition & {
   entityType: "building";
 };
 
 export type RawIdleProduct = RawProductDefinition & {
   entityType: "idleProduct";
 };
-export type IdleProduct = ProductDefinition & {
+export type IdleProduct = _ProductDefinition & {
   entityType: "idleProduct";
 };
+
+export type ProductDefinition = UnitDefinition | Building | IdleProduct;
 
 export enum GovernmentSection {
   organization,

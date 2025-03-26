@@ -13,3 +13,6 @@ export const erasColors: Record<TechEra, string> = {
 };
 
 export const eras = Object.keys(erasColors) as TechEra[];
+
+export const blockHeight = 80;
+export const blockWidth = 400;

@@ -57,7 +57,7 @@ export class ExploringAI extends AISystem {
       // If we need more explorers in this area
       if (haveExplorers < explorersNeeded) {
         const product = getUnitById(
-          passableArea.type === "land" ? "unit_scout" : "unit_scout_ship"
+          passableArea.type === "land" ? "unit_scout" : "unit_galley"
         )!;
 
         // Request a unit to be produced

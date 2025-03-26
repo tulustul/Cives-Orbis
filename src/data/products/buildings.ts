@@ -1,7 +1,20 @@
 import { RawBuilding } from "@/core/data.interface";
-import { CityHaveBuildingRequirement } from "@/core/requirements";
+import {
+  CityHaveBuildingRequirement,
+  CityNeverRequirement
+} from "@/core/requirements";
 
 export const BUILDINGS: RawBuilding[] = [
+  {
+    id: "building_palace",
+    entityType: "building",
+    name: "Palace",
+    productionCost: 0,
+    bonuses: { yieldValue: { culture: 1, knowledge: 1 } },
+    strongRequirements: [new CityNeverRequirement()],
+    weakRequirements: [],
+    technology: "tech_society"
+  },
   {
     id: "building_granary",
     entityType: "building",
@@ -67,10 +80,30 @@ export const BUILDINGS: RawBuilding[] = [
     entityType: "building",
     name: "Monument",
     productionCost: 30,
-    bonuses: { yieldValue: { culture: 2 } },
+    bonuses: { yieldValue: { culture: 1 } },
     strongRequirements: [],
     weakRequirements: [],
     technology: "tech_society"
+  },
+  {
+    id: "building_elderCouncil",
+    entityType: "building",
+    name: "Elder council",
+    productionCost: 30,
+    bonuses: { yieldValue: { knowledge: 1 } },
+    strongRequirements: [],
+    weakRequirements: [],
+    technology: "tech_society"
+  },
+  {
+    id: "building_library",
+    entityType: "building",
+    name: "Library",
+    productionCost: 80,
+    bonuses: { yieldValue: { knowledge: 3 } },
+    strongRequirements: [],
+    weakRequirements: [],
+    technology: "tech_writing"
   },
   {
     id: "building_all_doing_building",

@@ -115,12 +115,16 @@ export class CityCore {
           this.player
         );
       } else if (this.product.entityType === "building") {
-        this.buildings.push(this.product as Building);
-        this.buildingsIds.add(this.product.id);
+        this.addBuilding(this.product);
       }
       this.totalProduction = 0;
       this.product = null;
     }
+  }
+
+  public addBuilding(building: Building) {
+    this.buildings.push(building);
+    this.buildingsIds.add(building.id);
   }
 
   private progressGrowth() {
@@ -284,6 +288,7 @@ export class CityCore {
     this.yields.food += bonuses.yieldValue?.food || 0;
     this.yields.production += bonuses.yieldValue?.production || 0;
     this.yields.culture += bonuses.yieldValue?.culture || 0;
+    this.yields.knowledge += bonuses.yieldValue?.knowledge || 0;
     this.yields.publicWorks += bonuses.yieldValue?.publicWorks || 0;
 
     if (bonuses.yieldFactor?.food) {
@@ -296,6 +301,10 @@ export class CityCore {
     if (bonuses.yieldFactor?.culture) {
       this.yields.culture +=
         this.tileYields.culture * bonuses.yieldFactor.culture;
+    }
+    if (bonuses.yieldFactor?.knowledge) {
+      this.yields.knowledge +=
+        this.tileYields.knowledge * bonuses.yieldFactor.knowledge;
     }
     if (bonuses.yieldFactor?.publicWorks) {
       this.yields.publicWorks +=

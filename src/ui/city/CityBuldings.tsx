@@ -26,7 +26,7 @@ export function CityBuildings({ city }: Props) {
             placementVertical="center"
           >
             <div className="h-12 px-1 flex items-center justify-between">
-              <ImageIcon name={building.id} size="small" />
+              <ImageIcon name={building.id} size="small" frameType="building" />
               <div className="py-2 px-4">{building.name}</div>
             </div>
           </EntityTooltip>

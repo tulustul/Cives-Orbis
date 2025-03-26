@@ -65,12 +65,12 @@ export function Tech({ tech }: Props) {
   return (
     <div
       className={
-        "absolute flex items-center w-100 bg-black/50 rounded-l-[50px] rounded-r-xl border-2 border-black"
+        "absolute flex items-center w-100 h-[80px] bg-gray-900 rounded-l-[50px] rounded-r-xl border-2 border-black"
       }
       style={{
         top: `${tech.layout.y}px`,
         left: `${tech.layout.x}px`,
-        // transform: "translate(-50%, -50%)",
+        filter: "drop-shadow(2px 5px 2px rgba(0, 0, 0, 0.5))",
       }}
       data-tech-id={tech.id}
       data-era={tech.era}
@@ -78,19 +78,22 @@ export function Tech({ tech }: Props) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <ImageIcon name={tech.id} size="medium" />
+      <ImageIcon
+        name={tech.id}
+        size="medium"
+        frameType="technology"
+        className="-left-2"
+      />
 
-      <div className="flex flex-col justify-between px-4 py-1 w-full h-full">
+      <div className="flex flex-col justify-between pr-4 pb-1 w-full h-full">
         <div className={styles.techHeader}>
           <div className={styles.techName}>{tech.name}</div>
           <div className={styles.techTurns}>{tech.cost} science</div>
         </div>
-        <div className="flex">
+        <div className="flex gap-1">
           {tech.products.map((p) => (
             <EntityTooltip key={p.id} entityId={p.id}>
-              <div className="px-1">
-                <ImageIcon name={p.id} size="small" />
-              </div>
+              <ImageIcon name={p.id} size="small" frameType={p.entityType} />
             </EntityTooltip>
           ))}
         </div>
@@ -99,18 +102,13 @@ export function Tech({ tech }: Props) {
   );
 }
 
-// Function to highlight tech links when hovering a tech
 function highlightTechLinks(techId: string) {
-  // Highlight links where this tech is a prereq (links going out)
-  document.querySelectorAll(`[data-link^="${techId}-"]`).forEach((link) => {
-    link.classList.add(styles.techLinkHighlighted);
-  });
-
-  // Highlight links where this tech is the target (links coming in)
-  document.querySelectorAll(`[data-link]`).forEach((link) => {
-    const linkData = link.getAttribute("data-link");
-    if (linkData && linkData.split("-")[1] === techId) {
+  document
+    .querySelectorAll(`[data-link-from="${techId}"],[data-link-to="${techId}"]`)
+    .forEach((link) => {
+      const parent = link.parentElement!;
+      link.remove();
+      parent.appendChild(link);
       link.classList.add(styles.techLinkHighlighted);
-    }
-  });
+    });
 }

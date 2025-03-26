@@ -11,7 +11,7 @@ export abstract class Requirement {
 export function checkRequirements(
   entity: HaveRequirements,
   player: PlayerCore,
-  city: CityCore | null,
+  city: CityCore | null
 ): boolean {
   for (const r of entity.strongRequirements) {
     if (!r.check(player, city)) {
@@ -31,11 +31,19 @@ export function checkRequirements(
 export function getFailedWeakRequirements(
   entity: HaveRequirements,
   player: PlayerCore,
-  city: CityCore | null,
+  city: CityCore | null
 ): [string, any][] {
   return entity.weakRequirements
     .filter((r) => !r.check(player, city))
     .map((r) => [r.id, r.context]);
+}
+
+export class CityNeverRequirement extends Requirement {
+  override id = "never";
+
+  check() {
+    return false;
+  }
 }
 
 export class CityHaveBuildingRequirement extends Requirement {

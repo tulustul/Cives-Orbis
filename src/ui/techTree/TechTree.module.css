@@ -84,7 +84,7 @@
 .techHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
 }
 
 .techName {
@@ -170,10 +170,11 @@
   transition: all 0.2s ease-in-out;
 }
 
-.techLinkHighlighted {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-  z-index: 1;
+.techLinkHighlighted[fill="none"] {
+  stroke: #4caf50;
+}
+.techLinkHighlighted:not([fill="none"]) {
+  fill: #4caf50;
 }
 
 .techLinkHighlighted.techLink {

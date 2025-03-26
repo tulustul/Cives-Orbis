@@ -1,106 +1,110 @@
 import { TechnologyChanneled } from "@/core/serialization/channel";
 import styles from "./TechTree.module.css";
 import { useRef } from "react";
+import { blockHeight, blockWidth } from "./const";
 
 type Props = {
   techs: TechnologyChanneled[];
 };
 
-// Render connecting lines between technologies using right angles (zigzags)
+type Point = { x: number; y: number };
+
+type Link = {
+  fromTech: string;
+  toTech: string;
+  from: Point;
+  to: Point;
+  midPointX: number;
+};
+
+const radius = 30;
+
 export function TechLinks({ techs }: Props) {
   const elRef = useRef<HTMLDivElement>(null);
 
   const techsMap = new Map<string, TechnologyChanneled>();
   techs.forEach((tech) => techsMap.set(tech.id, tech));
 
-  // Need to render this after the DOM has been updated
-  setTimeout(() => {
-    const techNodes = document.querySelectorAll(`[data-tech-id]`);
-    const techNodesMap = new Map<string, DOMRect>();
+  const links = techs.flatMap((tech) =>
+    Object.entries(tech.layout.linksMiddlePoint).map((item) => {
+      const nextTech = techsMap.get(item[0])!;
+      const midPointX = item[1];
 
-    // Get positions of all tech nodes
-    techNodes.forEach((node) => {
-      const techId = node.getAttribute("data-tech-id");
-      if (techId) {
-        techNodesMap.set(techId, node.getBoundingClientRect());
-      }
-    });
+      return {
+        fromTech: tech.id,
+        toTech: nextTech.id,
+        from: {
+          x: tech.layout.x + blockWidth,
+          y: tech.layout.y + blockHeight / 2,
+        },
+        to: {
+          x: nextTech.layout.x - 5,
+          y: nextTech.layout.y + blockHeight / 2,
+        },
+        midPointX,
+      } as Link;
+    })
+  );
 
-    // For each tech with prerequisites, create lines to each prereq
-    if (!elRef.current) {
-      return;
-    }
+  return (
+    <div ref={elRef} className={styles.techLinks}>
+      <svg
+        className="w-[13500px] h-full"
+        style={{
+          filter: "drop-shadow(2px 4px 3px black)",
+        }}
+      >
+        {links.map((link, index) => (
+          <Link key={index} link={link} />
+        ))}
+      </svg>
+    </div>
+  );
+}
 
-    // Clear previous links
-    const el = elRef.current;
-    el.innerHTML = "";
+function Link({ link }: { link: Link }) {
+  const arrowD = `M ${link.to.x} ${link.to.y} l -10 -8 l 0 16 Z`;
 
-    techs.forEach((tech) => {
-      tech.requiredTechs.forEach((prereqId) => {
-        const prereq = techsMap.get(prereqId);
-        if (!prereq) {
-          return;
-        }
+  const midPoint = (link.from.x + link.to.x) / 2;
+  // if (link.midPointX) {
+  //   midPoint += link.midPointX;
+  // }
 
-        const techRect = techNodesMap.get(tech.id);
-        const prereqRect = techNodesMap.get(prereqId);
+  let upOrDown = link.from.y < link.to.y ? 1 : -1;
+  if (link.from.y === link.to.y) {
+    upOrDown = 0;
+  }
 
-        if (techRect && prereqRect) {
-          const containerRect = el.getBoundingClientRect();
+  const r = Math.min(radius, Math.abs(link.from.y - link.to.y) / 2);
 
-          // Calculate positions relative to the container
-          // For the prerequisite tech, connect from the right side
-          const startX =
-            prereqRect.left - containerRect.left + prereqRect.width;
-          const startY =
-            prereqRect.top - containerRect.top + prereqRect.height / 2;
+  const linkD =
+    `M ${link.from.x} ${link.from.y} ` +
+    `L ${midPoint - r} ${link.from.y} ` +
+    (upOrDown === 1 ? `q ${r} 0 ${r} ${r} ` : "") +
+    (upOrDown === -1 ? `q ${r} 0 ${r} -${r} ` : "") +
+    `L ${midPoint} ${link.to.y + -r * upOrDown} ` +
+    (upOrDown === 1 ? `q 0 ${r} ${r} ${r} ` : "") +
+    (upOrDown === -1 ? `q 0 -${r} ${r} -${r} ` : "") +
+    `L ${link.to.x - 10} ${link.to.y}`;
 
-          // For the dependent tech, connect to the left side
-          const endX = techRect.left - containerRect.left;
-          const endY = techRect.top - containerRect.top + techRect.height / 2;
-
-          // Always use zigzag lines (horizontal + vertical + horizontal)
-          // Create a zigzag path with two right angles
-          // First segment (horizontal from prereq)
-          const halfwayX = startX + (endX - startX) / 2;
-
-          // Create horizontal line from prereq
-          const horizontalLine1 = document.createElement("div");
-          horizontalLine1.className = styles.techLink;
-          horizontalLine1.setAttribute("data-link", `${prereqId}-${tech.id}-1`);
-          horizontalLine1.style.left = `${startX}px`;
-          horizontalLine1.style.top = `${startY}px`;
-          horizontalLine1.style.width = `${halfwayX - startX}px`;
-          el.appendChild(horizontalLine1);
-
-          // Create vertical line
-          const verticalLine = document.createElement("div");
-          verticalLine.className = styles.techLinkVertical;
-          verticalLine.setAttribute("data-link", `${prereqId}-${tech.id}-2`);
-          verticalLine.style.left = `${halfwayX}px`;
-
-          // Handle the vertical line positioning (start from top if going down)
-          if (endY > startY) {
-            verticalLine.style.top = `${startY}px`;
-            verticalLine.style.height = `${endY - startY}px`;
-          } else {
-            verticalLine.style.top = `${endY}px`;
-            verticalLine.style.height = `${startY - endY}px`;
-          }
-          el.appendChild(verticalLine);
-
-          // Create horizontal line to tech
-          const horizontalLine2 = document.createElement("div");
-          horizontalLine2.className = styles.techLink;
-          horizontalLine2.setAttribute("data-link", `${prereqId}-${tech.id}-3`);
-          horizontalLine2.style.left = `${halfwayX}px`;
-          horizontalLine2.style.top = `${endY}px`;
-          horizontalLine2.style.width = `${endX - halfwayX}px`;
-          el.appendChild(horizontalLine2);
-        }
-      });
-    });
-  });
-
-  return <div ref={elRef} className={styles.techLinks} />;
+  return (
+    <>
+      <path
+        d={arrowD}
+        fill="#CCCCCC"
+        stroke="none"
+        data-link-from={link.fromTech}
+        data-link-to={link.toTech}
+      />
+      <path
+        className="shadow"
+        d={linkD}
+        stroke="#CCCCCC"
+        strokeWidth={4}
+        fill="none"
+        data-link-from={link.fromTech}
+        data-link-to={link.toTech}
+      />
+    </>
+  );
 }
