@@ -90,7 +90,9 @@ function CityGrowthProgressBar({ city }: Props) {
         total={city.foodToGrow}
       >
         {city.perTurn.food > 0 && (
-          <span className="turns">will grow in {city.turnsToGrow} turns</span>
+          <span className="turns">
+            will grow in {formatTurns(city.turnsToGrow)} turns
+          </span>
         )}
 
         {city.perTurn.food < 0 && (
@@ -179,7 +181,7 @@ function CityExpansion({ city }: Props) {
         total={city.cultureToExpand}
       >
         <span className="turns">
-          borders will expand in {city.turnsToExpand} turns
+          borders will expand in {formatTurns(city.turnsToExpand)} turns
         </span>
       </ProgressBar>
     </Tooltip>
@@ -210,7 +212,9 @@ function CityProduct({ city }: Props) {
               {city.product.definition.name}
             </span>
           </span>
-          <span className="text-lg">{city.turnsToProductionEnd} turns</span>
+          <span className="text-lg">
+            {formatTurns(city.turnsToProductionEnd)} turns
+          </span>
         </div>
       </ProgressBar>
     </EntityTooltip>

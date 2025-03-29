@@ -4,6 +4,7 @@ import { MainMenu } from "./MainMenu";
 import { NewGameMenu } from "./NewGameMenu";
 import { LoadMenu } from "./LoadMenu";
 import { SaveMenu } from "./SaveMenu";
+import titleImage from "@/assets/title.png";
 
 export function GameMenu() {
   const menu = useMenu();
@@ -24,7 +25,20 @@ export function GameMenu() {
   }
 
   return (
-    <div className="absolute w-full h-full flex items-center justify-center z-10 bg-black/70">
+    <div
+      className="absolute w-full h-full flex flex-col gap-10 items-center justify-center z-10 bg-black/80"
+      style={{
+        backdropFilter: "blur(5px)",
+      }}
+    >
+      <img
+        src={titleImage}
+        alt="Cives Orbis"
+        className="w-120 absolute top-20"
+        style={{
+          filter: "drop-shadow(0px 0px 5px black)",
+        }}
+      />
       <Panel className="w-[500px]">{getContent()}</Panel>
     </div>
   );

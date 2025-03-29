@@ -16,7 +16,7 @@ type Props = {
 
 const tint: Record<EntityType, string> = {
   technology: "#ffbf00",
-  unit: "#2e5d72",
+  unit: "#ffffff",
   building: "#5d3173",
   idleProduct: "#225524",
   resource: "#00ffff",

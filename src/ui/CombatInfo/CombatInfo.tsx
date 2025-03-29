@@ -51,7 +51,7 @@ export function CombatInfo() {
 
   return (
     <Panel className={styles.combatInfo}>
-      <div className={styles.result}>
+      <div className="flex justify-center mb-2">
         <div className={clsx(styles.resultInner, getResultClass())}>
           {getResult()}
         </div>
@@ -60,14 +60,14 @@ export function CombatInfo() {
       <div className={styles.sides}>
         <CombatInfoSide
           label="Attacker"
-          unitName={combatSimulation.attacker.definition.name}
+          unitDef={combatSimulation.attacker.definition}
           simulationSide={simulation.attacker}
         />
 
         <CombatInfoSide
           className={styles.invertedColors}
           label="Defender"
-          unitName={combatSimulation.defender.definition.name}
+          unitDef={combatSimulation.defender.definition}
           simulationSide={simulation.defender}
         />
       </div>

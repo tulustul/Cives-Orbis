@@ -19,7 +19,7 @@ export function MenuScreen({ title, children, extraActions }: Props) {
         />
         {extraActions && <div>{extraActions}</div>}
       </div>
-      <div className="text-2xl text-center font-bold tracking-wider mb-4">
+      <div className="font-serif text-2xl text-center font-bold tracking-wider mb-4">
         {title}
       </div>
       {children}

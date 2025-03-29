@@ -28,7 +28,7 @@ export function CityName({ city }: Props) {
               "linear-gradient(90deg, transparent, rgba(20,20,20), transparent)",
           }}
         />
-        <div className="text-5xl text-white font-light px-30 py-4">
+        <div className="font-serif text-5xl text-white font-light px-30 py-4">
           {city.name}
         </div>
         <div

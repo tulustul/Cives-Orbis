@@ -67,7 +67,9 @@ function EntityDetailsTooltip({ id, context }: EntityDetailsTooltipProps) {
 function EntityHeader({ entity }: { entity: EntityChanneled }) {
   return (
     <>
-      <div className="text-xl center tracking-wider mb-2">{entity.name}</div>
+      <div className="font-serif text-xl center tracking-wider my-2 mx-2">
+        {entity.name}
+      </div>
       <ImageIcon
         className="mb-2"
         name={entity.id}

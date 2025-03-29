@@ -41,44 +41,7 @@
 }
 
 .techNodeHighlighted {
-  background-color: rgba(25, 118, 210, 0.4) !important;
-  border-color: rgba(25, 118, 210, 0.8) !important;
-  box-shadow: 0 0 10px rgba(25, 118, 210, 0.4);
-  z-index: 2;
-}
-
-.techNodeHighlighted::before,
-.techNodeHighlighted::after {
-  background-color: rgba(25, 118, 210, 0.8);
-  width: 8px;
-  height: 8px;
-  box-shadow: 0 0 5px rgba(25, 118, 210, 0.8);
-}
-
-.techNodePrereq {
-  background-color: rgba(76, 175, 80, 0.4) !important;
-  border-color: rgba(76, 175, 80, 0.8) !important;
-  z-index: 2;
-}
-
-.techNodePrereq::after {
-  background-color: rgba(76, 175, 80, 0.8);
-  width: 8px;
-  height: 8px;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.8);
-}
-
-.techNodeNext {
-  background-color: rgba(255, 152, 0, 0.4) !important;
-  border-color: rgba(255, 152, 0, 0.8) !important;
-  z-index: 2;
-}
-
-.techNodeNext::before {
-  background-color: rgba(255, 152, 0, 0.8);
-  width: 8px;
-  height: 8px;
-  box-shadow: 0 0 5px rgba(255, 152, 0, 0.8);
+  border-color: rgba(76, 175, 80, 0.8);
 }
 
 .techHeader {

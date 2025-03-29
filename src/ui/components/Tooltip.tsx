@@ -104,6 +104,9 @@ export function Tooltip({
               !noPadding ? "px-4 py-1" : "",
               contentClassName
             )}
+            style={{
+              boxShadow: "0 0 3px 0px rgba(255, 255, 255, 0.3) inset",
+            }}
           >
             {content}
           </div>,

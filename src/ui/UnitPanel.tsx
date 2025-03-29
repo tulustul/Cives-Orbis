@@ -73,7 +73,7 @@ export function UnitPanel() {
           <UnitSummaryBar unit={unit} />
         </div>
 
-        <div className="absolute -z-1 right-1 top-1">
+        <div className="absolute -z-1 -right-5 -top-5">
           <ImageIcon name={unit.definition.id} size="large" frameType="unit" />
         </div>
       </div>

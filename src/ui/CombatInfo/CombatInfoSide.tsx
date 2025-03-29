@@ -1,6 +1,8 @@
 import { CombatModifierType, CombatSimulationSide } from "@/core/combat";
 import clsx from "clsx";
 import styles from "./CombatInfo.module.css";
+import { ImageIcon } from "@/ui/components";
+import { UnitDefChanneled } from "@/core/serialization/channel";
 
 const MODIFIER_LABELS: Record<CombatModifierType, string> = {
   [CombatModifierType.river]: "from river",
@@ -12,7 +14,7 @@ const MODIFIER_LABELS: Record<CombatModifierType, string> = {
 
 type Props = {
   label: string;
-  unitName: string;
+  unitDef: UnitDefChanneled;
   simulationSide: CombatSimulationSide;
   className?: string;
 };
@@ -20,13 +22,14 @@ type Props = {
 export function CombatInfoSide({
   label,
   simulationSide,
-  unitName,
+  unitDef,
   className,
 }: Props) {
   return (
-    <div className={clsx(styles.side, className)}>
-      <h3 className={styles.sideName}>{label}</h3>
-      <div>{unitName}</div>
+    <div className={clsx(styles.side, className, "flex flex-col items-center")}>
+      <div className={styles.sideName}>{label}</div>
+      <div>{unitDef.name}</div>
+      <ImageIcon name={unitDef.id} size="medium" />
       <div className={styles.field}>
         Approx. dmg.: <b>{simulationSide.damage}</b>
       </div>

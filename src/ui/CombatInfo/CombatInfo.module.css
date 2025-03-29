@@ -11,10 +11,6 @@
 .combatSide:first-of-type {
   margin-right: 20px;
 }
-.result {
-  display: flex;
-  justify-content: center;
-}
 .resultInner {
   color: white;
   border-radius: 5px;
@@ -48,7 +44,6 @@
   color: var(--positive-color);
 }
 .sideName {
-  text-align: left;
   font-weight: 600;
 }
 .field {

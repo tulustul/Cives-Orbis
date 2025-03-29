@@ -10,19 +10,15 @@ type Props = {
 };
 
 export function Tech({ tech }: Props) {
-  // Handle mouse enter/leave to highlight tech dependencies
   const handleMouseEnter = () => {
-    // Add highlight class to the current tech
     const currentTech = document.querySelector(`[data-tech-id="${tech.id}"]`);
     currentTech?.classList.add(styles.techNodeHighlighted);
 
-    // Find and highlight prerequisite techs
     tech.requiredTechs.forEach((prereqId) => {
       const prereqNode = document.querySelector(`[data-tech-id="${prereqId}"]`);
-      prereqNode?.classList.add(styles.techNodePrereq);
+      prereqNode?.classList.add(styles.techNodeHighlighted);
     });
 
-    // Find and highlight techs that require this tech
     document.querySelectorAll("[data-tech-id]").forEach((node) => {
       const techId = node.getAttribute("data-tech-id");
       const techElement = node as HTMLElement;
@@ -32,45 +28,34 @@ export function Tech({ tech }: Props) {
         techElement.dataset.prereqs &&
         techElement.dataset.prereqs.includes(tech.id)
       ) {
-        node.classList.add(styles.techNodeNext);
+        node.classList.add(styles.techNodeHighlighted);
       }
     });
 
-    // Highlight relevant links
     highlightTechLinks(tech.id);
   };
 
   const handleMouseLeave = () => {
-    // Remove highlight classes from all techs
     document
       .querySelectorAll(`.${styles.techNodeHighlighted}`)
       .forEach((node) => node.classList.remove(styles.techNodeHighlighted));
 
     document
-      .querySelectorAll(`.${styles.techNodePrereq}`)
-      .forEach((node) => node.classList.remove(styles.techNodePrereq));
-
-    document
-      .querySelectorAll(`.${styles.techNodeNext}`)
-      .forEach((node) => node.classList.remove(styles.techNodeNext));
-
-    // Remove link highlights
-    document
       .querySelectorAll(`.${styles.techLinkHighlighted}`)
       .forEach((node) => node.classList.remove(styles.techLinkHighlighted));
-
-    // No SVG paths to clean up anymore
   };
 
   return (
     <div
       className={
-        "absolute flex items-center w-100 h-[80px] bg-gray-900 rounded-l-[50px] rounded-r-xl border-2 border-black"
+        "absolute flex items-center w-100 h-[80px] bg-gray-900 rounded-l-[50px] rounded-r-xl border-2 border-gray-900 text-amber-100 box-content cursor-pointer"
       }
       style={{
         top: `${tech.layout.y}px`,
         left: `${tech.layout.x}px`,
-        filter: "drop-shadow(2px 5px 2px rgba(0, 0, 0, 0.5))",
+        filter: "drop-shadow(rgba(0, 0, 0, 0.4) 2px 3px 3px)",
+        boxShadow: "0 0 3px 0px rgba(255, 255, 255, 0.3) inset",
+        background: "linear-gradient(0deg, #0d0f18, #10192c, #292a34)",
       }}
       data-tech-id={tech.id}
       data-era={tech.era}

@@ -1,6 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 @import "tailwindcss";
 
 @theme {
+  --font-serif: "Cinzel Decorative", serif;
+  --font-sans: "Montserrat", sans-serif;
+
   --color-food: #65ea4b;
   --color-production: #ffb42c;
   --color-culture: #d883ff;

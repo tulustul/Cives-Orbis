@@ -31,9 +31,6 @@ export function MainMenu() {
 
   return (
     <>
-      <div className="font-bold text-5xl text-center tracking-widest py-5">
-        Cives Orbis
-      </div>
       <Item onClick={() => start(false)}>Quick Start</Item>
       <Item onClick={() => menu.setView("new-game")}>New</Item>
       <Item onClick={() => start(true)}>AI match</Item>

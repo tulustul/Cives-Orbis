@@ -198,7 +198,7 @@ export type UnitPathChanneled = {
 export type UnitDetailsChanneled = {
   id: number;
   tile: TileCoords;
-  definition: UnitDefinition;
+  definition: UnitDefChanneled;
   type: "military" | "civilian";
   trait: UnitTrait;
   cssColor: string;
@@ -443,7 +443,7 @@ export function unitDetailsToChannel(unit: UnitCore): UnitDetailsChanneled {
     id: unit.id,
     type: unit.definition.strength > 0 ? "military" : "civilian",
     tile: tileToTileCoords(unit.tile),
-    definition: unit.definition,
+    definition: unitDefToChannel(unit.definition),
     trait: unit.definition.trait,
     cssColor: unit.player.cssColor,
     parentId: unit.parent?.id || null,
