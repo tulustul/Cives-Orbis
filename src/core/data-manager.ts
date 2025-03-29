@@ -6,12 +6,13 @@ import { TECH_DEFINITIONS } from "@/data/techs";
 import {
   Building,
   Entity,
-  HaveRequirements,
   IdleProduct,
   ResourceDefinition,
   Technology,
   UnitDefinition,
 } from "./data.interface";
+
+const ENTITIES_MAP = new Map<string, Entity>();
 
 const technologies: Technology[] = TECH_DEFINITIONS.map((tech) => {
   return {
@@ -26,6 +27,7 @@ export const TECHNOLOGIES: Technology[] = [];
 for (const tech of technologies) {
   TECHS_MAP.set(tech.id, tech);
   TECHNOLOGIES.push(tech);
+  ENTITIES_MAP.set(tech.id, tech);
 }
 
 export function getTechById(id: string): Technology {
@@ -42,8 +44,6 @@ for (const rawTech of TECH_DEFINITIONS) {
     getTechById(id)
   );
 }
-
-const ENTITIES_MAP = new Map<string, Entity & HaveRequirements>();
 
 const UNITS_MAP = new Map<string, UnitDefinition>();
 for (const rawDef of UNITS_DEFINITIONS) {

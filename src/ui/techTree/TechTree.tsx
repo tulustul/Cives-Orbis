@@ -1,15 +1,15 @@
 import { bridge } from "@/bridge";
-import { TechnologyChanneled } from "@/core/serialization/channel";
+import { TechKnowledgeChanneled } from "@/core/serialization/channel";
 import { Modal } from "@/ui/components";
 import { useUiState } from "@/ui/uiState";
 import { useEffect, useRef, useState } from "react";
 import { Tech } from "./Tech";
 import { TechLinks } from "./TechLinks";
 import styles from "./TechTree.module.css";
-import { eras, erasColors } from "./const";
+import { eras, erasColors, techBlockWidth } from "./const";
 
 export function TechTree() {
-  const [techs, setTechs] = useState<TechnologyChanneled[] | null>(null);
+  const [techs, setTechs] = useState<TechKnowledgeChanneled[] | null>(null);
   const techTreeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const uiState = useUiState();
@@ -24,6 +24,15 @@ export function TechTree() {
     }
     const scrollAmount = e.deltaY;
     containerRef.current.scrollLeft += scrollAmount;
+  }
+
+  async function onTechClick(tech: TechKnowledgeChanneled) {
+    if (tech.state === "discovered" || tech.state === "researching") {
+      return;
+    }
+    await bridge.technologies.research(tech.def.id);
+    const techs = await bridge.technologies.getAll();
+    setTechs(techs);
   }
 
   function getContent() {
@@ -42,7 +51,20 @@ export function TechTree() {
             <TechLinks techs={techs} />
 
             {techs.map((tech) => (
-              <Tech key={tech.id} tech={tech} />
+              <div
+                key={tech.def.id}
+                className="absolute"
+                style={{
+                  top: `${tech.def.layout.y}px`,
+                  left: `${tech.def.layout.x}px`,
+                }}
+              >
+                <Tech
+                  key={tech.def.id}
+                  tech={tech}
+                  onClick={() => onTechClick(tech)}
+                />
+              </div>
             ))}
 
             <div className="flex h-[85vh]">
@@ -50,9 +72,10 @@ export function TechTree() {
                 return (
                   <div
                     key={era}
-                    className="flex flex-col px-8 w-[1500px]"
+                    className="flex flex-col px-8"
                     style={{
                       background: `linear-gradient(${erasColors[era]}, transparent`,
+                      width: (techBlockWidth + 91) * 3,
                     }}
                   >
                     <div className="p-4 text-2xl text-center font-light tracking-widest">

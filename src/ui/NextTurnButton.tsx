@@ -15,9 +15,11 @@ export function NextTurnButton() {
 
     switch (nextTask.task) {
       case "city":
-        return "production-color";
+        return "text-production";
       case "unit":
         return "";
+      case "chooseTech":
+        return "text-knowledge";
     }
   }
 
@@ -31,6 +33,8 @@ export function NextTurnButton() {
         return "Choose production";
       case "unit":
         return "Unit needs orders";
+      case "chooseTech":
+        return "Choose research";
     }
   }
 

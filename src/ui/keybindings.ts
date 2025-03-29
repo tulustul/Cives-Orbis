@@ -1,6 +1,7 @@
 import { mapUi } from "./mapUi";
+import { useUiState } from "./uiState";
 
-type CommandContext = "map" | "city" | "unit";
+type CommandContext = "map" | "city" | "unit" | "view";
 
 export type CommandFn = () => any;
 
@@ -18,7 +19,8 @@ type KeybindingOptions = {
 };
 
 const contextValidators: Record<CommandContext, () => boolean> = {
-  map: () => !mapUi.selectedCity,
+  map: () => !mapUi.selectedCity && useUiState.getState().view === "none",
+  view: () => useUiState.getState().view !== "none",
   city: () => !!mapUi.selectedCity,
   unit: () => !!mapUi.selectedUnit,
 };

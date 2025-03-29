@@ -1,6 +1,6 @@
 import { RawTechnology } from "@/core/data.interface";
 
-export const TECH_DEFINITIONS: RawTechnology[]  = [
+export const TECH_DEFINITIONS: RawTechnology[] = [
   {
     "id": "tech_society",
     "entityType": "technology",
@@ -10,7 +10,7 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "era": "Copper Age",
     "layout": {
       "x": 50.0,
-      "y": 537.5,
+      "y": 473.00000000000006,
       "linksMiddlePoint": {
         "tech_agriculture": 0.0,
         "tech_animalHusbandry": 0.0,
@@ -24,17 +24,15 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_agriculture",
     "entityType": "technology",
     "name": "Agriculture",
-    "requiredTechnologies": [
-      "tech_society"
-    ],
+    "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
     "layout": {
-      "x": 550.0,
-      "y": 237.5,
+      "x": 490.00000000000006,
+      "y": 209.00000000000003,
       "linksMiddlePoint": {
         "tech_pottery": 0.0,
-        "tech_irrigation": -625.0
+        "tech_irrigation": -484.0000000000001
       }
     }
   },
@@ -42,14 +40,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_animalHusbandry",
     "entityType": "technology",
     "name": "Animal Husbandry",
-    "requiredTechnologies": [
-      "tech_society"
-    ],
+    "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
     "layout": {
-      "x": 550.0,
-      "y": 437.5,
+      "x": 490.00000000000006,
+      "y": 385.00000000000006,
       "linksMiddlePoint": {
         "tech_wheel": 0.0
       }
@@ -59,14 +55,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_pottery",
     "entityType": "technology",
     "name": "Pottery",
-    "requiredTechnologies": [
-      "tech_agriculture"
-    ],
+    "requiredTechnologies": ["tech_agriculture"],
     "cost": 20,
     "era": "Copper Age",
     "layout": {
-      "x": 1050.0,
-      "y": 287.5,
+      "x": 930.0000000000001,
+      "y": 253.00000000000003,
       "linksMiddlePoint": {
         "tech_writing": 0.0,
         "tech_irrigation": 0.0
@@ -77,14 +71,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_wheel",
     "entityType": "technology",
     "name": "Wheel",
-    "requiredTechnologies": [
-      "tech_animalHusbandry"
-    ],
+    "requiredTechnologies": ["tech_animalHusbandry"],
     "cost": 25,
     "era": "Copper Age",
     "layout": {
-      "x": 1050.0,
-      "y": 437.5,
+      "x": 930.0000000000001,
+      "y": 385.00000000000006,
       "linksMiddlePoint": {
         "tech_chariotry": 0.0
       }
@@ -94,14 +86,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_fishing",
     "entityType": "technology",
     "name": "Fishing",
-    "requiredTechnologies": [
-      "tech_society"
-    ],
+    "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
     "layout": {
-      "x": 550.0,
-      "y": 837.5,
+      "x": 490.00000000000006,
+      "y": 737.0000000000001,
       "linksMiddlePoint": {
         "tech_sailing": 0.0
       }
@@ -111,14 +101,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_masonry",
     "entityType": "technology",
     "name": "Masonry",
-    "requiredTechnologies": [
-      "tech_copperWorking"
-    ],
+    "requiredTechnologies": ["tech_copperWorking"],
     "cost": 35,
     "era": "Copper Age",
     "layout": {
-      "x": 1050.0,
-      "y": 675.0,
+      "x": 930.0000000000001,
+      "y": 594.0,
       "linksMiddlePoint": {
         "tech_bronzeWorking": 0.0,
         "tech_construction": 0.0
@@ -129,14 +117,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_sailing",
     "entityType": "technology",
     "name": "Sailing",
-    "requiredTechnologies": [
-      "tech_fishing"
-    ],
+    "requiredTechnologies": ["tech_fishing"],
     "cost": 25,
     "era": "Copper Age",
     "layout": {
-      "x": 1050.0,
-      "y": 875.0,
+      "x": 930.0000000000001,
+      "y": 770.0000000000001,
       "linksMiddlePoint": {
         "tech_shipbuilding": 0.0
       }
@@ -146,14 +132,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_hunting",
     "entityType": "technology",
     "name": "Hunting",
-    "requiredTechnologies": [
-      "tech_society"
-    ],
+    "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
     "layout": {
-      "x": 550.0,
-      "y": 537.5,
+      "x": 490.00000000000006,
+      "y": 473.00000000000006,
       "linksMiddlePoint": {
         "tech_archery": 0.0
       }
@@ -163,14 +147,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_archery",
     "entityType": "technology",
     "name": "Archery",
-    "requiredTechnologies": [
-      "tech_hunting"
-    ],
+    "requiredTechnologies": ["tech_hunting"],
     "cost": 30,
     "era": "Copper Age",
     "layout": {
-      "x": 1050.0,
-      "y": 537.5,
+      "x": 930.0000000000001,
+      "y": 473.00000000000006,
       "linksMiddlePoint": {
         "tech_chariotry": 0.0
       }
@@ -180,14 +162,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_copperWorking",
     "entityType": "technology",
     "name": "Copper Working",
-    "requiredTechnologies": [
-      "tech_society"
-    ],
+    "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
     "layout": {
-      "x": 550.0,
-      "y": 637.5,
+      "x": 490.00000000000006,
+      "y": 561.0,
       "linksMiddlePoint": {
         "tech_masonry": 0.0
       }
@@ -197,14 +177,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_writing",
     "entityType": "technology",
     "name": "Writing",
-    "requiredTechnologies": [
-      "tech_pottery"
-    ],
+    "requiredTechnologies": ["tech_pottery"],
     "cost": 40,
     "era": "Bronze Age",
     "layout": {
-      "x": 1550.0,
-      "y": 287.5,
+      "x": 1370.0,
+      "y": 253.00000000000003,
       "linksMiddlePoint": {
         "tech_calendar": 0.0,
         "tech_mathematics": 0.0,
@@ -216,15 +194,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_chariotry",
     "entityType": "technology",
     "name": "Chariotry",
-    "requiredTechnologies": [
-      "tech_wheel",
-      "tech_archery"
-    ],
+    "requiredTechnologies": ["tech_wheel", "tech_archery"],
     "cost": 50,
     "era": "Bronze Age",
     "layout": {
-      "x": 1550.0,
-      "y": 487.5,
+      "x": 1370.0,
+      "y": 429.00000000000006,
       "linksMiddlePoint": {
         "tech_horsebackRiding": 0.0
       }
@@ -234,16 +209,14 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_bronzeWorking",
     "entityType": "technology",
     "name": "Bronze Working",
-    "requiredTechnologies": [
-      "tech_masonry"
-    ],
+    "requiredTechnologies": ["tech_masonry"],
     "cost": 30,
     "era": "Bronze Age",
     "layout": {
-      "x": 1550.0,
-      "y": 625.0,
+      "x": 1370.0,
+      "y": 550.0,
       "linksMiddlePoint": {
-        "tech_metallurgy": 62.5
+        "tech_metallurgy": 48.400000000000006
       }
     }
   },
@@ -251,15 +224,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_calendar",
     "entityType": "technology",
     "name": "Calendar",
-    "requiredTechnologies": [
-      "tech_writing",
-      "tech_irrigation"
-    ],
+    "requiredTechnologies": ["tech_writing", "tech_irrigation"],
     "cost": 40,
     "era": "Bronze Age",
     "layout": {
-      "x": 2050.0,
-      "y": 187.5,
+      "x": 1810.0000000000002,
+      "y": 165.0,
       "linksMiddlePoint": {
         "tech_astrology": 0.0
       }
@@ -269,14 +239,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_mathematics",
     "entityType": "technology",
     "name": "Mathematics",
-    "requiredTechnologies": [
-      "tech_writing"
-    ],
+    "requiredTechnologies": ["tech_writing"],
     "cost": 45,
     "era": "Bronze Age",
     "layout": {
-      "x": 2050.0,
-      "y": 287.5,
+      "x": 1810.0000000000002,
+      "y": 253.00000000000003,
       "linksMiddlePoint": {
         "tech_astrology": 0.0,
         "tech_currency": 0.0
@@ -287,15 +255,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_astrology",
     "entityType": "technology",
     "name": "Astrology",
-    "requiredTechnologies": [
-      "tech_calendar",
-      "tech_mathematics"
-    ],
+    "requiredTechnologies": ["tech_calendar", "tech_mathematics"],
     "cost": 45,
     "era": "Bronze Age",
     "layout": {
-      "x": 2550.0,
-      "y": 187.5,
+      "x": 2250.0,
+      "y": 165.0,
       "linksMiddlePoint": {
         "tech_astronomy": 0.0
       }
@@ -305,15 +270,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_irrigation",
     "entityType": "technology",
     "name": "Irrigation",
-    "requiredTechnologies": [
-      "tech_agriculture",
-      "tech_pottery"
-    ],
+    "requiredTechnologies": ["tech_agriculture", "tech_pottery"],
     "cost": 50,
     "era": "Bronze Age",
     "layout": {
-      "x": 1550.0,
-      "y": 187.5,
+      "x": 1370.0,
+      "y": 165.0,
       "linksMiddlePoint": {
         "tech_calendar": 0.0
       }
@@ -323,16 +285,14 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_construction",
     "entityType": "technology",
     "name": "Constructions",
-    "requiredTechnologies": [
-      "tech_masonry"
-    ],
+    "requiredTechnologies": ["tech_masonry"],
     "cost": 60,
     "era": "Bronze Age",
     "layout": {
-      "x": 1550.0,
-      "y": 725.0,
+      "x": 1370.0,
+      "y": 638.0,
       "linksMiddlePoint": {
-        "tech_shipbuilding": -62.5
+        "tech_shipbuilding": -48.400000000000006
       }
     }
   },
@@ -340,14 +300,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_horsebackRiding",
     "entityType": "technology",
     "name": "Horseback Riding",
-    "requiredTechnologies": [
-      "tech_chariotry"
-    ],
+    "requiredTechnologies": ["tech_chariotry"],
     "cost": 50,
     "era": "Bronze Age",
     "layout": {
-      "x": 2550.0,
-      "y": 650.0,
+      "x": 2250.0,
+      "y": 572.0,
       "linksMiddlePoint": {
         "tech_stirrup": 0.0
       }
@@ -357,14 +315,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_currency",
     "entityType": "technology",
     "name": "Currency",
-    "requiredTechnologies": [
-      "tech_mathematics"
-    ],
+    "requiredTechnologies": ["tech_mathematics"],
     "cost": 50,
     "era": "Bronze Age",
     "layout": {
-      "x": 2550.0,
-      "y": 287.5,
+      "x": 2250.0,
+      "y": 253.00000000000003,
       "linksMiddlePoint": {}
     }
   },
@@ -372,14 +328,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_engineering",
     "entityType": "technology",
     "name": "Engineering",
-    "requiredTechnologies": [
-      "tech_ironWorking"
-    ],
+    "requiredTechnologies": ["tech_ironWorking"],
     "cost": 60,
     "era": "Bronze Age",
     "layout": {
-      "x": 3550.0,
-      "y": 625.0,
+      "x": 3130.0000000000005,
+      "y": 550.0,
       "linksMiddlePoint": {
         "tech_mechanics": 0.0,
         "tech_cropRotation": 0.0
@@ -390,14 +344,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_optics",
     "entityType": "technology",
     "name": "Optics",
-    "requiredTechnologies": [
-      "tech_glassBlowing"
-    ],
+    "requiredTechnologies": ["tech_glassBlowing"],
     "cost": 50,
     "era": "Bronze Age",
     "layout": {
-      "x": 3550.0,
-      "y": 875.0,
+      "x": 3130.0000000000005,
+      "y": 770.0000000000001,
       "linksMiddlePoint": {}
     }
   },
@@ -405,15 +357,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_shipbuilding",
     "entityType": "technology",
     "name": "Ship Building",
-    "requiredTechnologies": [
-      "tech_sailing",
-      "tech_construction"
-    ],
+    "requiredTechnologies": ["tech_sailing", "tech_construction"],
     "cost": 65,
     "era": "Bronze Age",
     "layout": {
-      "x": 2050.0,
-      "y": 875.0,
+      "x": 1810.0000000000002,
+      "y": 770.0000000000001,
       "linksMiddlePoint": {}
     }
   },
@@ -421,14 +370,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_literature",
     "entityType": "technology",
     "name": "Literature",
-    "requiredTechnologies": [
-      "tech_writing"
-    ],
+    "requiredTechnologies": ["tech_writing"],
     "cost": 50,
     "era": "Bronze Age",
     "layout": {
-      "x": 2050.0,
-      "y": 412.5,
+      "x": 1810.0000000000002,
+      "y": 363.00000000000006,
       "linksMiddlePoint": {
         "tech_cartography": 0.0,
         "tech_philosophy": 0.0,
@@ -440,14 +387,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_metallurgy",
     "entityType": "technology",
     "name": "Metallurgy",
-    "requiredTechnologies": [
-      "tech_bronzeWorking"
-    ],
+    "requiredTechnologies": ["tech_bronzeWorking"],
     "cost": 80,
     "era": "Iron Age",
     "layout": {
-      "x": 2050.0,
-      "y": 725.0,
+      "x": 1810.0000000000002,
+      "y": 638.0,
       "linksMiddlePoint": {
         "tech_jewelry": 0.0,
         "tech_ironWorking": 0.0
@@ -458,14 +403,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_cartography",
     "entityType": "technology",
     "name": "Cartography",
-    "requiredTechnologies": [
-      "tech_literature"
-    ],
+    "requiredTechnologies": ["tech_literature"],
     "cost": 60,
     "era": "Bronze Age",
     "layout": {
-      "x": 2550.0,
-      "y": 550.0,
+      "x": 2250.0,
+      "y": 484.00000000000006,
       "linksMiddlePoint": {}
     }
   },
@@ -473,14 +416,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_ironWorking",
     "entityType": "technology",
     "name": "Iron Working",
-    "requiredTechnologies": [
-      "tech_metallurgy"
-    ],
+    "requiredTechnologies": ["tech_metallurgy"],
     "cost": 60,
     "era": "Iron Age",
     "layout": {
-      "x": 3075.0,
-      "y": 725.0,
+      "x": 2712.0,
+      "y": 638.0,
       "linksMiddlePoint": {
         "tech_stirrup": 0.0,
         "tech_engineering": 0.0,
@@ -492,14 +433,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_philosophy",
     "entityType": "technology",
     "name": "Philosophy",
-    "requiredTechnologies": [
-      "tech_literature"
-    ],
+    "requiredTechnologies": ["tech_literature"],
     "cost": 70,
     "era": "Iron Age",
     "layout": {
-      "x": 3050.0,
-      "y": 362.5,
+      "x": 2690.0,
+      "y": 319.0,
       "linksMiddlePoint": {
         "tech_education": 0.0,
         "tech_anatomy": 0.0
@@ -510,14 +449,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_poetry",
     "entityType": "technology",
     "name": "Drama and Poetry",
-    "requiredTechnologies": [
-      "tech_literature"
-    ],
+    "requiredTechnologies": ["tech_literature"],
     "cost": 70,
     "era": "Iron Age",
     "layout": {
-      "x": 3050.0,
-      "y": 462.5,
+      "x": 2690.0,
+      "y": 407.00000000000006,
       "linksMiddlePoint": {}
     }
   },
@@ -525,14 +462,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_astronomy",
     "entityType": "technology",
     "name": "Astronomy",
-    "requiredTechnologies": [
-      "tech_astrology"
-    ],
+    "requiredTechnologies": ["tech_astrology"],
     "cost": 90,
     "era": "Iron Age",
     "layout": {
-      "x": 3050.0,
-      "y": 187.5,
+      "x": 2690.0,
+      "y": 165.0,
       "linksMiddlePoint": {}
     }
   },
@@ -540,15 +475,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_stirrup",
     "entityType": "technology",
     "name": "Stirrup",
-    "requiredTechnologies": [
-      "tech_horsebackRiding",
-      "tech_ironWorking"
-    ],
+    "requiredTechnologies": ["tech_horsebackRiding", "tech_ironWorking"],
     "cost": 90,
     "era": "Iron Age",
     "layout": {
-      "x": 3550.0,
-      "y": 525.0,
+      "x": 3130.0000000000005,
+      "y": 462.00000000000006,
       "linksMiddlePoint": {}
     }
   },
@@ -556,14 +488,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_jewelry",
     "entityType": "technology",
     "name": "Jewelry",
-    "requiredTechnologies": [
-      "tech_metallurgy"
-    ],
+    "requiredTechnologies": ["tech_metallurgy"],
     "cost": 80,
     "era": "Iron Age",
     "layout": {
-      "x": 2550.0,
-      "y": 825.0,
+      "x": 2250.0,
+      "y": 726.0000000000001,
       "linksMiddlePoint": {
         "tech_glassBlowing": 0.0
       }
@@ -573,14 +503,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_education",
     "entityType": "technology",
     "name": "Education",
-    "requiredTechnologies": [
-      "tech_philosophy"
-    ],
+    "requiredTechnologies": ["tech_philosophy"],
     "cost": 100,
     "era": "Iron Age",
     "layout": {
-      "x": 3550.0,
-      "y": 312.5,
+      "x": 3130.0000000000005,
+      "y": 275.0,
       "linksMiddlePoint": {
         "tech_alchemy": 0.0,
         "tech_medicine": 0.0
@@ -591,14 +519,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_anatomy",
     "entityType": "technology",
     "name": "Anatomy",
-    "requiredTechnologies": [
-      "tech_philosophy"
-    ],
+    "requiredTechnologies": ["tech_philosophy"],
     "cost": 90,
     "era": "Iron Age",
     "layout": {
-      "x": 3550.0,
-      "y": 212.5,
+      "x": 3130.0000000000005,
+      "y": 187.00000000000003,
       "linksMiddlePoint": {
         "tech_medicine": 0.0
       }
@@ -608,14 +534,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_metalArmor",
     "entityType": "technology",
     "name": "Metal Armor",
-    "requiredTechnologies": [
-      "tech_ironWorking"
-    ],
+    "requiredTechnologies": ["tech_ironWorking"],
     "cost": 80,
     "era": "Iron Age",
     "layout": {
-      "x": 3550.0,
-      "y": 725.0,
+      "x": 3130.0000000000005,
+      "y": 638.0,
       "linksMiddlePoint": {}
     }
   },
@@ -623,14 +547,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_glassBlowing",
     "entityType": "technology",
     "name": "Glass Blowing",
-    "requiredTechnologies": [
-      "tech_jewelry"
-    ],
+    "requiredTechnologies": ["tech_jewelry"],
     "cost": 85,
     "era": "Iron Age",
     "layout": {
-      "x": 3075.0,
-      "y": 875.0,
+      "x": 2712.0,
+      "y": 770.0000000000001,
       "linksMiddlePoint": {
         "tech_optics": 0.0
       }
@@ -640,14 +562,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_mechanics",
     "entityType": "technology",
     "name": "Mechanics",
-    "requiredTechnologies": [
-      "tech_engineering"
-    ],
+    "requiredTechnologies": ["tech_engineering"],
     "cost": 90,
     "era": "Iron Age",
     "layout": {
-      "x": 4050.0,
-      "y": 625.0,
+      "x": 3570.0000000000005,
+      "y": 550.0,
       "linksMiddlePoint": {}
     }
   },
@@ -655,14 +575,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_cropRotation",
     "entityType": "technology",
     "name": "Crop Rotation",
-    "requiredTechnologies": [
-      "tech_engineering"
-    ],
+    "requiredTechnologies": ["tech_engineering"],
     "cost": 90,
     "era": "Iron Age",
     "layout": {
-      "x": 4050.0,
-      "y": 500.0,
+      "x": 3570.0000000000005,
+      "y": 440.00000000000006,
       "linksMiddlePoint": {}
     }
   },
@@ -670,15 +588,12 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_medicine",
     "entityType": "technology",
     "name": "Medicine",
-    "requiredTechnologies": [
-      "tech_anatomy",
-      "tech_education"
-    ],
+    "requiredTechnologies": ["tech_anatomy", "tech_education"],
     "cost": 100,
     "era": "Iron Age",
     "layout": {
-      "x": 4050.0,
-      "y": 212.5,
+      "x": 3570.0000000000005,
+      "y": 187.00000000000003,
       "linksMiddlePoint": {}
     }
   },
@@ -686,15 +601,13 @@ export const TECH_DEFINITIONS: RawTechnology[]  = [
     "id": "tech_alchemy",
     "entityType": "technology",
     "name": "Alchemy",
-    "requiredTechnologies": [
-      "tech_education"
-    ],
+    "requiredTechnologies": ["tech_education"],
     "cost": 100,
     "era": "Iron Age",
     "layout": {
-      "x": 4050.0,
-      "y": 312.5,
+      "x": 3570.0000000000005,
+      "y": 275.0,
       "linksMiddlePoint": {}
     }
   }
-]
+];

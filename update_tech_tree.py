@@ -4,6 +4,8 @@ import json
 import re
 from collections import defaultdict
 
+SCALE_X = 2.2
+
 
 def extract_tech_tree(file_path: str):
     # Parse the XML
@@ -92,9 +94,6 @@ def extract_tech_tree(file_path: str):
                         source_width = cell_id_to_geometry[source_id][2]
                         original_mid_point = (source_x + source_width + target_x) / 2
                         mid_point = float(points[0].get("x", 0))
-                        import pdb
-
-                        pdb.set_trace()
                         mid_point = mid_point - original_mid_point
 
                 # If no array points, calculate the midpoint
@@ -102,7 +101,7 @@ def extract_tech_tree(file_path: str):
                     mid_point = 0
 
                 layout = blocks_by_name[source_name]["layout"]
-                layout["linksMiddlePoint"][target_name] = mid_point * 2.5
+                layout["linksMiddlePoint"][target_name] = mid_point * SCALE_X
 
     return blocks
 
@@ -136,10 +135,10 @@ def update_techs_file(diagram_techs: list[dict], techs_file_path: str):
         diagram_tech = diagram_tech_map[tech["name"]]
         tech["requiredTechnologies"] = required_techs[tech["name"]]
         tech["layout"] = {
-            "x": (diagram_tech["layout"]["x"]) * 2.5 + 50,
-            "y": (diagram_tech["layout"]["y"]) * 2.5,
+            "x": (diagram_tech["layout"]["x"]) * SCALE_X + 50,
+            "y": (diagram_tech["layout"]["y"]) * SCALE_X,
             "linksMiddlePoint": {
-                name_to_id[name]: value * 2.5
+                name_to_id[name]: value * SCALE_X
                 for name, value in diagram_tech["layout"]["linksMiddlePoint"].items()
             },
         }

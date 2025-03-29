@@ -15,6 +15,7 @@ import { PlayerYields } from "../shared";
 import { InternalPolitics } from "./internal-politics";
 import { AreaCore } from "./area";
 import { PassableArea } from "./tiles-map";
+import { Knowledge } from "./knowledge";
 
 export const PLAYER_COLORS: number[] = [
   0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff, 0x999999,
@@ -58,6 +59,8 @@ export class PlayerCore {
   ai: AIPlayer | null = null;
 
   internalPolitics = new InternalPolitics();
+
+  knowledge = new Knowledge(this);
 
   suppliedTiles = new Set<TileCore>();
   potentialSuppliedTiles = new Set<TileCore>();
@@ -143,6 +146,7 @@ export class PlayerCore {
     this.updateCitiesWithoutProduction();
     this.updateUnitsWithoutOrders();
     this.updateVisibleTiles();
+    this.knowledge.nextTurn();
   }
 
   updateVisibleTiles() {

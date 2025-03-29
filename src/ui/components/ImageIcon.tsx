@@ -26,16 +26,16 @@ const tint: Record<EntityType, string> = {
 const images = import.meta.glob("@/assets/rich-icons/**/*.png");
 
 const clsSizes: Record<Size, string> = {
-  tiny: "w-[32px] min-w-[32px] h-[32px]",
-  small: "w-[40px] min-w-[40px] h-[40px]",
-  medium: "w-[80px] min-w-[80px] h-[80px]",
+  tiny: "w-[28px] min-w-[28px] h-[28px]",
+  small: "w-[34px] min-w-[34px] h-[34px]",
+  medium: "w-[72px] min-w-[72px] h-[72px]",
   large: "w-[128px] min-w-[128px] h-[128px]",
 };
 
 const clsFrameSizes: Record<Size, string> = {
-  tiny: "w-[42px] min-w-[42px] h-[42px]",
-  small: "w-[46px] min-w-[46px] h-[46px]",
-  medium: "w-[93px] min-w-[93px] h-[93px]",
+  tiny: "w-[32px] min-w-[32px] h-[32px]",
+  small: "w-[40px] min-w-[40px] h-[40px]",
+  medium: "w-[85px] min-w-[85px] h-[85px]",
   large: "w-[145px] min-w-[145px] h-[145px]",
 };
 

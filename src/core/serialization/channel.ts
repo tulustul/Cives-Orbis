@@ -25,6 +25,7 @@ import {
   UnitType,
 } from "../data.interface";
 import { UnitAction } from "../unit-actions";
+import { Knowledge, KnowledgeTechState } from "../knowledge";
 
 export interface GameChanneled {
   turn: number;
@@ -540,13 +541,22 @@ export type EntityMinimalChanneled = {
   entityType: EntityType;
 };
 
-export type TechnologyChanneled = EntityMinimalChanneled & {
+export type TechDefChanneled = EntityMinimalChanneled & {
   entityType: "technology";
   cost: number;
   requiredTechs: string[];
   products: EntityMinimalChanneled[];
   era: TechEra;
   layout: TechLayout;
+};
+
+export type TechKnowledgeChanneled = {
+  def: TechDefChanneled;
+  turns: number;
+  state: KnowledgeTechState;
+  queuePosition: number | null;
+  accumulated: number;
+  nextAccumulated: number;
 };
 
 export function entityToMinimalChannel(entity: Entity): EntityMinimalChanneled {
@@ -557,7 +567,7 @@ export function entityToMinimalChannel(entity: Entity): EntityMinimalChanneled {
   };
 }
 
-export function techToChannel(entity: Technology): TechnologyChanneled {
+export function techToChannel(entity: Technology): TechDefChanneled {
   return {
     id: entity.id,
     entityType: entity.entityType,
@@ -567,6 +577,21 @@ export function techToChannel(entity: Technology): TechnologyChanneled {
     products: entity.products.map(entityToMinimalChannel),
     era: entity.era,
     layout: entity.layout,
+  };
+}
+
+export function knowledgeTechToChannel(
+  knowledge: Knowledge,
+  tech: Technology
+): TechKnowledgeChanneled {
+  const accumulated = knowledge.accumulated.get(tech) ?? 0;
+  return {
+    def: techToChannel(tech),
+    turns: knowledge.getTurnsToResearch(tech),
+    state: knowledge.getTechState(tech),
+    queuePosition: knowledge.getTechQueuePosition(tech),
+    accumulated,
+    nextAccumulated: accumulated + knowledge.player.yields.income.knowledge,
   };
 }
 
@@ -646,4 +671,4 @@ export function entityToChannel(entity: Entity): EntityChanneled {
 
 export type ProductChanneled = BuildingChanneled | UnitDefChanneled;
 
-export type EntityChanneled = TechnologyChanneled | ProductChanneled;
+export type EntityChanneled = TechDefChanneled | ProductChanneled;

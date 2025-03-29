@@ -1,10 +1,13 @@
-import { TechnologyChanneled } from "@/core/serialization/channel";
+import {
+  TechDefChanneled,
+  TechKnowledgeChanneled,
+} from "@/core/serialization/channel";
 import styles from "./TechTree.module.css";
 import { useRef } from "react";
-import { blockHeight, blockWidth } from "./const";
+import { techBlockHeight, techBlockWidth } from "./const";
 
 type Props = {
-  techs: TechnologyChanneled[];
+  techs: TechKnowledgeChanneled[];
 };
 
 type Point = { x: number; y: number };
@@ -22,24 +25,24 @@ const radius = 30;
 export function TechLinks({ techs }: Props) {
   const elRef = useRef<HTMLDivElement>(null);
 
-  const techsMap = new Map<string, TechnologyChanneled>();
-  techs.forEach((tech) => techsMap.set(tech.id, tech));
+  const techsMap = new Map<string, TechDefChanneled>();
+  techs.forEach((tech) => techsMap.set(tech.def.id, tech.def));
 
   const links = techs.flatMap((tech) =>
-    Object.entries(tech.layout.linksMiddlePoint).map((item) => {
+    Object.entries(tech.def.layout.linksMiddlePoint).map((item) => {
       const nextTech = techsMap.get(item[0])!;
       const midPointX = item[1];
 
       return {
-        fromTech: tech.id,
+        fromTech: tech.def.id,
         toTech: nextTech.id,
         from: {
-          x: tech.layout.x + blockWidth,
-          y: tech.layout.y + blockHeight / 2,
+          x: tech.def.layout.x + techBlockWidth,
+          y: tech.def.layout.y + techBlockHeight / 2,
         },
         to: {
           x: nextTech.layout.x - 5,
-          y: nextTech.layout.y + blockHeight / 2,
+          y: nextTech.layout.y + techBlockHeight / 2,
         },
         midPointX,
       } as Link;

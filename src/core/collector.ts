@@ -11,8 +11,12 @@ import {
   tileToTileCoords,
   tilesToTileCoordsWithNeighbours,
   CityChanneled,
+  knowledgeTechToChannel,
+  TechKnowledgeChanneled,
 } from "./serialization/channel";
 import { PlayerYields } from "../shared";
+import { Technology } from "./data.interface";
+import { Game } from "./game";
 
 export type UnitMoveCore = {
   unit: UnitCore;
@@ -46,11 +50,13 @@ class Collector {
   tilesShowed = new Set<TileCore>();
   tilesShowedAdded = new Set<TileCore>();
 
+  tech: Technology | null | undefined = undefined;
+
   viewBoundingBox: PlayerViewBoundingBox | null = null;
 
   turn: number | undefined;
 
-  flush() {
+  flush(game: Game) {
     const changes = this.changes;
 
     for (const unit of this.units) {
@@ -132,6 +138,16 @@ class Collector {
         data: Array.from(this.tilesShowedAdded).map(tileToTileCoords),
       });
     }
+
+    if (this.tech !== undefined) {
+      let data: TechKnowledgeChanneled | null = null;
+      if (this.tech) {
+        data = knowledgeTechToChannel(game.trackedPlayer.knowledge, this.tech);
+      }
+      changes.push({ type: "tech.updated", data });
+    }
+
+    this.tech = undefined;
 
     for (const move of this.moves) {
       changes.push({ type: "unit.moved", data: unitMoveToChannel(move) });

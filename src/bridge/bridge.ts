@@ -7,10 +7,10 @@ import {
   MapGeneratorOptions,
   StatsGetChanneled,
   StatsGetOptions,
-  TilesExploredChanneled,
   TileGetHoverDetailsOptions,
   TileGetInRangeOptions,
   TileSetResourceOptions,
+  TilesExploredChanneled,
   TileUpdateOptions,
   UnitDoActionOptions,
   UnitFindPathOptions,
@@ -28,7 +28,7 @@ import {
   GameInfo,
   GameStartInfo,
   PlayerChanneled,
-  TechnologyChanneled,
+  TechKnowledgeChanneled,
   TileChanneled,
   TileCoords,
   TileDetailsChanneled,
@@ -62,6 +62,7 @@ export const bridge = {
   player: {
     tracked$: makeObservable<number>("trackedPlayer.changed"),
     yields$: makeObservable<PlayerYields>("trackedPlayer.yields"),
+    getYields: () => makeCommand<PlayerYields>("player.getYields"),
     getSuppliedTiles: (playerId: number) =>
       makeCommand<TilesCoordsWithNeighbours[]>(
         "player.getSuppliedTiles",
@@ -157,8 +158,11 @@ export const bridge = {
       makeCommand<TilesCoordsWithNeighbours[]>("area.getTiles", areaId),
   },
   technologies: {
-    getAll: () => makeCommand<TechnologyChanneled[]>("tech.getAll"),
-    select: (technology: TechnologyChanneled) =>
-      makeCommand<void>("tech.select", technology),
+    researchUpdated$: makeObservable<TechKnowledgeChanneled | null>(
+      "tech.updated"
+    ),
+    getAll: () => makeCommand<TechKnowledgeChanneled[]>("tech.getAll"),
+    getResearch: () => makeCommand<TechKnowledgeChanneled>("tech.getResearch"),
+    research: (techId: string) => makeCommand<void>("tech.research", techId),
   },
 };

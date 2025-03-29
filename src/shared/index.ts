@@ -2,10 +2,12 @@ import { Yields } from "../core/yields";
 
 export * from "./tile.interface";
 
-export interface PlayerTask {
-  task: "city" | "unit";
-  id: number;
-}
+export type PlayerTask =
+  | {
+      task: "city" | "unit";
+      id: number;
+    }
+  | { task: "chooseTech" };
 
 export interface PlayerYields {
   perTurn: Yields;

@@ -1,20 +1,30 @@
-import { TechnologyChanneled } from "@/core/serialization/channel";
+import { TechKnowledgeChanneled } from "@/core/serialization/channel";
 
 import styles from "./TechTree.module.css";
 
-import { ImageIcon } from "@/ui/components";
+import { KnowledgeTechState } from "@/core/knowledge";
+import { ImageIcon, ProgressBar } from "@/ui/components";
 import { EntityTooltip } from "@/ui/entity";
+import { formatTurns } from "@/utils";
+import clsx from "clsx";
+import { CSSProperties } from "react";
+
+import { techBlockHeight, techBlockWidth } from "./const";
 
 type Props = {
-  tech: TechnologyChanneled;
+  tech: TechKnowledgeChanneled;
+  onClick?: () => void;
+  flexibleWidth?: boolean;
 };
 
-export function Tech({ tech }: Props) {
+export function Tech({ tech, onClick, flexibleWidth }: Props) {
   const handleMouseEnter = () => {
-    const currentTech = document.querySelector(`[data-tech-id="${tech.id}"]`);
+    const currentTech = document.querySelector(
+      `[data-tech-id="${tech.def.id}"]`
+    );
     currentTech?.classList.add(styles.techNodeHighlighted);
 
-    tech.requiredTechs.forEach((prereqId) => {
+    tech.def.requiredTechs.forEach((prereqId) => {
       const prereqNode = document.querySelector(`[data-tech-id="${prereqId}"]`);
       prereqNode?.classList.add(styles.techNodeHighlighted);
     });
@@ -26,13 +36,13 @@ export function Tech({ tech }: Props) {
       if (
         techId &&
         techElement.dataset.prereqs &&
-        techElement.dataset.prereqs.includes(tech.id)
+        techElement.dataset.prereqs.includes(tech.def.id)
       ) {
         node.classList.add(styles.techNodeHighlighted);
       }
     });
 
-    highlightTechLinks(tech.id);
+    highlightTechLinks(tech.def.id);
   };
 
   const handleMouseLeave = () => {
@@ -45,44 +55,105 @@ export function Tech({ tech }: Props) {
       .forEach((node) => node.classList.remove(styles.techLinkHighlighted));
   };
 
+  const stateStyles: Record<KnowledgeTechState, string> = {
+    available: "border-gray-900",
+    discovered: "border-amber-100",
+    // discovered: "border-[#aa8a07]",
+    researching: "",
+    queued: "opacity-70 bg-gray-900/50 border-gray-900",
+    // unavailable: "opacity-40 border-gray-900",
+    unavailable: "opacity-70 bg-gray-900/30 border-gray-900",
+  };
+
+  const stateRawStyles: Record<KnowledgeTechState, CSSProperties> = {
+    available: {
+      background: "linear-gradient(0deg, #0d0f18, #10192c, #292a34)",
+    },
+    discovered: {
+      background: "linear-gradient(0deg, #553600, #ba7600, #aa8a07)",
+    },
+    researching: {
+      background:
+        "linear-gradient(0deg, rgb(30 44 54), rgb(36 65 93), rgb(67 93 114))",
+    },
+    queued: {
+      background: "linear-gradient(0deg, #0d0f18, #10192c, #292a34)",
+    },
+    unavailable: {
+      // background: "linear-gradient(0deg, #0d0f18, #10192c, #292a34)",
+    },
+  };
+
   return (
     <div
-      className={
-        "absolute flex items-center w-100 h-[80px] bg-gray-900 rounded-l-[50px] rounded-r-xl border-2 border-gray-900 text-amber-100 box-content cursor-pointer"
-      }
+      className={clsx(
+        "flex items-center rounded-l-[50px] rounded-xl border-2  text-amber-100 box-content cursor-pointer pointer-events-auto ",
+        stateStyles[tech.state]
+      )}
       style={{
-        top: `${tech.layout.y}px`,
-        left: `${tech.layout.x}px`,
+        // width: flexibleWidth ? "auto" : techBlockWidth,
+        width: techBlockWidth,
+        height: techBlockHeight,
         filter: "drop-shadow(rgba(0, 0, 0, 0.4) 2px 3px 3px)",
         boxShadow: "0 0 3px 0px rgba(255, 255, 255, 0.3) inset",
-        background: "linear-gradient(0deg, #0d0f18, #10192c, #292a34)",
+        ...stateRawStyles[tech.state],
       }}
-      data-tech-id={tech.id}
-      data-era={tech.era}
-      data-prereqs={tech.requiredTechs.join(",")}
+      data-tech-id={tech.def.id}
+      data-era={tech.def.era}
+      data-prereqs={tech.def.requiredTechs.join(",")}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={onClick}
     >
-      <ImageIcon
-        name={tech.id}
-        size="medium"
-        frameType="technology"
-        className="-left-2"
-      />
+      <EntityTooltip entityId={tech.def.id}>
+        <ImageIcon
+          name={tech.def.id}
+          size="medium"
+          frameType="technology"
+          className="-left-2 z-10"
+        />
+      </EntityTooltip>
 
-      <div className="flex flex-col justify-between pr-4 pb-1 w-full h-full">
-        <div className={styles.techHeader}>
-          <div className={styles.techName}>{tech.name}</div>
-          <div className={styles.techTurns}>{tech.cost} science</div>
+      <div className="flex flex-col justify-between pr-2 pt-[2px] pb-[6px] w-full h-full">
+        <div className="flex justify-between gap-4 items-center">
+          <div className="font-bold text-sm text-shadow">{tech.def.name}</div>
+          {tech.state !== "discovered" && (
+            <div className="text-xs">{formatTurns(tech.turns)} turns</div>
+          )}
         </div>
-        <div className="flex gap-1">
-          {tech.products.map((p) => (
+        <div className="flex gap-[2px]">
+          {tech.def.products.map((p) => (
             <EntityTooltip key={p.id} entityId={p.id}>
               <ImageIcon name={p.id} size="small" frameType={p.entityType} />
             </EntityTooltip>
           ))}
         </div>
+        {tech.state === "researching" && (
+          <>
+            <div className={clsx(styles.bubbles, styles.bubblesLayer1)} />
+            <div className={clsx(styles.bubbles, styles.bubblesLayer2)} />
+          </>
+        )}
+
+        {tech.state === "researching" && (
+          <div className="absolute w-full h-full left-0 top-0 opacity-80 -z-10">
+            <ProgressBar
+              className="[--progress-bar-height:100%] [--progress-bar-color:#6276b2] [--progress-bar-total-color:transparent]"
+              progress={tech.accumulated}
+              total={tech.def.cost}
+              nextProgress={tech.nextAccumulated}
+            />
+          </div>
+        )}
       </div>
+      {tech.queuePosition && (
+        <div
+          className="absolute bottom-0 right-0 rounded-full bg-gray-900 border-2 border-black w-6 h-6 flex items-center justify-center text-xs translate-1/3"
+          style={{ boxShadow: "0 0 3px 0px rgba(255, 255, 255, 0.3) inset" }}
+        >
+          {tech.queuePosition}
+        </div>
+      )}
     </div>
   );
 }

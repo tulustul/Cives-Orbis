@@ -9,6 +9,7 @@ import {
   getEntityById,
   getIdleProductById,
   getResourceDefinitionById,
+  getTechById,
   getUnitById,
   TECHNOLOGIES,
 } from "./core/data-manager";
@@ -37,9 +38,9 @@ import {
   entityToChannel,
   GameStartInfo,
   gameToGameStartInfo,
+  knowledgeTechToChannel,
   PlayerChanneled,
   playerToChannel,
-  techToChannel,
   TileChanneled,
   TileCoords,
   TileDetailsChanneled,
@@ -59,7 +60,7 @@ import { StatsData } from "./core/stats";
 import { UnitOrder } from "./core/unit";
 import { UnitAction } from "./core/unit-actions";
 import { RealisticMapGenerator } from "./map-generators/realistic";
-import { BaseTile, PlayerTask } from "./shared";
+import { BaseTile, PlayerTask, PlayerYields } from "./shared";
 import { getTilesInRange } from "./shared/hex-math";
 
 let game: Game;
@@ -76,6 +77,7 @@ const HANDLERS = {
   "trackedPlayer.set": setTrackedPlayer,
 
   "player.getSuppliedTiles": getSuppliedTiles,
+  "player.getYields": getYields,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -117,7 +119,8 @@ const HANDLERS = {
   "stats.get": statsGet,
 
   "tech.getAll": techGetAll,
-  "tech.select": techSelect,
+  "tech.getResearch": techGetResearch,
+  "tech.research": techResearch,
 };
 
 addEventListener("message", ({ data }) => {
@@ -131,7 +134,7 @@ addEventListener("message", ({ data }) => {
 
   const result = handler(data.data);
 
-  const changes = collector.flush();
+  const changes = collector.flush(game);
 
   game.trackedPlayer.updateCitiesWithoutProduction();
   game.trackedPlayer.updateUnitsWithoutOrders();
@@ -148,6 +151,13 @@ function getNextTask(): PlayerTask | null {
     return null;
   }
 
+  if (p.unitsWithoutOrders.length) {
+    return {
+      task: "unit",
+      id: p.unitsWithoutOrders[0].id,
+    };
+  }
+
   if (p.citiesWithoutProduction.length) {
     return {
       task: "city",
@@ -155,11 +165,8 @@ function getNextTask(): PlayerTask | null {
     };
   }
 
-  if (p.unitsWithoutOrders.length) {
-    return {
-      task: "unit",
-      id: p.unitsWithoutOrders[0].id,
-    };
+  if (!p.knowledge.researchingTech) {
+    return { task: "chooseTech" };
   }
 
   return null;
@@ -281,6 +288,10 @@ function getSuppliedTiles(playerId: number): TilesCoordsWithNeighbours[] {
   }
 
   return Array.from(player.suppliedTiles).map(tilesToTileCoordsWithNeighbours);
+}
+
+function getYields(): PlayerYields {
+  return game.trackedPlayer.yields;
 }
 
 export type UnitSpawnOptions = {
@@ -752,9 +763,20 @@ export function statsGet(options: StatsGetOptions): StatsGetChanneled[] {
 }
 
 function techGetAll() {
-  return TECHNOLOGIES.map(techToChannel);
+  return TECHNOLOGIES.map((tech) =>
+    knowledgeTechToChannel(game.trackedPlayer.knowledge, tech)
+  );
 }
 
-function techSelect() {
-  //TODO
+function techGetResearch() {
+  const knowledge = game.trackedPlayer.knowledge;
+  if (!knowledge.researchingTech) {
+    return null;
+  }
+  return knowledgeTechToChannel(knowledge, knowledge.researchingTech);
+}
+
+function techResearch(techId: string) {
+  const tech = getTechById(techId);
+  game.trackedPlayer.knowledge.research(tech);
 }

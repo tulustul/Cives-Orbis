@@ -26,7 +26,7 @@ export function GameMenu() {
 
   return (
     <div
-      className="absolute w-full h-full flex flex-col gap-10 items-center justify-center z-10 bg-black/80"
+      className="absolute w-full h-full flex flex-col gap-10 items-center justify-start pt-10 z-10 bg-black/80"
       style={{
         backdropFilter: "blur(5px)",
       }}
@@ -34,7 +34,7 @@ export function GameMenu() {
       <img
         src={titleImage}
         alt="Cives Orbis"
-        className="w-120 absolute top-20"
+        className="w-120"
         style={{
           filter: "drop-shadow(0px 0px 5px black)",
         }}

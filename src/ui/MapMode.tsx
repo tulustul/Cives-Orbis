@@ -2,19 +2,20 @@ import { Panel } from "./components";
 import { Minimap } from "./Minimap";
 import { NextTurnButton } from "./NextTurnButton";
 
+import { bridge } from "@/bridge";
 import { useObservable } from "@/utils";
 import { CityView } from "./city";
 import { CombatInfo } from "./CombatInfo";
 import styles from "./MapMode.module.css";
 import { MapSettings } from "./MapSettings";
 import { mapUi } from "./mapUi";
-import { Toolbar } from "./Toolbar";
-import { UnitPanel } from "./UnitPanel";
-import { TileUnits } from "./TileUnits";
 import { PlayerYields } from "./PlayerYields";
-import { TurnsCounter } from "./TurnCounter";
-import { bridge } from "@/bridge";
+import { Research } from "./Research";
 import { SpectatorPanel } from "./SpectatorPanel";
+import { TileUnits } from "./TileUnits";
+import { Toolbar } from "./Toolbar";
+import { TurnsCounter } from "./TurnCounter";
+import { UnitPanel } from "./UnitPanel";
 
 export function MapMode() {
   const city = useObservable(mapUi.selectedCity$);
@@ -46,6 +47,7 @@ export function MapMode() {
           <Panel corner="top-left">
             <PlayerYields />
           </Panel>
+          <Research />
         </div>
 
         <div className={styles.toolbar}>

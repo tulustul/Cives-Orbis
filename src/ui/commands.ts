@@ -73,19 +73,19 @@ export class Commands {
   }
 
   @keybinding({ keybinding: "escape", context: "map" })
-  static handleEsc() {
-    const uiState = useUiState.getState();
-    if (uiState.view !== "none") {
-      uiState.setView("none");
-      return;
-    }
-
+  static openMenu() {
     const menu = useMenu.getState();
     if (menu.enabled) {
       menu.hide();
     } else {
       menu.show();
     }
+  }
+
+  @keybinding({ keybinding: ["escape", "tab"], context: "view" })
+  static closeView() {
+    const uiState = useUiState.getState();
+    uiState.setView("none");
   }
 
   @keybinding({ keybinding: ["escape", "tab"], context: "city" })

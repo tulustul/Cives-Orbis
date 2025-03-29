@@ -3,7 +3,7 @@ import { useObservable } from "@/utils";
 import { ImageIcon, Tooltip } from "./components";
 
 export function PlayerYields() {
-  const yields = useObservable(bridge.player.yields$);
+  const yields = useObservable(bridge.player.yields$, bridge.player.getYields);
 
   if (!yields) {
     return null;

@@ -1,9 +1,10 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map } from "rxjs";
 
 import { mapUi } from "./mapUi";
 import { camera } from "@/renderer/camera";
 import { bridge } from "@/bridge";
 import { PlayerTask } from "@/shared";
+import { useUiState } from "./uiState";
 
 export class NextTurnService {
   private _waiting$ = new BehaviorSubject<boolean>(false);
@@ -52,6 +53,9 @@ export class NextTurnService {
           }
         }
         break;
+
+      case "chooseTech":
+        useUiState.getState().setView("techTree");
     }
   }
 

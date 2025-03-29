@@ -13,10 +13,12 @@ import {
   getUnitById,
   getBuildingById,
   getIdleProductById,
+  getTechById,
 } from "../data-manager";
 import { ResourceCore } from "../resources";
 import { RESOURCES_DEFINITIONS } from "@/data/resources";
 import { Stats, StatsData } from "../stats";
+import { Knowledge } from "../knowledge";
 
 export interface GameSerialized {
   turn: number;
@@ -83,7 +85,16 @@ interface PlayerSerialized {
   color: number;
   exploredTiles: number[];
   yieldsTotal: Yields;
+  knowledge: KnowledgeSerialized;
 }
+
+type KnowledgeSerialized = {
+  knownTechs: string[];
+  currentTech: string | null;
+  techQueue: string[];
+  accumulated: Record<string, number>;
+  overflow: number;
+};
 
 interface UnitSerialized {
   id: number;
@@ -276,6 +287,7 @@ function dumpPlayer(player: PlayerCore): PlayerSerialized {
     color: player.color,
     exploredTiles: Array.from(player.exploredTiles).map((t) => t.id),
     yieldsTotal: player.yields.total,
+    knowledge: dumpKnowledge(player.knowledge),
   };
 }
 
@@ -292,7 +304,52 @@ function loadPlayer(game: Game, data: PlayerSerialized) {
   player.updateViewBoundingBox(player.exploredTiles);
   player.yields.total = data.yieldsTotal;
   player.updateYields();
+  player.knowledge = loadKnowledge(player, data.knowledge);
   return player;
+}
+
+function dumpKnowledge(knowledge: Knowledge): KnowledgeSerialized {
+  const accumulated: Record<string, number> = {};
+
+  for (const [tech, value] of knowledge.accumulated.entries()) {
+    accumulated[tech.id] = value;
+  }
+
+  return {
+    accumulated,
+    currentTech: knowledge.researchingTech?.id || null,
+    knownTechs: Array.from(knowledge.discoveredTechs).map((t) => t.id),
+    overflow: knowledge.overflow,
+    techQueue: knowledge.techQueue.map((t) => t.id),
+  };
+}
+
+function loadKnowledge(player: PlayerCore, data: KnowledgeSerialized) {
+  const knowledge = new Knowledge(player);
+
+  if (!data) {
+    // TODO backward compatibility. Can be removed.
+    return knowledge;
+  }
+
+  knowledge.discoveredTechs = new Set(
+    data.knownTechs.map((id) => getTechById(id))
+  );
+  knowledge.researchingTech = data.currentTech
+    ? getTechById(data.currentTech)
+    : null;
+  knowledge.techQueue = data.techQueue.map((id) => getTechById(id));
+  knowledge.accumulated = new Map(
+    Object.entries(data.accumulated).map(([id, value]) => [
+      getTechById(id),
+      value,
+    ])
+  );
+  knowledge.overflow = data.overflow;
+
+  knowledge.computeAvailableTechs();
+
+  return knowledge;
 }
 
 function loadCity(game: Game, cityData: CitySerialized) {
