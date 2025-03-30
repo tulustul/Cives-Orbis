@@ -5,6 +5,7 @@ import { OrnateBox } from "./OrnateBox";
 
 type Props = PropsWithChildren & {
   className?: string;
+  contentClassName?: string;
   title?: string;
   showCloseButton?: boolean;
   onClose?: () => void;
@@ -12,6 +13,7 @@ type Props = PropsWithChildren & {
 export function OrnateModal({
   children,
   className,
+  contentClassName,
   title,
   showCloseButton,
   onClose,
@@ -23,7 +25,7 @@ export function OrnateModal({
 
     return (
       <div className="flex flex-col items-center">
-        <div className="flex items-center">
+        <div className="flex items-center w-full">
           <h2 className="font-serif grow text-3xl text-white-outline">
             {title}
           </h2>
@@ -44,7 +46,11 @@ export function OrnateModal({
   return (
     <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center pointer-events-none">
       <OrnateBox
-        className={clsx(className, "min-w-[500px] pointer-events-auto py-6")}
+        contentClassName={clsx(
+          contentClassName,
+          "min-w-[500px] pointer-events-auto py-6"
+        )}
+        className={className}
       >
         {getTopBar()}
         {children}

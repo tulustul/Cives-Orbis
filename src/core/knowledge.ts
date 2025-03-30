@@ -61,7 +61,9 @@ export class Knowledge {
       this.accumulated.delete(this.researchingTech);
       this.techQueue.shift();
 
-      collector.newTechs.push(this.researchingTech);
+      if (this.player.game.trackedPlayer === this.player) {
+        collector.newTechs.push(this.researchingTech);
+      }
 
       if (this.techQueue.length > 0) {
         this.researchingTech = this.techQueue[0];

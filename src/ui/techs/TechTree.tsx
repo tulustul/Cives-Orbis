@@ -1,12 +1,12 @@
 import { bridge } from "@/bridge";
 import { TechKnowledgeChanneled } from "@/core/serialization/channel";
-import { Modal } from "@/ui/components";
+import { OrnateModal } from "@/ui/components";
 import { useUiState } from "@/ui/uiState";
 import { useEffect, useRef, useState } from "react";
 import { Tech } from "./Tech";
 import { TechLinks } from "./TechLinks";
 import styles from "./TechTree.module.css";
-import { eras, erasColors, techBlockWidth } from "./const";
+import { eras, techBlockWidth } from "./const";
 
 export function TechTree() {
   const [techs, setTechs] = useState<TechKnowledgeChanneled[] | null>(null);
@@ -67,14 +67,13 @@ export function TechTree() {
               </div>
             ))}
 
-            <div className="flex h-[85vh]">
+            <div className="flex h-[900px]">
               {eras.map((era) => {
                 return (
                   <div
                     key={era}
                     className="flex flex-col px-8"
                     style={{
-                      background: `linear-gradient(${erasColors[era]}, transparent`,
                       width: (techBlockWidth + 91) * 3,
                     }}
                   >
@@ -92,13 +91,14 @@ export function TechTree() {
   }
 
   return (
-    <Modal
-      className="w-[95%] flex flex-col"
+    <OrnateModal
+      className="w-[95%] h-[1000px] z-20"
+      contentClassName="px-8"
       title="Technologies"
       showCloseButton
       onClose={() => uiState.setView("none")}
     >
       {getContent()}
-    </Modal>
+    </OrnateModal>
   );
 }

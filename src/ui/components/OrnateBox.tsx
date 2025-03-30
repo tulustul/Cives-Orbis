@@ -3,15 +3,16 @@ import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren & {
   className?: string;
+  contentClassName?: string;
 };
 
-export function OrnateBox({ children, className }: Props) {
+export function OrnateBox({ children, className, contentClassName }: Props) {
   return (
-    <div className={clsx("relative text-dark")}>
+    <div className={clsx(className, "relative text-dark")}>
       <div
         className={clsx(
-          className,
-          "bg-ornate rounded-[80px] overflow-hidden py-4 relative min-w-50"
+          contentClassName,
+          "bg-ornate rounded-[80px] overflow-hidden py-4 relative min-w-50 h-full"
         )}
         style={{
           filter: "drop-shadow(0 4px 6px black)",

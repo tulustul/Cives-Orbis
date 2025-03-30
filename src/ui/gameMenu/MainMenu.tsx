@@ -52,7 +52,7 @@ type ItemProps = PropsWithChildren & {
 function Item({ children, onClick }: ItemProps) {
   return (
     <div
-      className="py-5 px-10 cursor-pointer font-bold text-xl flex items-center justify-center gap-4 before:grow before:bg-dark before:h-1 not-hover:before:hidden after:grow after:bg-dark after:h-1 not-hover:after:hidden"
+      className="py-5 px-10 cursor-pointer font-bold text-xl flex items-center justify-center gap-4 text-white-outline before:grow before:bg-dark before:h-1 not-hover:before:hidden after:grow after:bg-dark after:h-1 not-hover:after:hidden"
       onClick={onClick}
     >
       {children}

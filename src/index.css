@@ -24,7 +24,7 @@
 
   --color-primary-800: #22212b;
 
-  --color-dark: rgba(88, 60, 1);
+  --color-dark: #583c01;
 
   --shadow-md: 0 0 7px 0 rgba(0, 0, 0, 0.25);
 }
@@ -51,6 +51,18 @@
 
 @utility bg-ornate {
   background-image: url("@/assets/ui/modal-bg.png");
+}
+
+@utility shadow-3xl {
+  box-shadow: 0 2px 8px 0px #000000;
+}
+
+@utility shadow-4xl {
+  box-shadow: 0 3px 10px 1px #000000;
+}
+
+@utility shadow-5xl {
+  box-shadow: 0 4px 12px 2px #000000;
 }
 
 :root {
@@ -96,6 +108,7 @@ body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
+  user-select: none;
 }
 
 h2 {

@@ -1,7 +1,7 @@
 import { bridge } from "@/bridge";
 import { StatsGetChanneled } from "@/core.worker";
 import { StatsData } from "@/core/stats";
-import { Chart, ChartLine, Modal } from "@/ui/components";
+import { Chart, ChartLine, OrnateModal } from "@/ui/components";
 import { useEffect, useState } from "react";
 import { useUiState } from "../uiState";
 
@@ -28,8 +28,9 @@ export function Stats() {
   const uiState = useUiState();
 
   return (
-    <Modal
-      className="w-[90%] h-[90%] flex flex-col"
+    <OrnateModal
+      className="w-[1200px] h-[900px]"
+      contentClassName="px-8 pb-10 flex flex-col"
       title="Statistics"
       showCloseButton
       onClose={() => uiState.setView("none")}
@@ -60,7 +61,7 @@ export function Stats() {
           )}
         </div>
       </div>
-    </Modal>
+    </OrnateModal>
   );
 }
 
@@ -70,7 +71,7 @@ type DatasetSelectorProps = {
 };
 function DatasetSelector({ dataset, onChange }: DatasetSelectorProps) {
   return (
-    <div className="flex flex-col gap-1 text-center">
+    <div className="flex flex-col gap-1 text-center text-amber-100">
       {Object.entries(datasetNames).map(([key, name]) => (
         <div
           key={key}

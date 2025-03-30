@@ -54,7 +54,7 @@ export function TechLinks({ techs }: Props) {
       <svg
         className="w-[13500px] h-full"
         style={{
-          filter: "drop-shadow(2px 4px 3px black)",
+          filter: "drop-shadow(0 0 6px #ddd)",
         }}
       >
         {links.map((link, index) => (
@@ -94,7 +94,7 @@ function Link({ link }: { link: Link }) {
     <>
       <path
         d={arrowD}
-        fill="#CCCCCC"
+        fill="#583c01"
         stroke="none"
         data-link-from={link.fromTech}
         data-link-to={link.toTech}
@@ -102,7 +102,7 @@ function Link({ link }: { link: Link }) {
       <path
         className="shadow"
         d={linkD}
-        stroke="#CCCCCC"
+        stroke="#583c01"
         strokeWidth={4}
         fill="none"
         data-link-from={link.fromTech}

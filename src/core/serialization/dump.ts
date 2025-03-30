@@ -327,11 +327,6 @@ function dumpKnowledge(knowledge: Knowledge): KnowledgeSerialized {
 function loadKnowledge(player: PlayerCore, data: KnowledgeSerialized) {
   const knowledge = new Knowledge(player);
 
-  if (!data) {
-    // TODO backward compatibility. Can be removed.
-    return knowledge;
-  }
-
   knowledge.discoveredTechs = new Set(
     data.knownTechs.map((id) => getTechById(id))
   );
