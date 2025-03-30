@@ -42,9 +42,9 @@ export class Stats {
     const stats = this.data.get(player)!;
 
     stats.cities.push(player.cities.length);
-    stats.food.push(player.yields.total.food);
-    stats.production.push(player.yields.total.production);
-    stats.culture.push(player.yields.total.culture);
+    stats.food.push(player.yields.income.food);
+    stats.production.push(player.yields.income.production);
+    stats.culture.push(player.yields.income.culture);
     stats.knowledge.push(player.yields.income.knowledge);
     stats.techs.push(player.knowledge.discoveredTechs.size);
 
