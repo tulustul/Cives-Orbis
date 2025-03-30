@@ -24,11 +24,33 @@
 
   --color-primary-800: #22212b;
 
+  --color-dark: rgba(88, 60, 1);
+
   --shadow-md: 0 0 7px 0 rgba(0, 0, 0, 0.25);
 }
 
 @utility text-shadow {
   text-shadow: 1px 1px 2px #444134;
+}
+
+@utility text-white-outline {
+  text-shadow: 0 0 2px white;
+}
+
+@utility border-ornate {
+  border-image: url("@/assets/ui/modal.png") 105;
+  border-width: 70px;
+  border-radius: 80px;
+}
+
+@utility button-ornate {
+  border-image: url("@/assets/ui/button.png") 15;
+  border-width: 10px;
+  border-radius: 10px;
+}
+
+@utility bg-ornate {
+  background-image: url("@/assets/ui/modal-bg.png");
 }
 
 :root {

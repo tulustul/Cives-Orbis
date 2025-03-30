@@ -10,7 +10,7 @@ export function Switch({ label, checked, onChange }: Props) {
   return (
     <div
       className={clsx(
-        "h-8 px-4 flex justify-center items-center rounded-md cursor-pointer bg-black",
+        "text-amber-100 h-8 px-4 flex justify-center items-center rounded-md cursor-pointer bg-black",
         {
           ["bg-success/50"]: checked,
         }

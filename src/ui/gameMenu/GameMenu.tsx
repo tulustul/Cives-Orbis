@@ -5,6 +5,7 @@ import { NewGameMenu } from "./NewGameMenu";
 import { LoadMenu } from "./LoadMenu";
 import { SaveMenu } from "./SaveMenu";
 import titleImage from "@/assets/title.png";
+import { OrnateBox } from "../components/OrnateBox";
 
 export function GameMenu() {
   const menu = useMenu();
@@ -39,7 +40,7 @@ export function GameMenu() {
           filter: "drop-shadow(0px 0px 5px black)",
         }}
       />
-      <Panel className="w-[500px]">{getContent()}</Panel>
+      <OrnateBox className="w-[500px]">{getContent()}</OrnateBox>
     </div>
   );
 }

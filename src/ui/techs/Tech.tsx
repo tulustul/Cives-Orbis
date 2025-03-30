@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { CSSProperties } from "react";
 
 import { techBlockHeight, techBlockWidth } from "./const";
+import { TechUnlocks } from "./TechUnlocs";
 
 type Props = {
   tech: TechKnowledgeChanneled;
@@ -120,13 +121,7 @@ export function Tech({ tech, onClick, flexibleWidth }: Props) {
             <div className="text-xs">{formatTurns(tech.turns)} turns</div>
           )}
         </div>
-        <div className="flex gap-[2px]">
-          {tech.def.products.map((p) => (
-            <EntityTooltip key={p.id} entityId={p.id}>
-              <ImageIcon name={p.id} size="small" frameType={p.entityType} />
-            </EntityTooltip>
-          ))}
-        </div>
+        <TechUnlocks tech={tech.def} />
         {tech.state === "researching" && (
           <>
             <div className={clsx(styles.bubbles, styles.bubblesLayer1)} />

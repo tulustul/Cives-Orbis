@@ -21,7 +21,7 @@ export function SaveMenu() {
       <label className="flex items-center gap-4">
         <input
           type="text"
-          className="bg-gray-700 rounded-md py-1 px-2 grow"
+          className="bg-gray-700 rounded-md py-1 px-2 grow text-amber-100"
           placeholder="Save name"
           value={saveName}
           onChange={(e) => setSaveName(e.target.value)}

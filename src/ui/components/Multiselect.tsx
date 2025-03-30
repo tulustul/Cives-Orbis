@@ -21,7 +21,7 @@ export function Multiselect<T>({ label, options, value, onChange }: Props<T>) {
   }
 
   return (
-    <div className="rounded-lg bg-gray-800 flex flex-col min-w-30 overflow-hidden">
+    <div className="text-amber-100 rounded-lg bg-gray-800 flex flex-col min-w-30 overflow-hidden">
       <div className="font-semibold text-center px-4 py-2">{label}</div>
       <div className="flex flex-col ">
         {options.map((option, i) => (

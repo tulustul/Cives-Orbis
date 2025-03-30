@@ -1,6 +1,7 @@
 export * from "./Spinner";
 export * from "./Panel";
 export * from "./Modal";
+export * from "./OrnateModal";
 export * from "./ProgressBar";
 export * from "./Tabs";
 export * from "./Radio";
@@ -10,6 +11,7 @@ export * from "./Switch";
 export * from "./AtlasIcon";
 export * from "./Tooltip";
 export * from "./Button";
+export * from "./PrimaryButton";
 export * from "./CommandButton";
 export * from "./IconCommandButton";
 export * from "./IconButton";

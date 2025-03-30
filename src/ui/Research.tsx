@@ -1,5 +1,5 @@
 import { useObservable } from "@/utils";
-import { Tech } from "./techTree/Tech";
+import { Tech } from "./techs/Tech";
 import { useUiState } from "./uiState";
 import { bridge } from "@/bridge";
 

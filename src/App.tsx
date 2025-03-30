@@ -10,7 +10,8 @@ import { EditorMode } from "./ui/EditorMode";
 import styles from "./App.module.css";
 import { Stats } from "./ui/stats";
 import { LoadingScreen } from "./ui/LoadingScreen";
-import { TechTree } from "./ui/techTree";
+import { TechTree } from "./ui/techs";
+import { NotificationModal } from "./ui/NotificationModal";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ function App() {
         {uiState.mode === "editor" && <EditorMode />}
         {uiState.view === "stats" && <Stats />}
         {uiState.view === "techTree" && <TechTree />}
+        <NotificationModal />
       </div>
     );
   }
