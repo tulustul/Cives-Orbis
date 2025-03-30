@@ -66,18 +66,20 @@ export function ImageIcon({ name, size, className, frameType }: Props) {
       )}
     >
       <img className={clsSizes[size]} src={url} />
-      <div
-        className={clsx(clsFrameSizes[size], "absolute top-0 left-0")}
-        style={{
-          backgroundImage: `url(${frame})`,
-          maskImage: `url(${frame})`,
-          backgroundBlendMode: "luminosity",
-          backgroundColor: tintColor,
-          maskSize: "contain",
-          backgroundSize: "contain",
-          zIndex: 1,
-        }}
-      />
+      {frameType && (
+        <div
+          className={clsx(clsFrameSizes[size], "absolute top-0 left-0")}
+          style={{
+            backgroundImage: `url(${frame})`,
+            maskImage: `url(${frame})`,
+            backgroundBlendMode: "luminosity",
+            backgroundColor: tintColor,
+            maskSize: "contain",
+            backgroundSize: "contain",
+            zIndex: 1,
+          }}
+        />
+      )}
     </div>
   );
 }

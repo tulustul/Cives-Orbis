@@ -1,11 +1,10 @@
-import { Panel } from "@/ui/components";
-import { useMenu } from "./gameMenuStore";
-import { MainMenu } from "./MainMenu";
-import { NewGameMenu } from "./NewGameMenu";
-import { LoadMenu } from "./LoadMenu";
-import { SaveMenu } from "./SaveMenu";
 import titleImage from "@/assets/title.png";
 import { OrnateBox } from "../components/OrnateBox";
+import { useMenu } from "./gameMenuStore";
+import { LoadMenu } from "./LoadMenu";
+import { MainMenu } from "./MainMenu";
+import { NewGameMenu } from "./NewGameMenu";
+import { SaveMenu } from "./SaveMenu";
 
 export function GameMenu() {
   const menu = useMenu();

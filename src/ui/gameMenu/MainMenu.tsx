@@ -2,8 +2,8 @@ import { bridge } from "@/bridge";
 import { useUiState } from "@/ui/uiState";
 import { useObservable } from "@/utils";
 import { PropsWithChildren } from "react";
-import { useMenu } from "./gameMenuStore";
 import { mapUi } from "../mapUi";
+import { useMenu } from "./gameMenuStore";
 
 export function MainMenu() {
   const uiState = useUiState();
@@ -31,6 +31,7 @@ export function MainMenu() {
 
   return (
     <>
+      <div className="flex justify-center items-center"></div>
       <Item onClick={() => start(false)}>Quick Start</Item>
       <Item onClick={() => menu.setView("new-game")}>New</Item>
       <Item onClick={() => start(true)}>AI match</Item>

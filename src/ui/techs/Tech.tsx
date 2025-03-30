@@ -1,9 +1,7 @@
-import { TechKnowledgeChanneled } from "@/core/serialization/channel";
-
 import styles from "./TechTree.module.css";
 
 import { KnowledgeTechState } from "@/core/knowledge";
-import { ImageIcon, ProgressBar } from "@/ui/components";
+import { CircularProgress, ImageIcon } from "@/ui/components";
 import { EntityTooltip } from "@/ui/entity";
 import { formatTurns } from "@/utils";
 import clsx from "clsx";
@@ -11,6 +9,7 @@ import { CSSProperties } from "react";
 
 import { techBlockHeight, techBlockWidth } from "./const";
 import { TechUnlocks } from "./TechUnlocs";
+import { TechKnowledgeChanneled } from "@/core/serialization/channel";
 
 type Props = {
   tech: TechKnowledgeChanneled;
@@ -85,6 +84,31 @@ export function Tech({ tech, onClick, flexibleWidth }: Props) {
     },
   };
 
+  function getTechIcon() {
+    return (
+      <>
+        {tech.state === "researching" && (
+          <div className="absolute">
+            <CircularProgress
+              className="-left-2 z-20 opacity-70"
+              progress={tech.accumulated}
+              total={tech.def.cost}
+              nextProgress={tech.nextAccumulated}
+              width={8}
+              size={85}
+            />
+          </div>
+        )}
+        <ImageIcon
+          name={tech.def.id}
+          size="medium"
+          frameType="technology"
+          className="-left-2 z-10"
+        />
+      </>
+    );
+  }
+
   return (
     <div
       className={clsx(
@@ -105,14 +129,7 @@ export function Tech({ tech, onClick, flexibleWidth }: Props) {
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <EntityTooltip entityId={tech.def.id}>
-        <ImageIcon
-          name={tech.def.id}
-          size="medium"
-          frameType="technology"
-          className="-left-2 z-10"
-        />
-      </EntityTooltip>
+      <EntityTooltip entityId={tech.def.id}>{getTechIcon()}</EntityTooltip>
 
       <div className="flex flex-col justify-between pr-2 pt-[2px] pb-[6px] w-full h-full">
         <div className="flex justify-between gap-4 items-center">
@@ -127,17 +144,6 @@ export function Tech({ tech, onClick, flexibleWidth }: Props) {
             <div className={clsx(styles.bubbles, styles.bubblesLayer1)} />
             <div className={clsx(styles.bubbles, styles.bubblesLayer2)} />
           </>
-        )}
-
-        {tech.state === "researching" && (
-          <div className="absolute w-full h-full left-0 top-0 opacity-80 -z-10">
-            <ProgressBar
-              className="[--progress-bar-height:100%] [--progress-bar-color:#6276b2] [--progress-bar-total-color:transparent]"
-              progress={tech.accumulated}
-              total={tech.def.cost}
-              nextProgress={tech.nextAccumulated}
-            />
-          </div>
         )}
       </div>
       {tech.queuePosition && (
