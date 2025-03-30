@@ -13,6 +13,7 @@ import {
   CityChanneled,
   knowledgeTechToChannel,
   TechKnowledgeChanneled,
+  techToChannel,
 } from "./serialization/channel";
 import { PlayerYields } from "../shared";
 import { Technology } from "./data.interface";
@@ -50,7 +51,8 @@ class Collector {
   tilesShowed = new Set<TileCore>();
   tilesShowedAdded = new Set<TileCore>();
 
-  tech: Technology | null | undefined = undefined;
+  research: Technology | null | undefined = undefined;
+  newTechs: Technology[] = [];
 
   viewBoundingBox: PlayerViewBoundingBox | null = null;
 
@@ -139,15 +141,26 @@ class Collector {
       });
     }
 
-    if (this.tech !== undefined) {
+    if (this.research !== undefined) {
       let data: TechKnowledgeChanneled | null = null;
-      if (this.tech) {
-        data = knowledgeTechToChannel(game.trackedPlayer.knowledge, this.tech);
+      if (this.research) {
+        data = knowledgeTechToChannel(
+          game.trackedPlayer.knowledge,
+          this.research
+        );
       }
       changes.push({ type: "tech.updated", data });
     }
 
-    this.tech = undefined;
+    this.research = undefined;
+
+    for (const tech of this.newTechs) {
+      changes.push({
+        type: "tech.discovered",
+        data: techToChannel(tech),
+      });
+    }
+    this.newTechs = [];
 
     for (const move of this.moves) {
       changes.push({ type: "unit.moved", data: unitMoveToChannel(move) });

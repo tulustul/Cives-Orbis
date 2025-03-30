@@ -66,7 +66,7 @@ Major features:
   ☐ diplomacy
   ☐ nations
   ☐ trade
-  ☐ knowledge
+  ✔ knowledge @done(25-03-30 11:53)
 
 Others:
   ☐ think about unit tests (how to nicely mock the map?)

@@ -28,6 +28,7 @@ import {
   GameInfo,
   GameStartInfo,
   PlayerChanneled,
+  TechDefChanneled,
   TechKnowledgeChanneled,
   TileChanneled,
   TileCoords,
@@ -161,6 +162,7 @@ export const bridge = {
     researchUpdated$: makeObservable<TechKnowledgeChanneled | null>(
       "tech.updated"
     ),
+    discovered$: makeObservable<TechDefChanneled>("tech.discovered"),
     getAll: () => makeCommand<TechKnowledgeChanneled[]>("tech.getAll"),
     getResearch: () => makeCommand<TechKnowledgeChanneled>("tech.getResearch"),
     research: (techId: string) => makeCommand<void>("tech.research", techId),

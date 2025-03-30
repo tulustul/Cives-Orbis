@@ -87,6 +87,7 @@ export class Game {
     for (const player of this.players) {
       player.nextTurn();
     }
+    this.citiesManager.updateProductsLists();
     this.stats.nextTurn();
     this.turn++;
     collector.turn = this.turn;

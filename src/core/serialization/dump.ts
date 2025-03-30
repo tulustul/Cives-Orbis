@@ -347,7 +347,7 @@ function loadKnowledge(player: PlayerCore, data: KnowledgeSerialized) {
   );
   knowledge.overflow = data.overflow;
 
-  knowledge.computeAvailableTechs();
+  knowledge.update();
 
   return knowledge;
 }

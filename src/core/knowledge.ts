@@ -1,6 +1,18 @@
 import { collector } from "./collector";
-import { getTechById, TECHNOLOGIES } from "./data-manager";
-import { Technology } from "./data.interface";
+import {
+  buildingDefs,
+  getTechById,
+  idleProductDefs,
+  TECHNOLOGIES,
+  unitDefs,
+} from "./data-manager";
+import {
+  Building,
+  IdleProduct,
+  RequireTech,
+  Technology,
+  UnitDefinition,
+} from "./data.interface";
 import { PlayerCore } from "./player";
 
 export type KnowledgeTechState =
@@ -12,6 +24,9 @@ export type KnowledgeTechState =
 
 export class Knowledge {
   discoveredTechs = new Set<Technology>();
+  discoveredBuildings = new Set<Building>();
+  discoveredUnits = new Set<UnitDefinition>();
+  discoveredIdleProducts = new Set<IdleProduct>();
 
   availableTechs = new Set<Technology>();
 
@@ -25,7 +40,7 @@ export class Knowledge {
 
   constructor(public player: PlayerCore) {
     this.discoveredTechs.add(getTechById("tech_society"));
-    this.computeAvailableTechs();
+    this.update();
   }
 
   nextTurn() {
@@ -46,6 +61,8 @@ export class Knowledge {
       this.accumulated.delete(this.researchingTech);
       this.techQueue.shift();
 
+      collector.newTechs.push(this.researchingTech);
+
       if (this.techQueue.length > 0) {
         this.researchingTech = this.techQueue[0];
         this.accumulated.set(this.researchingTech, overflow);
@@ -54,11 +71,11 @@ export class Knowledge {
         this.overflow = overflow;
       }
 
-      this.computeAvailableTechs();
+      this.update();
     }
 
     if (this.player.game.trackedPlayer === this.player) {
-      collector.tech = this.researchingTech;
+      collector.research = this.researchingTech;
     }
   }
 
@@ -82,10 +99,15 @@ export class Knowledge {
     this.techQueue = Array.from(new Set(this.techQueue));
 
     this.researchingTech = this.techQueue[0];
-    collector.tech = this.researchingTech;
+    collector.research = this.researchingTech;
   }
 
-  computeAvailableTechs() {
+  update() {
+    this.computeAvailableTechs();
+    this.computeKnownEntities();
+  }
+
+  private computeAvailableTechs() {
     this.availableTechs.clear();
     for (const tech of TECHNOLOGIES) {
       if (this.discoveredTechs.has(tech)) {
@@ -96,6 +118,21 @@ export class Knowledge {
       );
       if (canBeResearched) {
         this.availableTechs.add(tech);
+      }
+    }
+  }
+
+  private computeKnownEntities() {
+    this.filterDiscoveredEntities(this.discoveredUnits, unitDefs);
+    this.filterDiscoveredEntities(this.discoveredBuildings, buildingDefs);
+    this.filterDiscoveredEntities(this.discoveredIdleProducts, idleProductDefs);
+  }
+
+  private filterDiscoveredEntities(set: Set<RequireTech>, defs: RequireTech[]) {
+    set.clear();
+    for (const def of defs) {
+      if (this.discoveredTechs.has(def.technology)) {
+        set.add(def);
       }
     }
   }

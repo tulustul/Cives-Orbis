@@ -1,9 +1,9 @@
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
-import { mapUi } from "./mapUi";
-import { camera } from "@/renderer/camera";
 import { bridge } from "@/bridge";
+import { camera } from "@/renderer/camera";
 import { PlayerTask } from "@/shared";
+import { mapUi } from "./mapUi";
 import { useUiState } from "./uiState";
 
 export class NextTurnService {

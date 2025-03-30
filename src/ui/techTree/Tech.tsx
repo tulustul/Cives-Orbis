@@ -91,8 +91,7 @@ export function Tech({ tech, onClick, flexibleWidth }: Props) {
         stateStyles[tech.state]
       )}
       style={{
-        // width: flexibleWidth ? "auto" : techBlockWidth,
-        width: techBlockWidth,
+        width: flexibleWidth ? "auto" : techBlockWidth,
         height: techBlockHeight,
         filter: "drop-shadow(rgba(0, 0, 0, 0.4) 2px 3px 3px)",
         boxShadow: "0 0 3px 0px rgba(255, 255, 255, 0.3) inset",

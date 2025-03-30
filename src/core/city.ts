@@ -19,7 +19,6 @@ import {
 
 import { CitiesNetwork } from "./cities-network";
 import { collector } from "./collector";
-import { buildingDefs, idleProductDefs, unitDefs } from "./data-manager";
 import { checkRequirements } from "./requirements";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
@@ -93,7 +92,6 @@ export class CityCore {
     this.progressProduction();
     this.progressGrowth();
     this.updateYields();
-    this.updateProductsList();
 
     if (this.player === this.player.game.trackedPlayer || this.changedSize) {
       collector.cities.add(this);
@@ -470,16 +468,20 @@ export class CityCore {
   }
 
   updateProductsList() {
-    this.availableUnits = this.getAvailableProducts<UnitDefinition>(unitDefs);
+    const knowledge = this.player.knowledge;
 
-    const notBuildBuildings = buildingDefs.filter(
-      (b) => this.product !== b && !this.buildings.includes(b)
+    this.availableUnits = this.getAvailableProducts<UnitDefinition>(
+      Array.from(knowledge.discoveredUnits)
     );
+
+    const notBuildBuildings = Array.from(
+      this.player.knowledge.discoveredBuildings
+    ).filter((b) => this.product !== b && !this.buildings.includes(b));
 
     this.availableBuildings =
       this.getAvailableProducts<Building>(notBuildBuildings);
 
-    this.availableIdleProducts = idleProductDefs;
+    this.availableIdleProducts = Array.from(knowledge.discoveredIdleProducts);
 
     this.disabledProducts = this.getDisabledProducts<ProductDefinition>([
       ...this.availableUnits,

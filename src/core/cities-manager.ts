@@ -103,4 +103,10 @@ export class CitiesManager {
       city.nextTurn();
     }
   }
+
+  updateProductsLists() {
+    for (const city of this.cities) {
+      city.updateProductsList();
+    }
+  }
 }

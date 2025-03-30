@@ -9,20 +9,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Stone",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
-      yieldValue: { production: 1 },
+      yieldValue: { production: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { production: 2 },
+      yieldValue: { production: 2 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_copper",
@@ -30,20 +30,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Copper",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
-      yieldValue: { production: 1 },
+      yieldValue: { production: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { production: 3 },
+      yieldValue: { production: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_iron",
@@ -51,20 +51,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Iron",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
-      yieldValue: { production: 1 },
+      yieldValue: { production: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { production: 3 },
+      yieldValue: { production: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_wheat",
@@ -72,21 +72,21 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Wheat",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
-      yieldValue: { food: 1 },
+      yieldValue: { food: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { food: 3 },
+      yieldValue: { food: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       climates: [Climate.temperate, Climate.savanna],
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_corn",
@@ -94,20 +94,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Corn",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
-      yieldValue: { food: 1 },
+      yieldValue: { food: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { food: 3 },
+      yieldValue: { food: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_rice",
@@ -115,20 +115,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Rice",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
-      yieldValue: { food: 1 },
+      yieldValue: { food: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { food: 3 },
+      yieldValue: { food: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_fish",
@@ -136,20 +136,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Fish",
     requiredImprovement: TileImprovement.farm,
     bonuses: {
-      yieldValue: { food: 1 },
+      yieldValue: { food: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { food: 3 },
+      yieldValue: { food: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.shallow,
       landFormProbability: {
         [LandForm.plains]: 1,
-        [LandForm.hills]: 1,
+        [LandForm.hills]: 1
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_gold",
@@ -157,20 +157,20 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Gold",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
-      yieldValue: { gold: 2 },
+      yieldValue: { gold: 2 }
     },
     bonusesWhenWorked: {
-      yieldValue: { gold: 5 },
+      yieldValue: { gold: 5 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
+      quantityStddev: 2
+    }
   },
   {
     id: "resource_silver",
@@ -178,19 +178,19 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Silver",
     requiredImprovement: TileImprovement.mine,
     bonuses: {
-      yieldValue: { gold: 1 },
+      yieldValue: { gold: 1 }
     },
     bonusesWhenWorked: {
-      yieldValue: { gold: 3 },
+      yieldValue: { gold: 3 }
     },
     distribution: {
       seaLevel: SeaLevel.none,
       landFormProbability: {
         [LandForm.plains]: 0.25,
-        [LandForm.hills]: 0.75,
+        [LandForm.hills]: 0.75
       },
       quantityMedian: 3,
-      quantityStddev: 2,
-    },
-  },
+      quantityStddev: 2
+    }
+  }
 ];

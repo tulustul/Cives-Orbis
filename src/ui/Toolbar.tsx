@@ -16,7 +16,7 @@ export function Toolbar() {
         Techs
       </CommandButton>
       <CommandButton command={Commands.toggleEditor}>Editor</CommandButton>
-      <CommandButton command={Commands.handleEsc}>Menu</CommandButton>
+      <CommandButton command={Commands.openMenu}>Menu</CommandButton>
     </div>
   );
 }
