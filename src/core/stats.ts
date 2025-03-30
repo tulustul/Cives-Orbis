@@ -7,6 +7,8 @@ export type StatsData = {
   production: number[];
   culture: number[];
   military: number[];
+  knowledge: number[];
+  techs: number[];
 };
 
 export class Stats {
@@ -29,6 +31,8 @@ export class Stats {
           production: [],
           culture: [],
           military: [],
+          knowledge: [],
+          techs: [],
         });
       }
     }
@@ -41,6 +45,8 @@ export class Stats {
     stats.food.push(player.yields.total.food);
     stats.production.push(player.yields.total.production);
     stats.culture.push(player.yields.total.culture);
+    stats.knowledge.push(player.yields.income.knowledge);
+    stats.techs.push(player.knowledge.discoveredTechs.size);
 
     const military = player.units.reduce(
       (acc, unit) => acc + unit.definition.strength,

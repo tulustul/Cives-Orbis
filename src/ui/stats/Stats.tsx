@@ -11,6 +11,8 @@ const datasetNames: Record<keyof StatsData, string> = {
   production: "Production",
   culture: "Culture",
   military: "Military power",
+  knowledge: "Knowledge",
+  techs: "Discovered techs",
 };
 
 export function Stats() {

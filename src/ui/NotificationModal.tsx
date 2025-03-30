@@ -7,21 +7,10 @@ import { TechUnlocks } from "./techs/TechUnlocs";
 
 export function NotificationModal() {
   const [tech, setTech] = useState<TechDefChanneled | null>(null);
-  // const [tech, setTech] = useState<TechDefChanneled | null>({
-  //   cost: 0,
-  //   id: "tech_agriculture",
-  //   entityType: "technology",
-  //   era: "Copper Age",
-  //   layout: { linksMiddlePoint: {}, x: 0, y: 0 },
-  //   name: "Agriculture",
-  //   products: [
-  //     { entityType: "unit", id: "unit_worker", name: "Worker" },
-  //     { entityType: "building", id: "building_granary", name: "Granary" },
-  //   ],
-  //   requiredTechs: [],
-  // });
 
   const techDiscovered = useObservable(bridge.technologies.discovered$);
+
+  const startInfo = useObservable(bridge.game.start$);
 
   useEffect(() => {
     setTech(techDiscovered);
@@ -29,6 +18,10 @@ export function NotificationModal() {
 
   function close() {
     setTech(null);
+  }
+
+  if (startInfo?.aiOnly) {
+    return null;
   }
 
   if (!tech) {

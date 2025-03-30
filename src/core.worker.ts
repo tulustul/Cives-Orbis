@@ -273,6 +273,9 @@ function setTrackedPlayer(playerId: number) {
 
   const data = trackedPlayerToChannel(game.trackedPlayer);
 
+  collector.research = player.knowledge.researchingTech;
+  collector.trackedPlayerYields = game.trackedPlayer.yields;
+
   collector.changes.push({
     type: "trackedPlayer.changed",
     data,

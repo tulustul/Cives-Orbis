@@ -7,6 +7,7 @@ import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
 import { ProductionAI } from "./ai-production";
 import { WorkerAI } from "./ai-worker";
+import { TechAI } from "./ai-tech";
 
 export type AiPriorities = {
   expansion: number;
@@ -19,6 +20,7 @@ export class AIPlayer {
   productionAi = new ProductionAI(this);
 
   systems: AISystem[] = [
+    new TechAI(this),
     new CityAI(this),
     new SettlingAI(this),
     new ExploringAI(this),
