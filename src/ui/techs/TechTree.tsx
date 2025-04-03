@@ -92,8 +92,7 @@ export function TechTree() {
 
   return (
     <OrnateModal
-      className="w-[95%] h-[1000px] z-20"
-      contentClassName="px-8"
+      className="w-[95%] h-[1000px]"
       title="Technologies"
       showCloseButton
       onClose={() => uiState.setView("none")}

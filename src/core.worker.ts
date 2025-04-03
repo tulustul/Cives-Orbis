@@ -27,7 +27,7 @@ import {
   PlayerViewBoundingBox,
 } from "./core/player";
 import { getFailedWeakRequirements } from "./core/requirements";
-import { ResourceCore } from "./core/resources";
+import { ResourceDeposit } from "./core/resources";
 import {
   AreaChanneled,
   CityDetailsChanneled,
@@ -203,7 +203,7 @@ function newGameHandler(options: MapGeneratorOptions): GameStartInfo {
     options.seed,
     options.uniformity,
     options.seaLevel,
-    options.resources
+    options.resources,
   );
   game.map.precompute();
 
@@ -404,7 +404,7 @@ export type UnitGetFailedActionRequirementsOptions = {
   action: UnitAction;
 };
 function unitGetFailedActionRequirements(
-  data: UnitGetFailedActionRequirementsOptions
+  data: UnitGetFailedActionRequirementsOptions,
 ): string[] {
   const unit = game.unitsManager.unitsMap.get(data.unitId);
   if (!unit) {
@@ -419,7 +419,7 @@ export type UnitSimulateCombatOptions = {
   defenderId: number;
 };
 function unitSimulateCombat(
-  data: UnitSimulateCombatOptions
+  data: UnitSimulateCombatOptions,
 ): CombatSimulation | null {
   const attacker = game.unitsManager.unitsMap.get(data.attackerId);
   const defender = game.unitsManager.unitsMap.get(data.defenderId);
@@ -444,7 +444,7 @@ export type TilesExploredChanneled = {
 };
 export function tileGetAllExplored(): TilesExploredChanneled {
   const tiles = Array.from(game.trackedPlayer.exploredTiles).map(
-    tileToTileCoords
+    tileToTileCoords,
   );
   return {
     tiles,
@@ -470,7 +470,7 @@ export type TileGetHoverDetailsOptions = {
   selectedUnitId: number | null;
 };
 export function tileGetHoverDetails(
-  options: TileGetHoverDetailsOptions
+  options: TileGetHoverDetailsOptions,
 ): TileHoverDetails | null {
   const tile = game.map.tilesMap.get(options.tileId);
   if (!tile) {
@@ -505,14 +505,14 @@ export type TileGetInRangeOptions = {
   range: number;
 };
 export function tileGetInRange(
-  options: TileGetInRangeOptions
+  options: TileGetInRangeOptions,
 ): TilesCoordsWithNeighbours[] {
   const tile = game.map.tilesMap.get(options.tileId);
   if (!tile) {
     return [];
   }
   return Array.from(getTilesInRange(tile, options.range)).map(
-    tilesToTileCoordsWithNeighbours
+    tilesToTileCoordsWithNeighbours,
   );
 }
 
@@ -568,7 +568,12 @@ export function tileSetResource(options: TileSetResourceOptions) {
   }
 
   if (resource) {
-    tile.resource = new ResourceCore(resource, tile, options.quantity);
+    tile.resource = ResourceDeposit.from({
+      def: resource,
+      tile,
+      quantity: options.quantity,
+      difficulty: 0,
+    });
   } else {
     tile.resource = null;
   }
@@ -626,7 +631,7 @@ export function cityGetRange(cityId: number): CityRange | null {
   return {
     tiles: Array.from(city.tiles).map(tilesToTileCoordsWithNeighbours),
     workedTiles: Array.from(city.workedTiles).map(
-      tilesToTileCoordsWithNeighbours
+      tilesToTileCoordsWithNeighbours,
     ),
   };
 }
@@ -636,7 +641,7 @@ export type CityGetWorkTilesResult = {
   notWorkedTiles: TilesCoordsWithNeighbours[];
 };
 export function cityGetWorkTiles(
-  cityId: number
+  cityId: number,
 ): CityGetWorkTilesResult | null {
   const city = game.citiesManager.citiesMap.get(cityId);
 
@@ -646,10 +651,10 @@ export function cityGetWorkTiles(
 
   return {
     workedTiles: Array.from(city.workedTiles).map(
-      tilesToTileCoordsWithNeighbours
+      tilesToTileCoordsWithNeighbours,
     ),
     notWorkedTiles: Array.from(city.notWorkedTiles).map(
-      tilesToTileCoordsWithNeighbours
+      tilesToTileCoordsWithNeighbours,
     ),
   };
 }
@@ -718,7 +723,7 @@ export type EntityGetFailedWeakRequirements = {
   cityId: number | null;
 };
 export function entityGetFailedWeakRequirements(
-  data: EntityGetFailedWeakRequirements
+  data: EntityGetFailedWeakRequirements,
 ): [string, any][] {
   const entityId: string = data.entityId;
   const cityId: number | null = data.cityId;
@@ -741,7 +746,7 @@ export function entityGetFailedWeakRequirements(
   return getFailedWeakRequirements(
     entity as Entity & HaveRequirements,
     game.trackedPlayer,
-    city
+    city,
   );
 }
 
@@ -767,7 +772,7 @@ export function statsGet(options: StatsGetOptions): StatsGetChanneled[] {
 
 function techGetAll() {
   return TECHNOLOGIES.map((tech) =>
-    knowledgeTechToChannel(game.trackedPlayer.knowledge, tech)
+    knowledgeTechToChannel(game.trackedPlayer.knowledge, tech),
   );
 }
 

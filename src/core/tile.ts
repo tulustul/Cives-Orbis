@@ -11,7 +11,7 @@ import { UnitCore } from "./unit";
 import { CityCore } from "./city";
 import { collector } from "./collector";
 import { Nation } from "./data.interface";
-import { ResourceCore } from "./resources";
+import { ResourceDeposit } from "./resources";
 import { PlayerCore } from "./player";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
@@ -42,7 +42,7 @@ export class TileCore implements BaseTile {
   wetlands = false;
   improvement: TileImprovement | null = null;
   road: TileRoad | null = null;
-  resource: ResourceCore | null = null;
+  resource: ResourceDeposit | null = null;
 
   units: UnitCore[] = [];
   city: CityCore | null = null;

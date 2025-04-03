@@ -18,6 +18,7 @@ Bugs:
   ☐ disembark + attack is broken
   ☐ fix not existing workers showing up on the map
   ☐ fix destroying units doesn't update the units occupying the same tile
+  ☐ settler still in the UI after founding the city
 
 Performance:
   ✔ optimize workers AI @done(25-03-10 23:14)
@@ -46,6 +47,7 @@ Minor features:
   ☐ combat animations
   ☐ fog of war animation
   ✔ spectator mode @done(25-03-11 23:35)
+  ☐ cycling through tasks with tab / shift+tab
 
 Major features:
   ✔ naval units @done(20-06-06 15:05)
@@ -65,7 +67,8 @@ Major features:
   ☐ barbarians
   ☐ diplomacy
   ☐ nations
-  ☐ trade
+  ☐ trade routes
+  ☐ religion
   ✔ knowledge @done(25-03-30 11:53)
 
 Others:

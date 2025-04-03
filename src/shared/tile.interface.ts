@@ -81,7 +81,7 @@ export function areWetlandsPossible(tile: BaseTile): boolean {
 
 export function isImprovementPossible(
   tile: BaseTile,
-  improvement: TileImprovement | null
+  improvement: TileImprovement | null,
 ): boolean {
   if (improvement === null) {
     return true;
@@ -110,13 +110,16 @@ export function isRoadPossible(tile: BaseTile) {
 
 export function isResourcePossible(
   tile: BaseTile,
-  resourceDef: ResourceDefinition | null
+  resourceDef: ResourceDefinition | null,
 ) {
   if (!resourceDef) {
     return true;
   }
 
-  const dis = resourceDef.distribution;
+  const dis = resourceDef.depositDef?.distribution;
+  if (!dis) {
+    return false;
+  }
 
   if (dis.seaLevel !== undefined && dis.seaLevel !== tile.seaLevel) {
     return false;

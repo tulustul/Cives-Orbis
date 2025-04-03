@@ -131,11 +131,18 @@ export type ResourceDistribution = {
   };
 };
 
-export type ResourceDefinition = Entity & {
+export type ResourceType = "food" | "material" | "luxury";
+
+export type ResourceDepositDefinition = {
   requiredImprovement: TileImprovement;
   bonuses: Bonuses;
   bonusesWhenWorked: Bonuses;
-  distribution: ResourceDistribution;
+  distribution?: ResourceDistribution;
+};
+
+export type ResourceDefinition = Entity & {
+  resourceType: ResourceType;
+  depositDef?: ResourceDepositDefinition;
 };
 
 export type PolicyArea = Entity & { options: PolicyArea[] };
@@ -148,6 +155,7 @@ export type TechEra =
   | "Copper Age"
   | "Bronze Age"
   | "Iron Age"
+  | "Steel Age"
   | "Gunpowder Age"
   | "Coal Age"
   | "Industrial Age"

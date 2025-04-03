@@ -1,7 +1,7 @@
 import { CityCore, CityVisibility } from "@/core/city";
 import { Game } from "@/core/game";
 import { PlayerCore } from "@/core/player";
-import { ResourceCore } from "@/core/resources";
+import { ResourceDeposit } from "@/core/resources";
 import { TileCore } from "@/core/tile";
 import { TilesMapCore } from "@/core/tiles-map";
 import { UnitCore, UnitOrder } from "@/core/unit";
@@ -321,10 +321,12 @@ export function tileToChannel(tile: TileCore): TileChanneled {
   };
 }
 
-export function resourceToChannel(resource: ResourceCore): ResourceChanneled {
+export function resourceToChannel(
+  resource: ResourceDeposit
+): ResourceChanneled {
   return {
-    id: resource.definition.id,
-    name: resource.definition.name,
+    id: resource.def.id,
+    name: resource.def.name,
     quantity: resource.quantity,
   };
 }

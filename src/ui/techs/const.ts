@@ -4,6 +4,7 @@ export const erasColors: Record<TechEra, string> = {
   "Copper Age": "#3d4e5980",
   "Bronze Age": "#d6b99d80",
   "Iron Age": "#e1eedc80",
+  "Steel Age": "#e1eedc80",
   "Gunpowder Age": "#6d6d6d80",
   "Coal Age": "#00000080",
   "Industrial Age": "#ffa6a680",

@@ -15,7 +15,7 @@ import {
   getIdleProductById,
   getTechById,
 } from "../data-manager";
-import { ResourceCore } from "../resources";
+import { ResourceDeposit } from "../resources";
 import { RESOURCES_DEFINITIONS } from "@/data/resources";
 import { Stats, StatsData } from "../stats";
 import { Knowledge } from "../knowledge";
@@ -205,7 +205,7 @@ function dumpTiles(map: TilesMapCore): TileSerialized[] {
       // Resources don't repeat.
       if (tile.resource) {
         diff.resource = {
-          id: tile.resource.definition.id,
+          id: tile.resource.def.id,
           quantity: tile.resource.quantity,
         };
       }
@@ -254,14 +254,15 @@ function loadMap(mapData: MapSerialized) {
 
       if (tileData.resource) {
         const resourceDef = RESOURCES_DEFINITIONS.find(
-          (r) => r.id === tileData.resource?.id
+          (r) => r.id === tileData.resource?.id,
         );
         if (resourceDef) {
-          tile.resource = new ResourceCore(
-            resourceDef,
+          tile.resource = ResourceDeposit.from({
+            def: resourceDef,
             tile,
-            tileData.resource.quantity
-          );
+            quantity: tileData.resource.quantity,
+            difficulty: 0,
+          });
         }
       }
 
@@ -328,7 +329,7 @@ function loadKnowledge(player: PlayerCore, data: KnowledgeSerialized) {
   const knowledge = new Knowledge(player);
 
   knowledge.discoveredTechs = new Set(
-    data.knownTechs.map((id) => getTechById(id))
+    data.knownTechs.map((id) => getTechById(id)),
   );
   knowledge.researchingTech = data.currentTech
     ? getTechById(data.currentTech)
@@ -338,7 +339,7 @@ function loadKnowledge(player: PlayerCore, data: KnowledgeSerialized) {
     Object.entries(data.accumulated).map(([id, value]) => [
       getTechById(id),
       value,
-    ])
+    ]),
   );
   knowledge.overflow = data.overflow;
 
@@ -454,6 +455,6 @@ function loadUnit(game: Game, unitData: UnitSerialized) {
 
   unit.path =
     unitData.path?.map((row) =>
-      row.map((tileId) => game.map.tilesMap.get(tileId)!)
+      row.map((tileId) => game.map.tilesMap.get(tileId)!),
     ) || null;
 }

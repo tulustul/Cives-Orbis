@@ -44,7 +44,7 @@ export function OrnateModal({
   }
 
   return (
-    <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center pointer-events-none">
+    <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center pointer-events-none  z-20">
       <OrnateBox
         contentClassName={clsx(
           contentClassName,

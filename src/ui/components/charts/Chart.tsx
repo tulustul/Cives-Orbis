@@ -103,7 +103,7 @@ export function Chart({ children }: PropsWithChildren) {
       <div className="relative grow">
         <div className="flex flex-col justify-between h-full">
           {dataSeriesProcessed.yAxisLabels.map((_, index) => (
-            <div className="w-full h-[1px] bg-gray-600" key={index} />
+            <div className="w-full h-[1px] bg-gray-600/20" key={index} />
           ))}
         </div>
 

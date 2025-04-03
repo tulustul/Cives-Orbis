@@ -17,7 +17,7 @@ import {
 } from "../shared";
 import { getTileInDirection } from "../shared/hex-math";
 import { RESOURCES_DEFINITIONS } from "../data/resources";
-import { ResourceCore } from "../core/resources";
+import { ResourceDeposit } from "../core/resources";
 import { randomNormal } from "../core/random";
 import { createNoise2D, NoiseFunction2D } from "simplex-noise";
 import alea from "alea";
@@ -60,7 +60,7 @@ export class RealisticMapGenerator implements MapGenerator {
     seed: string | undefined = undefined,
     uniformity: number = 0.5,
     seaLevel = 0,
-    resources = 0.2
+    resources = 0.2,
   ) {
     this.map = new TilesMapCore(width, height);
     this.width = width;
@@ -117,7 +117,7 @@ export class RealisticMapGenerator implements MapGenerator {
     }
     const maxValue = noiseScales.reduce(
       (total, scaleAndIntensity) => total + scaleAndIntensity[1],
-      0
+      0,
     );
     const seaLevel = maxValue * this.seaLevel;
 
@@ -129,7 +129,7 @@ export class RealisticMapGenerator implements MapGenerator {
         [0.06, 0.4],
         [0.4, 1],
       ],
-      this.seed
+      this.seed,
     );
 
     for (const [tile, value, _] of this.getNoisedTiles(coastlineNoise)) {
@@ -162,8 +162,8 @@ export class RealisticMapGenerator implements MapGenerator {
           [0.012, 1],
           [0.07, 1],
         ],
-        this.seed
-      )
+        this.seed,
+      ),
     )) {
       const base = (1 - longitude) / 2;
       const noise = ((value + 1) / 2) * (1 - longitude);
@@ -251,8 +251,8 @@ export class RealisticMapGenerator implements MapGenerator {
           [0.025, 1],
           [0.2, 1],
         ],
-        this.seed
-      )
+        this.seed,
+      ),
     )) {
       const x = longitude * 10;
       const base = x < Math.PI * 1.5 ? (Math.cos(x) + 1) / 2 - 0.5 : 0;
@@ -333,7 +333,7 @@ export class RealisticMapGenerator implements MapGenerator {
             // Apply consumption
             newHumidity = Math.max(
               0,
-              Math.min(1, newHumidity * (1 - consumptionRate))
+              Math.min(1, newHumidity * (1 - consumptionRate)),
             );
 
             metadata.humidity = newHumidity;
@@ -452,8 +452,8 @@ export class RealisticMapGenerator implements MapGenerator {
           [0.06, 1],
           [0.3, 1],
         ],
-        this.seed
-      )
+        this.seed,
+      ),
     )) {
       const bonus = tile.climate === Climate.tropical ? 0.3 : 0;
       if (value + bonus > -0.2 && isForestable(tile)) {
@@ -470,7 +470,7 @@ export class RealisticMapGenerator implements MapGenerator {
         [0.06, 0.8], // Medium scale variations
         [0.15, 0.5], // Small scale details - increased for more variation
       ],
-      this.seed + "_mountains"
+      this.seed + "_mountains",
     );
 
     // Secondary noise for branch formations
@@ -479,7 +479,7 @@ export class RealisticMapGenerator implements MapGenerator {
         [0.08, 1.0],
         [0.2, 0.6],
       ],
-      this.seed + "_branches"
+      this.seed + "_branches",
     );
 
     // Generate ridgeline paths for mountain ranges
@@ -570,7 +570,7 @@ export class RealisticMapGenerator implements MapGenerator {
             angle + ((Math.random() * 2 - 1) * Math.PI) / 2,
             Math.floor(ridgeLength / 3) + 2,
             heightIncrease * 0.7,
-            branchNoise
+            branchNoise,
           );
         }
       }
@@ -583,7 +583,7 @@ export class RealisticMapGenerator implements MapGenerator {
     direction: number,
     length: number,
     startHeight: number,
-    noise: ComplexNoise
+    noise: ComplexNoise,
   ) {
     const dirX = Math.cos(direction);
     const dirY = Math.sin(direction);
@@ -640,7 +640,7 @@ export class RealisticMapGenerator implements MapGenerator {
   }
 
   private *getNoisedTiles(
-    noise: ComplexNoise
+    noise: ComplexNoise,
   ): Iterable<[TileCore, number, number]> {
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
@@ -753,7 +753,7 @@ export class RealisticMapGenerator implements MapGenerator {
           pair[0].seaLevel === SeaLevel.none &&
           pair[1].seaLevel === SeaLevel.none &&
           pair[0].riverParts.length < 4 && // small loops prevention, big loops are still an issue
-          pair[1].riverParts.length < 4
+          pair[1].riverParts.length < 4,
       ) as [TileCore, TileCore][];
 
     if (pairs.length === 0) {
@@ -782,7 +782,7 @@ export class RealisticMapGenerator implements MapGenerator {
     if (placeRiverBetweenTiles(...pairToPlace)) {
       this.buildRiverPath(
         pairToPlace[0],
-        pairToPlace[0].getDirectionTo(pairToPlace[1])
+        pairToPlace[0].getDirectionTo(pairToPlace[1]),
       );
     }
   }
@@ -795,8 +795,8 @@ export class RealisticMapGenerator implements MapGenerator {
           [0.08, 1],
           [0.2, 1],
         ],
-        this.seed
-      )
+        this.seed,
+      ),
     )) {
       if (value > 0 && areWetlandsPossible(tile)) {
         tile.wetlands = true;
@@ -834,15 +834,20 @@ export class RealisticMapGenerator implements MapGenerator {
 
         // TODO take more distributions settings into account
         const resourceIndex = Math.floor(
-          Math.random() * RESOURCES_DEFINITIONS.length
+          Math.random() * RESOURCES_DEFINITIONS.length,
         );
         const resourceDef = RESOURCES_DEFINITIONS[resourceIndex];
         const tile = this.map.tiles[x][y];
 
         if (isResourcePossible(tile, resourceDef)) {
-          const dis = resourceDef.distribution;
+          const dis = resourceDef.depositDef!.distribution!;
           const quantity = randomNormal(dis.quantityMedian, dis.quantityStddev);
-          tile.resource = new ResourceCore(resourceDef, tile, quantity);
+          tile.resource = ResourceDeposit.from({
+            def: resourceDef,
+            tile,
+            quantity,
+            difficulty: 0,
+          });
         }
       }
     }
