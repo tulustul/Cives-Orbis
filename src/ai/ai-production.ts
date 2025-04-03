@@ -32,9 +32,9 @@ export class ProductionAI extends AISystem {
   private planProduction(request: CityProductionRequest) {
     const cityCandidates = this.player.citiesWithoutProduction.filter(
       (city) =>
-        city.canProduce(request.product) &&
+        city.production.canProduce(request.product) &&
         (request.passableArea === undefined ||
-          city.passableAreas.has(request.passableArea))
+          city.passableAreas.has(request.passableArea)),
     );
 
     if (cityCandidates.length === 0) {
@@ -50,7 +50,7 @@ export class ProductionAI extends AISystem {
       focus: request.focus,
       priority: request.priority,
       perform: () => {
-        city.produce(request.product);
+        city.production.produce(request.product);
       },
     });
   }

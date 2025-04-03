@@ -95,7 +95,7 @@ export class WorkerAI extends AISystem {
       }
       // Calculate how many cities are in this area
       const citiesInArea = this.player.cities.filter(
-        (city) => city.tile.passableArea === passableArea
+        (city) => city.tile.passableArea === passableArea,
       );
       if (citiesInArea.length === 0) {
         continue;
@@ -104,7 +104,7 @@ export class WorkerAI extends AISystem {
       // At least MIN_WORKERS per city
       const workersNeeded = Math.max(
         MIN_WORKERS,
-        Math.floor(citiesInArea.length * CITIES_PER_WORKER)
+        Math.floor(citiesInArea.length * CITIES_PER_WORKER),
       );
       const currentWorkers = this.workersByArea.get(passableArea)?.length ?? 0;
       // Request more workers if needed
@@ -180,7 +180,7 @@ export class WorkerAI extends AISystem {
   private planTileImprovements() {
     const tasks: WorkerTask[] = [];
     for (const city of this.player.cities) {
-      for (const tile of city.tiles) {
+      for (const tile of city.expansion.tiles) {
         if (
           tile.improvement !== null ||
           tile.city ||
@@ -195,7 +195,7 @@ export class WorkerAI extends AISystem {
           if (tile.resource) {
             priority += 200;
           }
-          if (city.workedTiles.has(tile)) {
+          if (city.workers.workedTiles.has(tile)) {
             priority += 100;
           }
           tasks.push({ tile, action, priority });
@@ -231,7 +231,7 @@ export class WorkerAI extends AISystem {
     }[] = [];
 
     const cities = this.player.cities.filter(
-      (city) => city.tile.passableArea === worker.tile.passableArea
+      (city) => city.tile.passableArea === worker.tile.passableArea,
     );
 
     for (const cityA of cities) {
@@ -254,7 +254,7 @@ export class WorkerAI extends AISystem {
         missingConnections.push({
           cityA,
           cityB,
-          value: cityA.size + cityB.size,
+          value: cityA.population.total + cityB.population.total,
         });
       }
     }
@@ -269,7 +269,7 @@ export class WorkerAI extends AISystem {
       const path = findPath(
         worker,
         connection.cityA.tile,
-        connection.cityB.tile
+        connection.cityB.tile,
       );
       if (path) {
         const tiles = path.flat().filter((tile) => tile.road === null);

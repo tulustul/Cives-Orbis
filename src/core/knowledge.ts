@@ -116,7 +116,7 @@ export class Knowledge {
         continue;
       }
       const canBeResearched = tech.requiredTechnologies.every((requiredTech) =>
-        this.discoveredTechs.has(requiredTech)
+        this.discoveredTechs.has(requiredTech),
       );
       if (canBeResearched) {
         this.availableTechs.add(tech);
@@ -133,7 +133,7 @@ export class Knowledge {
   private filterDiscoveredEntities(set: Set<RequireTech>, defs: RequireTech[]) {
     set.clear();
     for (const def of defs) {
-      if (this.discoveredTechs.has(def.technology)) {
+      if (def.technology && this.discoveredTechs.has(def.technology)) {
         set.add(def);
       }
     }

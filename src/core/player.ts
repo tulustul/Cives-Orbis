@@ -117,7 +117,7 @@ export class PlayerCore {
     zeroYields(this.yields.perTurn);
 
     for (const city of this.cities) {
-      for (const tile of city.tiles) {
+      for (const tile of city.expansion.tiles) {
         if (!tile.city) {
           if (tile.improvement !== null) {
             this.yields.costs.publicWorks++;
@@ -153,7 +153,7 @@ export class PlayerCore {
     this.visibleTiles.clear();
     for (const city of this.cities) {
       // TODO replace with city.visibleTiles
-      for (const tile of city.tiles) {
+      for (const tile of city.expansion.tiles) {
         this.visibleTiles.add(tile);
       }
     }
@@ -169,12 +169,14 @@ export class PlayerCore {
   }
 
   updateCitiesWithoutProduction() {
-    this.citiesWithoutProduction = this.cities.filter((c) => !c.product);
+    this.citiesWithoutProduction = this.cities.filter(
+      (c) => !c.production.product,
+    );
   }
 
   updateUnitsWithoutOrders() {
     this.unitsWithoutOrders = this.units.filter(
-      (c) => !c.order && !c.parent && c.actionPointsLeft
+      (c) => !c.order && !c.parent && c.actionPointsLeft,
     );
   }
 

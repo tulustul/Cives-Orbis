@@ -358,17 +358,21 @@ function loadCity(game: Game, cityData: CitySerialized) {
   }
 
   city.name = cityData.name;
-  city.size = cityData.size;
-  city.totalFood = cityData.totalFood;
-  city.totalProduction = cityData.totalProduction;
-  city.totalCulture = cityData.totalCulture;
+
+  city.population.population.set("peasant", cityData.size);
+  city.population.computeTotal();
+
+  city.population.totalFood = cityData.totalFood;
+  city.production.totalProduction = cityData.totalProduction;
+
+  city.expansion.totalCulture = cityData.totalCulture;
 
   for (const tileIndex of cityData.tiles) {
-    city.addTile(game.map.tilesMap.get(tileIndex)!);
+    city.expansion.addTile(game.map.tilesMap.get(tileIndex)!);
   }
 
   for (const tileIndex of cityData.workedTiles) {
-    city.workTile(game.map.tilesMap.get(tileIndex)!);
+    city.workers.workTile(game.map.tilesMap.get(tileIndex)!);
   }
 
   if (cityData.product) {
@@ -382,11 +386,15 @@ function loadCity(game: Game, cityData: CitySerialized) {
       productDefinition = getIdleProductById(cityData.product.id)!;
     }
 
-    city.product = productDefinition;
+    city.production.product = productDefinition;
   }
 
-  city.buildings = cityData.buildings.map((b) => getBuildingById(b)!);
-  city.buildingsIds = new Set(city.buildings.map((b) => b.id));
+  city.production.buildings = cityData.buildings.map(
+    (b) => getBuildingById(b)!,
+  );
+  city.production.buildingsIds = new Set(
+    city.production.buildings.map((b) => b.id),
+  );
   city.updateYields();
 }
 
@@ -394,21 +402,21 @@ function dumpCity(city: CityCore): CitySerialized {
   return {
     id: city.id,
     name: city.name,
-    size: city.size,
+    size: city.population.total,
     player: city.player.id,
     tile: city.tile.id,
-    totalFood: city.totalFood,
-    totalProduction: city.totalProduction,
-    totalCulture: city.totalCulture,
-    product: city.product
+    totalFood: city.population.totalFood,
+    totalProduction: city.production.totalProduction,
+    totalCulture: city.expansion.totalCulture,
+    product: city.production.product
       ? {
-          type: city.product.entityType,
-          id: city.product.id,
+          type: city.production.product.entityType,
+          id: city.production.product.id,
         }
       : null,
-    tiles: Array.from(city.tiles).map((tile) => tile.id),
-    workedTiles: Array.from(city.workedTiles).map((tile) => tile.id),
-    buildings: city.buildings.map((b) => b.id),
+    tiles: Array.from(city.expansion.tiles).map((tile) => tile.id),
+    workedTiles: Array.from(city.workers.workedTiles).map((tile) => tile.id),
+    buildings: city.production.buildings.map((b) => b.id),
   };
 }
 

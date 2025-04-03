@@ -2,7 +2,7 @@ import { RawUnitDefinition, UnitTrait, UnitType } from "@/core/data.interface";
 import {
   CityHaveBuildingRequirement,
   CitySizeRequirement,
-  CoastlineCityRequirement,
+  CoastlineCityRequirement
 } from "@/core/requirements";
 
 export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
@@ -21,10 +21,9 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     strongRequirements: [],
     weakRequirements: [
       new CityHaveBuildingRequirement("building_granary"),
-      new CitySizeRequirement(3),
+      new CitySizeRequirement(3)
     ],
-    bonuses: {},
-    technology: "tech_pottery",
+    bonuses: {}
   },
   {
     id: "unit_worker",
@@ -40,8 +39,7 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 0,
     strongRequirements: [],
     weakRequirements: [new CitySizeRequirement(2)],
-    bonuses: {},
-    technology: "tech_society",
+    bonuses: {}
   },
   {
     id: "unit_scout",
@@ -57,8 +55,7 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 0,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: {},
-    technology: "tech_society",
+    bonuses: {}
   },
   {
     id: "unit_warrior",
@@ -74,8 +71,7 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 0,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: {},
-    technology: "tech_society",
+    bonuses: {}
   },
   {
     id: "unit_uber_warrior",
@@ -91,8 +87,7 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 0,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: {},
-    technology: "tech_ironWorking",
+    bonuses: {}
   },
   {
     id: "unit_tireme",
@@ -108,8 +103,7 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 0,
     strongRequirements: [new CoastlineCityRequirement()],
     weakRequirements: [],
-    bonuses: {},
-    technology: "tech_sailing",
+    bonuses: {}
   },
   {
     id: "unit_galley",
@@ -125,8 +119,7 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 0,
     strongRequirements: [new CoastlineCityRequirement()],
     weakRequirements: [],
-    bonuses: {},
-    technology: "tech_sailing",
+    bonuses: {}
   },
   {
     id: "unit_supply_wagon",
@@ -142,7 +135,6 @@ export const UNITS_DEFINITIONS: RawUnitDefinition[] = [
     supplyRange: 4,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: {},
-    technology: "tech_bronzeWorking",
-  },
+    bonuses: {}
+  }
 ];

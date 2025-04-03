@@ -30,21 +30,22 @@ export class CitiesManager {
 
     const city = new CityCore(tile, player);
     city.id = this.lastId++;
-    city.size = 1;
+    city.population.population.set("peasant", 1);
+    city.population.computeTotal();
     city.name = `City ${city.id}`;
     city.tile = tile;
     city.isCoastline = !!city.tile.neighbours.find(
-      (n) => n.seaLevel !== SeaLevel.none
+      (n) => n.seaLevel !== SeaLevel.none,
     );
     this.cities.push(city);
     this.citiesMap.set(city.id, city);
 
     for (const neighbour of tile.neighbours) {
-      city.addTile(neighbour);
+      city.expansion.addTile(neighbour);
     }
 
     if (player.cities.length === 0) {
-      city.addBuilding(getBuildingById("building_palace"));
+      city.production.addBuilding(getBuildingById("building_palace"));
     }
     player.addCity(city);
 
@@ -59,7 +60,7 @@ export class CitiesManager {
     }
 
     if (isNew) {
-      city.optimizeYields();
+      city.workers.optimizeYields();
     }
 
     player.updateCitiesWithoutProduction();
@@ -91,8 +92,8 @@ export class CitiesManager {
 
     city.tile.city = null;
 
-    for (const tile of city.tiles) {
-      city.removeTile(tile);
+    for (const tile of city.expansion.tiles) {
+      city.expansion.removeTile(tile);
     }
 
     collector.citiesDestroyed.add(city.id);
@@ -106,7 +107,7 @@ export class CitiesManager {
 
   updateProductsLists() {
     for (const city of this.cities) {
-      city.updateProductsList();
+      city.production.updateProductsList();
     }
   }
 }

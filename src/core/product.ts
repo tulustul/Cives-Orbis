@@ -13,7 +13,7 @@ export class BuildingRequirement extends ProductRequirement {
   }
 
   check(city: CityCore) {
-    return city.buildingsIds.has(this.buildingId);
+    return city.production.buildingsIds.has(this.buildingId);
   }
 }
 
@@ -25,6 +25,6 @@ export class SizeRequirement extends ProductRequirement {
   }
 
   check(city: CityCore) {
-    return city.size >= this.size;
+    return city.population.total >= this.size;
   }
 }
