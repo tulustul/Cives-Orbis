@@ -30,8 +30,6 @@ export function CircularProgress({
   const progress = absoluteProgress ? absoluteProgress / total : 0;
   const nextProgress = absoluteNextProgress ? absoluteNextProgress / total : 0;
 
-  console.log({ progress, nextProgress, total });
-
   if (!total) {
     return <div className={styles.empty} />;
   }

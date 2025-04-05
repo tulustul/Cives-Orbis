@@ -6,8 +6,11 @@ export class CityAI extends AISystem {
   plan() {
     this.operations = [];
     for (const city of this.player.cities) {
-      if (city.product?.entityType === "idleProduct" && Math.random() > 0.9) {
-        city.cancelProduction();
+      if (
+        city.production.product?.entityType === "idleProduct" &&
+        Math.random() > 0.9
+      ) {
+        city.production.cancelProduction();
       }
     }
 
@@ -18,8 +21,8 @@ export class CityAI extends AISystem {
   }
 
   private processCityProduct(city: CityCore) {
-    const buildings = city.availableBuildings.filter(
-      (b) => !city.disabledProducts.has(b)
+    const buildings = city.production.availableBuildings.filter(
+      (b) => !city.production.disabledProducts.has(b),
     );
 
     let product: ProductDefinition;
@@ -28,8 +31,10 @@ export class CityAI extends AISystem {
       product = buildings[Math.floor(Math.random() * buildings.length)];
     } else {
       product =
-        city.availableIdleProducts[
-          Math.floor(Math.random() * city.availableIdleProducts.length)
+        city.production.availableIdleProducts[
+          Math.floor(
+            Math.random() * city.production.availableIdleProducts.length,
+          )
         ];
     }
 
@@ -39,7 +44,7 @@ export class CityAI extends AISystem {
         entityId: city.id,
         focus: "economy",
         priority: product.entityType === "idleProduct" ? 10 : 100,
-        perform: () => city.produce(product),
+        perform: () => city.production.produce(product),
       });
     }
   }

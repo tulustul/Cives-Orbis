@@ -608,11 +608,11 @@ export function cityProduce(options: CityProduceOptions) {
   }
 
   if (options.entityType === "building") {
-    city.produce(getBuildingById(options.productId)!);
+    city.production.produce(getBuildingById(options.productId)!);
   } else if (options.entityType === "unit") {
-    city.produce(getUnitById(options.productId)!);
+    city.production.produce(getUnitById(options.productId)!);
   } else {
-    city.produce(getIdleProductById(options.productId)!);
+    city.production.produce(getIdleProductById(options.productId)!);
   }
 
   return cityDetailsToChannel(city);
@@ -629,8 +629,10 @@ export function cityGetRange(cityId: number): CityRange | null {
     return null;
   }
   return {
-    tiles: Array.from(city.tiles).map(tilesToTileCoordsWithNeighbours),
-    workedTiles: Array.from(city.workedTiles).map(
+    tiles: Array.from(city.expansion.tiles).map(
+      tilesToTileCoordsWithNeighbours,
+    ),
+    workedTiles: Array.from(city.workers.workedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
   };
@@ -650,10 +652,10 @@ export function cityGetWorkTiles(
   }
 
   return {
-    workedTiles: Array.from(city.workedTiles).map(
+    workedTiles: Array.from(city.workers.workedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
-    notWorkedTiles: Array.from(city.notWorkedTiles).map(
+    notWorkedTiles: Array.from(city.workers.notWorkedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
   };
@@ -671,7 +673,7 @@ export function cityWorkTile(options: CityWorkTileOptions) {
     return null;
   }
 
-  city.workTile(tile);
+  city.workers.workTile(tile);
 
   return cityDetailsToChannel(city);
 }
@@ -684,7 +686,7 @@ export function cityUnworkTile(options: CityWorkTileOptions) {
     return null;
   }
 
-  city.unworkTile(tile);
+  city.workers.unworkTile(tile);
 
   return cityDetailsToChannel(city);
 }
@@ -696,7 +698,7 @@ export function cityOptimizeYields(cityId: number) {
     return null;
   }
 
-  city.optimizeYields();
+  city.workers.optimizeYields();
 
   return cityDetailsToChannel(city);
 }

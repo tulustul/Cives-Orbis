@@ -16,7 +16,9 @@
 - React: Use functional components with hooks
 - State management: RxJS for game state, Zustand for UI state
 - File naming: lowercase-hyphen for utilities, PascalCase for components
-- CSS: Use CSS modules (.module.css)
+- CSS: Use tailwind
 - Prefer async/await over raw promises
 - Create tests for core game logic in .spec.ts files
 - Always use curly braces, even for single line expressions
+- Ignore backward compatibility completely
+- For core, try to extract game logic into separate classes and files

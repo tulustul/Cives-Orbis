@@ -18,7 +18,7 @@ const technologies: Technology[] = TECH_DEFINITIONS.map((tech) => {
   return {
     ...tech,
     requiredTechnologies: [],
-    products: [],
+    unlocks: [],
     entityType: "technology",
   };
 });
@@ -28,6 +28,13 @@ for (const tech of technologies) {
   TECHS_MAP.set(tech.id, tech);
   TECHNOLOGIES.push(tech);
   ENTITIES_MAP.set(tech.id, tech);
+}
+
+const unlockIdToTech = new Map<string, Technology>();
+for (const tech of TECH_DEFINITIONS) {
+  for (const unlock of tech.unlocks) {
+    unlockIdToTech.set(unlock, TECHS_MAP.get(tech.id)!);
+  }
 }
 
 export function getTechById(id: string): Technology {
@@ -41,16 +48,15 @@ export function getTechById(id: string): Technology {
 for (const rawTech of TECH_DEFINITIONS) {
   const tech = getTechById(rawTech.id);
   tech.requiredTechnologies = rawTech.requiredTechnologies.map((id) =>
-    getTechById(id)
+    getTechById(id),
   );
 }
 
 const UNITS_MAP = new Map<string, UnitDefinition>();
 for (const rawDef of UNITS_DEFINITIONS) {
-  const def: UnitDefinition = {
-    ...rawDef,
-    technology: getTechById(rawDef.technology),
-  };
+  const technology = unlockIdToTech.get(rawDef.id);
+  const def: UnitDefinition = { ...rawDef, technology };
+  technology?.unlocks.push(def);
   UNITS_MAP.set(def.id, def);
   ENTITIES_MAP.set(def.id, def);
 }
@@ -58,10 +64,9 @@ export const unitDefs = Array.from(UNITS_MAP.values());
 
 const BUILDINGS_MAP = new Map<string, Building>();
 for (const rawDef of BUILDINGS) {
-  const def: Building = {
-    ...rawDef,
-    technology: getTechById(rawDef.technology),
-  };
+  const technology = unlockIdToTech.get(rawDef.id);
+  const def: Building = { ...rawDef, technology };
+  technology?.unlocks.push(def);
   BUILDINGS_MAP.set(def.id, def);
   ENTITIES_MAP.set(def.id, def);
 }
@@ -69,22 +74,13 @@ export const buildingDefs = Array.from(BUILDINGS_MAP.values());
 
 const IDLE_PRODUCTS_MAP = new Map<string, IdleProduct>();
 for (const rawDef of IDLE_PRODUCTS) {
-  const def: IdleProduct = {
-    ...rawDef,
-    technology: getTechById(rawDef.technology),
-  };
+  const technology = unlockIdToTech.get(rawDef.id);
+  const def: IdleProduct = { ...rawDef, technology };
+  technology?.unlocks.push(def);
   IDLE_PRODUCTS_MAP.set(def.id, def);
   ENTITIES_MAP.set(def.id, def);
 }
 export const idleProductDefs = Array.from(IDLE_PRODUCTS_MAP.values());
-
-for (const product of [
-  ...UNITS_MAP.values(),
-  ...BUILDINGS_MAP.values(),
-  ...IDLE_PRODUCTS_MAP.values(),
-]) {
-  product.technology.products.push(product);
-}
 
 const RESOURCES_MAP = new Map<string, ResourceDefinition>();
 for (const definition of RESOURCES_DEFINITIONS) {

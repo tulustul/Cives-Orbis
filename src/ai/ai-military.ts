@@ -77,7 +77,7 @@ export class MilitaryAI extends AISystem {
     this.operations = [];
 
     this.enemyPlayers = this.player.game.players.filter((p) =>
-      this.player.isEnemyWith(p)
+      this.player.isEnemyWith(p),
     );
 
     this.preprocessUnits();
@@ -187,23 +187,23 @@ export class MilitaryAI extends AISystem {
 
     this.militaryUnits = this.player.units.filter(
       (unit) =>
-        unit.definition.trait === UnitTrait.military && unit.parent === null
+        unit.definition.trait === UnitTrait.military && unit.parent === null,
     );
     this.landUnits = this.militaryUnits.filter(
-      (unit) => unit.definition.type === UnitType.land
+      (unit) => unit.definition.type === UnitType.land,
     );
     this.navalUnits = this.militaryUnits.filter(
-      (unit) => unit.definition.type === UnitType.naval
+      (unit) => unit.definition.type === UnitType.naval,
     );
 
     this.unassignedMilitaryUnits = this.militaryUnits.filter(
-      (u) => !assignedUnits.has(u)
+      (u) => !assignedUnits.has(u),
     );
   }
 
   private scheduleUnitProduction() {
     const landDroductionPriority = Math.round(
-      (this.player.cities.length / this.landUnits.length) * 100
+      (this.player.cities.length / this.landUnits.length) * 100,
     );
 
     // Schedule production of new military units if needed
@@ -216,14 +216,14 @@ export class MilitaryAI extends AISystem {
           focus: "military",
           priority: landDroductionPriority,
           perform: () => {
-            city.produce(unitDef);
+            city.production.produce(unitDef);
           },
         });
       }
     }
 
     const navalDroductionPriority = Math.round(
-      (this.player.cities.length / this.navalUnits.length) * 70
+      (this.player.cities.length / this.navalUnits.length) * 70,
     );
     // Schedule production of new military units if needed
     for (const city of this.player.citiesWithoutProduction) {
@@ -238,7 +238,7 @@ export class MilitaryAI extends AISystem {
           focus: "military",
           priority: navalDroductionPriority,
           perform: () => {
-            city.produce(unitDef);
+            city.production.produce(unitDef);
           },
         });
       }
@@ -247,11 +247,11 @@ export class MilitaryAI extends AISystem {
 
   private chooseUnitDef(
     city: CityCore,
-    unitType: UnitType
+    unitType: UnitType,
   ): UnitDefinition | null {
     if (unitType === UnitType.land) {
       const warrior = getUnitById("unit_warrior");
-      if (city.canProduce(warrior)) {
+      if (city.production.canProduce(warrior)) {
         return warrior;
       }
     }
@@ -261,7 +261,7 @@ export class MilitaryAI extends AISystem {
         return null;
       }
       const navalUnit = getUnitById("unit_tireme");
-      if (city.canProduce(navalUnit)) {
+      if (city.production.canProduce(navalUnit)) {
         return navalUnit;
       }
     }
@@ -280,7 +280,7 @@ export class MilitaryAI extends AISystem {
           (acc, u) =>
             acc +
             (u.player.isEnemyWith(this.player) ? u.definition.strength : 0),
-          0
+          0,
         );
       }
 
@@ -300,7 +300,7 @@ export class MilitaryAI extends AISystem {
     this.unfulfilledDefenses = this.potentialDefenses.filter(
       (defense) =>
         defense.forcesRequired.land > defense.forcesAssigned.land ||
-        defense.forcesRequired.naval > defense.forcesAssigned.naval
+        defense.forcesRequired.naval > defense.forcesAssigned.naval,
     );
   }
 
@@ -319,10 +319,10 @@ export class MilitaryAI extends AISystem {
         continue;
       }
 
-      const attractiveness = city.size * 2;
+      const attractiveness = city.population.total * 2;
       const difficulty = city.tile.units.reduce(
         (acc, u) => acc + u.definition.strength,
-        0
+        0,
       );
 
       this.potentialTargets.push({
@@ -348,7 +348,7 @@ export class MilitaryAI extends AISystem {
 
       const difficulty = unit.tile.units.reduce(
         (acc, u) => acc + u.definition.strength,
-        0
+        0,
       );
 
       this.potentialTargets.push({
@@ -512,13 +512,13 @@ export class MilitaryAI extends AISystem {
         (acc, u) =>
           acc +
           (u.definition.type === UnitType.land ? u.definition.strength : 0),
-        0
+        0,
       );
       defense.forcesAssigned.naval = assignedUnits.reduce(
         (acc, u) =>
           acc +
           (u.definition.type === UnitType.naval ? u.definition.strength : 0),
-        0
+        0,
       );
     }
   }

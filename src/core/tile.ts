@@ -15,6 +15,7 @@ import { ResourceDeposit } from "./resources";
 import { PlayerCore } from "./player";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
+import { PopulationType } from "../data/populationTypes";
 
 const BASE_CLIMATE_YIELDS: Record<Climate, Yields> = {
   [Climate.arctic]: { ...EMPTY_YIELDS },
@@ -47,6 +48,10 @@ export class TileCore implements BaseTile {
   units: UnitCore[] = [];
   city: CityCore | null = null;
   areaOf: CityCore | null = null;
+
+  // Worker slots
+  workerSlots = 1; // Default is 1 slot for a basic tile
+  currentWorkers: { populationType: PopulationType; city: CityCore }[] = [];
 
   yields: Yields = { ...EMPTY_YIELDS };
 
@@ -166,10 +171,15 @@ export class TileCore implements BaseTile {
 
       if (this.improvement === TileImprovement.farm) {
         this.yields.food++;
+        this.workerSlots = 2; // Farms can support 2 workers
       } else if (this.improvement === TileImprovement.mine) {
         this.yields.production++;
+        this.workerSlots = 3; // Mines can support 3 workers
       } else if (this.improvement === TileImprovement.sawmill) {
         this.yields.production++;
+        this.workerSlots = 2; // Sawmills can support 2 workers
+      } else {
+        this.workerSlots = 1; // Default slots
       }
 
       this.yields.food = Math.max(0, this.yields.food);
@@ -179,6 +189,13 @@ export class TileCore implements BaseTile {
     if (this.resource) {
       this.resource.computeYields();
       addYields(this.yields, this.resource.yields);
+
+      // If there's a resource on this tile and the correct improvement, add more slots
+      if (
+        this.improvement === this.resource.def.depositDef?.requiredImprovement
+      ) {
+        this.workerSlots += 1; // Resources with improvements add an extra worker slot
+      }
     }
   }
 
@@ -266,7 +283,7 @@ export class TileCore implements BaseTile {
   getFirstEnemyMilitaryUnit(unit: UnitCore): UnitCore | undefined {
     // TODO implement war state between players
     return this.units.find(
-      (u) => u.definition.strength && u.player !== unit.player
+      (u) => u.definition.strength && u.player !== unit.player,
     );
   }
 
@@ -284,7 +301,7 @@ export class TileCore implements BaseTile {
       (u) =>
         u.player === unit.player &&
         u.definition.capacity &&
-        u.children.length < u.definition.capacity
+        u.children.length < u.definition.capacity,
     );
   }
 

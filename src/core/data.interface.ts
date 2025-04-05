@@ -30,12 +30,8 @@ export type HaveBonuses = {
   bonuses: Bonuses;
 };
 
-export type RequireRawTech = {
-  technology: string;
-};
-
 export type RequireTech = {
-  technology: Technology;
+  technology?: Technology;
 };
 
 export type ProductType = "unit" | "building" | "idleProduct";
@@ -45,9 +41,11 @@ export type BaseProductDefinition = Entity &
   HaveBonuses & {
     entityType: ProductType;
     productionCost: number;
+    // Optional resources needed for production, mapping from resource ID to quantity
+    resourceRequirements?: Record<string, number>;
   };
 
-export type RawProductDefinition = BaseProductDefinition & RequireRawTech;
+export type RawProductDefinition = BaseProductDefinition;
 type _ProductDefinition = BaseProductDefinition & RequireTech;
 
 export enum UnitType {
@@ -74,14 +72,13 @@ type _UnitDef = {
   supplyRange: number;
 };
 
-export type RawUnitDefinition = RawProductDefinition &
-  _UnitDef &
-  RequireRawTech;
+export type RawUnitDefinition = RawProductDefinition & _UnitDef;
 export type UnitDefinition = _ProductDefinition & _UnitDef & RequireTech;
 
 export type RawBuilding = RawProductDefinition & {
   entityType: "building";
 };
+
 export type Building = _ProductDefinition & {
   entityType: "building";
 };
@@ -169,11 +166,25 @@ export type TechLayout = {
   linksMiddlePoint: Record<string, number>;
 };
 
+export type TechUnlockType =
+  | "unit"
+  | "building"
+  | "idleProduct"
+  | "tileImprovement"
+  | "resource"
+  | "ability";
+
+export interface TechUnlock {
+  type: TechUnlockType;
+  id: string;
+}
+
 export type RawTechnology = Entity & {
   requiredTechnologies: string[];
   cost: number;
   era: TechEra;
   layout: TechLayout;
+  unlocks: string[];
 };
 
 export type Technology = Entity & {
@@ -181,6 +192,6 @@ export type Technology = Entity & {
   requiredTechnologies: Technology[];
   cost: number;
   era: TechEra;
-  products: ProductDefinition[];
+  unlocks: Entity[];
   layout: TechLayout;
 };

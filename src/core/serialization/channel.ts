@@ -322,7 +322,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
 }
 
 export function resourceToChannel(
-  resource: ResourceDeposit
+  resource: ResourceDeposit,
 ): ResourceChanneled {
   return {
     id: resource.def.id,
@@ -336,59 +336,67 @@ export function cityToChannel(city: CityCore): CityChanneled {
     id: city.id,
     visibilityLevel: city.getVisibilityFor(city.player.game.trackedPlayer),
     name: city.name,
-    size: city.size,
     playerId: city.player.id,
     cssColor: city.player.cssColor,
     tile: tileToTileCoords(city.tile),
-
-    totalFood: city.totalFood,
-    foodToGrow: city.getFoodToGrow(),
     foodPerTurn: city.perTurn.food,
-    turnsToGrow: city.turnsToGrow,
 
-    totalProduction: city.totalProduction,
+    size: city.population.total,
+    totalFood: city.population.totalFood,
+    foodToGrow: city.population.getFoodToGrow(),
+    turnsToGrow: city.population.turnsToGrow,
+
     productionPerTurn: city.yields.production,
-    productionRequired: city.product ? city.product.productionCost : null,
-    turnsToProductionEnd: city.turnsToProductionEnd,
-    productName: city.product ? city.product.name : null,
+    totalProduction: city.production.totalProduction,
+    productionRequired: city.production.product
+      ? city.production.product.productionCost
+      : null,
+    turnsToProductionEnd: city.production.turnsToProductionEnd,
+    productName: city.production.product ? city.production.product.name : null,
   };
 }
 
 export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
-  city.updateProductsList();
+  city.production.updateProductsList();
 
   return {
     id: city.id,
     visibilityLevel: city.getVisibilityFor(city.player.game.trackedPlayer),
     name: city.name,
-    size: city.size,
+    size: city.population.total,
     playerId: city.player.id,
     tile: tileToTileCoords(city.tile),
-
-    totalFood: city.totalFood,
-    foodToGrow: city.getFoodToGrow(),
-    turnsToGrow: city.turnsToGrow,
-
-    totalProduction: city.totalProduction,
-    turnsToProductionEnd: city.turnsToProductionEnd,
-    buildings: city.buildings.map(buildingToChannel),
-    cultureToExpand: city.getCultureToExpand(),
-    foodConsumed: city.foodConsumed,
     perTurn: city.perTurn,
     tileYields: city.tileYields,
-    tiles: Array.from(city.tiles).map(tileToTileCoords),
-    totalCulture: city.totalCulture,
-    workedTiles: Array.from(city.workedTiles).map(
-      tilesToTileCoordsWithNeighbours
-    ),
     yields: city.yields,
-    turnsToExpand: city.turnsToExpand,
+
+    totalFood: city.population.totalFood,
+    foodToGrow: city.population.getFoodToGrow(),
+    turnsToGrow: city.population.turnsToGrow,
+    foodConsumed: city.population.foodConsumed,
+
+    totalProduction: city.production.totalProduction,
+    turnsToProductionEnd: city.production.turnsToProductionEnd,
+    buildings: city.production.buildings.map(buildingToChannel),
     availableProducts: [
-      ...city.availableUnits,
-      ...city.availableBuildings,
-      ...city.availableIdleProducts,
-    ].map((p) => cityProductToChannel(city, p, city.disabledProducts)),
-    product: city.product ? cityProductToChannel(city, city.product) : null,
+      ...city.production.availableUnits,
+      ...city.production.availableBuildings,
+      ...city.production.availableIdleProducts,
+    ].map((p) =>
+      cityProductToChannel(city, p, city.production.disabledProducts),
+    ),
+    product: city.production.product
+      ? cityProductToChannel(city, city.production.product)
+      : null,
+
+    cultureToExpand: city.expansion.getCultureToExpand(),
+    tiles: Array.from(city.expansion.tiles).map(tileToTileCoords),
+    totalCulture: city.expansion.totalCulture,
+    turnsToExpand: city.expansion.turnsToExpand,
+
+    workedTiles: Array.from(city.workers.workedTiles).map(
+      tilesToTileCoordsWithNeighbours,
+    ),
   };
 }
 
@@ -403,7 +411,7 @@ export function playerToChannel(player: PlayerCore): PlayerChanneled {
 }
 
 export function trackedPlayerToChannel(
-  player: PlayerCore
+  player: PlayerCore,
 ): TrackedPlayerChanneled {
   return {
     id: player.id,
@@ -460,13 +468,13 @@ export function unitDetailsToChannel(unit: UnitCore): UnitDetailsChanneled {
     playerId: unit.player.id,
     canControl: unit.player === unit.player.game.trackedPlayer,
     actions: unit.definition.actions.filter((action) =>
-      unit.checkActionRequirements(action)
+      unit.checkActionRequirements(action),
     ),
   };
 }
 
 export function unitToUnitPathChannelled(
-  unit: UnitCore
+  unit: UnitCore,
 ): UnitPathChanneled | null {
   if (!unit.path) {
     return null;
@@ -491,7 +499,7 @@ export function unitMoveToChannel(move: UnitMoveCore): UnitMoveChanneled {
 
 export function tileDetailsToChannel(
   tile: TileCore,
-  forPlayer: PlayerCore
+  forPlayer: PlayerCore,
 ): TileDetailsChanneled {
   return {
     ...tileToChannel(tile),
@@ -517,7 +525,7 @@ export function tileToTileCoordsWithUnits(tile: TileCore): TileCoordsWithUnits {
 }
 
 export function tilesToTileCoordsWithNeighbours(
-  tile: TileCore
+  tile: TileCore,
 ): TilesCoordsWithNeighbours {
   return {
     ...tileToTileCoords(tile),
@@ -528,7 +536,7 @@ export function tilesToTileCoordsWithNeighbours(
 export function cityProductToChannel(
   city: CityCore,
   product: ProductDefinition,
-  disabledProducts?: Set<ProductDefinition>
+  disabledProducts?: Set<ProductDefinition>,
 ): CityProductChanneled {
   return {
     enabled: disabledProducts ? !disabledProducts.has(product) : true,
@@ -547,7 +555,7 @@ export type TechDefChanneled = EntityMinimalChanneled & {
   entityType: "technology";
   cost: number;
   requiredTechs: string[];
-  products: EntityMinimalChanneled[];
+  unlocks: EntityMinimalChanneled[];
   era: TechEra;
   layout: TechLayout;
 };
@@ -576,7 +584,7 @@ export function techToChannel(entity: Technology): TechDefChanneled {
     name: entity.name,
     cost: entity.cost,
     requiredTechs: entity.requiredTechnologies.map((t) => t.id),
-    products: entity.products.map(entityToMinimalChannel),
+    unlocks: entity.unlocks.map(entityToMinimalChannel),
     era: entity.era,
     layout: entity.layout,
   };
@@ -584,7 +592,7 @@ export function techToChannel(entity: Technology): TechDefChanneled {
 
 export function knowledgeTechToChannel(
   knowledge: Knowledge,
-  tech: Technology
+  tech: Technology,
 ): TechKnowledgeChanneled {
   const accumulated = knowledge.accumulated.get(tech) ?? 0;
   return {
@@ -633,7 +641,7 @@ export type BuildingChanneled = EntityMinimalChanneled & {
 };
 
 export function buildingToChannel(
-  entity: Building | IdleProduct
+  entity: Building | IdleProduct,
 ): BuildingChanneled {
   return {
     id: entity.id,

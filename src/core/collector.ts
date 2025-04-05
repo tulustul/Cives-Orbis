@@ -73,7 +73,7 @@ class Collector {
         type: "city.updated",
         data: Array.from(this.cities)
           .filter((city) =>
-            city.player.game.trackedPlayer.exploredTiles.has(city.tile)
+            city.player.game.trackedPlayer.exploredTiles.has(city.tile),
           )
           .map((city) => cityToChannel(city)),
       });
@@ -146,7 +146,7 @@ class Collector {
       if (this.research) {
         data = knowledgeTechToChannel(
           game.trackedPlayer.knowledge,
-          this.research
+          this.research,
         );
       }
       changes.push({ type: "tech.updated", data });

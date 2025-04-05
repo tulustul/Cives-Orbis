@@ -8,6 +8,14 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": [],
     "cost": 0,
     "era": "Copper Age",
+    "unlocks": [
+      "unit_worker",
+      "unit_scout",
+      "unit_warrior",
+      "building_palace",
+      "building_monument",
+      "building_elderCouncil"
+    ],
     "layout": {
       "x": 50.0,
       "y": 473.00000000000006,
@@ -27,6 +35,12 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
+    "unlocks": [
+      "building_well",
+      "building_slave_market",
+      "farm",
+      "idle_product_growth"
+    ],
     "layout": {
       "x": 490.00000000000006,
       "y": 209.00000000000003,
@@ -43,6 +57,12 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
+    "unlocks": [
+      "resource_cattle",
+      "resource_sheeps",
+      "resource_goats",
+      "resource_pigs"
+    ],
     "layout": {
       "x": 490.00000000000006,
       "y": 385.00000000000006,
@@ -58,6 +78,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_agriculture"],
     "cost": 20,
     "era": "Copper Age",
+    "unlocks": ["building_granary", "unit_settler", "resource_pottery"],
     "layout": {
       "x": 930.0000000000001,
       "y": 253.00000000000003,
@@ -74,6 +95,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_animalHusbandry"],
     "cost": 25,
     "era": "Copper Age",
+    "unlocks": [],
     "layout": {
       "x": 930.0000000000001,
       "y": 385.00000000000006,
@@ -89,6 +111,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
+    "unlocks": ["resource_fish"],
     "layout": {
       "x": 490.00000000000006,
       "y": 737.0000000000001,
@@ -104,6 +127,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_copperWorking"],
     "cost": 35,
     "era": "Copper Age",
+    "unlocks": [],
     "layout": {
       "x": 930.0000000000001,
       "y": 594.0,
@@ -120,6 +144,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_fishing"],
     "cost": 25,
     "era": "Copper Age",
+    "unlocks": ["unit_tireme", "unit_galley", "resource_pearls"],
     "layout": {
       "x": 930.0000000000001,
       "y": 770.0000000000001,
@@ -135,6 +160,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
+    "unlocks": ["resource_furs"],
     "layout": {
       "x": 490.00000000000006,
       "y": 473.00000000000006,
@@ -150,6 +176,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_hunting"],
     "cost": 30,
     "era": "Copper Age",
+    "unlocks": [],
     "layout": {
       "x": 930.0000000000001,
       "y": 473.00000000000006,
@@ -165,6 +192,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
+    "unlocks": ["resource_copper_ore", "mine"],
     "layout": {
       "x": 490.00000000000006,
       "y": 561.0,
@@ -180,6 +208,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_pottery"],
     "cost": 40,
     "era": "Bronze Age",
+    "unlocks": ["building_library"],
     "layout": {
       "x": 1370.0,
       "y": 253.00000000000003,
@@ -197,6 +226,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_wheel", "tech_archery"],
     "cost": 50,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 1370.0,
       "y": 429.00000000000006,
@@ -212,6 +242,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_masonry"],
     "cost": 30,
     "era": "Bronze Age",
+    "unlocks": ["building_workshop", "unit_supply_wagon", "resource_bronze"],
     "layout": {
       "x": 1370.0,
       "y": 550.0,
@@ -227,6 +258,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_writing", "tech_irrigation"],
     "cost": 40,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 1810.0000000000002,
       "y": 165.0,
@@ -242,6 +274,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_writing"],
     "cost": 45,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 1810.0000000000002,
       "y": 253.00000000000003,
@@ -258,6 +291,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_calendar", "tech_mathematics"],
     "cost": 45,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 2250.0,
       "y": 165.0,
@@ -273,6 +307,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_agriculture", "tech_pottery"],
     "cost": 50,
     "era": "Bronze Age",
+    "unlocks": ["building_big_granary", "irrigation"],
     "layout": {
       "x": 1370.0,
       "y": 165.0,
@@ -288,6 +323,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_masonry"],
     "cost": 60,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 1370.0,
       "y": 638.0,
@@ -303,6 +339,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_chariotry"],
     "cost": 50,
     "era": "Bronze Age",
+    "unlocks": ["resource_horses"],
     "layout": {
       "x": 2250.0,
       "y": 572.0,
@@ -318,6 +355,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_mathematics"],
     "cost": 50,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 2250.0,
       "y": 253.00000000000003,
@@ -331,6 +369,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_ironWorking"],
     "cost": 60,
     "era": "Bronze Age",
+    "unlocks": ["building_all_doing_building", "idle_product_public_works"],
     "layout": {
       "x": 3130.0000000000005,
       "y": 550.0,
@@ -347,6 +386,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_glassBlowing"],
     "cost": 50,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 3130.0000000000005,
       "y": 770.0000000000001,
@@ -360,6 +400,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_sailing", "tech_construction"],
     "cost": 65,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 1810.0000000000002,
       "y": 770.0000000000001,
@@ -373,6 +414,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_writing"],
     "cost": 50,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 1810.0000000000002,
       "y": 363.00000000000006,
@@ -390,6 +432,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_bronzeWorking"],
     "cost": 80,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 1810.0000000000002,
       "y": 638.0,
@@ -406,6 +449,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_literature"],
     "cost": 60,
     "era": "Bronze Age",
+    "unlocks": [],
     "layout": {
       "x": 2250.0,
       "y": 484.00000000000006,
@@ -419,6 +463,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_metallurgy"],
     "cost": 60,
     "era": "Iron Age",
+    "unlocks": ["unit_uber_warrior", "resource_iron", "resource_iron_ore"],
     "layout": {
       "x": 2712.0,
       "y": 638.0,
@@ -436,6 +481,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_literature"],
     "cost": 70,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 2690.0,
       "y": 319.0,
@@ -452,6 +498,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_literature"],
     "cost": 70,
     "era": "Iron Age",
+    "unlocks": ["idle_product_culture"],
     "layout": {
       "x": 2690.0,
       "y": 407.00000000000006,
@@ -465,6 +512,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_astrology"],
     "cost": 90,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 2690.0,
       "y": 165.0,
@@ -478,6 +526,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_horsebackRiding", "tech_ironWorking"],
     "cost": 90,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3130.0000000000005,
       "y": 462.00000000000006,
@@ -491,6 +540,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_metallurgy"],
     "cost": 80,
     "era": "Iron Age",
+    "unlocks": ["resource_jewelry", "resource_gems"],
     "layout": {
       "x": 2250.0,
       "y": 726.0000000000001,
@@ -506,6 +556,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_philosophy"],
     "cost": 100,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3130.0000000000005,
       "y": 275.0,
@@ -522,6 +573,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_philosophy"],
     "cost": 90,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3130.0000000000005,
       "y": 187.00000000000003,
@@ -537,6 +589,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_ironWorking"],
     "cost": 80,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3130.0000000000005,
       "y": 638.0,
@@ -550,6 +603,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_jewelry"],
     "cost": 85,
     "era": "Iron Age",
+    "unlocks": ["resource_glassware"],
     "layout": {
       "x": 2712.0,
       "y": 770.0000000000001,
@@ -565,6 +619,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_engineering"],
     "cost": 90,
     "era": "Iron Age",
+    "unlocks": ["building_big_workshop"],
     "layout": {
       "x": 3570.0000000000005,
       "y": 550.0,
@@ -578,6 +633,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_engineering"],
     "cost": 90,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3570.0000000000005,
       "y": 440.00000000000006,
@@ -591,6 +647,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_anatomy", "tech_education"],
     "cost": 100,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3570.0000000000005,
       "y": 187.00000000000003,
@@ -604,6 +661,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_education"],
     "cost": 100,
     "era": "Iron Age",
+    "unlocks": [],
     "layout": {
       "x": 3570.0000000000005,
       "y": 275.0,

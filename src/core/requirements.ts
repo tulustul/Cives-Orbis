@@ -11,7 +11,7 @@ export abstract class Requirement {
 export function checkRequirements(
   entity: HaveRequirements,
   player: PlayerCore,
-  city: CityCore | null
+  city: CityCore | null,
 ): boolean {
   for (const r of entity.strongRequirements) {
     if (!r.check(player, city)) {
@@ -31,7 +31,7 @@ export function checkRequirements(
 export function getFailedWeakRequirements(
   entity: HaveRequirements,
   player: PlayerCore,
-  city: CityCore | null
+  city: CityCore | null,
 ): [string, any][] {
   return entity.weakRequirements
     .filter((r) => !r.check(player, city))
@@ -58,7 +58,7 @@ export class CityHaveBuildingRequirement extends Requirement {
     if (!city) {
       return false;
     }
-    return city.buildingsIds.has(this.context.buildingId);
+    return city.production.buildingsIds.has(this.context.buildingId);
   }
 }
 
@@ -74,7 +74,7 @@ export class CitySizeRequirement extends Requirement {
     if (!city) {
       return false;
     }
-    return city.size >= this.context.size;
+    return city.population.total >= this.context.size;
   }
 }
 

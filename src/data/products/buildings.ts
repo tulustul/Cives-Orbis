@@ -12,8 +12,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 0,
     bonuses: { yieldValue: { culture: 1, knowledge: 1 } },
     strongRequirements: [new CityNeverRequirement()],
-    weakRequirements: [],
-    technology: "tech_society"
+    weakRequirements: []
   },
   {
     id: "building_granary",
@@ -22,8 +21,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 40,
     bonuses: { yieldValue: { food: 3 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_pottery"
+    weakRequirements: []
   },
   {
     id: "building_well",
@@ -32,8 +30,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 20,
     bonuses: { yieldValue: { food: 1 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_agriculture"
+    weakRequirements: []
   },
   {
     id: "building_big_granary",
@@ -42,8 +39,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 100,
     bonuses: { yieldFactor: { food: 0.2 } },
     strongRequirements: [new CityHaveBuildingRequirement("building_granary")],
-    weakRequirements: [],
-    technology: "tech_irrigation"
+    weakRequirements: []
   },
   {
     id: "building_workshop",
@@ -52,8 +48,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 80,
     bonuses: { yieldValue: { production: 5 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_bronzeWorking"
+    weakRequirements: []
   },
   {
     id: "building_big_workshop",
@@ -62,8 +57,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 200,
     bonuses: { yieldFactor: { production: 0.2 } },
     strongRequirements: [new CityHaveBuildingRequirement("building_workshop")],
-    weakRequirements: [],
-    technology: "tech_mechanics"
+    weakRequirements: []
   },
   {
     id: "building_slave_market",
@@ -72,8 +66,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 50,
     bonuses: { yieldValue: { publicWorks: 2 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_agriculture"
+    weakRequirements: []
   },
   {
     id: "building_monument",
@@ -82,8 +75,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 30,
     bonuses: { yieldValue: { culture: 1 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_society"
+    weakRequirements: []
   },
   {
     id: "building_elderCouncil",
@@ -92,8 +84,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 30,
     bonuses: { yieldValue: { knowledge: 1 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_society"
+    weakRequirements: []
   },
   {
     id: "building_library",
@@ -102,8 +93,7 @@ export const BUILDINGS: RawBuilding[] = [
     productionCost: 80,
     bonuses: { yieldValue: { knowledge: 3 } },
     strongRequirements: [],
-    weakRequirements: [],
-    technology: "tech_writing"
+    weakRequirements: []
   },
   {
     id: "building_all_doing_building",
@@ -118,7 +108,74 @@ export const BUILDINGS: RawBuilding[] = [
       new CityHaveBuildingRequirement("building_big_granary"),
       new CityHaveBuildingRequirement("building_big_workshop")
     ],
-    weakRequirements: [],
-    technology: "tech_engineering"
+    weakRequirements: []
+  },
+  {
+    id: "building_bronze_smithy",
+    entityType: "building",
+    name: "Bronze Smithy",
+    productionCost: 60,
+    bonuses: {
+      yieldValue: { production: 2 },
+      yieldFactor: { production: 0.1 }
+    },
+    strongRequirements: [],
+    weakRequirements: []
+  },
+  {
+    id: "building_iron_smithy",
+    entityType: "building",
+    name: "Iron Smithy",
+    productionCost: 80,
+    bonuses: {
+      yieldValue: { production: 2 },
+      yieldFactor: { production: 0.1 }
+    },
+    strongRequirements: [],
+    weakRequirements: []
+  },
+  {
+    id: "building_pottery_workshop",
+    entityType: "building",
+    name: "Pottery Workshop",
+    productionCost: 50,
+    bonuses: {
+      yieldValue: { production: 1, culture: 1 }
+    },
+    strongRequirements: [],
+    weakRequirements: []
+  },
+  {
+    id: "building_winery",
+    entityType: "building",
+    name: "Winery",
+    productionCost: 60,
+    bonuses: {
+      yieldValue: { gold: 2 }
+    },
+    strongRequirements: [],
+    weakRequirements: []
+  },
+  {
+    id: "building_brewery",
+    entityType: "building",
+    name: "Brewery",
+    productionCost: 60,
+    bonuses: {
+      yieldValue: { gold: 2 }
+    },
+    strongRequirements: [],
+    weakRequirements: []
+  },
+  {
+    id: "building_oil_press",
+    entityType: "building",
+    name: "Oil Press",
+    productionCost: 60,
+    bonuses: {
+      yieldValue: { gold: 2 }
+    },
+    strongRequirements: [],
+    weakRequirements: []
   }
 ];

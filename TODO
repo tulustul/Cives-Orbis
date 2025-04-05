@@ -50,6 +50,15 @@ Minor features:
   ☐ cycling through tasks with tab / shift+tab
 
 Major features:
+  ☐ City economy
+    ☐ tile slots
+    ☐ buildings slots
+    ☐ new tile improvements
+    ☐ resource yields
+    ☐ city storage
+    ☐ population types
+    ☐ new growth mechanic
+
   ✔ naval units @done(20-06-06 15:05)
   ☐ AI combat
   ☐ AI exploring

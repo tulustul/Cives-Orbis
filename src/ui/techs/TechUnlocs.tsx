@@ -9,7 +9,7 @@ type Props = {
 export function TechUnlocks({ tech }: Props) {
   return (
     <div className="flex gap-[2px]">
-      {tech.products.map((p) => (
+      {tech.unlocks.map((p) => (
         <EntityTooltip key={p.id} entityId={p.id}>
           <ImageIcon name={p.id} size="small" frameType={p.entityType} />
         </EntityTooltip>

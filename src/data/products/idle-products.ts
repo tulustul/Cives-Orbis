@@ -8,8 +8,7 @@ export const IDLE_PRODUCTS: RawIdleProduct[] = [
     productionCost: Infinity,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: { transferProductionToFood: 0.25 },
-    technology: "tech_agriculture",
+    bonuses: { transferProductionToFood: 0.25 }
   },
   {
     id: "idle_product_culture",
@@ -18,8 +17,7 @@ export const IDLE_PRODUCTS: RawIdleProduct[] = [
     productionCost: Infinity,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: { transferProductionToCulture: 0.25 },
-    technology: "tech_poetry",
+    bonuses: { transferProductionToCulture: 0.25 }
   },
   {
     id: "idle_product_public_works",
@@ -28,7 +26,6 @@ export const IDLE_PRODUCTS: RawIdleProduct[] = [
     productionCost: Infinity,
     strongRequirements: [],
     weakRequirements: [],
-    bonuses: { transferProductionToPublicWorks: 0.25 },
-    technology: "tech_engineering",
-  },
+    bonuses: { transferProductionToPublicWorks: 0.25 }
+  }
 ];
