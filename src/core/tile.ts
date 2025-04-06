@@ -188,7 +188,9 @@ export class TileCore implements BaseTile {
 
     if (this.resource) {
       this.resource.computeYields();
-      addYields(this.yields, this.resource.yields);
+      if (this.resource.yields) {
+        addYields(this.yields, this.resource.yields);
+      }
 
       // If there's a resource on this tile and the correct improvement, add more slots
       if (

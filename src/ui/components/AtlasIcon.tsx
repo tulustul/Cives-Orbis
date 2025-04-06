@@ -1,4 +1,4 @@
-import * as atlasIcons from "@/assets/atlas-icons.json";
+import * as unitsIcons from "@/assets/atlas-units.json";
 import clsx from "clsx";
 import { CSSProperties } from "react";
 import styles from "./Icon.module.css";
@@ -12,14 +12,14 @@ type Props = {
 
 export function AtlasIcon({ name, tint, className, scale = 1 }: Props) {
   function getFrame(name: string) {
-    return (atlasIcons.frames as any)[name + ".png"]?.frame;
+    return (unitsIcons.frames as any)[name + ".png"]?.frame;
   }
 
   const frame = getFrame(name) || getFrame("undefined");
 
   const position = `-${frame.x * scale}px -${frame.y * scale}px`;
-  const size = `${atlasIcons.meta.size.w * scale}px ${
-    atlasIcons.meta.size.h * scale
+  const size = `${unitsIcons.meta.size.w * scale}px ${
+    unitsIcons.meta.size.h * scale
   }px`;
 
   const style: CSSProperties = {

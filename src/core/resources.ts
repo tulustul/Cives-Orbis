@@ -26,7 +26,7 @@ export type ResourceDepositOptions = {
 };
 
 export class ResourceDeposit {
-  yields!: Yields;
+  yields?: Yields;
 
   resourceProduction = 0;
 

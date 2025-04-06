@@ -77,6 +77,7 @@ interface CitySerialized {
   tiles: number[];
   workedTiles: number[];
   buildings: string[];
+  storage: { id: string; amount: number }[];
 }
 
 interface PlayerSerialized {
@@ -395,6 +396,14 @@ function loadCity(game: Game, cityData: CitySerialized) {
   city.production.buildingsIds = new Set(
     city.production.buildings.map((b) => b.id),
   );
+  for (const resource of cityData.storage) {
+    const resourceDef = RESOURCES_DEFINITIONS.find(
+      (r) => r.id === resource?.id,
+    );
+    if (resourceDef) {
+      city.storage.resources.set(resourceDef, resource.amount);
+    }
+  }
   city.updateYields();
 }
 
@@ -417,6 +426,12 @@ function dumpCity(city: CityCore): CitySerialized {
     tiles: Array.from(city.expansion.tiles).map((tile) => tile.id),
     workedTiles: Array.from(city.workers.workedTiles).map((tile) => tile.id),
     buildings: city.production.buildings.map((b) => b.id),
+    storage: Array.from(city.storage.resources.entries()).map(
+      ([resource, amount]) => ({
+        id: resource.id,
+        amount,
+      }),
+    ),
   };
 }
 

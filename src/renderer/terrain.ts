@@ -2,11 +2,11 @@ import { bridge } from "@/bridge";
 import { TileChanneled } from "@/core/serialization/channel";
 import { TileImprovement } from "@/core/tile-improvements";
 import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
+import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { putContainerAtTile, putSpriteAtTileCentered } from "./utils";
-import { mapUi } from "@/ui/mapUi";
 
 const SEA_TEXTURES: Record<SeaLevel, string> = {
   [SeaLevel.deep]: "hexWaterDeep.png",
@@ -57,9 +57,9 @@ const FOREST_TEXTURES: Record<Climate, string> = {
 };
 
 const IMPROVEMENT_TEXTURES: Record<TileImprovement, string> = {
-  [TileImprovement.farm]: "field.png",
-  [TileImprovement.mine]: "mines.png",
-  [TileImprovement.sawmill]: "forester_hut.png",
+  [TileImprovement.farm]: "tile-impr-irrigation.png",
+  [TileImprovement.mine]: "tile-impr-clayPit.png",
+  [TileImprovement.sawmill]: "tile-impr-lumbermill.png",
 };
 
 export class MapDrawer {
@@ -67,11 +67,7 @@ export class MapDrawer {
 
   tileDrawers = new Map<number, TileDrawer>();
 
-  constructor(
-    container: Container,
-    private yieldsLayer: IRenderLayer,
-    private resourcesLayer: IRenderLayer
-  ) {
+  constructor(container: Container, private yieldsLayer: IRenderLayer) {
     container.addChild(this.terrainContainer);
 
     bridge.tiles.updated$.subscribe((tiles) => {
@@ -102,11 +98,7 @@ export class MapDrawer {
     const tiles = await bridge.tiles.getAll();
 
     for (const tile of tiles) {
-      const drawer = new TileDrawer(
-        tile,
-        this.yieldsLayer,
-        this.resourcesLayer
-      );
+      const drawer = new TileDrawer(tile, this.yieldsLayer);
       this.tileDrawers.set(tile.id, drawer);
       this.terrainContainer.addChild(drawer.container);
       drawer.draw(tile);
@@ -125,7 +117,7 @@ class TileDrawer {
   container = new Container();
 
   tilesTextures = getAssets().tilesSpritesheet.textures;
-  iconsTextures = getAssets().iconsSpritesheet.textures;
+  resourcesTextures = getAssets().resourcesSpritesheet.textures;
 
   yieldsGraphics = new Graphics();
   terrainSprite = new Sprite(this.tilesTextures["hexTropicalPlains.png"]);
@@ -135,11 +127,7 @@ class TileDrawer {
   citySprite: Sprite | null = null;
   riverGraphics: Graphics | null = null;
 
-  constructor(
-    private tile: TileChanneled,
-    private yieldsLayer: IRenderLayer,
-    private resourcesLayer: IRenderLayer
-  ) {
+  constructor(private tile: TileChanneled, private yieldsLayer: IRenderLayer) {
     this.container.zIndex = tile.y;
 
     putContainerAtTile(this.terrainSprite, tile);
@@ -148,9 +136,6 @@ class TileDrawer {
 
   public destroy() {
     this.yieldsLayer.detach(this.yieldsGraphics);
-    if (this.resourceSprite) {
-      this.resourcesLayer.detach(this.resourceSprite);
-    }
     this.container.destroy({ children: true });
   }
 
@@ -220,6 +205,7 @@ class TileDrawer {
 
     if (!this.improvementSprite) {
       this.improvementSprite = new Sprite();
+      // this.improvementSprite.anchor.set(0.5, 0.5);
       this.container.addChild(this.improvementSprite);
     }
 
@@ -228,29 +214,30 @@ class TileDrawer {
     const textureName = IMPROVEMENT_TEXTURES[this.tile.improvement];
     this.improvementSprite.texture = this.tilesTextures[textureName];
     putContainerAtTile(this.improvementSprite, this.tile);
+    // putSpriteAtTileCentered(this.improvementSprite, this.tile);
   }
 
   private drawResource() {
-    if (this.tile.resource === null) {
-      if (this.resourceSprite) {
-        this.resourceSprite.visible = false;
-      }
-      return;
-    }
-
-    if (!this.resourceSprite) {
-      this.resourceSprite = new Sprite();
-      this.resourceSprite.zIndex = 20;
-      this.container.addChild(this.resourceSprite);
-      this.resourcesLayer.attach(this.resourceSprite);
-    }
-
-    this.resourceSprite.visible = true;
-
-    const textureName = `${this.tile.resource.id}.png`;
-    this.resourceSprite.texture = this.iconsTextures[textureName];
-    putSpriteAtTileCentered(this.resourceSprite, this.tile, 0.4);
-    this.resourceSprite.y += 0.3;
+    // if (this.tile.resource === null) {
+    //   if (this.resourceSprite) {
+    //     this.resourceSprite.visible = false;
+    //   }
+    //   return;
+    // }
+    // if (!this.resourceSprite) {
+    //   this.resourceSprite = new Sprite();
+    //   // this.resourceSprite.zIndex = 20;
+    //   this.container.addChild(this.resourceSprite);
+    //   this.resourcesLayer.attach(this.resourceSprite);
+    // }
+    // this.resourceSprite.visible = true;
+    // const textureName = `${this.tile.resource.id}.png`;
+    // const texture = this.tilesTextures[`tile-${this.tile.resource.id}.png`];
+    // if (texture) {
+    //   this.resourceSprite.texture = texture;
+    //   putSpriteAtTileCentered(this.resourceSprite, this.tile, 1);
+    // } else {
+    // }
   }
 
   private drawRoads() {

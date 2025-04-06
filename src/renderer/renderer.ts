@@ -27,6 +27,7 @@ import { PoliticsDrawer } from "./politicsDrawer";
 import { MapDrawer } from "./terrain";
 import { UnitsDrawer } from "./unitsDrawer";
 import { SelectedUnitDrawer } from "./selectedUnitDrawer";
+import { ResourcesDrawer } from "./resourcesDrawer";
 
 export class GameRenderer {
   app!: Application;
@@ -45,7 +46,6 @@ export class GameRenderer {
 
   mapLayer!: Layer;
   yieldsLayer!: IRenderLayer;
-  resourcesLayer!: IRenderLayer;
 
   fogOfWarLayer!: Layer;
   exploredTilesLayer!: Layer;
@@ -54,11 +54,13 @@ export class GameRenderer {
   overlaysContainer = new Container({ label: "overlays" });
   mapContainer = new Container({ label: "map" });
   unitsContainer = new Container({ label: "unitsAndCities" });
+  resourcesContainer = new Container({ label: "resources" });
   politicsContainer = new Container({ label: "politics" });
   unitsDrawer = new UnitsDrawer(this.unitsContainer);
   areaDrawer = new AreasDrawer(this.overlaysContainer);
   politicsDrawer = new PoliticsDrawer(this.politicsContainer);
   selectedUnitDrawer = new SelectedUnitDrawer(this.mapContainer);
+  resourcesDrawer!: ResourcesDrawer;
 
   cityFocusFilter!: GrayscaleFilter;
 
@@ -87,6 +89,14 @@ export class GameRenderer {
       } else {
         this.mapLayer.stage.removeChild(this.yieldsLayer);
       }
+    });
+
+    mapUi.resourcesEnabled$.subscribe((enabled) => {
+      this.resourcesContainer.visible = enabled;
+    });
+
+    mapUi.politicsEnabled$.subscribe((enabled) => {
+      this.politicsContainer.visible = enabled;
     });
   }
 
@@ -118,17 +128,12 @@ export class GameRenderer {
     this.exploredTilesLayer = new Layer(this.app, "visibleTilesLayer");
     this.cityFocusLayer = new Layer(this.app, "cityFocusLayer");
     this.yieldsLayer = new RenderLayer();
-    this.resourcesLayer = new RenderLayer();
 
-    this.mapDrawer = new MapDrawer(
-      this.mapLayer.stage,
-      this.yieldsLayer,
-      this.resourcesLayer
-    );
+    this.mapDrawer = new MapDrawer(this.mapLayer.stage, this.yieldsLayer);
 
     this.fogOfWarDrawer = new FogOfWarDrawer(this.fogOfWarLayer.stage);
     this.visibleTilesDrawer = new ExploredTilesDrawer(
-      this.exploredTilesLayer.stage
+      this.exploredTilesLayer.stage,
     );
     this.cityFocusFilter = new GrayscaleFilter({
       sprite: this.cityFocusLayer.sprite,
@@ -140,6 +145,8 @@ export class GameRenderer {
 
     this.path = new PathRenderer(this.overlaysContainer);
 
+    this.resourcesDrawer = new ResourcesDrawer(this.resourcesContainer);
+
     this.overlaysContainer.interactiveChildren = false;
 
     this.app.stage.addChild(this.mapLayer.sprite);
@@ -147,6 +154,7 @@ export class GameRenderer {
     this.app.stage.addChild(this.politicsContainer);
     // this.app.stage.addChild(this.exploredTilesLayer.sprite);
     this.app.stage.addChild(this.mapContainer);
+    this.mapContainer.addChild(this.resourcesContainer);
     this.mapContainer.addChild(this.unitsContainer);
     this.unitsContainer.zIndex = 1000;
     this.politicsContainer.zIndex = 2000;
@@ -155,7 +163,6 @@ export class GameRenderer {
     this.grid = new Grid();
     this.mapLayer.stage.addChild(this.grid.sprite);
     this.mapLayer.stage.addChild(this.yieldsLayer);
-    this.mapLayer.stage.addChild(this.resourcesLayer);
 
     camera.transform$.subscribe((t) => {
       const x = (-t.x + this.canvas.width / 2 / t.scale) * t.scale;
@@ -190,12 +197,13 @@ export class GameRenderer {
       if (scale != this.lastScale) {
         this.lastScale = scale;
         this.unitsDrawer.setScale(scale);
+        this.resourcesDrawer.setScale(scale);
       }
 
       if (this.politicsDrawer) {
         const backgroundOpacity = Math.min(
           0.4,
-          Math.max(0, (70 - scale) / 150)
+          Math.max(0, (70 - scale) / 150),
         );
 
         const borderShadow = Math.max(0.4, Math.min(0.7, (150 - scale) / 100));
@@ -229,25 +237,32 @@ export class GameRenderer {
 
     const mapFilters: Filter[] = [];
     const unitsFilters: Filter[] = [];
+    const resourcesFilters: Filter[] = [];
     const politicsFilters: Filter[] = [];
     if (mapUi.fogOfWarEnabled) {
       unitsFilters.push(
         new MaskFilter({
           sprite: this.fogOfWarLayer.sprite,
-        })
+        }),
       );
 
       mapFilters.push(
         new MaskFilter({
           sprite: this.exploredTilesLayer.sprite,
         }),
-        new FogOfWarFilter({ sprite: this.fogOfWarLayer.sprite })
+        new FogOfWarFilter({ sprite: this.fogOfWarLayer.sprite }),
       );
 
       politicsFilters.push(
         new MaskFilter({
           sprite: this.exploredTilesLayer.sprite,
-        })
+        }),
+      );
+
+      resourcesFilters.push(
+        new MaskFilter({
+          sprite: this.exploredTilesLayer.sprite,
+        }),
       );
     }
 
@@ -258,6 +273,7 @@ export class GameRenderer {
     this.mapLayer.sprite.filters = mapFilters;
     this.unitsContainer.filters = unitsFilters;
     this.politicsContainer.filters = politicsFilters;
+    this.resourcesContainer.filters = resourcesFilters;
   }
 }
 

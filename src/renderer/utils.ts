@@ -65,7 +65,7 @@ export function drawTileSprite(tile: TileCoords, texture: Texture, scale = 1) {
 export function putContainerAtTile(
   sprite: Sprite,
   tile: TileCoords,
-  scale = 1
+  scale = 1,
 ) {
   sprite.scale.set(scale / sprite.texture.width, scale / sprite.texture.width);
   sprite.anchor.set(0, 1);
@@ -75,26 +75,12 @@ export function putContainerAtTile(
   return sprite;
 }
 
-export function drawTileSpriteCentered(
-  tile: TileCoords,
-  texture: Texture,
-  scale = 1
-) {
-  const sprite = new Sprite(texture);
-  putSpriteAtTileCentered(sprite, tile, scale);
-  return sprite;
-}
-
 export function putSpriteAtTileCentered(
   sprite: Sprite,
   tile: TileCoords,
-  scale = 1
+  scale = 1,
 ) {
   sprite.scale.set(scale / sprite.texture.width, scale / sprite.texture.width);
-  sprite.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5 - sprite.width / 2;
-  sprite.position.y = tile.y * 0.75 + 0.5 - sprite.height / 2;
-}
-
-export function pickRandom(items: any[]) {
-  return items[Math.floor(Math.random() * items.length)];
+  sprite.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5;
+  sprite.position.y = tile.y * 0.75 + 0.5;
 }

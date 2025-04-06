@@ -1,0 +1,73 @@
+{
+	"meta": {
+		"image": "atlas-units.png",
+		"size": {"w":238,"h":165},
+		"scale": "1"
+	},
+	"frames": {
+		"unitBackground-military.png":
+		{
+			"frame": {"x":0,"y":0,"w":88,"h":100},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":6,"y":0,"w":88,"h":100},
+			"sourceSize": {"w":100,"h":100}
+		},
+		"unitBackground-civilian.png":
+		{
+			"frame": {"x":88,"y":0,"w":90,"h":99},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":6,"y":1,"w":90,"h":99},
+			"sourceSize": {"w":100,"h":100}
+		},
+		"unit_settler.png":
+		{
+			"frame": {"x":0,"y":100,"w":52,"h":65},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":3,"y":0,"w":52,"h":65},
+			"sourceSize": {"w":60,"h":65}
+		},
+		"unit_warrior.png":
+		{
+			"frame": {"x":52,"y":100,"w":40,"h":61},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":11,"y":0,"w":40,"h":61},
+			"sourceSize": {"w":60,"h":63}
+		},
+		"unit_galley.png":
+		{
+			"frame": {"x":92,"y":100,"w":60,"h":58},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":0,"y":1,"w":60,"h":58},
+			"sourceSize": {"w":60,"h":60}
+		},
+		"unit_tireme.png":
+		{
+			"frame": {"x":178,"y":0,"w":60,"h":44},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":0,"y":6,"w":60,"h":44},
+			"sourceSize": {"w":60,"h":60}
+		},
+		"unit_worker.png":
+		{
+			"frame": {"x":178,"y":44,"w":40,"h":59},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":12,"y":1,"w":40,"h":59},
+			"sourceSize": {"w":60,"h":60}
+		},
+		"unit_scout.png":
+		{
+			"frame": {"x":178,"y":103,"w":57,"h":30},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":2,"y":3,"w":57,"h":30},
+			"sourceSize": {"w":60,"h":37}
+		}
+	}
+}

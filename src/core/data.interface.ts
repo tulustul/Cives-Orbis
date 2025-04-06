@@ -110,7 +110,7 @@ export type Nation = Entity & {
 };
 
 export type ResourceDistribution = {
-  // tile requirements
+  landForm?: LandForm[];
   seaLevel?: SeaLevel;
   climates?: Climate[];
   forest?: boolean;
@@ -122,13 +122,13 @@ export type ResourceDistribution = {
   quantityMedian: number;
   quantityStddev: number;
 
-  landFormProbability: {
+  landFormProbability?: {
     [LandForm.plains]: number;
     [LandForm.hills]: number;
   };
 };
 
-export type ResourceType = "food" | "material" | "luxury";
+export type ResourceType = "food" | "material" | "commodity" | "luxury";
 
 export type ResourceDepositDefinition = {
   requiredImprovement: TileImprovement;

@@ -112,8 +112,8 @@ export function isResourcePossible(
   tile: BaseTile,
   resourceDef: ResourceDefinition | null,
 ) {
-  if (!resourceDef) {
-    return true;
+  if (!resourceDef || tile.landForm === LandForm.mountains) {
+    return false;
   }
 
   const dis = resourceDef.depositDef?.distribution;
@@ -122,6 +122,10 @@ export function isResourcePossible(
   }
 
   if (dis.seaLevel !== undefined && dis.seaLevel !== tile.seaLevel) {
+    return false;
+  }
+
+  if (dis.landForm !== undefined && !dis.landForm.includes(tile.landForm)) {
     return false;
   }
 

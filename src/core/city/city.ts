@@ -52,6 +52,8 @@ export class CityCore {
 
   expansion = new CityExpansion(this);
 
+  storage = new CityStorage(this);
+
   constructor(public tile: TileCore, public player: PlayerCore) {
     this.expansion.addTile(tile);
 
@@ -70,6 +72,7 @@ export class CityCore {
     this.expansion.progressExpansion();
     this.production.progressProduction();
     this.population.progressGrowth();
+    this.workers.updateWorkers();
     this.updateYields();
     this.perTurn.food -= this.population.foodConsumed;
 
@@ -107,6 +110,8 @@ export class CityCore {
     roundYields(this.yields);
 
     copyYields(this.perTurn, this.yields);
+
+    this.storage.gatherResources();
 
     this.player.updateYields();
   }

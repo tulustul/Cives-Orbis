@@ -1,8 +1,10 @@
 import { Assets, Spritesheet, Texture } from "pixi.js";
 import atlasTilesData from "@/assets/atlas-tiles.json";
 import atlasTilesUrl from "@/assets/atlas-tiles.png";
-import atlasIconsData from "@/assets/atlas-icons.json";
-import atlasIconsUrl from "@/assets/atlas-icons.png";
+import atlasUnitsData from "@/assets/atlas-units.json";
+import atlasUnitsUrl from "@/assets/atlas-units.png";
+import atlasResourcesData from "@/assets/atlas-resources.json";
+import atlasResourcesUrl from "@/assets/atlas-resources.png";
 import gridUrl from "@/assets/grid.png";
 
 export type Assets = {
@@ -10,7 +12,8 @@ export type Assets = {
     grid: Texture;
   };
   tilesSpritesheet: Spritesheet;
-  iconsSpritesheet: Spritesheet;
+  unitsSpritesheet: Spritesheet;
+  resourcesSpritesheet: Spritesheet;
 };
 
 let assets: Assets | null = null;
@@ -24,18 +27,28 @@ export async function loadAssets() {
   tilesSpritesheet.textureSource.scaleMode = "nearest";
   await tilesSpritesheet.parse();
 
-  const iconsAtlas = await Assets.load(atlasIconsUrl);
-  const iconsSpritesheet = new Spritesheet(iconsAtlas, atlasIconsData);
-  iconsSpritesheet.textureSource.autoGenerateMipmaps = true;
-  iconsSpritesheet.textureSource.scaleMode = "linear";
-  await iconsSpritesheet.parse();
+  const unitsAtlas = await Assets.load(atlasUnitsUrl);
+  const unitsSpritesheet = new Spritesheet(unitsAtlas, atlasUnitsData);
+  unitsSpritesheet.textureSource.autoGenerateMipmaps = true;
+  unitsSpritesheet.textureSource.scaleMode = "linear";
+  await unitsSpritesheet.parse();
+
+  const resourcesAtlas = await Assets.load(atlasResourcesUrl);
+  const resourcesSpritesheet = new Spritesheet(
+    resourcesAtlas,
+    atlasResourcesData,
+  );
+  resourcesSpritesheet.textureSource.autoGenerateMipmaps = true;
+  resourcesSpritesheet.textureSource.scaleMode = "linear";
+  await resourcesSpritesheet.parse();
 
   assets = {
     textures: {
       grid,
     },
     tilesSpritesheet,
-    iconsSpritesheet,
+    unitsSpritesheet,
+    resourcesSpritesheet,
   };
 }
 

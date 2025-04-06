@@ -159,7 +159,7 @@ export class UnitDrawer {
   });
 
   constructor(public unit: UnitChanneled) {
-    const textures = getAssets().iconsSpritesheet.textures;
+    const textures = getAssets().unitsSpritesheet.textures;
     const banner = new Sprite(textures[`unitBackground-${unit.type}.png`]);
     const icon = new Sprite(textures[`${unit.definitionId}.png`]);
     banner.tint = unit.cssColor;
@@ -352,13 +352,13 @@ export class UnitDrawer {
 
   updateZIndex() {
     this.container.zIndex = this.unit.tile.units.findIndex(
-      (u) => u.id === this.unit.id
+      (u) => u.id === this.unit.id,
     );
   }
 
   tileToUnitPosition(
     tile: TileCoordsWithUnits,
-    ignoreOthers = false
+    ignoreOthers = false,
   ): [number, number] {
     let x = tile.x + (tile.y % 2 ? 1 : 0.5);
 

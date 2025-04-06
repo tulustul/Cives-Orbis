@@ -58,12 +58,6 @@ export class CityPopulation {
     if (this.totalFood >= foodToGrow) {
       size++;
       this.changedSize = true;
-      const bestWorkableTile = this.city.workers.pickBestTileToWork(
-        this.city.workers.notWorkedTiles,
-      );
-      if (bestWorkableTile) {
-        this.city.workers.workTile(bestWorkableTile);
-      }
       this.totalFood -= foodToGrow;
     } else if (this.totalFood < 0) {
       if (size > 1) {

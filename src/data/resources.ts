@@ -4,7 +4,7 @@ import { SeaLevel, LandForm, Climate } from "@/shared";
 
 export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
   {
-    id: "resource_stone",
+    id: "resource-stone",
     entityType: "resource",
     name: "Stone",
     resourceType: "material",
@@ -28,7 +28,55 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_clay",
+    id: "resource-limestone",
+    entityType: "resource",
+    name: "Limestone",
+    resourceType: "material",
+    depositDef: {
+      requiredImprovement: TileImprovement.mine,
+      bonuses: {
+        yieldValue: { production: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { production: 2 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-marble",
+    entityType: "resource",
+    name: "Marble",
+    resourceType: "material",
+    depositDef: {
+      requiredImprovement: TileImprovement.mine,
+      bonuses: {
+        yieldValue: { production: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { production: 2 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-clay",
     entityType: "resource",
     name: "Clay",
     resourceType: "material",
@@ -43,7 +91,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_wood",
+    id: "resource-wood",
     entityType: "resource",
     name: "wood",
     resourceType: "material",
@@ -58,7 +106,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_copper_ore",
+    id: "resource-copperOre",
     entityType: "resource",
     resourceType: "material",
     name: "Copper Ore",
@@ -82,7 +130,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_tin_ore",
+    id: "resource-tinOre",
     entityType: "resource",
     resourceType: "material",
     name: "Tin Ore",
@@ -106,7 +154,31 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_iron_ore",
+    id: "resource-pig",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Pig",
+    depositDef: {
+      requiredImprovement: TileImprovement.mine,
+      bonuses: {
+        yieldValue: { production: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { production: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-ironOre",
     entityType: "resource",
     resourceType: "material",
     name: "Iron Ore",
@@ -130,7 +202,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_salt",
+    id: "resource-salt",
     entityType: "resource",
     resourceType: "material",
     name: "Salt",
@@ -154,10 +226,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_gems",
+    id: "resource-coal",
     entityType: "resource",
-    resourceType: "luxury",
-    name: "Gems",
+    resourceType: "material",
+    name: "Coal",
     depositDef: {
       requiredImprovement: TileImprovement.mine,
       bonuses: {
@@ -178,7 +250,55 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_amber",
+    id: "resource-gem",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Gem",
+    depositDef: {
+      requiredImprovement: TileImprovement.mine,
+      bonuses: {
+        yieldValue: { production: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { production: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-sapphire",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Sapphire",
+    depositDef: {
+      requiredImprovement: TileImprovement.mine,
+      bonuses: {
+        yieldValue: { production: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { production: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-amber",
     entityType: "resource",
     resourceType: "luxury",
     name: "Amber",
@@ -202,7 +322,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_wheat",
+    id: "resource-wheat",
     entityType: "resource",
     resourceType: "food",
     name: "Wheat",
@@ -227,7 +347,81 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_maize",
+    id: "resource-tomato",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Tomato",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { food: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { food: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        climates: [Climate.temperate, Climate.savanna],
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-sulphur",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Sulphur",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { food: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { food: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        climates: [Climate.temperate, Climate.savanna],
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-cinnamon",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Cinnamon",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { food: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { food: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-maize",
     entityType: "resource",
     resourceType: "food",
     name: "Maize",
@@ -251,7 +445,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_rice",
+    id: "resource-rice",
     resourceType: "food",
     entityType: "resource",
     name: "Rice",
@@ -275,7 +469,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_fish",
+    id: "resource-fish",
     resourceType: "food",
     entityType: "resource",
     name: "Fish",
@@ -299,10 +493,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_pearls",
+    id: "resource-whale",
     resourceType: "food",
     entityType: "resource",
-    name: "Pearls",
+    name: "Whale",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -323,10 +517,58 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_gold",
+    id: "resource-camel",
+    resourceType: "material",
+    entityType: "resource",
+    name: "Camel",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { food: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { food: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.shallow,
+        landFormProbability: {
+          [LandForm.plains]: 1,
+          [LandForm.hills]: 1
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-pearl",
+    resourceType: "food",
+    entityType: "resource",
+    name: "Pearl",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { food: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { food: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.shallow,
+        landFormProbability: {
+          [LandForm.plains]: 1,
+          [LandForm.hills]: 1
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-goldOre",
     entityType: "resource",
     resourceType: "material",
-    name: "Gold",
+    name: "Gold Ore",
     depositDef: {
       requiredImprovement: TileImprovement.mine,
       bonuses: {
@@ -347,10 +589,16 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_silver",
+    id: "resource-gold",
     entityType: "resource",
     resourceType: "material",
-    name: "Silver",
+    name: "Gold"
+  },
+  {
+    id: "resource-silverOre",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Silver Ore",
     depositDef: {
       requiredImprovement: TileImprovement.mine,
       bonuses: {
@@ -371,7 +619,37 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_cattle",
+    id: "resource-silver",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Silver"
+  },
+  {
+    id: "resource-tobacco",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Tobacco",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-cattle",
     entityType: "resource",
     resourceType: "food",
     name: "Cattle",
@@ -395,10 +673,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_goats",
+    id: "resource-coffe",
     entityType: "resource",
     resourceType: "food",
-    name: "Goats",
+    name: "Coffe",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -419,10 +697,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_sheeps",
+    id: "resource-goat",
     entityType: "resource",
     resourceType: "food",
-    name: "Sheeps",
+    name: "Goat",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -443,10 +721,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_pigs",
+    id: "resource-sheep",
     entityType: "resource",
     resourceType: "food",
-    name: "Pigs",
+    name: "Sheep",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -467,10 +745,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_horses",
+    id: "resource-elephant",
     entityType: "resource",
     resourceType: "luxury",
-    name: "Horses",
+    name: "Elephant",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -491,10 +769,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_elephants",
+    id: "resource-camel",
     entityType: "resource",
-    resourceType: "luxury",
-    name: "Elephants",
+    resourceType: "material",
+    name: "Camel",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -515,34 +793,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_camels",
-    entityType: "resource",
-    resourceType: "luxury",
-    name: "Camels",
-    depositDef: {
-      requiredImprovement: TileImprovement.farm,
-      bonuses: {
-        yieldValue: { gold: 1 }
-      },
-      bonusesWhenWorked: {
-        yieldValue: { gold: 3 }
-      },
-      distribution: {
-        seaLevel: SeaLevel.none,
-        landFormProbability: {
-          [LandForm.plains]: 0.25,
-          [LandForm.hills]: 0.75
-        },
-        quantityMedian: 3,
-        quantityStddev: 2
-      }
-    }
-  },
-  {
-    id: "resource_furs",
+    id: "resource-fur",
     entityType: "resource",
     resourceType: "food",
-    name: "Furs",
+    name: "Fur",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -563,10 +817,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_grapes",
+    id: "resource-grape",
     entityType: "resource",
     resourceType: "food",
-    name: "Grapes",
+    name: "Grape",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -587,10 +841,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_olives",
+    id: "resource-olive",
     entityType: "resource",
     resourceType: "food",
-    name: "Olives",
+    name: "Olive",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -611,10 +865,58 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_spices",
+    id: "resource-spice",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Spice",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-dye",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Dye",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-orange",
     entityType: "resource",
     resourceType: "food",
-    name: "Spices",
+    name: "Orange",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -635,10 +937,10 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_dyes",
+    id: "resource-apple",
     entityType: "resource",
-    resourceType: "luxury",
-    name: "Dyes",
+    resourceType: "food",
+    name: "Apple",
     depositDef: {
       requiredImprovement: TileImprovement.farm,
       bonuses: {
@@ -659,81 +961,357 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     }
   },
   {
-    id: "resource_wine",
+    id: "resource-lemon",
     entityType: "resource",
-    resourceType: "luxury",
-    name: "Wine"
+    resourceType: "food",
+    name: "Lemon",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
   },
   {
-    id: "resource_beer",
+    id: "resource-diamond",
     entityType: "resource",
     resourceType: "luxury",
-    name: "Beer"
+    name: "Diamond",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
   },
   {
-    id: "resource_olive_oil",
-    entityType: "resource",
-    resourceType: "luxury",
-    name: "Olive Oil"
-  },
-  {
-    id: "resource_textiles",
-    entityType: "resource",
-    resourceType: "luxury",
-    name: "Textiles"
-  },
-  {
-    id: "resource_wool",
-    entityType: "resource",
-    resourceType: "luxury",
-    name: "Wool"
-  },
-  {
-    id: "resource_glassware",
+    id: "resource-glassware",
     entityType: "resource",
     resourceType: "luxury",
     name: "Glassware"
   },
   {
-    id: "resource_jewelry",
+    id: "resource-goat",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Goat",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-horse",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Horse",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-game",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Wild Game",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-ox",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Ox",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-llama",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Llama",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-chicken",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Chicken",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-oil",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Oil",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-cotton",
+    entityType: "resource",
+    resourceType: "material",
+    name: "Cotton",
+    depositDef: {
+      requiredImprovement: TileImprovement.farm,
+      bonuses: {
+        yieldValue: { gold: 1 }
+      },
+      bonusesWhenWorked: {
+        yieldValue: { gold: 3 }
+      },
+      distribution: {
+        seaLevel: SeaLevel.none,
+        landFormProbability: {
+          [LandForm.plains]: 0.25,
+          [LandForm.hills]: 0.75
+        },
+        quantityMedian: 3,
+        quantityStddev: 2
+      }
+    }
+  },
+  {
+    id: "resource-wine",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Wine"
+  },
+  {
+    id: "resource-beer",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Beer"
+  },
+  {
+    id: "resource-oliveOil",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Olive Oil"
+  },
+  {
+    id: "resource-textile",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Textile"
+  },
+  {
+    id: "resource-brick",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Brick"
+  },
+  {
+    id: "resource-silk",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Silk"
+  },
+  {
+    id: "resource-bread",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Bread"
+  },
+  {
+    id: "resource-wool",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Wool"
+  },
+  {
+    id: "resource-cheese",
+    entityType: "resource",
+    resourceType: "food",
+    name: "Cheese"
+  },
+  {
+    id: "resource-glassware",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Glassware"
+  },
+  {
+    id: "resource-jewelry",
     entityType: "resource",
     resourceType: "luxury",
     name: "Jewelry"
   },
   {
-    id: "resource_bronze",
+    id: "resource-bronze",
     entityType: "resource",
     resourceType: "material",
     name: "Bronze Ingot"
   },
   {
-    id: "resource_iron",
+    id: "resource-iron",
     entityType: "resource",
     resourceType: "material",
     name: "Iron Ingot"
   },
   {
-    id: "resource_pottery",
+    id: "resource-pottery",
     entityType: "resource",
     resourceType: "luxury",
     name: "Pottery"
   },
   {
-    id: "resource_leather",
-    entityType: "resource",
-    resourceType: "luxury",
-    name: "Leather"
-  },
-  {
-    id: "resource_ivory",
+    id: "resource-ivory",
     entityType: "resource",
     resourceType: "luxury",
     name: "Ivory"
   },
   {
-    id: "resource_perfumes",
+    id: "resource-perfume",
     entityType: "resource",
     resourceType: "luxury",
-    name: "Perfumes"
+    name: "Perfume"
+  },
+  {
+    id: "resource-copper",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Copper"
+  },
+  {
+    id: "resource-steel",
+    entityType: "resource",
+    resourceType: "luxury",
+    name: "Steel"
   }
 ];

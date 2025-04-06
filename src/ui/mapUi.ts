@@ -21,7 +21,7 @@ export class MapUi {
   hoveredTile$ = this._hoveredTile$.asObservable().pipe(distinctUntilChanged());
 
   private _tileHoverDetails$ = new BehaviorSubject<TileHoverDetails | null>(
-    null
+    null,
   );
   tileHoverDetails$ = this._tileHoverDetails$
     .asObservable()
@@ -29,7 +29,7 @@ export class MapUi {
 
   combatSimulation$ = this.tileHoverDetails$.pipe(
     map((d) => d?.combatSimulation),
-    distinctUntilChanged()
+    distinctUntilChanged(),
   );
 
   private _clickedTile$ = new BehaviorSubject<TileCoords | null>(null);
@@ -40,7 +40,7 @@ export class MapUi {
   clickedTileDetails$ = this._clickedTileDetails$.asObservable();
 
   private _selectedTile$ = new BehaviorSubject<TileDetailsChanneled | null>(
-    null
+    null,
   );
   selectedTile$ = this._selectedTile$.asObservable();
 
@@ -51,7 +51,7 @@ export class MapUi {
   yieldsVisible$ = this._yieldsVisible$.pipe(distinctUntilChanged());
 
   private _selectedUnit$ = new BehaviorSubject<UnitDetailsChanneled | null>(
-    null
+    null,
   );
   selectedUnit$ = this._selectedUnit$.asObservable();
 
@@ -62,7 +62,7 @@ export class MapUi {
   hoveredCity$ = this._hoveredCity$.pipe(distinctUntilChanged());
 
   private _selectedCity$ = new BehaviorSubject<CityDetailsChanneled | null>(
-    null
+    null,
   );
   selectedCity$ = this._selectedCity$.pipe(distinctUntilChanged());
 
@@ -80,6 +80,12 @@ export class MapUi {
   private _yieldsEnabled$ = new BehaviorSubject<boolean>(true);
   yieldsEnabled$ = this._yieldsEnabled$.pipe(distinctUntilChanged());
 
+  private _resourcesEnabled$ = new BehaviorSubject<boolean>(true);
+  resourcesEnabled$ = this._resourcesEnabled$.pipe(distinctUntilChanged());
+
+  private _politicsEnabled$ = new BehaviorSubject<boolean>(true);
+  politicsEnabled$ = this._politicsEnabled$.pipe(distinctUntilChanged());
+
   allowMapPanning = true;
 
   constructor() {
@@ -87,7 +93,7 @@ export class MapUi {
       const selectedTile = this._selectedTile$.value;
       if (selectedTile) {
         const newSelectedTile = tiles.find(
-          (tile) => tile.id === selectedTile.id
+          (tile) => tile.id === selectedTile.id,
         );
         if (newSelectedTile) {
           const tileDetails = await bridge.tiles.getDetails(newSelectedTile.id);
@@ -109,7 +115,7 @@ export class MapUi {
       const selectedCity = this.selectedCity;
       if (selectedCity && tileDetails.areaOf === selectedCity.id) {
         const isWorked = !!selectedCity.workedTiles.find(
-          (t) => t.id === tileDetails.id
+          (t) => t.id === tileDetails.id,
         );
         let updatedCityDetails: CityDetailsChanneled | null;
         if (isWorked) {
@@ -303,6 +309,20 @@ export class MapUi {
   }
   set yieldsEnabled(enabled: boolean) {
     this._yieldsEnabled$.next(enabled);
+  }
+
+  get resourcesEnabled() {
+    return this._resourcesEnabled$.value;
+  }
+  set resourcesEnabled(enabled: boolean) {
+    this._resourcesEnabled$.next(enabled);
+  }
+
+  get politicsEnabled() {
+    return this._politicsEnabled$.value;
+  }
+  set politicsEnabled(enabled: boolean) {
+    this._politicsEnabled$.next(enabled);
   }
 
   clear() {

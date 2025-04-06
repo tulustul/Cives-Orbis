@@ -1,10 +1,13 @@
 import { TileCore } from "@/core/tile";
 import { CityCore } from "./city";
+import { ResourceDeposit } from "../resources";
 
 export class CityWorkers {
   workedTiles = new Set<TileCore>();
 
   notWorkedTiles = new Set<TileCore>();
+
+  workedResources = new Set<ResourceDeposit>();
 
   constructor(public city: CityCore) {}
 
@@ -12,6 +15,9 @@ export class CityWorkers {
     if (this.freeTileWorkers && this.city.expansion.tiles.has(tile)) {
       this.workedTiles.add(tile);
       this.notWorkedTiles.delete(tile);
+      if (tile.resource) {
+        this.workedResources.add(tile.resource);
+      }
       if (updateYields) {
         this.city.updateYields();
       }
@@ -21,6 +27,9 @@ export class CityWorkers {
   unworkTile(tile: TileCore, updateYields = true) {
     this.workedTiles.delete(tile);
     this.notWorkedTiles.add(tile);
+    if (tile.resource) {
+      this.workedResources.delete(tile.resource);
+    }
     if (updateYields) {
       this.city.updateYields();
     }
@@ -30,7 +39,7 @@ export class CityWorkers {
     this.workedTiles.clear();
     this.notWorkedTiles = new Set(this.city.expansion.tiles);
     while (this.freeTileWorkers && this.notWorkedTiles.size) {
-      const tile = this.pickBestTileToWork(this.notWorkedTiles);
+      const tile = this.pickBestTile(this.notWorkedTiles);
       if (!tile) {
         break;
       }
@@ -43,7 +52,7 @@ export class CityWorkers {
     return this.city.population.total - this.workedTiles.size;
   }
 
-  pickBestTileToWork(tiles: Set<TileCore>): TileCore | null {
+  pickBestTile(tiles: Set<TileCore>): TileCore | null {
     let bestTile: TileCore | null = null;
     let bestYields = 0;
 
@@ -56,5 +65,38 @@ export class CityWorkers {
     }
 
     return bestTile;
+  }
+
+  pickWorstTile(tiles: Set<TileCore>): TileCore | null {
+    let worstTile: TileCore | null = null;
+    let worstYields = Infinity;
+
+    for (const tile of tiles) {
+      const yields = tile.totalYields;
+      if (yields < worstYields) {
+        worstYields = yields;
+        worstTile = tile;
+      }
+    }
+
+    return worstTile;
+  }
+
+  updateWorkers() {
+    while (this.freeTileWorkers != 0) {
+      if (this.freeTileWorkers > 0) {
+        const tile = this.pickBestTile(this.notWorkedTiles);
+        if (!tile) {
+          break;
+        }
+        this.workTile(tile);
+      } else {
+        const tile = this.pickWorstTile(this.workedTiles);
+        if (!tile) {
+          break;
+        }
+        this.unworkTile(tile);
+      }
+    }
   }
 }

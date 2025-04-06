@@ -16,6 +16,7 @@ import { TileUnits } from "./TileUnits";
 import { Toolbar } from "./Toolbar";
 import { TurnsCounter } from "./TurnCounter";
 import { UnitPanel } from "./UnitPanel";
+import { TileDetails } from "./TileDetails";
 
 export function MapMode() {
   const city = useObservable(mapUi.selectedCity$);
@@ -33,6 +34,7 @@ export function MapMode() {
         <div className={styles.minimap}>
           <MapSettings />
           <div className="ml-4 flex flex-col items-end gap-5">
+            <TileDetails />
             {startInfo?.aiOnly && <SpectatorPanel />}
             <Panel corner="bottom-right">
               <div style={{ display: "flex", flexDirection: "column" }}>

@@ -1,9 +1,9 @@
 .icon {
   display: inline-block;
-  background-image: url("@/assets/atlas-icons.png");
+  background-image: url("@/assets/atlas-units.png");
   background-repeat: no-repeat;
 }
 .tint {
-  mask: url("@/assets/atlas-icons.png");
+  mask: url("@/assets/atlas-units.png");
   background-blend-mode: multiply;
 }

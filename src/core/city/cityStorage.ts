@@ -1,38 +1,25 @@
+import { ResourceDefinition, ResourceType } from "../data.interface";
 import { CityCore } from "./city";
 
 export class CityStorage {
-  resources = new Map<string, number>();
+  resources = new Map<ResourceDefinition, number>();
 
-  storageLimits = new Map<string, number>();
+  storageLimits: Record<ResourceType, number> = {
+    food: 100,
+    luxury: 100,
+    material: 100,
+  };
 
   constructor(public city: CityCore) {}
 
-  addResource(resourceId: string, amount: number): number {
-    const currentAmount = this.resources.get(resourceId) || 0;
-    const limit = this.storageLimits.get(resourceId) || 0;
-
-    const newAmount = Math.min(currentAmount + amount, limit);
-    this.resources.set(resourceId, newAmount);
-
-    return newAmount - currentAmount;
-  }
-
-  removeResource(resourceId: string, amount: number): number {
-    const currentAmount = this.resources.get(resourceId) || 0;
-
-    const amountToRemove = Math.min(currentAmount, amount);
-    const newAmount = currentAmount - amountToRemove;
-
-    this.resources.set(resourceId, newAmount);
-
-    return amountToRemove;
-  }
-
-  getResourceAmount(resourceId: string): number {
-    return this.resources.get(resourceId) || 0;
-  }
-
-  getResourceLimit(resourceId: string): number {
-    return this.storageLimits.get(resourceId) || 0;
+  gatherResources() {
+    for (const deposit of this.city.workers.workedResources) {
+      let amount = this.resources.get(deposit.def) ?? 0;
+      amount = Math.min(
+        amount + 1,
+        this.storageLimits[deposit.def.resourceType],
+      );
+      this.resources.set(deposit.def, amount);
+    }
   }
 }

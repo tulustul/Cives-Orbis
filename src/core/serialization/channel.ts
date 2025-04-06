@@ -105,6 +105,11 @@ export interface CityChanneled {
   productName: string | null;
 }
 
+export type CityStorage = {
+  resource: EntityMinimalChanneled;
+  amount: number;
+};
+
 export interface CityDetailsChanneled {
   id: number;
   visibilityLevel: CityVisibility;
@@ -137,6 +142,8 @@ export interface CityDetailsChanneled {
 
   availableProducts: CityProductChanneled[];
   product: CityProductChanneled | null;
+
+  storage: CityStorage[];
 }
 
 export type CityProductChanneled = {
@@ -396,6 +403,12 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
 
     workedTiles: Array.from(city.workers.workedTiles).map(
       tilesToTileCoordsWithNeighbours,
+    ),
+    storage: Array.from(city.storage.resources.entries()).map(
+      ([resource, amount]) => ({
+        resource: entityToMinimalChannel(resource),
+        amount,
+      }),
     ),
   };
 }
