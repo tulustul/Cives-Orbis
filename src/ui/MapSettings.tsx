@@ -1,5 +1,6 @@
 import { useObservable } from "@/utils";
-import { Panel, Switch } from "./components";
+import { Switch } from "./components";
+import { OrnateBox } from "./components/OrnateBox";
 import { mapUi } from "./mapUi";
 
 export function MapSettings() {
@@ -9,27 +10,29 @@ export function MapSettings() {
   const politicsEnabled = useObservable(mapUi.politicsEnabled$);
 
   return (
-    <Panel className="p-2 flex flex-col gap-2">
-      <Switch
-        label="Grid"
-        checked={gridEnabled ?? true}
-        onChange={() => (mapUi.gridEnabled = !gridEnabled)}
-      />
-      <Switch
-        label="Yields"
-        checked={yieldsEnabled ?? true}
-        onChange={() => (mapUi.yieldsEnabled = !yieldsEnabled)}
-      />
-      <Switch
-        label="Resources"
-        checked={resourcesEnabled ?? true}
-        onChange={() => (mapUi.resourcesEnabled = !resourcesEnabled)}
-      />
-      <Switch
-        label="Politics"
-        checked={politicsEnabled ?? true}
-        onChange={() => (mapUi.politicsEnabled = !politicsEnabled)}
-      />
-    </Panel>
+    <OrnateBox borderType="small">
+      <div className="flex flex-col gap-1 px-1 py-3">
+        <Switch
+          label="Grid"
+          checked={gridEnabled ?? true}
+          onChange={() => (mapUi.gridEnabled = !gridEnabled)}
+        />
+        <Switch
+          label="Yields"
+          checked={yieldsEnabled ?? true}
+          onChange={() => (mapUi.yieldsEnabled = !yieldsEnabled)}
+        />
+        <Switch
+          label="Resources"
+          checked={resourcesEnabled ?? true}
+          onChange={() => (mapUi.resourcesEnabled = !resourcesEnabled)}
+        />
+        <Switch
+          label="Politics"
+          checked={politicsEnabled ?? true}
+          onChange={() => (mapUi.politicsEnabled = !politicsEnabled)}
+        />
+      </div>
+    </OrnateBox>
   );
 }

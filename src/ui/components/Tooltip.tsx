@@ -71,11 +71,11 @@ export function Tooltip({
 
     top = Math.max(
       margin,
-      Math.min(top, window.innerHeight - contentBox.height - margin)
+      Math.min(top, window.innerHeight - contentBox.height - margin),
     );
     left = Math.max(
       margin,
-      Math.min(left, window.innerWidth - contentBox.width - margin)
+      Math.min(left, window.innerWidth - contentBox.width - margin),
     );
 
     contentRef.current.style.left = `${left}px`;
@@ -102,7 +102,7 @@ export function Tooltip({
             className={clsx(
               "absolute max-w-72 rounded-md text-white bg-[#222] border-1 border-[#111] z-50 shadow-md pointer-events-none",
               !noPadding ? "px-4 py-1" : "",
-              contentClassName
+              contentClassName,
             )}
             style={{
               boxShadow: "0 0 3px 0px rgba(255, 255, 255, 0.3) inset",
@@ -110,7 +110,7 @@ export function Tooltip({
           >
             {content}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

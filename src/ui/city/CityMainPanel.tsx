@@ -84,7 +84,7 @@ function CityGrowthProgressBar({ city }: Props) {
       </div>
     >
       <ProgressBar
-        className="[--progress-bar-color:theme(colors.food)]"
+        className="[--progress-bar-color:theme(colors.food-400)]"
         progress={city.totalFood}
         nextProgress={city.totalFood + city.perTurn.food}
         total={city.foodToGrow}
@@ -155,7 +155,7 @@ function Yield({ className, label, children }: YieldProps) {
     <div
       className={clsx(
         className,
-        "py-1 flex justify-between border-b-1 border-primary-500 last:border-0"
+        "py-1 flex justify-between border-b-1 border-primary-500 last:border-0",
       )}
     >
       <div className="font-bold mr-5">{label}</div>
@@ -175,7 +175,7 @@ function CityExpansion({ city }: Props) {
       }
     >
       <ProgressBar
-        className="[--progress-bar-color:theme(colors.culture)]"
+        className="[--progress-bar-color:theme(colors.culture-400)]"
         progress={city.totalCulture}
         nextProgress={city.totalCulture + city.perTurn.culture}
         total={city.cultureToExpand}
@@ -200,7 +200,7 @@ function CityProduct({ city }: Props) {
       placementVertical="center"
     >
       <ProgressBar
-        className="[--progress-bar-color:theme(colors.production)] [--progress-bar-height:60px]"
+        className="[--progress-bar-color:theme(colors.production-400)] [--progress-bar-height:60px]"
         progress={city.totalProduction}
         nextProgress={city.totalProduction + city.perTurn.production}
         total={city.product.definition.cost}
@@ -247,7 +247,7 @@ function CityProductsList({ city }: Props) {
               "border-t-2 last:border-b-2 border-primary-500 cursor-pointer",
               product.enabled
                 ? "hover:bg-primary-500"
-                : "bg-gray-900 opacity-40"
+                : "bg-gray-900 opacity-40",
             )}
           >
             <EntityTooltip

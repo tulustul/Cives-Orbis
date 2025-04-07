@@ -7,9 +7,15 @@
   --font-serif: "Cinzel Decorative", serif;
   --font-sans: "Montserrat", sans-serif;
 
-  --color-food: #65ea4b;
-  --color-production: #ffb42c;
-  --color-culture: #d883ff;
+  --color-food-400: #65ea4b;
+  --color-food-600: #37b31e;
+
+  --color-production-400: #ffb42c;
+  --color-production-600: #bb7800;
+
+  --color-culture-400: #d883ff;
+  --color-culture-600: #bc29ff;
+
   --color-publicWorks: #e4d1b8;
   --color-knowledge: #6ac3ff;
 
@@ -29,6 +35,10 @@
   --shadow-md: 0 0 7px 0 rgba(0, 0, 0, 0.25);
 }
 
+@utility text-shadow-300 {
+  text-shadow: 0px 0px 3px #777;
+}
+
 @utility text-shadow {
   text-shadow: 1px 1px 2px #444134;
 }
@@ -41,6 +51,18 @@
   border-image: url("@/assets/ui/modal.png") 105;
   border-width: 70px;
   border-radius: 80px;
+}
+
+@utility border-ornate-small {
+  border-image: url("@/assets/ui/modal-small.png") 60;
+  border-width: 14px;
+  border-radius: 14px;
+}
+
+@utility border-ornate-small-2 {
+  border-image: url("@/assets/ui/modal-small-2.png") 120;
+  border-width: 12px;
+  border-radius: 12px;
 }
 
 @utility button-ornate {

@@ -4,7 +4,7 @@ import { mapUi } from "@/ui/mapUi";
 import { Container, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { TILE_SIZE } from "./constants";
-import { putSpriteAtTileCentered } from "./utils";
+import { putContainerAtTileCentered, putSpriteAtTileCentered } from "./utils";
 import { camera } from "./camera";
 
 export class ResourcesDrawer {
@@ -34,7 +34,7 @@ export class ResourcesDrawer {
   public setScale(scale: number) {
     const resourceScale = getScale(scale);
     for (const drawer of this.resourceDrawers.values()) {
-      drawer.resourceSprite?.scale.set(resourceScale);
+      drawer.container.scale.set(resourceScale);
     }
   }
 
@@ -92,7 +92,16 @@ class ResourceDrawer {
 
   resourcesTextures = getAssets().resourcesSpritesheet.textures;
 
-  resourceSprite: Sprite | null = null;
+  resourceSprite = new Sprite();
+  bgSprite = new Sprite({ texture: this.resourcesTextures["resource-bg.png"] });
+
+  constructor() {
+    this.bgSprite.scale.set(1.15);
+    this.bgSprite.anchor.set(0.5, 0.5);
+    this.resourceSprite.anchor.set(0.5, 0.5);
+    this.container.addChild(this.bgSprite);
+    this.container.addChild(this.resourceSprite);
+  }
 
   public destroy() {
     this.container.destroy({ children: true });
@@ -103,21 +112,15 @@ class ResourceDrawer {
       return;
     }
 
-    if (!this.resourceSprite) {
-      this.resourceSprite = new Sprite();
-      this.resourceSprite.anchor.set(0.5, 0.5);
-      this.container.addChild(this.resourceSprite);
-    }
-
     const textureName = `${tile.resource.id}.png`;
     this.resourceSprite.texture =
       this.resourcesTextures[textureName] ??
       this.resourcesTextures["resource-unknown.png"];
 
-    putSpriteAtTileCentered(this.resourceSprite, tile);
-    this.resourceSprite.y += 0.1;
+    putContainerAtTileCentered(this.container, tile);
+    this.container.y += 0.2;
 
     const scale = getScale(camera.transform.scale);
-    this.resourceSprite.scale.set(scale);
+    this.container.scale.set(scale);
   }
 }

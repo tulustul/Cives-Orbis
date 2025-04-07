@@ -1,6 +1,7 @@
 import { Container, Geometry, Graphics, Sprite, Texture } from "pixi.js";
 
 import { TileCoords } from "@/core/serialization/channel";
+import { TILE_SIZE } from "./constants";
 
 // prettier-ignore
 const HEX_VERTICES = [
@@ -83,4 +84,14 @@ export function putSpriteAtTileCentered(
   sprite.scale.set(scale / sprite.texture.width, scale / sprite.texture.width);
   sprite.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5;
   sprite.position.y = tile.y * 0.75 + 0.5;
+}
+
+export function putContainerAtTileCentered(
+  container: Container,
+  tile: TileCoords,
+  scale = 1,
+) {
+  container.scale.set(scale / TILE_SIZE, scale / TILE_SIZE);
+  container.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5;
+  container.position.y = tile.y * 0.75 + 0.5;
 }

@@ -5,6 +5,7 @@ import { PlayersList } from "./editor/PlayersList";
 import { useState } from "react";
 import { bridge } from "@/bridge";
 import { nextTurnService } from "./nextTurn";
+import { OrnateBox } from "./components/OrnateBox";
 
 export function SpectatorPanel() {
   const [trackedPlayerId, setTrackedPlayerId] = useState(0);
@@ -18,7 +19,7 @@ export function SpectatorPanel() {
   }
 
   return (
-    <Panel>
+    <OrnateBox borderType="small">
       <div className="flex flex-col gap-2 p-2">
         <div className="center font-bold">Spectator</div>
         <Switch
@@ -34,6 +35,6 @@ export function SpectatorPanel() {
       </div>
 
       <PlayersList selectedPlayerId={trackedPlayerId} onSelect={trackPlayer} />
-    </Panel>
+    </OrnateBox>
   );
 }

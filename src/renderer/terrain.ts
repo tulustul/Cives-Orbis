@@ -57,8 +57,8 @@ const FOREST_TEXTURES: Record<Climate, string> = {
 };
 
 const IMPROVEMENT_TEXTURES: Record<TileImprovement, string> = {
-  [TileImprovement.farm]: "tile-impr-irrigation.png",
-  [TileImprovement.mine]: "tile-impr-clayPit.png",
+  [TileImprovement.farm]: "tile-impr-farm.png",
+  [TileImprovement.mine]: "tile-impr-mine.png",
   [TileImprovement.sawmill]: "tile-impr-lumbermill.png",
 };
 

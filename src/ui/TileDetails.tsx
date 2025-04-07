@@ -4,6 +4,7 @@ import { AtlasIcon, Panel } from "./components";
 import { Climate, LandForm, SeaLevel } from "@/shared";
 import { AtlasIcon2 } from "./components/AtlasIcon2";
 import { TileRoad } from "@/core/tile-improvements";
+import { OrnateBox } from "./components/OrnateBox";
 
 const CLIMATES: Record<Climate, string> = {
   [Climate.arctic]: "Arctic",
@@ -59,10 +60,12 @@ export function TileDetails() {
     return (
       <>
         {details.tile.yields.food > 0 && (
-          <div className="text-food">{details.tile.yields.food} food</div>
+          <div className="text-food-600 font-semibold">
+            {details.tile.yields.food} food
+          </div>
         )}
         {details.tile.yields.production > 0 && (
-          <div className="text-production">
+          <div className="text-production-600 font-semibold">
             {details.tile.yields.production} production
           </div>
         )}
@@ -91,17 +94,21 @@ export function TileDetails() {
   }
 
   return (
-    <Panel className="p-2 flex flex-col gap-1 items-center">
-      <div>{getTileName()}</div>
-      {details.tile.forest && <div className="text-xs font-light">Forest</div>}
-      {details.tile.riverParts.length > 0 && (
-        <div className="text-xs font-light">Has river access</div>
-      )}
-      {details.tile.road !== null && (
-        <div className="text-xs font-light">Has road</div>
-      )}
-      {getYields()}
-      {getResourceDescription()}
-    </Panel>
+    <OrnateBox borderType="small">
+      <div className="p-2 flex flex-col gap-1 items-center">
+        <div>{getTileName()}</div>
+        {details.tile.forest && (
+          <div className="text-xs font-light">Forest</div>
+        )}
+        {details.tile.riverParts.length > 0 && (
+          <div className="text-xs font-light">Has river access</div>
+        )}
+        {details.tile.road !== null && (
+          <div className="text-xs font-light">Has road</div>
+        )}
+        {getYields()}
+        {getResourceDescription()}
+      </div>
+    </OrnateBox>
   );
 }
