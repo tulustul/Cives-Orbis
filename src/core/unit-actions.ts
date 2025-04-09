@@ -1,51 +1,26 @@
-import { Game } from "./game";
-import { UnitCore } from "./unit";
-import {
-  TileImprovement,
-  TileRoad,
-  IMPROVEMENT_PUBLIC_WORKS_COSTS,
-  IMPROVEMENT_PUBLIC_WORKS_COSTS_PER_TURN,
-  ROAD_PUBLIC_WORKS_COSTS,
-  ROAD_PUBLIC_WORKS_COSTS_PER_TURN,
-} from "./tile-improvements";
 import { isImprovementPossible, isRoadPossible } from "../shared";
 import { collector } from "./collector";
+import { TILE_IMPR_MAP } from "./data-manager";
+import { TileImprovementDefinition } from "./data.interface";
+import { Game } from "./game";
 import { cityToChannel } from "./serialization/channel";
+import { TileRoad } from "./tile-improvements";
+import { UnitCore } from "./unit";
 
 export type UnitAction =
   | "foundCity"
   | "buildRoad"
   | "buildFarm"
   | "buildMine"
-  | "buildSawmill";
-
-const ACTION_TO_IMPROVEMENT: Partial<Record<UnitAction, TileImprovement>> = {
-  buildFarm: TileImprovement.farm,
-  buildMine: TileImprovement.mine,
-  buildSawmill: TileImprovement.sawmill,
-};
-
-export function getPublicWorksRequired(action: UnitAction) {
-  if (action === "buildRoad") {
-    return ROAD_PUBLIC_WORKS_COSTS[TileRoad.road];
-  }
-  const improvement = ACTION_TO_IMPROVEMENT[action];
-  if (improvement !== undefined) {
-    return IMPROVEMENT_PUBLIC_WORKS_COSTS[improvement];
-  }
-  return 0;
-}
-
-export function getPublicWorksPerTurn(action: UnitAction) {
-  if (action === "buildRoad") {
-    return ROAD_PUBLIC_WORKS_COSTS_PER_TURN[TileRoad.road];
-  }
-  const improvement = ACTION_TO_IMPROVEMENT[action];
-  if (improvement !== undefined) {
-    return IMPROVEMENT_PUBLIC_WORKS_COSTS_PER_TURN[improvement];
-  }
-  return 0;
-}
+  | "buildLumbermill"
+  | "buildQuarry"
+  | "buildIrrigation"
+  | "buildClayPit"
+  | "buildPlantation"
+  | "buildPasture"
+  | "buildHuntingGround"
+  | "buildCottage"
+  | "buildFishery";
 
 export abstract class ActionRequirement {
   id = "";
@@ -53,14 +28,6 @@ export abstract class ActionRequirement {
   constructor() {}
 
   abstract check(unit: UnitCore, action: UnitAction): boolean;
-}
-
-export class OwnTileRequirement extends ActionRequirement {
-  override id = "ownTile";
-
-  check(unit: UnitCore) {
-    return unit.tile.areaOf?.player === unit.player;
-  }
 }
 
 export class NotForeignTileRequirement extends ActionRequirement {
@@ -71,26 +38,15 @@ export class NotForeignTileRequirement extends ActionRequirement {
   }
 }
 
-export class ImprovementNotYetBuiltRequirement extends ActionRequirement {
-  override id = "sameImprovement";
-
-  constructor(public improvement: TileImprovement) {
-    super();
-  }
-
-  check(unit: UnitCore) {
-    return !unit.tile.city && unit.tile.improvement !== this.improvement;
-  }
-}
 export class IsImprovementPossibleRequirement extends ActionRequirement {
   override id = "improvementPossible";
 
-  constructor(public improvement: TileImprovement) {
+  constructor(public improvement: TileImprovementDefinition) {
     super();
   }
 
   check(unit: UnitCore) {
-    return isImprovementPossible(unit.tile, this.improvement);
+    return isImprovementPossible(unit.player, unit.tile, this.improvement);
   }
 }
 
@@ -110,16 +66,6 @@ export class isRoadPossibleRequirement extends ActionRequirement {
   }
 }
 
-export class PublicWorksPointsRequirement extends ActionRequirement {
-  override id = "publicWorks";
-
-  check(unit: UnitCore, action: UnitAction) {
-    return (
-      unit.player.yields.total.publicWorks >= getPublicWorksRequired(action)
-    );
-  }
-}
-
 interface ActionDefinition {
   action: UnitAction;
   name: string;
@@ -135,20 +81,14 @@ function foundCity(game: Game, unit: UnitCore) {
   }
 }
 
-function buildImprovement(unit: UnitCore, improvement: TileImprovement) {
+function buildImprovement(
+  unit: UnitCore,
+  improvement: TileImprovementDefinition,
+) {
   unit.actionPointsLeft = 0;
   unit.tile.improvement = improvement;
   unit.tile.update();
   unit.player.updateUnitsWithoutOrders();
-
-  unit.player.yields.total.publicWorks -=
-    IMPROVEMENT_PUBLIC_WORKS_COSTS[improvement];
-
-  unit.player.yields.costs.publicWorks +=
-    IMPROVEMENT_PUBLIC_WORKS_COSTS_PER_TURN[improvement];
-
-  unit.player.yields.perTurn.publicWorks -=
-    IMPROVEMENT_PUBLIC_WORKS_COSTS_PER_TURN[improvement];
 }
 
 function buildRoad(unit: UnitCore) {
@@ -159,15 +99,23 @@ function buildRoad(unit: UnitCore) {
     neighbour.update();
   }
   unit.player.updateUnitsWithoutOrders();
+}
 
-  unit.player.yields.total.publicWorks -=
-    ROAD_PUBLIC_WORKS_COSTS[TileRoad.road];
+function buildImprovementActions(): Partial<
+  Record<UnitAction, ActionDefinition>
+> {
+  const actions: Partial<Record<UnitAction, ActionDefinition>> = {};
 
-  unit.player.yields.costs.publicWorks +=
-    ROAD_PUBLIC_WORKS_COSTS_PER_TURN[TileRoad.road];
+  for (const impr of TILE_IMPR_MAP.values()) {
+    actions[impr.action] = {
+      action: impr.action,
+      name: impr.name,
+      fn: (_, unit) => buildImprovement(unit, impr),
+      requirements: [new IsImprovementPossibleRequirement(impr)],
+    };
+  }
 
-  unit.player.yields.perTurn.publicWorks -=
-    ROAD_PUBLIC_WORKS_COSTS_PER_TURN[TileRoad.road];
+  return actions;
 }
 
 export const ACTIONS: Record<UnitAction, ActionDefinition> = {
@@ -177,47 +125,11 @@ export const ACTIONS: Record<UnitAction, ActionDefinition> = {
     fn: foundCity,
     requirements: [new NotForeignTileRequirement()], // TODO add minimal distance to other city
   },
-  buildFarm: {
-    action: "buildFarm",
-    name: "Farm",
-    fn: (_, unit) => buildImprovement(unit, TileImprovement.farm),
-    requirements: [
-      new OwnTileRequirement(),
-      new ImprovementNotYetBuiltRequirement(TileImprovement.farm),
-      new IsImprovementPossibleRequirement(TileImprovement.farm),
-      // new PublicWorksPointsRequirement(),
-    ],
-  },
-  buildMine: {
-    action: "buildMine",
-    name: "Mine",
-    fn: (_, unit) => buildImprovement(unit, TileImprovement.mine),
-    requirements: [
-      new OwnTileRequirement(),
-      new ImprovementNotYetBuiltRequirement(TileImprovement.mine),
-      new IsImprovementPossibleRequirement(TileImprovement.mine),
-      // new PublicWorksPointsRequirement(),
-    ],
-  },
-  buildSawmill: {
-    action: "buildSawmill",
-    name: "Sawmill",
-    fn: (_, unit) => buildImprovement(unit, TileImprovement.sawmill),
-    requirements: [
-      new OwnTileRequirement(),
-      new ImprovementNotYetBuiltRequirement(TileImprovement.sawmill),
-      new IsImprovementPossibleRequirement(TileImprovement.sawmill),
-      // new PublicWorksPointsRequirement(),
-    ],
-  },
   buildRoad: {
     action: "buildRoad",
     name: "Road",
     fn: (_, unit) => buildRoad(unit),
-    requirements: [
-      new NoRoadRequirement(),
-      new isRoadPossibleRequirement(),
-      // new PublicWorksPointsRequirement(),
-    ],
+    requirements: [new NoRoadRequirement(), new isRoadPossibleRequirement()],
   },
-};
+  ...buildImprovementActions(),
+} as Record<UnitAction, ActionDefinition>;

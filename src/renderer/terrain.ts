@@ -1,12 +1,11 @@
 import { bridge } from "@/bridge";
 import { TileChanneled } from "@/core/serialization/channel";
-import { TileImprovement } from "@/core/tile-improvements";
 import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
-import { putContainerAtTile, putSpriteAtTileCentered } from "./utils";
+import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
 
 const SEA_TEXTURES: Record<SeaLevel, string> = {
   [SeaLevel.deep]: "hexWaterDeep.png",
@@ -54,12 +53,6 @@ const FOREST_TEXTURES: Record<Climate, string> = {
   [Climate.savanna]: "",
   [Climate.desert]: "",
   [Climate.arctic]: "",
-};
-
-const IMPROVEMENT_TEXTURES: Record<TileImprovement, string> = {
-  [TileImprovement.farm]: "tile-impr-farm.png",
-  [TileImprovement.mine]: "tile-impr-mine.png",
-  [TileImprovement.sawmill]: "tile-impr-lumbermill.png",
 };
 
 export class MapDrawer {
@@ -160,19 +153,7 @@ class TileDrawer {
         textureName = "hexMarsh.png";
       }
     } else if (this.tile.forest) {
-      if (
-        this.tile.improvement === TileImprovement.sawmill &&
-        this.tile.climate === Climate.temperate
-      ) {
-        textureName = "hexTemperateForestCamp.png";
-      } else if (
-        this.tile.improvement === TileImprovement.sawmill &&
-        this.tile.climate === Climate.tundra
-      ) {
-        textureName = "hexTundraForestCamp.png";
-      } else {
-        textureName = FOREST_TEXTURES[this.tile.climate];
-      }
+      textureName = FOREST_TEXTURES[this.tile.climate];
     } else if (this.tile.seaLevel === SeaLevel.none) {
       if (
         this.tile.climate === Climate.desert &&
@@ -191,12 +172,7 @@ class TileDrawer {
   }
 
   private drawImprovement() {
-    if (
-      this.tile.improvement === null ||
-      (this.tile.improvement === TileImprovement.sawmill &&
-        this.tile.forest &&
-        this.tile.climate !== Climate.tropical)
-    ) {
+    if (this.tile.improvement === null) {
       if (this.improvementSprite) {
         this.improvementSprite.visible = false;
       }
@@ -205,15 +181,15 @@ class TileDrawer {
 
     if (!this.improvementSprite) {
       this.improvementSprite = new Sprite();
-      // this.improvementSprite.anchor.set(0.5, 0.5);
+      this.improvementSprite.anchor.set(0.5, 0.5);
       this.container.addChild(this.improvementSprite);
     }
 
     this.improvementSprite.visible = true;
 
-    const textureName = IMPROVEMENT_TEXTURES[this.tile.improvement];
+    const textureName = `${this.tile.improvement.id}.png`;
     this.improvementSprite.texture = this.tilesTextures[textureName];
-    putContainerAtTile(this.improvementSprite, this.tile);
+    putContainerAtTileCentered(this.improvementSprite, this.tile, 2);
     // putSpriteAtTileCentered(this.improvementSprite, this.tile);
   }
 

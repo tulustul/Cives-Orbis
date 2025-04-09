@@ -1,16 +1,11 @@
 import { collector } from "./collector";
-import {
-  buildingDefs,
-  getTechById,
-  idleProductDefs,
-  TECHNOLOGIES,
-  unitDefs,
-} from "./data-manager";
+import { getEntityById, getTechById, TECHNOLOGIES } from "./data-manager";
 import {
   Building,
   IdleProduct,
-  RequireTech,
+  ResourceDefinition,
   Technology,
+  TileImprovementDefinition,
   UnitDefinition,
 } from "./data.interface";
 import { PlayerCore } from "./player";
@@ -24,9 +19,14 @@ export type KnowledgeTechState =
 
 export class Knowledge {
   discoveredTechs = new Set<Technology>();
-  discoveredBuildings = new Set<Building>();
-  discoveredUnits = new Set<UnitDefinition>();
-  discoveredIdleProducts = new Set<IdleProduct>();
+
+  discoveredEntities = {
+    building: new Set<Building>(),
+    unit: new Set<UnitDefinition>(),
+    idleProduct: new Set<IdleProduct>(),
+    resource: new Set<ResourceDefinition>(),
+    tileImprovement: new Set<TileImprovementDefinition>(),
+  };
 
   availableTechs = new Set<Technology>();
 
@@ -57,13 +57,8 @@ export class Knowledge {
     if (overflow < 0) {
       this.accumulated.set(this.researchingTech, accumulated);
     } else {
-      this.discoveredTechs.add(this.researchingTech);
-      this.accumulated.delete(this.researchingTech);
+      this.addTech(this.researchingTech, overflow);
       this.techQueue.shift();
-
-      if (this.player.game.trackedPlayer === this.player) {
-        collector.newTechs.push(this.researchingTech);
-      }
 
       if (this.techQueue.length > 0) {
         this.researchingTech = this.techQueue[0];
@@ -79,6 +74,36 @@ export class Knowledge {
     if (this.player.game.trackedPlayer === this.player) {
       collector.research = this.researchingTech;
     }
+  }
+
+  addTech(tech: Technology, overflow = 0) {
+    this.discoveredTechs.add(tech);
+
+    this.update();
+
+    if (this.player.game.trackedPlayer === this.player) {
+      collector.newTechs.push(tech);
+    }
+
+    if (this.researchingTech === tech) {
+      this.accumulated.delete(tech);
+      this.techQueue.shift();
+
+      if (this.techQueue.length > 0) {
+        this.researchingTech = this.techQueue[0];
+        this.accumulated.set(this.researchingTech, overflow);
+      } else {
+        this.researchingTech = null;
+        this.overflow = overflow;
+      }
+    }
+
+    this.techQueue = this.techQueue.filter((t) => t !== tech);
+  }
+
+  removeTech(tech: Technology) {
+    this.discoveredTechs.delete(tech);
+    this.update();
   }
 
   research(tech: Technology) {
@@ -125,16 +150,14 @@ export class Knowledge {
   }
 
   private computeKnownEntities() {
-    this.filterDiscoveredEntities(this.discoveredUnits, unitDefs);
-    this.filterDiscoveredEntities(this.discoveredBuildings, buildingDefs);
-    this.filterDiscoveredEntities(this.discoveredIdleProducts, idleProductDefs);
-  }
+    for (const set of Object.values(this.discoveredEntities)) {
+      set.clear();
+    }
 
-  private filterDiscoveredEntities(set: Set<RequireTech>, defs: RequireTech[]) {
-    set.clear();
-    for (const def of defs) {
-      if (def.technology && this.discoveredTechs.has(def.technology)) {
-        set.add(def);
+    for (const tech of this.discoveredTechs) {
+      for (const unlock of tech.unlocks) {
+        const set = (this.discoveredEntities as any)[unlock.entityType]!;
+        set.add(getEntityById(unlock.id));
       }
     }
   }

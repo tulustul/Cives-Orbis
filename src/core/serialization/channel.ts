@@ -20,12 +20,13 @@ import {
   TechEra,
   TechLayout,
   Technology,
+  TileImprovementDefinition,
   UnitDefinition,
   UnitTrait,
   UnitType,
 } from "../data.interface";
-import { UnitAction } from "../unit-actions";
 import { Knowledge, KnowledgeTechState } from "../knowledge";
+import { UnitAction } from "../unit-actions";
 
 export interface GameChanneled {
   turn: number;
@@ -653,6 +654,11 @@ export type BuildingChanneled = EntityMinimalChanneled & {
   bonuses: Bonuses;
 };
 
+export type TileImprovementChanneled = EntityMinimalChanneled & {
+  entityType: "tileImprovement";
+  technology: EntityMinimalChanneled | null;
+};
+
 export function buildingToChannel(
   entity: Building | IdleProduct,
 ): BuildingChanneled {
@@ -665,6 +671,19 @@ export function buildingToChannel(
       ? entityToMinimalChannel(entity.technology)
       : null,
     bonuses: entity.bonuses,
+  };
+}
+
+export function tileImprovementToChannel(
+  entity: TileImprovementDefinition,
+): TileImprovementChanneled {
+  return {
+    id: entity.id,
+    entityType: entity.entityType,
+    name: entity.name,
+    technology: entity.technology
+      ? entityToMinimalChannel(entity.technology)
+      : null,
   };
 }
 
@@ -689,9 +708,16 @@ export function entityToChannel(entity: Entity): EntityChanneled {
     return techToChannel(entity as Technology);
   }
 
+  if (entity.entityType === "tileImprovement") {
+    return tileImprovementToChannel(entity as TileImprovementDefinition);
+  }
+
   return productToChannel(entity);
 }
 
 export type ProductChanneled = BuildingChanneled | UnitDefChanneled;
 
-export type EntityChanneled = TechDefChanneled | ProductChanneled;
+export type EntityChanneled =
+  | TechDefChanneled
+  | ProductChanneled
+  | TileImprovementChanneled;

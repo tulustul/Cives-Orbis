@@ -1,11 +1,18 @@
 import { Option } from "./types";
 import clsx from "clsx";
 
+export type MultiselectAddedOrRemoved = "added" | "removed";
+
+export type MultiselectOnChange<T> = {
+  addedOrRemoved: MultiselectAddedOrRemoved;
+  value: T;
+  allValues: T[];
+};
 type Props<T> = {
   label: string;
   options: Option<T>[];
   value: T[];
-  onChange: (value: T[]) => void;
+  onChange: (value: MultiselectOnChange<T>) => void;
 };
 
 export function Multiselect<T>({ label, options, value, onChange }: Props<T>) {
@@ -14,9 +21,17 @@ export function Multiselect<T>({ label, options, value, onChange }: Props<T>) {
       const index = value.indexOf(option.value);
       const newValue = [...value];
       newValue.splice(index, 1);
-      onChange(newValue);
+      onChange({
+        addedOrRemoved: "removed",
+        value: option.value,
+        allValues: newValue,
+      });
     } else {
-      onChange([...value, option.value]);
+      onChange({
+        addedOrRemoved: "added",
+        value: option.value,
+        allValues: [...value, option.value],
+      });
     }
   }
 
@@ -31,7 +46,7 @@ export function Multiselect<T>({ label, options, value, onChange }: Props<T>) {
               "text-center cursor-pointer px-2 py-1",
               value.includes(option.value)
                 ? "bg-success/50"
-                : "hover:bg-gray-700/70"
+                : "hover:bg-gray-700/70",
             )}
             onClick={() => toggleOption(option)}
           >

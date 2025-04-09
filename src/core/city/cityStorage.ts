@@ -8,6 +8,7 @@ export class CityStorage {
     food: 100,
     luxury: 100,
     material: 100,
+    commodity: 100,
   };
 
   constructor(public city: CityCore) {}

@@ -1,5 +1,6 @@
-import { TileImprovement, TileRoad } from "@/core/tile-improvements";
+import { TileRoad } from "@/core/tile-improvements";
 import { RESOURCES_DEFINITIONS } from "@/data/resources";
+import { TILE_IMPROVEMENTS } from "@/data/tileImprovements";
 import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
 import { Option } from "@/ui/components";
 
@@ -34,12 +35,13 @@ export const WETLANDS_OPTIONS: Option<boolean>[] = [
   { label: "wetlands", value: true },
 ];
 
-export const IMPROVEMENT_OPTIONS: Option<TileImprovement | null>[] = [
-  { label: "no improvement", value: null },
-  { label: "farm", value: TileImprovement.farm },
-  { label: "mine", value: TileImprovement.mine },
-  { label: "sawmill", value: TileImprovement.sawmill },
-];
+export const IMPROVEMENT_OPTIONS = [
+  { label: "None", value: null } as Option<string | null>,
+].concat(
+  TILE_IMPROVEMENTS.map((def) => {
+    return { label: def.name, value: def.id };
+  }),
+);
 
 export const ROAD_OPTIONS: Option<TileRoad | null>[] = [
   { label: "no road", value: null },
@@ -58,7 +60,7 @@ export const RIVER_OPTIONS: Option<TileDirection>[] = [
 export const RESOURCE_OPTIONS = [
   { label: "None", value: null } as Option<string | null>,
 ].concat(
-  RESOURCES_DEFINITIONS.map((r) => {
-    return { label: r.name, value: r.id };
-  })
+  RESOURCES_DEFINITIONS.map((def) => {
+    return { label: def.name, value: def.id };
+  }),
 );

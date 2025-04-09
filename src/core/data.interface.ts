@@ -1,8 +1,8 @@
 import { Climate, LandForm, SeaLevel } from "../shared";
 import { Bonuses } from "./bonus";
 import { Requirement } from "./requirements";
-import { TileImprovement } from "./tile-improvements";
 import { UnitAction } from "./unit-actions";
+import { Yields } from "./yields";
 
 export type EntityType =
   | "unit"
@@ -10,6 +10,7 @@ export type EntityType =
   | "idleProduct"
   | "resource"
   | "technology"
+  | "tileImprovement"
   | "nation";
 
 export type Entity = {
@@ -130,11 +131,23 @@ export type ResourceDistribution = {
 
 export type ResourceType = "food" | "material" | "commodity" | "luxury";
 
-export type ResourceDepositDefinition = {
-  requiredImprovement: TileImprovement;
+export type BaseResourceDepositDefinition = {
   bonuses: Bonuses;
   bonusesWhenWorked: Bonuses;
   distribution?: ResourceDistribution;
+};
+
+export type RawResourceDepositDefinition = BaseResourceDepositDefinition & {
+  requiredImprovement: string;
+};
+
+export type ResourceDepositDefinition = BaseResourceDepositDefinition & {
+  requiredImprovement: TileImprovementDefinition;
+};
+
+export type RawResourceDefinition = Entity & {
+  resourceType: ResourceType;
+  depositDef?: RawResourceDepositDefinition;
 };
 
 export type ResourceDefinition = Entity & {
@@ -195,3 +208,29 @@ export type Technology = Entity & {
   unlocks: Entity[];
   layout: TechLayout;
 };
+
+export type TileImprovementVariant = {
+  baseTurns: number;
+  climates?: Climate[];
+  landForms?: LandForm[];
+  seaLevels?: SeaLevel[];
+  forest?: boolean;
+  river?: boolean;
+  extraYields?: Partial<Yields>;
+};
+
+export type RawTileImprovementDefinition = Entity &
+  TileImprovementVariant & {
+    entityType: "tileImprovement";
+    spawnsResource?: string;
+    requireResource?: boolean;
+    action: UnitAction;
+  };
+
+export type TileImprovementDefinition = Omit<
+  RawTileImprovementDefinition,
+  "spawnsResource"
+> &
+  RequireTech & {
+    spawnsResource?: ResourceDefinition;
+  };

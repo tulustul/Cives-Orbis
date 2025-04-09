@@ -1,10 +1,8 @@
-import { useObservable } from "@/utils";
-import { mapUi } from "./mapUi";
-import { AtlasIcon, Panel } from "./components";
 import { Climate, LandForm, SeaLevel } from "@/shared";
+import { useObservable } from "@/utils";
 import { AtlasIcon2 } from "./components/AtlasIcon2";
-import { TileRoad } from "@/core/tile-improvements";
 import { OrnateBox } from "./components/OrnateBox";
+import { mapUi } from "./mapUi";
 
 const CLIMATES: Record<Climate, string> = {
   [Climate.arctic]: "Arctic",

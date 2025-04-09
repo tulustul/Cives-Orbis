@@ -27,7 +27,7 @@ export function UnitsPainter() {
       return;
     }
 
-    bridge.units.spawn({
+    bridge.editor.units.spawn({
       definitionId: unitDefinitionRef.current.id,
       tileId: tile.id,
       playerId: selectedPlayerIdRef.current,

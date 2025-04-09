@@ -1,6 +1,11 @@
-import { TileImprovement, TileRoad } from "../core/tile-improvements";
+import { TileCore } from "@/core/tile";
+import {
+  ResourceDefinition,
+  TileImprovementDefinition,
+} from "../core/data.interface";
+import { TileRoad } from "../core/tile-improvements";
 import { Yields } from "../core/yields";
-import { ResourceDefinition } from "../core/data.interface";
+import { PlayerCore } from "@/core/player";
 
 export enum TileDirection {
   NW,
@@ -45,7 +50,7 @@ export interface BaseTile {
   riverParts: TileDirection[];
   forest: boolean;
   wetlands: boolean;
-  improvement: TileImprovement | null;
+  improvement: TileImprovementDefinition | null;
   road: TileRoad | null;
 
   yields: Yields;
@@ -80,26 +85,40 @@ export function areWetlandsPossible(tile: BaseTile): boolean {
 }
 
 export function isImprovementPossible(
-  tile: BaseTile,
-  improvement: TileImprovement | null,
+  player: PlayerCore,
+  tile: TileCore,
+  impr: TileImprovementDefinition | null,
 ): boolean {
-  if (improvement === null) {
-    return true;
-  } else if (improvement === TileImprovement.farm) {
-    return (
-      tile.seaLevel === SeaLevel.none &&
-      tile.landForm === LandForm.plains &&
-      tile.climate !== Climate.arctic &&
-      !tile.forest &&
-      !tile.wetlands
-    );
-  } else if (improvement === TileImprovement.mine) {
-    return tile.landForm === LandForm.hills;
-  } else if (improvement === TileImprovement.sawmill) {
-    return tile.forest && !tile.wetlands;
-  } else {
+  if (tile.city) {
     return false;
   }
+
+  if (impr === null) {
+    return true;
+  }
+
+  if (tile.improvement?.id === impr.id) {
+    return false;
+  }
+
+  if (tile.areaOf && tile.areaOf?.player !== player) {
+    return false;
+  }
+
+  if (!player.knowledge.discoveredEntities.tileImprovement.has(impr)) {
+    return false;
+  }
+
+  if (impr.requireResource) {
+    return tile.resource?.def.depositDef?.requiredImprovement.id === impr.id;
+  }
+
+  return (
+    (!impr.climates || impr.climates.includes(tile.climate)) &&
+    (!impr.landForms || impr.landForms.includes(tile.landForm)) &&
+    (impr.river === undefined || impr.river === tile.riverParts.length > 0) &&
+    (impr.forest === undefined || impr.forest === tile.forest)
+  );
 }
 
 export function isRoadPossible(tile: BaseTile) {

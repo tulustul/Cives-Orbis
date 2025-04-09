@@ -1,5 +1,5 @@
 import { Yields, EMPTY_YIELDS, addYields } from "./yields";
-import { TileImprovement, TileRoad } from "./tile-improvements";
+import { TileRoad } from "./tile-improvements";
 import {
   Climate,
   LandForm,
@@ -10,7 +10,7 @@ import {
 import { UnitCore } from "./unit";
 import { CityCore } from "./city";
 import { collector } from "./collector";
-import { Nation } from "./data.interface";
+import { Nation, TileImprovementDefinition } from "./data.interface";
 import { ResourceDeposit } from "./resources";
 import { PlayerCore } from "./player";
 import { SuppliesProducer } from "./supplies";
@@ -41,7 +41,7 @@ export class TileCore implements BaseTile {
   riverParts: TileDirection[] = [];
   forest = false;
   wetlands = false;
-  improvement: TileImprovement | null = null;
+  improvement: TileImprovementDefinition | null = null;
   road: TileRoad | null = null;
   resource: ResourceDeposit | null = null;
 
@@ -169,17 +169,8 @@ export class TileCore implements BaseTile {
         this.yields.food += this.climate === Climate.desert ? 3 : 1;
       }
 
-      if (this.improvement === TileImprovement.farm) {
-        this.yields.food++;
-        this.workerSlots = 2; // Farms can support 2 workers
-      } else if (this.improvement === TileImprovement.mine) {
-        this.yields.production++;
-        this.workerSlots = 3; // Mines can support 3 workers
-      } else if (this.improvement === TileImprovement.sawmill) {
-        this.yields.production++;
-        this.workerSlots = 2; // Sawmills can support 2 workers
-      } else {
-        this.workerSlots = 1; // Default slots
+      if (this.improvement && this.improvement.extraYields) {
+        addYields(this.yields, this.improvement.extraYields);
       }
 
       this.yields.food = Math.max(0, this.yields.food);
@@ -190,13 +181,6 @@ export class TileCore implements BaseTile {
       this.resource.computeYields();
       if (this.resource.yields) {
         addYields(this.yields, this.resource.yields);
-      }
-
-      // If there's a resource on this tile and the correct improvement, add more slots
-      if (
-        this.improvement === this.resource.def.depositDef?.requiredImprovement
-      ) {
-        this.workerSlots += 1; // Resources with improvements add an extra worker slot
       }
     }
   }

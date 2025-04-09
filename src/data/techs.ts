@@ -39,7 +39,8 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
       "building_well",
       "building_slave_market",
       "farm",
-      "idle_product_growth"
+      "idle_product_growth",
+      "tile-impr-farm"
     ],
     "layout": {
       "x": 490.00000000000006,
@@ -59,9 +60,10 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "era": "Copper Age",
     "unlocks": [
       "resource_cattle",
-      "resource_sheeps",
-      "resource_goats",
-      "resource_pigs"
+      "resource_sheep",
+      "resource_goat",
+      "resource_pig",
+      "tile-impr-pasture"
     ],
     "layout": {
       "x": 490.00000000000006,
@@ -78,7 +80,12 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_agriculture"],
     "cost": 20,
     "era": "Copper Age",
-    "unlocks": ["building_granary", "unit_settler", "resource_pottery"],
+    "unlocks": [
+      "building_granary",
+      "unit_settler",
+      "resource_pottery",
+      "tile-impr-clayPit"
+    ],
     "layout": {
       "x": 930.0000000000001,
       "y": 253.00000000000003,
@@ -111,7 +118,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
-    "unlocks": ["resource_fish"],
+    "unlocks": ["resource_fish", "tile-impr-fishery"],
     "layout": {
       "x": 490.00000000000006,
       "y": 737.0000000000001,
@@ -127,7 +134,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_copperWorking"],
     "cost": 35,
     "era": "Copper Age",
-    "unlocks": [],
+    "unlocks": ["tile-impr-quarry"],
     "layout": {
       "x": 930.0000000000001,
       "y": 594.0,
@@ -160,7 +167,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
-    "unlocks": ["resource_furs"],
+    "unlocks": ["resource_furs", "tile-impr-huntingGround"],
     "layout": {
       "x": 490.00000000000006,
       "y": 473.00000000000006,
@@ -192,7 +199,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_society"],
     "cost": 20,
     "era": "Copper Age",
-    "unlocks": ["resource_copper_ore", "mine"],
+    "unlocks": ["resource_copper_ore", "tile-impr-mine"],
     "layout": {
       "x": 490.00000000000006,
       "y": 561.0,
@@ -242,7 +249,12 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_masonry"],
     "cost": 30,
     "era": "Bronze Age",
-    "unlocks": ["building_workshop", "unit_supply_wagon", "resource_bronze"],
+    "unlocks": [
+      "building_workshop",
+      "unit_supply_wagon",
+      "resource_bronze",
+      "tile-impr-lumbermill"
+    ],
     "layout": {
       "x": 1370.0,
       "y": 550.0,
@@ -258,7 +270,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_writing", "tech_irrigation"],
     "cost": 40,
     "era": "Bronze Age",
-    "unlocks": [],
+    "unlocks": ["tile-impr-plantation"],
     "layout": {
       "x": 1810.0000000000002,
       "y": 165.0,
@@ -307,7 +319,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_agriculture", "tech_pottery"],
     "cost": 50,
     "era": "Bronze Age",
-    "unlocks": ["building_big_granary", "irrigation"],
+    "unlocks": ["building_big_granary", "tile-impr-irrigation"],
     "layout": {
       "x": 1370.0,
       "y": 165.0,
@@ -355,7 +367,7 @@ export const TECH_DEFINITIONS: RawTechnology[] = [
     "requiredTechnologies": ["tech_mathematics"],
     "cost": 50,
     "era": "Bronze Age",
-    "unlocks": [],
+    "unlocks": ["tile-impr-cottage"],
     "layout": {
       "x": 2250.0,
       "y": 253.00000000000003,

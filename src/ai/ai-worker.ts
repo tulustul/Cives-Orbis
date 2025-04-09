@@ -1,15 +1,15 @@
-import { UnitTrait } from "@/core/data.interface";
+import { CityCore } from "@/core/city";
+import { getUnitById } from "@/core/data-manager";
+import { TileImprovementDefinition, UnitTrait } from "@/core/data.interface";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
-import { TileImprovement } from "@/core/tile-improvements";
+import { PassableArea } from "@/core/tiles-map";
 import { UnitCore } from "@/core/unit";
+import { UnitAction } from "@/core/unit-actions";
+import { sumYields } from "@/core/yields";
 import { isImprovementPossible } from "@/shared";
 import { AISystem } from "./ai-system";
-import { getUnitById } from "@/core/data-manager";
 import { AiOperation } from "./types";
-import { UnitAction } from "@/core/unit-actions";
-import { CityCore } from "@/core/city";
-import { PassableArea } from "@/core/tiles-map";
 
 const CITIES_PER_WORKER = 0.5;
 const MIN_WORKERS = 2;
@@ -189,8 +189,8 @@ export class WorkerAI extends AISystem {
           continue;
         }
 
-        const action = this.getBestTileAction(tile);
-        if (action) {
+        const impr = this.getBestTileImpr(tile);
+        if (impr) {
           let priority = 100;
           if (tile.resource) {
             priority += 200;
@@ -198,6 +198,7 @@ export class WorkerAI extends AISystem {
           if (city.workers.workedTiles.has(tile)) {
             priority += 100;
           }
+          const action = `build-${impr.id}` as UnitAction;
           tasks.push({ tile, action, priority });
         }
       }
@@ -282,14 +283,35 @@ export class WorkerAI extends AISystem {
     return [];
   }
 
-  private getBestTileAction(tile: TileCore): UnitAction | null {
-    if (isImprovementPossible(tile, TileImprovement.farm)) {
-      return "buildFarm";
-    } else if (isImprovementPossible(tile, TileImprovement.mine)) {
-      return "buildMine";
-    } else if (isImprovementPossible(tile, TileImprovement.sawmill)) {
-      return "buildSawmill";
+  private getBestTileImpr(tile: TileCore): TileImprovementDefinition | null {
+    if (tile.resource?.def.depositDef) {
+      // TODO check if the resource is known to the player
+      if (
+        this.player.knowledge.discoveredEntities.tileImprovement.has(
+          tile.resource.def.depositDef.requiredImprovement,
+        )
+      ) {
+        return tile.resource.def.depositDef.requiredImprovement;
+      }
     }
-    return null;
+
+    let bestImpr: TileImprovementDefinition | null = null;
+    let bestScore = -0;
+
+    for (const impr of this.ai.player.knowledge.discoveredEntities.tileImprovement.values()) {
+      if (
+        !isImprovementPossible(this.player, tile, impr) ||
+        !impr.extraYields
+      ) {
+        continue;
+      }
+      const score = sumYields(impr.extraYields);
+      if (score > bestScore) {
+        bestScore = score;
+        bestImpr = impr;
+      }
+    }
+
+    return bestImpr;
   }
 }

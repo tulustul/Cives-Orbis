@@ -113,6 +113,7 @@ const entityTypeRenderers: Record<
       <Value>Cost: {entity.cost}</Value>
     </>
   ),
+  tileImprovement: () => null,
   resource: () => null,
   technology: () => null,
   nation: () => null,

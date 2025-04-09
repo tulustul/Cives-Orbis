@@ -1,15 +1,14 @@
-import { ResourceDefinition } from "@/core/data.interface";
-import { TileImprovement } from "@/core/tile-improvements";
-import { SeaLevel, LandForm, Climate } from "@/shared";
+import { RawResourceDefinition } from "@/core/data.interface";
+import { Climate, LandForm, SeaLevel } from "@/shared";
 
-export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
+export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
   {
     id: "resource-stone",
     entityType: "resource",
     name: "Stone",
     resourceType: "material",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-quarry",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -33,7 +32,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Limestone",
     resourceType: "material",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-quarry",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -57,7 +56,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "Marble",
     resourceType: "material",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-quarry",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -79,16 +78,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     id: "resource-clay",
     entityType: "resource",
     name: "Clay",
-    resourceType: "material",
-    depositDef: {
-      requiredImprovement: TileImprovement.mine,
-      bonuses: {
-        yieldValue: { production: 1 }
-      },
-      bonusesWhenWorked: {
-        yieldValue: { production: 2 }
-      }
-    }
+    resourceType: "material"
   },
   {
     id: "resource-wood",
@@ -96,7 +86,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     name: "wood",
     resourceType: "material",
     depositDef: {
-      requiredImprovement: TileImprovement.sawmill,
+      requiredImprovement: "tile-impr-lumbermill",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -111,7 +101,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Copper Ore",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -135,7 +125,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Tin Ore",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -159,7 +149,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Pig",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -183,7 +173,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Iron Ore",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -207,7 +197,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Salt",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -231,7 +221,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Coal",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -255,7 +245,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Gem",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -279,7 +269,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Sapphire",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -303,7 +293,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Amber",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { production: 1 }
       },
@@ -327,7 +317,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Wheat",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-farm",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -352,7 +342,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Tomato",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -377,7 +367,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Sulphur",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -402,7 +392,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Cinnamon",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -426,7 +416,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Maize",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-farm",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -450,7 +440,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     entityType: "resource",
     name: "Rice",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-farm",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -474,7 +464,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     entityType: "resource",
     name: "Fish",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-fishery",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -498,7 +488,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     entityType: "resource",
     name: "Whale",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-fishery",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -522,7 +512,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     entityType: "resource",
     name: "Camel",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -546,7 +536,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     entityType: "resource",
     name: "Pearl",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-fishery",
       bonuses: {
         yieldValue: { food: 1 }
       },
@@ -570,7 +560,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Gold Ore",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { gold: 2 }
       },
@@ -600,7 +590,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Silver Ore",
     depositDef: {
-      requiredImprovement: TileImprovement.mine,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -630,7 +620,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Tobacco",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -654,7 +644,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Cattle",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -678,7 +668,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Coffe",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -702,7 +692,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Goat",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -726,7 +716,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Sheep",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -750,31 +740,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Elephant",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
-      bonuses: {
-        yieldValue: { gold: 1 }
-      },
-      bonusesWhenWorked: {
-        yieldValue: { gold: 3 }
-      },
-      distribution: {
-        seaLevel: SeaLevel.none,
-        landFormProbability: {
-          [LandForm.plains]: 0.25,
-          [LandForm.hills]: 0.75
-        },
-        quantityMedian: 3,
-        quantityStddev: 2
-      }
-    }
-  },
-  {
-    id: "resource-camel",
-    entityType: "resource",
-    resourceType: "material",
-    name: "Camel",
-    depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -798,7 +764,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Fur",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-huntingGround",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -822,7 +788,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Grape",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -846,7 +812,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Olive",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -870,7 +836,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Spice",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -894,7 +860,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Dye",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -918,7 +884,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Orange",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -942,7 +908,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Apple",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -966,7 +932,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Lemon",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -990,7 +956,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "luxury",
     name: "Diamond",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1020,7 +986,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Goat",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1044,7 +1010,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Horse",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1068,7 +1034,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Wild Game",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-huntingGround",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1092,7 +1058,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Ox",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1116,7 +1082,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Llama",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1140,7 +1106,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Chicken",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-pasture",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1164,7 +1130,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "food",
     name: "Oil",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-mine",
       bonuses: {
         yieldValue: { gold: 1 }
       },
@@ -1188,7 +1154,7 @@ export const RESOURCES_DEFINITIONS: ResourceDefinition[] = [
     resourceType: "material",
     name: "Cotton",
     depositDef: {
-      requiredImprovement: TileImprovement.farm,
+      requiredImprovement: "tile-impr-plantation",
       bonuses: {
         yieldValue: { gold: 1 }
       },

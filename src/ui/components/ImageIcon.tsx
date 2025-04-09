@@ -19,6 +19,7 @@ const tint: Record<EntityType, string> = {
   unit: "#ffffff",
   building: "#5d3173",
   idleProduct: "#225524",
+  tileImprovement: "#ff00ff",
   resource: "#00ffff",
   nation: "#0000ff",
 };
@@ -62,7 +63,7 @@ export function ImageIcon({ name, size, className, frameType }: Props) {
       className={clsx(
         className,
         clsFrameSizes[size],
-        "relative flex items-center justify-center"
+        "relative flex items-center justify-center",
       )}
     >
       <img className={clsSizes[size]} src={url} />

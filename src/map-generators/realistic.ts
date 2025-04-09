@@ -1,26 +1,26 @@
-import { MapGenerator } from "./map-generator.interface";
+import { RESOURCES_MAP } from "@/core/data-manager";
 import { TilesMapCore } from "@/core/tiles-map";
+import alea from "alea";
+import { createNoise2D, NoiseFunction2D } from "simplex-noise";
+import { randomNormal } from "../core/random";
+import { ResourceDeposit } from "../core/resources";
+import { TileCore } from "../core/tile";
+import {
+  areWetlandsPossible,
+  Climate,
+  isForestable,
+  isResourcePossible,
+  LandForm,
+  SeaLevel,
+  TileDirection,
+} from "../shared";
+import { getTileInDirection } from "../shared/hex-math";
+import { MapGenerator } from "./map-generator.interface";
 import {
   findCoastline,
   placeRiverBetweenTiles,
   POSSIBLE_BORDER_PATHS,
 } from "./utils";
-import { TileCore } from "../core/tile";
-import {
-  LandForm,
-  Climate,
-  SeaLevel,
-  TileDirection,
-  areWetlandsPossible,
-  isForestable,
-  isResourcePossible,
-} from "../shared";
-import { getTileInDirection } from "../shared/hex-math";
-import { RESOURCES_DEFINITIONS } from "../data/resources";
-import { ResourceDeposit } from "../core/resources";
-import { randomNormal } from "../core/random";
-import { createNoise2D, NoiseFunction2D } from "simplex-noise";
-import alea from "alea";
 
 interface TileMetadata {
   height: number;
@@ -826,6 +826,8 @@ export class RealisticMapGenerator implements MapGenerator {
   }
 
   placeResources() {
+    const resources = Array.from(RESOURCES_MAP.values());
+
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
         if (Math.random() > this.resources) {
@@ -833,10 +835,8 @@ export class RealisticMapGenerator implements MapGenerator {
         }
 
         // TODO take more distributions settings into account
-        const resourceIndex = Math.floor(
-          Math.random() * RESOURCES_DEFINITIONS.length,
-        );
-        const resourceDef = RESOURCES_DEFINITIONS[resourceIndex];
+        const resourceIndex = Math.floor(Math.random() * resources.length);
+        const resourceDef = resources[resourceIndex];
         const tile = this.map.tiles[x][y];
 
         if (isResourcePossible(tile, resourceDef)) {

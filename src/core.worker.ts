@@ -10,6 +10,7 @@ import {
   getIdleProductById,
   getResourceDefinitionById,
   getTechById,
+  getTileImprDefinitionById,
   getUnitById,
   TECHNOLOGIES,
 } from "./core/data-manager";
@@ -78,6 +79,7 @@ const HANDLERS = {
 
   "player.getSuppliedTiles": getSuppliedTiles,
   "player.getYields": getYields,
+  "player.editor.grantRevokeTech": playerGrantRevokeTech,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -516,7 +518,10 @@ export function tileGetInRange(
   );
 }
 
-export type TileUpdateOptions = { id: number } & Partial<
+export type TileUpdateOptions = {
+  id: number;
+  improvement?: string;
+} & Partial<
   Pick<
     BaseTile,
     | "climate"
@@ -525,7 +530,6 @@ export type TileUpdateOptions = { id: number } & Partial<
     | "riverParts"
     | "forest"
     | "wetlands"
-    | "improvement"
     | "road"
   >
 >;
@@ -541,7 +545,14 @@ export function tileUpdate(options: TileUpdateOptions) {
     }
   }
 
-  Object.assign(tile, options);
+  const _tile = {
+    ...options,
+    improvement: options.improvement
+      ? getTileImprDefinitionById(options.improvement)
+      : null,
+  };
+
+  Object.assign(tile, _tile);
   tile.update();
 }
 
@@ -789,4 +800,26 @@ function techGetResearch() {
 function techResearch(techId: string) {
   const tech = getTechById(techId);
   game.trackedPlayer.knowledge.research(tech);
+}
+
+export type GrantOrRevoke = "grant" | "revoke";
+
+export type GrantRevokeTechOptions = {
+  playerId: number;
+  techId: string;
+  grantRevoke: GrantOrRevoke;
+};
+
+function playerGrantRevokeTech(options: GrantRevokeTechOptions) {
+  const tech = getTechById(options.techId);
+  const player = game.players.find((p) => p.id === options.playerId);
+  if (!player) {
+    return;
+  }
+
+  if (options.grantRevoke === "grant") {
+    player.knowledge.addTech(tech);
+  } else {
+    player.knowledge.removeTech(tech);
+  }
 }

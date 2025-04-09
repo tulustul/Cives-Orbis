@@ -166,17 +166,19 @@ export class CityProduction {
     const knowledge = this.city.player.knowledge;
 
     this.availableUnits = this.getAvailableProducts<UnitDefinition>(
-      Array.from(knowledge.discoveredUnits),
+      Array.from(knowledge.discoveredEntities.unit),
     );
 
     const notBuildBuildings = Array.from(
-      this.city.player.knowledge.discoveredBuildings,
+      this.city.player.knowledge.discoveredEntities.building,
     ).filter((b) => this.product !== b && !this.buildings.includes(b));
 
     this.availableBuildings =
       this.getAvailableProducts<Building>(notBuildBuildings);
 
-    this.availableIdleProducts = Array.from(knowledge.discoveredIdleProducts);
+    this.availableIdleProducts = Array.from(
+      knowledge.discoveredEntities.idleProduct,
+    );
 
     this.disabledProducts = this.getDisabledProducts<ProductDefinition>([
       ...this.availableUnits,

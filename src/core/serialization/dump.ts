@@ -1,24 +1,29 @@
-import { Game } from "../game";
-import { CityCore } from "@/core/city";
-import { Yields } from "@/core/yields";
-import { PlayerCore } from "@/core/player";
 import { AIPlayer } from "@/ai/ai-player";
-import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
-import { TileImprovement, TileRoad } from "@/core/tile-improvements";
+import { CityCore } from "@/core/city";
+import {
+  ProductDefinition,
+  ProductType,
+  TileImprovementDefinition,
+} from "@/core/data.interface";
+import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
+import { TileRoad } from "@/core/tile-improvements";
 import { TilesMapCore } from "@/core/tiles-map";
 import { UnitCore, UnitOrder } from "@/core/unit";
-import { ProductDefinition, ProductType } from "@/core/data.interface";
+import { Yields } from "@/core/yields";
+import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
 import {
-  getUnitById,
   getBuildingById,
   getIdleProductById,
+  getResourceDefinitionById,
   getTechById,
+  getTileImprDefinitionById,
+  getUnitById,
 } from "../data-manager";
-import { ResourceDeposit } from "../resources";
-import { RESOURCES_DEFINITIONS } from "@/data/resources";
-import { Stats, StatsData } from "../stats";
+import { Game } from "../game";
 import { Knowledge } from "../knowledge";
+import { ResourceDeposit } from "../resources";
+import { Stats, StatsData } from "../stats";
 
 export interface GameSerialized {
   turn: number;
@@ -51,7 +56,7 @@ interface TileSerialized {
   climate?: Climate;
   landForm?: LandForm;
   seaLevel?: SeaLevel;
-  improvement?: TileImprovement | null;
+  improvement?: string;
   road?: TileRoad | null;
   riverParts?: TileDirection[];
   forest?: boolean;
@@ -172,14 +177,12 @@ function dumpMap(map: TilesMapCore): MapSerialized {
 
 function dumpTiles(map: TilesMapCore): TileSerialized[] {
   // Store only changes from the last tile to keep save size minimal
-  const result: Partial<Omit<TileCore, "resource">>[] = [];
+  const result: Partial<TileSerialized>[] = [];
   let lastTile: Partial<TileCore> = {};
   for (let x = 0; x < map.width; x++) {
     for (let y = 0; y < map.height; y++) {
       const tile = map.tiles[x][y];
-      const diff: Partial<Omit<TileCore, "resource">> & {
-        resource?: ResourceSerialized;
-      } = {};
+      const diff: TileSerialized = {};
 
       if (tile.seaLevel !== lastTile.seaLevel) {
         diff.seaLevel = tile.seaLevel;
@@ -197,7 +200,7 @@ function dumpTiles(map: TilesMapCore): TileSerialized[] {
         diff.wetlands = tile.wetlands;
       }
       if (tile.improvement !== lastTile.improvement) {
-        diff.improvement = tile.improvement;
+        diff.improvement = tile.improvement?.id;
       }
       if (tile.road !== lastTile.road) {
         diff.road = tile.road;
@@ -246,17 +249,17 @@ function loadMap(mapData: MapSerialized) {
           ? tileData.landForm!
           : lastTile.landForm;
 
-      tile.improvement =
-        tileData.improvement !== undefined
-          ? tileData.improvement!
-          : lastTile.improvement;
+      let improvement: TileImprovementDefinition | null = null;
+      if (tileData.improvement) {
+        improvement = getTileImprDefinitionById(tileData.improvement);
+      }
+
+      tile.improvement = improvement ? improvement! : lastTile.improvement;
 
       tile.road = tileData.road !== undefined ? tileData.road! : lastTile.road;
 
       if (tileData.resource) {
-        const resourceDef = RESOURCES_DEFINITIONS.find(
-          (r) => r.id === tileData.resource?.id,
-        );
+        const resourceDef = getResourceDefinitionById(tileData.resource.id);
         if (resourceDef) {
           tile.resource = ResourceDeposit.from({
             def: resourceDef,
@@ -397,12 +400,8 @@ function loadCity(game: Game, cityData: CitySerialized) {
     city.production.buildings.map((b) => b.id),
   );
   for (const resource of cityData.storage) {
-    const resourceDef = RESOURCES_DEFINITIONS.find(
-      (r) => r.id === resource?.id,
-    );
-    if (resourceDef) {
-      city.storage.resources.set(resourceDef, resource.amount);
-    }
+    const resourceDef = getResourceDefinitionById(resource.id);
+    city.storage.resources.set(resourceDef, resource.amount);
   }
   city.updateYields();
 }

@@ -3,9 +3,9 @@ import { TileChanneled } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
-import { TILE_SIZE } from "./constants";
-import { putContainerAtTileCentered, putSpriteAtTileCentered } from "./utils";
 import { camera } from "./camera";
+import { TILE_SIZE } from "./constants";
+import { putContainerAtTileCentered } from "./utils";
 
 export class ResourcesDrawer {
   resourceDrawers = new Map<number, ResourceDrawer>();

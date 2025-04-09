@@ -9,8 +9,10 @@ import {
   IdleProduct,
   ResourceDefinition,
   Technology,
+  TileImprovementDefinition,
   UnitDefinition,
 } from "./data.interface";
+import { TILE_IMPROVEMENTS } from "@/data/tileImprovements";
 
 const ENTITIES_MAP = new Map<string, Entity>();
 
@@ -82,9 +84,42 @@ for (const rawDef of IDLE_PRODUCTS) {
 }
 export const idleProductDefs = Array.from(IDLE_PRODUCTS_MAP.values());
 
-const RESOURCES_MAP = new Map<string, ResourceDefinition>();
-for (const definition of RESOURCES_DEFINITIONS) {
-  RESOURCES_MAP.set(definition.id, definition);
+export const TILE_IMPR_MAP = new Map<string, TileImprovementDefinition>();
+for (const rawDef of TILE_IMPROVEMENTS) {
+  const technology = unlockIdToTech.get(rawDef.id);
+  const def: TileImprovementDefinition = {
+    ...rawDef,
+    spawnsResource: undefined,
+    technology,
+  };
+  technology?.unlocks.push(def);
+  TILE_IMPR_MAP.set(def.id, def);
+  ENTITIES_MAP.set(def.id, def);
+}
+
+export const RESOURCES_MAP = new Map<string, ResourceDefinition>();
+for (const rawDef of RESOURCES_DEFINITIONS) {
+  let def: ResourceDefinition;
+  if (rawDef.depositDef) {
+    const requiredImprovement = getTileImprDefinitionById(
+      rawDef.depositDef.requiredImprovement,
+    );
+    def = {
+      ...rawDef,
+      depositDef: { ...rawDef.depositDef, requiredImprovement },
+    };
+  } else {
+    def = { ...rawDef } as ResourceDefinition;
+  }
+  RESOURCES_MAP.set(def.id, def);
+}
+
+for (const rawDef of TILE_IMPROVEMENTS) {
+  const spawnsResource = rawDef.spawnsResource
+    ? RESOURCES_MAP.get(rawDef.spawnsResource)
+    : undefined;
+  const def = TILE_IMPR_MAP.get(rawDef.id)!;
+  def.spawnsResource = spawnsResource;
 }
 
 export function getEntityById(id: string): Entity {
@@ -121,6 +156,16 @@ export function getIdleProductById(id: string): IdleProduct {
 
 export function getResourceDefinitionById(id: string): ResourceDefinition {
   const resource = RESOURCES_MAP.get(id);
+  if (!resource) {
+    throw Error(`DataManager: No resource with id "${id}"`);
+  }
+  return resource;
+}
+
+export function getTileImprDefinitionById(
+  id: string,
+): TileImprovementDefinition {
+  const resource = TILE_IMPR_MAP.get(id);
   if (!resource) {
     throw Error(`DataManager: No resource with id "${id}"`);
   }

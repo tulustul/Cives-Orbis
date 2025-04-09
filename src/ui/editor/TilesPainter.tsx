@@ -1,11 +1,9 @@
-import { TileImprovement } from "@/core/tile-improvements";
 import { Climate, LandForm, SeaLevel } from "@/shared";
 import { Button, Option, Radio } from "@/ui/components";
 import { useEffect, useRef } from "react";
 import {
   CLIMATE_OPTIONS,
   FOREST_OPTIONS,
-  IMPROVEMENT_OPTIONS,
   LAND_FORM_OPTIONS,
   SEA_LEVEL_OPTIONS,
   WETLANDS_OPTIONS,
@@ -29,7 +27,6 @@ type PaintData = {
   wetlands: boolean | undefined;
   landForm: LandForm | undefined;
   seaLevel: SeaLevel | undefined;
-  improvement: TileImprovement | undefined;
 };
 
 const IGNORE_OPTION: Option<any> = { label: "ignore", value: undefined };
@@ -58,10 +55,6 @@ const _WETLANDS_OPTIONS: Option<boolean>[] = [
   IGNORE_OPTION,
   ...WETLANDS_OPTIONS,
 ];
-const _IMPROVEMENT_OPTIONS: Option<TileImprovement>[] = [
-  IGNORE_OPTION,
-  ...IMPROVEMENT_OPTIONS,
-];
 
 const DEFAULT_PAINT_DATA: PaintData = {
   size: 1,
@@ -70,7 +63,6 @@ const DEFAULT_PAINT_DATA: PaintData = {
   landForm: undefined,
   seaLevel: undefined,
   wetlands: undefined,
-  improvement: undefined,
 };
 
 export function TilesPainter() {
@@ -130,12 +122,12 @@ export function TilesPainter() {
 
     const filteredPaintData = Object.fromEntries(
       Object.entries(paintData).filter(
-        ([key, value]) => value !== undefined && key !== "size"
-      )
+        ([key, value]) => value !== undefined && key !== "size",
+      ),
     );
 
-    bridge.tiles.bulkUpdate(
-      tiles.map((tile) => ({ id: tile.id, ...filteredPaintData }))
+    bridge.editor.tiles.bulkUpdate(
+      tiles.map((tile) => ({ id: tile.id, ...filteredPaintData })),
     );
   }
 
@@ -185,13 +177,6 @@ export function TilesPainter() {
         options={_WETLANDS_OPTIONS}
         value={paintData.wetlands}
         onChange={(wetlands) => setPaintData({ ...paintData, wetlands })}
-      />
-
-      <Radio
-        label="Improvements"
-        options={_IMPROVEMENT_OPTIONS}
-        value={paintData.improvement}
-        onChange={(improvement) => setPaintData({ ...paintData, improvement })}
       />
 
       <Button onClick={reset}>Reset</Button>

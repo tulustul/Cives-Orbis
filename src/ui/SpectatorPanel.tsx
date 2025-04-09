@@ -1,11 +1,11 @@
-import { useObservable } from "@/utils";
-import { Panel, Switch } from "./components";
-import { mapUi } from "./mapUi";
-import { PlayersList } from "./editor/PlayersList";
-import { useState } from "react";
 import { bridge } from "@/bridge";
-import { nextTurnService } from "./nextTurn";
+import { useObservable } from "@/utils";
+import { useState } from "react";
+import { Switch } from "./components";
 import { OrnateBox } from "./components/OrnateBox";
+import { PlayersList } from "./editor/PlayersList";
+import { mapUi } from "./mapUi";
+import { nextTurnService } from "./nextTurn";
 
 export function SpectatorPanel() {
   const [trackedPlayerId, setTrackedPlayerId] = useState(0);
@@ -14,7 +14,7 @@ export function SpectatorPanel() {
   const autoplay = useObservable(nextTurnService.autoPlay$) ?? false;
 
   async function trackPlayer(playerId: number) {
-    await bridge.player.trackPlayer(playerId);
+    await bridge.editor.player.trackPlayer(playerId);
     setTrackedPlayerId(playerId);
   }
 
