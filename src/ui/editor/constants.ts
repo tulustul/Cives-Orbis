@@ -59,8 +59,18 @@ export const RIVER_OPTIONS: Option<TileDirection>[] = [
 
 export const RESOURCE_OPTIONS = [
   { label: "None", value: null } as Option<string | null>,
-].concat(
-  RESOURCES_DEFINITIONS.map((def) => {
-    return { label: def.name, value: def.id };
-  }),
-);
+]
+  .concat(
+    RESOURCES_DEFINITIONS.filter((def) => !!def.depositDef).map((def) => {
+      return { label: def.name, value: def.id };
+    }),
+  )
+  .sort((a, b) => {
+    if (a.label < b.label) {
+      return -1;
+    }
+    if (a.label > b.label) {
+      return 1;
+    }
+    return 0;
+  });

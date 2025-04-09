@@ -26,7 +26,7 @@ export function GameMenu() {
 
   return (
     <div
-      className="absolute w-full h-full flex flex-col gap-10 items-center justify-start pt-10 z-10 bg-black/80"
+      className="absolute w-full h-full flex flex-col gap-10 items-center justify-start pt-10 z-100 bg-black/80"
       style={{
         backdropFilter: "blur(5px)",
       }}

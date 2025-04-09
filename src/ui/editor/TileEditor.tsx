@@ -25,11 +25,11 @@ export function TileEditor() {
   }, []);
 
   if (!tile) {
-    return <div>Select the tile to edit</div>;
+    return <div className="text-sm">Select the tile to edit</div>;
   }
 
   return (
-    <div className="flex gap-4 items-start mb-4">
+    <div className="flex gap-2 items-start mb-4">
       <Radio
         label="Sea level"
         options={SEA_LEVEL_OPTIONS}

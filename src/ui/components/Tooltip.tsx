@@ -100,7 +100,7 @@ export function Tooltip({
               setTimeout(() => computePosition(), 10);
             }}
             className={clsx(
-              "absolute max-w-72 rounded-md text-white bg-[#222] border-1 border-[#111] z-50 shadow-md pointer-events-none",
+              "absolute max-w-72 rounded-md text-amber-100 bg-[#222] border-1 border-[#111] z-50 shadow-md pointer-events-none text-xs font-semibold",
               !noPadding ? "px-4 py-1" : "",
               contentClassName,
             )}

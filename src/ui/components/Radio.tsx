@@ -10,15 +10,17 @@ type Props<T> = {
 
 export function Radio<T>({ label, options, value, onChange }: Props<T>) {
   return (
-    <div className="text-amber-100 rounded-lg bg-gray-800 flex flex-col min-w-30 overflow-hidden border-1 border-gray-700">
-      <div className="font-semibold text-center px-4 py-2 text-lg">{label}</div>
-      <div className="flex flex-col ">
+    <div className="rounded-lg bg-amber-100/40 flex flex-col min-w-30 max-h-[250px] overflow-hidden">
+      <div className="font-bold text-sm text-center px-4 py-1 border-b-2">
+        {label}
+      </div>
+      <div className="flex flex-col max-h-full overflow-y-auto scrollbar-thin">
         {options.map((option, i) => (
           <div
             key={i}
             className={clsx(
-              "text-center cursor-pointer px-2 py-1 ",
-              option.value === value ? "bg-success/50" : "hover:bg-gray-700/70"
+              "text-center cursor-pointer px-2 py-1 text-xs font-semibold",
+              option.value === value ? "bg-success/50" : "hover:bg-success/15",
             )}
             onClick={() => onChange(option.value)}
           >

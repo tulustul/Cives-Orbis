@@ -6,7 +6,6 @@ import { useSubscription } from "@/utils";
 import { useStateRef } from "@/utils/useStateRef";
 import { mapUi } from "../mapUi";
 import { PlayersList } from "./PlayersList";
-import styles from "./UnitsPainter.module.css";
 
 const definitionOptions = UNITS_DEFINITIONS.map((d) => {
   return { label: d.name, value: d } as Option<RawUnitDefinition>;
@@ -35,10 +34,11 @@ export function UnitsPainter() {
   });
 
   return (
-    <div className={styles.wrapper}>
+    <div className="flex gap-2 items-start">
       <PlayersList
         selectedPlayerId={selectedPlayerId}
         onSelect={setSelectedPlayerId}
+        autoselectFirst
       />
 
       <Radio

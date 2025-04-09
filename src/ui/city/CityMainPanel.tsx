@@ -119,14 +119,14 @@ function CityYields({ city }: Props) {
   return (
     <>
       <div className="">
-        <Yield className="text-food" label="Food">
+        <Yield className="text-food-400" label="Food">
           {city.yields.food} - {city.foodConsumed.toFixed(0)} =
           {city.perTurn.food.toFixed(0)}
         </Yield>
-        <Yield className="text-production" label="Production">
+        <Yield className="text-production-400" label="Production">
           {city.perTurn.production}
         </Yield>
-        <Yield className="text-culture" label="Culture">
+        <Yield className="text-culture-400" label="Culture">
           {city.perTurn.culture}
         </Yield>
         <Yield className="text-knowledge" label="Knowledge">

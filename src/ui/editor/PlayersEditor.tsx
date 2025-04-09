@@ -39,7 +39,7 @@ function TechEditor({ playerId }: TechEditorProps) {
 
   useEffect(() => {
     buildOptions();
-  }, []);
+  }, [playerId]);
 
   async function buildOptions() {
     const techs = await bridge.technologies.getAll();

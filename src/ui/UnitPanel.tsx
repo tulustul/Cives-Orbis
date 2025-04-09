@@ -44,7 +44,7 @@ export function UnitPanel() {
     return null;
   }
 
-  let barColor = "[--progress-bar-color:theme(colors.food)]";
+  let barColor = "[--progress-bar-color:theme(colors.food-400)]";
   if (unit.health < 35) {
     barColor = "[--progress-bar-color:theme(colors.danger)]";
   } else if (unit.health < 70) {

@@ -36,7 +36,7 @@ export function NewGameMenu() {
   const [aiOnly, setAiOnly] = useState(false);
   const [seaLevel, setSeaLevel] = useState<number>(SEA_LEVELS_OPTIONS[2].value);
   const [playersCount, setPlayersCount] = useState(
-    MAP_SIZES_OPTIONS[2].value.players
+    MAP_SIZES_OPTIONS[2].value.players,
   );
 
   useEffect(() => {
@@ -85,20 +85,22 @@ export function NewGameMenu() {
         />
       </div>
 
-      <div className="text-lg font-bold text-center">
-        Players count: {playersCount}
+      <div className="flex flex-col gap-1">
+        <div className="font-bold text-center">
+          Players count: {playersCount}
+        </div>
+
+        <input
+          className="accent-success/50 outline-0"
+          type="range"
+          min={1}
+          max={16}
+          value={playersCount}
+          onChange={(e) => setPlayersCount(Number(e.target.value))}
+        />
       </div>
 
-      <input
-        className="accent-success/50 outline-0"
-        type="range"
-        min={1}
-        max={16}
-        value={playersCount}
-        onChange={(e) => setPlayersCount(Number(e.target.value))}
-      />
-
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-center mt-4">
         <Button onClick={start}>Start a new game</Button>
       </div>
     </MenuScreen>

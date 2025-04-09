@@ -17,6 +17,7 @@ type Props = {
   unitDef: UnitDefChanneled;
   simulationSide: CombatSimulationSide;
   className?: string;
+  invertedColors?: boolean;
 };
 
 export function CombatInfoSide({
@@ -24,30 +25,37 @@ export function CombatInfoSide({
   simulationSide,
   unitDef,
   className,
+  invertedColors,
 }: Props) {
   return (
-    <div className={clsx(styles.side, className, "flex flex-col items-center")}>
-      <div className={styles.sideName}>{label}</div>
+    <div className={clsx(className, "flex flex-col items-center")}>
+      <div className="font-semibold">{label}</div>
       <div>{unitDef.name}</div>
       <ImageIcon name={unitDef.id} size="medium" />
-      <div className={styles.field}>
+      <div className="flex justify-between text-sm">
         Approx. dmg.: <b>{simulationSide.damage}</b>
       </div>
-      <div className={styles.field}>
+      <div className="flex justify-between text-sm">
         Strength: <b>{simulationSide.strength.toFixed(1)}</b>
       </div>
 
       <div>
-        <div className={styles.modifier}>
+        <div className="text-sm text-center font-semibold mt-1">
           {simulationSide.modifiers.map((modifier) => (
             <div
               key={modifier.type}
-              className={clsx(styles.modifier, {
-                [styles.positive]: modifier.value > 0,
-              })}
+              className={
+                modifier.value > 0
+                  ? invertedColors
+                    ? "text-danger"
+                    : "text-food-600"
+                  : invertedColors
+                  ? "text-food-600"
+                  : "text-danger"
+              }
             >
               {modifier.value > 0 ? "+" : ""}
-              {(modifier.value * 100).toFixed()}%
+              {(modifier.value * 100).toFixed()}%{" "}
               {MODIFIER_LABELS[modifier.type]}
             </div>
           ))}

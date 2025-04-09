@@ -3,8 +3,7 @@ import clsx from "clsx";
 import { mapUi } from "../mapUi";
 import { CombatInfoSide } from "./CombatInfoSide";
 
-import { Panel } from "@/ui/components";
-import styles from "./CombatInfo.module.css";
+import { OrnateBox } from "../components/OrnateBox";
 
 export function CombatInfo() {
   const combatSimulation = useObservable(mapUi.combatSimulation$);
@@ -19,12 +18,12 @@ export function CombatInfo() {
 
   function getResultClass(): string {
     if (ratio > 0.8 && ratio < 1.2) {
-      return styles.even;
+      return "bg-warning";
     }
     if (ratio > 1.2) {
-      return styles.victory;
+      return "bg-success";
     }
-    return styles.defeat;
+    return "bg-danger";
   }
 
   function getResult(): string {
@@ -50,14 +49,19 @@ export function CombatInfo() {
   }
 
   return (
-    <Panel className={styles.combatInfo}>
+    <OrnateBox borderType="small" contentClassName="p-2">
       <div className="flex justify-center mb-2">
-        <div className={clsx(styles.resultInner, getResultClass())}>
+        <div
+          className={clsx(
+            "rounded-md px-4 py-2 text-lg uppercase font-semibold text-amber-100",
+            getResultClass(),
+          )}
+        >
           {getResult()}
         </div>
       </div>
 
-      <div className={styles.sides}>
+      <div className="flex justify-between gap-6">
         <CombatInfoSide
           label="Attacker"
           unitDef={combatSimulation.attacker.definition}
@@ -65,12 +69,12 @@ export function CombatInfo() {
         />
 
         <CombatInfoSide
-          className={styles.invertedColors}
           label="Defender"
           unitDef={combatSimulation.defender.definition}
           simulationSide={simulation.defender}
+          invertedColors
         />
       </div>
-    </Panel>
+    </OrnateBox>
   );
 }

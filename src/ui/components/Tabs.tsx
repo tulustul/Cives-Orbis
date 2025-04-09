@@ -1,5 +1,4 @@
 import { Children, ReactNode, useState } from "react";
-import styles from "./Tabs.module.css";
 import clsx from "clsx";
 
 interface TabProps {
@@ -15,7 +14,7 @@ interface TabsProps {
 
 export function Tab({ children, onClick }: TabProps) {
   return (
-    <div className={styles.tabContent} onClick={onClick}>
+    <div className="py-0 px-2" onClick={onClick}>
       {children}
     </div>
   );
@@ -27,14 +26,17 @@ export function Tabs({ children, defaultTab = 0 }: TabsProps) {
   const tabs = Children.toArray(children) as React.ReactElement<TabProps>[];
 
   return (
-    <div className={styles.tabs}>
-      <div className={styles.tabHeaders}>
+    <div className="flex flex-col">
+      <div className="flex mb-2">
         {tabs.map((tab, index) => (
           <div
             key={index}
-            className={clsx(styles.tabHeader, {
-              [styles.active]: activeTab === index,
-            })}
+            className={clsx(
+              "text-center px-3 py-1 cursor-pointer border-b-3 font-semibold text-sm border-amber-200",
+              activeTab === index
+                ? "border-amber-600 font-semibold"
+                : "hover:border-amber-400",
+            )}
             onClick={() => setActiveTab(index)}
           >
             {tab.props.title}

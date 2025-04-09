@@ -59,7 +59,7 @@ export function MapMode() {
         </div>
 
         <div className={styles.unit}>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 items-start">
             <CombatInfo />
             <UnitPanel />
           </div>
