@@ -12,7 +12,7 @@ export class Grid {
     this.sprite = new TilingSprite(this.texture);
     this.sprite.zIndex = 10;
     this.sprite.tileScale.set(1 / 128, 1 / 126.65);
-    this.sprite.alpha = 0.9;
+    this.sprite.alpha = 0.3;
     this.sprite.visible = mapUi.gridEnabled;
 
     bridge.game.start$.subscribe((startInfo) => {

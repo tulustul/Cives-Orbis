@@ -6,6 +6,7 @@ import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
+import { TerrainDrawer } from "./newTerrain/terrain";
 
 const SEA_TEXTURES: Record<SeaLevel, string> = {
   [SeaLevel.deep]: "hexWaterDeep.png",
@@ -60,6 +61,8 @@ export class MapDrawer {
 
   tileDrawers = new Map<number, TileDrawer>();
 
+  terrainDrawer = new TerrainDrawer(this.terrainContainer);
+
   constructor(container: Container, private yieldsLayer: IRenderLayer) {
     container.addChild(this.terrainContainer);
 
@@ -90,6 +93,8 @@ export class MapDrawer {
     this.clear();
     const tiles = await bridge.tiles.getAll();
 
+    this.terrainDrawer.build(tiles);
+
     for (const tile of tiles) {
       const drawer = new TileDrawer(tile, this.yieldsLayer);
       this.tileDrawers.set(tile.id, drawer);
@@ -113,18 +118,21 @@ class TileDrawer {
   resourcesTextures = getAssets().resourcesSpritesheet.textures;
 
   yieldsGraphics = new Graphics();
-  terrainSprite = new Sprite(this.tilesTextures["hexTropicalPlains.png"]);
+  // terrainSprite = new Sprite(this.tilesTextures["hexTropicalPlains.png"]);
   resourceSprite: Sprite | null = null;
   improvementSprite: Sprite | null = null;
   roadSprite: Sprite | null = null;
   citySprite: Sprite | null = null;
   riverGraphics: Graphics | null = null;
+  hillSprite: Sprite | null = null;
+  forestSprite: Sprite | null = null;
+  coastsSprite: Sprite | null = null;
 
   constructor(private tile: TileChanneled, private yieldsLayer: IRenderLayer) {
     this.container.zIndex = tile.y;
 
-    putContainerAtTile(this.terrainSprite, tile);
-    this.container.addChild(this.terrainSprite);
+    // putContainerAtTile(this.terrainSprite, tile);
+    // this.container.addChild(this.terrainSprite);
   }
 
   public destroy() {
@@ -134,13 +142,44 @@ class TileDrawer {
 
   public draw(tile: TileChanneled) {
     this.tile = tile;
-    this.drawTerrain();
+    // this.drawTerrain();
+    this.drawRiver();
+    // this.drawDecors();
     this.drawImprovement();
-    this.drawResource();
+    // this.drawResource();
     this.drawRoads();
     this.drawCity();
-    this.drawRiver();
     this.drawYields();
+  }
+
+  private drawDecors() {
+    if (this.tile.landForm === LandForm.mountains) {
+      this.hillSprite = new Sprite(this.tilesTextures["mountain.png"]);
+      this.hillSprite.anchor.set(0.5, 0.7);
+      this.container.addChild(this.hillSprite);
+      putContainerAtTileCentered(this.hillSprite, this.tile, 2);
+    }
+
+    if (this.tile.forest) {
+      let textureName = "forest.png";
+      if (this.tile.climate === Climate.tropical) {
+        textureName = "jungle.png";
+      } else if (this.tile.climate === Climate.temperate) {
+        textureName = "forest-temperate.png";
+      }
+      this.forestSprite = new Sprite(this.tilesTextures[textureName]);
+      this.forestSprite.anchor.set(0.5, 0.6);
+      this.container.addChild(this.forestSprite);
+      putContainerAtTileCentered(this.forestSprite, this.tile, 2.0);
+    }
+
+    // if (this.tile.coasts) {
+    //   const textureName = `hexCoast${this.tile.coasts}-00.png`;
+    //   this.coastsSprite = new Sprite(this.tilesTextures[textureName]);
+    //   this.coastsSprite.anchor.set(0.5, 0.67);
+    //   this.container.addChild(this.coastsSprite);
+    //   putContainerAtTileCentered(this.coastsSprite, this.tile, 3.1);
+    // }
   }
 
   private drawTerrain() {
@@ -168,7 +207,7 @@ class TileDrawer {
       textureName = SEA_TEXTURES[this.tile.seaLevel];
     }
 
-    this.terrainSprite.texture = this.tilesTextures[textureName];
+    // this.terrainSprite.texture = this.tilesTextures[textureName];
   }
 
   private drawImprovement() {
@@ -306,7 +345,7 @@ class TileDrawer {
         this.riverGraphics.lineTo(0, 0.25);
       }
     }
-    this.riverGraphics.stroke({ width: 0.1, color: 0x4169e1 });
+    this.riverGraphics.stroke({ width: 0.07, color: 0x4169e1 });
   }
 
   private drawYields() {

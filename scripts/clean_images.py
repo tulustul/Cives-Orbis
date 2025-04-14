@@ -7,16 +7,17 @@ import numpy as np
 TARGET_SIZE = (128, 128)
 INPUT_DIR = "src/assets-src/originals"
 OUTPUT_DIR = "src/assets-src/cleaned"
+# OUTPUT_DIR = "src/assets"
 
 
 def clean_image(input_path: Path, output_path: Path):
     image = Image.open(input_path)
 
-    assert image.mode == "RGBA", f"Image mode is {image.mode}, expected RGBA"
+    if image.mode == "RGBA" and "coasts" not in str(input_path):
+        image = crop_out_transparency(image)
 
-    output = crop_out_transparency(image)
-    output.thumbnail(TARGET_SIZE)
-    output.save(output_path)
+    image.thumbnail(TARGET_SIZE)
+    image.save(output_path)
 
 
 def crop_out_transparency(image: Image) -> Image:

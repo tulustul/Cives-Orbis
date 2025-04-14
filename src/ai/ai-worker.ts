@@ -198,8 +198,7 @@ export class WorkerAI extends AISystem {
           if (city.workers.workedTiles.has(tile)) {
             priority += 100;
           }
-          const action = `build-${impr.id}` as UnitAction;
-          tasks.push({ tile, action, priority });
+          tasks.push({ tile, action: impr.action, priority });
         }
       }
     }
@@ -296,9 +295,9 @@ export class WorkerAI extends AISystem {
     }
 
     let bestImpr: TileImprovementDefinition | null = null;
-    let bestScore = -0;
+    let bestScore = 0;
 
-    for (const impr of this.ai.player.knowledge.discoveredEntities.tileImprovement.values()) {
+    for (const impr of this.player.knowledge.discoveredEntities.tileImprovement.values()) {
       if (
         !isImprovementPossible(this.player, tile, impr) ||
         !impr.extraYields
