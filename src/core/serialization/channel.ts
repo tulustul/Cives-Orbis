@@ -6,7 +6,7 @@ import { TileCore } from "@/core/tile";
 import { TilesMapCore } from "@/core/tiles-map";
 import { UnitCore, UnitOrder } from "@/core/unit";
 import { Yields } from "@/core/yields";
-import { BaseTile, PlayerYields } from "@/shared";
+import { BaseTile, PlayerYields, SeaLevel } from "@/shared";
 import { Bonuses } from "../bonus";
 import { UnitMoveCore } from "../collector";
 import { CombatSimulation } from "../combat";
@@ -63,7 +63,9 @@ export interface TileChanneled extends BaseTile {
   unitsIds: number[];
   resource: ResourceChanneled | null;
   roads: string;
+  coasts: string;
   playerColor: number | null;
+  fullNeighbours: (number | null)[];
 }
 
 export interface TileDetailsChanneled extends Omit<TileChanneled, "unitsIds"> {
@@ -325,8 +327,26 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     roads: tile.fullNeighbours
       .map((n) => (!n || n.road === null ? "0" : "1"))
       .join(""),
+    coasts: getCoasts(tile),
     playerColor: tile.areaOf?.player.color ?? null,
+    fullNeighbours: tile.fullNeighbours.map((t) => t?.id ?? null),
   };
+}
+
+function getCoasts(tile: TileCore): string {
+  if (tile.seaLevel === SeaLevel.none) {
+    return "";
+  }
+
+  const coasts = tile.fullNeighbours
+    .map((n) => (n && n.seaLevel === SeaLevel.none ? "1" : "0"))
+    .join("");
+
+  if (coasts === "00000000") {
+    return "";
+  }
+
+  return coasts;
 }
 
 export function resourceToChannel(

@@ -103,6 +103,11 @@ export class Commands {
     mapUi.yieldsEnabled = !mapUi.yieldsEnabled;
   }
 
+  @keybinding({ keybinding: "r", context: "map" })
+  static toogleResources() {
+    mapUi.resourcesEnabled = !mapUi.resourcesEnabled;
+  }
+
   @keybinding({ keybinding: "ctrl+shift+e", context: "map" })
   static toggleEditor() {
     const uiState = useUiState.getState();
