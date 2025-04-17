@@ -1,7 +1,7 @@
 import { Container, Geometry, Graphics, Sprite, Texture } from "pixi.js";
 
 import { TileCoords } from "@/core/serialization/channel";
-import { TILE_SIZE } from "./constants";
+import { TILE_HEIGHT, TILE_ROW_OFFSET, TILE_SIZE } from "./constants";
 
 // prettier-ignore
 const HEX_VERTICES = [
@@ -19,27 +19,32 @@ export const HEX_GEOMETRY = new Geometry({
 });
 
 export function getTileCenter(tile: TileCoords): [number, number] {
-  return [0.5 + tile.x + (tile.y % 2 ? 0.5 : 0), tile.y * 0.75 + 0.5];
+  return [
+    0.5 + tile.x + (tile.y % 2 ? 0.5 : 0),
+    tile.y * TILE_ROW_OFFSET + 0.5,
+  ];
 }
 
 export function getTileCoords(tile: TileCoords): [number, number] {
-  return [tile.x + (tile.y % 2 ? 0.5 : 0), tile.y * 0.75];
+  return [tile.x + (tile.y % 2 ? 0.5 : 0), tile.y * TILE_ROW_OFFSET];
 }
 
 export function drawHex(graphics: Graphics, x = 0, y = 0) {
   x += y % 2 ? 0.5 : 0;
-  y *= 0.75;
-  graphics.moveTo(x + 0, y + 0.25);
-  graphics.lineTo(x + 0.5, y + 0);
-  graphics.lineTo(x + 1, y + 0.25);
-  graphics.lineTo(x + 1, y + 0.75);
-  graphics.lineTo(x + 0.5, y + 1);
-  graphics.lineTo(x + 0, y + 0.75);
+  y *= TILE_ROW_OFFSET;
+  const yo = Math.sqrt(3) / 6;
+  const my = TILE_HEIGHT / 2;
+  graphics.moveTo(x + 0, y + 0.5 + yo);
+  graphics.lineTo(x + 0.5, y + 0.5 + my);
+  graphics.lineTo(x + 1, y + 0.5 + yo);
+  graphics.lineTo(x + 1, y + 0.5 - yo);
+  graphics.lineTo(x + 0.5, y + 0.5 - my);
+  graphics.lineTo(x + 0, y + 0.5 - yo);
 }
 
 export function drawClosedHex(graphics: Graphics) {
   drawHex(graphics);
-  graphics.lineTo(0, 0.25);
+  graphics.closePath();
 }
 
 export function clearContainer(container: Container) {
@@ -72,7 +77,7 @@ export function putContainerAtTile(
   sprite.anchor.set(0, 1);
   // sprite.zIndex = -tile.y;
   sprite.position.x = tile.x + (tile.y % 2 ? 0.5 : 0);
-  sprite.position.y = tile.y * 0.75 + 1;
+  sprite.position.y = tile.y * TILE_ROW_OFFSET + 1;
   return sprite;
 }
 
@@ -83,7 +88,7 @@ export function putSpriteAtTileCentered(
 ) {
   sprite.scale.set(scale / sprite.texture.width, scale / sprite.texture.width);
   sprite.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5;
-  sprite.position.y = tile.y * 0.75 + 0.5;
+  sprite.position.y = tile.y * TILE_ROW_OFFSET + 0.5;
 }
 
 export function putContainerAtTileCentered(
@@ -93,5 +98,5 @@ export function putContainerAtTileCentered(
 ) {
   container.scale.set(scale / TILE_SIZE, scale / TILE_SIZE);
   container.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5;
-  container.position.y = tile.y * 0.75 + 0.5;
+  container.position.y = tile.y * TILE_ROW_OFFSET + 0.5;
 }

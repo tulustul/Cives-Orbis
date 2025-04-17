@@ -7,6 +7,7 @@ import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
 import { TerrainDrawer } from "./newTerrain/terrain";
+import { TILE_ROW_OFFSET } from "./constants";
 
 const SEA_TEXTURES: Record<SeaLevel, string> = {
   [SeaLevel.deep]: "hexWaterDeep.png",
@@ -144,7 +145,7 @@ class TileDrawer {
     this.tile = tile;
     // this.drawTerrain();
     this.drawRiver();
-    // this.drawDecors();
+    this.drawDecors();
     this.drawImprovement();
     // this.drawResource();
     this.drawRoads();
@@ -311,7 +312,7 @@ class TileDrawer {
     this.riverGraphics.visible = true;
 
     this.riverGraphics.position.x = this.tile.x + (this.tile.y % 2 ? 0.5 : 0);
-    this.riverGraphics.position.y = this.tile.y * 0.75;
+    this.riverGraphics.position.y = this.tile.y * TILE_ROW_OFFSET;
     this.container.addChild(this.riverGraphics);
 
     for (const river of this.tile.riverParts) {
@@ -353,7 +354,7 @@ class TileDrawer {
 
     this.yieldsGraphics.position.x =
       this.tile.x + (this.tile.y % 2 ? 0.5 : 0) + 0.025;
-    this.yieldsGraphics.position.y = this.tile.y * 0.75 - 0.35;
+    this.yieldsGraphics.position.y = this.tile.y * TILE_ROW_OFFSET - 0.35;
 
     this.drawYield(0.55, this.tile.yields.food, 0x00ff00);
     this.drawYield(0.65, this.tile.yields.production, 0xffaa00);

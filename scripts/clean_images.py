@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 
 TARGET_SIZE = (128, 128)
+TERRAIN_TARGET_SIZE = (256, 256)
 INPUT_DIR = "src/assets-src/originals"
 OUTPUT_DIR = "src/assets-src/cleaned"
 # OUTPUT_DIR = "src/assets"
@@ -16,7 +17,9 @@ def clean_image(input_path: Path, output_path: Path):
     if image.mode == "RGBA" and "coasts" not in str(input_path):
         image = crop_out_transparency(image)
 
-    image.thumbnail(TARGET_SIZE)
+    size = TERRAIN_TARGET_SIZE if "terrain" in str(input_path) else TARGET_SIZE
+
+    image.thumbnail(size)
     image.save(output_path)
 
 

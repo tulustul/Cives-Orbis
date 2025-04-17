@@ -3,17 +3,24 @@ import { Container, Geometry, Mesh, Shader } from "pixi.js";
 import { getAssets } from "../assets";
 import { Climate, SeaLevel } from "@/shared";
 import * as terrainData from "@/assets/atlas-terrain.json";
+import { TILE_HEIGHT, TILE_ROW_OFFSET } from "../constants";
 
-// prettier-ignore
-const TRIANGLES: number[] = [
-  0.5, 0.5,
-  0, 0.25,
-  0.5, 0,
-  1, 0.25,
-  1, 0.75,
-  0.5, 1,
-  0, 0.75,
-];
+function buildHex(): number[] {
+  const yo = Math.sqrt(3) / 6;
+  const my = TILE_HEIGHT / 2;
+  // prettier-ignore
+  return [
+    0.5, 0.5,
+    0, 0.5 - yo,
+    0.5, 0.5 - my,
+    1, 0.5 - yo,
+    1, 0.5 + yo,
+    0.5, 0.5 + my,
+    0, 0.5 + yo,
+  ];
+}
+
+const TRIANGLES = buildHex();
 
 // prettier-ignore
 const INDEXES: number[] = [
@@ -97,8 +104,10 @@ const FRAGMENT_PROGRAM = `#version 300 es
 precision mediump float;
 
 #define HASHSCALE1 443.8975
-#define PI 3.14159265359
-#define SQRT3 1.7320508
+
+const float  PI         = 3.14159265359;
+const float  SQRT3      = 1.73205080757;
+const float  HALF_SQRT3 = 0.5 * SQRT3;     // ≈0.8660 - tan(60°)
 
 in vec2 vTextureCoord;
 in vec2 uv;
@@ -110,7 +119,17 @@ flat in uint vCoast;
 out vec4 fragColor;
 
 uniform sampler2D atlas;
+uniform sampler2D whitenoise;
 uniform sampler2D noise;
+
+const vec2 N[6] = vec2[6](
+  vec2(  0.5,  HALF_SQRT3 ),
+  vec2( -0.5,  HALF_SQRT3 ),
+  vec2( -1.0,          0.0 ),
+  vec2( -0.5, -HALF_SQRT3 ),
+  vec2(  0.5, -HALF_SQRT3 ),
+  vec2(  1.0,          0.0 )
+);
 
 vec4[] uvOffsets = vec4[](
   ${buildUvOffsets()}
@@ -142,14 +161,18 @@ vec2 tileUV(vec2 uv, vec4 offset) {
   return offset.xy + fract(uv) * offset.zw;
 }
 
-float sampleNoise(vec2 uvm, float scale) {
+float sampleWhitenoise(vec2 uv, float scale) {
+  return texture( whitenoise, uv * scale).x;
+}
+
+float sampleNoise(vec2 uv, float scale) {
   return texture( noise, uv * scale).x;
 }
 
 // https://iquilezles.org/articles/texturerepetition/
 vec4 textureNoTile(sampler2D samp, vec2 uv, vec4 offset) {
     // sample variation pattern
-    // float k = sampleNoise(uv, 0.01); // cheap (cache friendly) lookup
+    // float k = sampleWhitenoise(uv, 0.01); // cheap (cache friendly) lookup
     float k = noiseFn( uv * 1.0 );
 
     // compute index
@@ -173,34 +196,51 @@ vec4 textureNoTile(sampler2D samp, vec2 uv, vec4 offset) {
     return vec4(mix( cola, colb, smoothstep(0.2,0.8,f-0.1*sum(cola-colb))), 1.0);
 }
 
-vec4 sampleTexture(uint textureId, vec2 uv) {
+vec4 sampleAtlas(uint textureId, vec2 uv) {
   vec4 offset = uvOffsets[textureId];
   // uv = fract(uv);
   // return texture(atlas, offset.xy + uv * offset.zw);
   return textureNoTile(atlas, uv, offset);
 }
 
+void unpackNeighbours( uint packed, out uint n[6] ) {
+  n[0] =  packed >> 25;
+  n[1] = (packed >> 20) & 31u;
+  n[2] = (packed >> 15) & 31u;
+  n[3] = (packed >> 10) & 31u;
+  n[4] = (packed >>  5) & 31u;
+  n[5] =  packed        & 31u;
+}
+
+uint edgeFromPos( vec2 p ) {
+  float a = atan( p.y - .5, p.x - .5 ) + PI / 6.0;   // 0° = centre of edge 0
+  if( a < 0.0 ) {
+    a += 2.0 * PI;
+  }
+  return uint( floor( a / ( PI / 3.0 ) ) );          // 60° sectors
+}
+
+uint previousEdge( uint edge ) {
+  return ( edge + 5u ) % 6u;
+}
+
+uint nextEdge( uint edge ) {
+  return ( edge + 1u ) % 6u;
+}
+
+float sdHex( vec2 p ) {
+  p -= vec2( 0.5 );             // move centre to the origin
+  p  = abs( p );                // first sextant is enough
+  return max( dot( p, vec2( HALF_SQRT3, .5 ) ), p.y ) - 0.5;
+}
+
 void main() {
   float distanceToEdge = length(vDistanceToCenter);
   float distanceToEdge2 = length(uv - vec2(0.5, 0.5));
-  vec4 base = sampleTexture(vInstanceTexture, vTextureCoord);
+  vec4 base = sampleAtlas(vInstanceTexture, vTextureCoord);
 
-  uint texMask = vInstanceAdjancentTextures;
-
-  uint t0Id = texMask >> 25;
-  texMask -= t0Id << 25;
-
-  uint t1Id = texMask >> 20;
-  texMask -= t1Id << 20;
-
-  uint t2Id = texMask >> 15;
-  texMask -= t2Id << 15;
-
-  uint t3Id = texMask >> 10;
-  texMask -= t3Id << 10;
-
-  uint t4Id = texMask >> 5;
-  uint t5Id = texMask - (t4Id << 5);
+  uint  neigh[6];
+  unpackNeighbours( vInstanceAdjancentTextures, neigh );
 
   float angle = atan(uv.y-0.5, uv.x-0.5);
   if (angle < 0.0) {
@@ -216,42 +256,36 @@ void main() {
     angle2 -= 2.0 * PI;
   }
   uint edge = uint(floor(angle2 / (PI / 3.0)));
+  // edge -= 1u;
+  if (edge < 0u) {
+    edge = 5u;
+  }
+  uint edgeN  = ( edge + 1u ) % 6u; // next edge CCW
+  // uint  edge   = edgeFromPos( uv );
 
-  uint sector = 0u;
+  uint sector = uint(floor(angle / (2.0 * PI) * 6.0));
+  sector = ( sector + 3u ) % 6u;
+  uint nextSector = ( sector + 1u ) % 6u;
+
   if (angle < PI / 3.0) {
-    sector = 0u;
-    texAId = t2Id;
-    texBId = t3Id;
     a = angle / (PI / 3.0);
-  } else if (angle < 2.1 * PI / 3.0) {
-    sector = 1u;
-    texAId = t3Id;
-    texBId = t4Id;
+  } else if (angle < 2.0 * PI / 3.0) {
     a = (angle - PI / 3.0) / (PI / 3.0);
   } else if (angle < 3.0 * PI / 3.0) {
-    sector = 2u;
-    texAId = t4Id;
-    texBId = t5Id;
     a = (angle - 2.1 * PI / 3.0) / (PI / 3.0);
-  } else if (angle < 3.9 * PI / 3.0) {
-    sector = 3u;
-    texAId = t5Id;
-    texBId = t0Id;
+  } else if (angle < 4.0 * PI / 3.0) {
     a = (angle - 3.0 * PI / 3.0) / (PI / 3.0);
   } else if (angle < 5.0 * PI / 3.0) {
-    sector = 4u;
-    texAId = t0Id;
-    texBId = t1Id;
-    a = (angle - 3.9 * PI / 3.0) / (PI / 3.0);
+    a = (angle - 4.0 * PI / 3.0) / (PI / 3.0);
   } else if (angle < 6.0 * PI / 3.0) {
-    sector = 5u;
-    texAId = t1Id;
-    texBId = t2Id;
     a = (angle - 5.0 * PI / 3.0) / (PI / 3.0);
   }
 
-  vec4 texA = sampleTexture(texAId, vTextureCoord);
-  vec4 texB = sampleTexture(texBId, vTextureCoord);
+  // float sectorFrac = fract( ( atan( uv.y - .5, uv.x - .5 ) + PI/6.0 ) / ( PI / 3.0 ) );
+  float sectorFrac = fract( ( angle - PI/6.0 ) / ( PI / 3.0 ) );
+
+  vec4 texA = sampleAtlas(neigh[previousEdge(sector)], vTextureCoord);
+  vec4 texB = sampleAtlas(neigh[sector], vTextureCoord);
 
   float mixSize = 0.2;
   float d = distanceToEdge / 2.6;
@@ -259,23 +293,60 @@ void main() {
 
   vec4 edgeColor = mix(texA, texB, a);
 
-  fragColor = mix(base, edgeColor, mixValue);
 
   const float BLEND = 0.25;
   bool needCoast = ((vCoast & (1u<<edge)) != 0u);
 
-  float coastBand = 0.0;
-
-  if (needCoast) {
-    coastBand = distanceToEdge2;
-    // + (sampleNoise(vTextureCoord, 0.02) - 0.5) * 0.2;
-
-    if (coastBand < 0.4) {
-      coastBand = 0.0;
-    }
+  if (!needCoast) {
+    fragColor = mix(base, edgeColor, mixValue);
+  } else {
+    fragColor = base;
   }
 
-  fragColor = mix(fragColor, vec4(1.0,1.0,1.0, 1.0), coastBand);
+  float coastBand = 0.0;
+
+  // if (needCoast) {
+  //   coastBand = distanceToEdge2;
+  //   // + (sampleWhitenoise(vTextureCoord, 0.02) - 0.5) * 0.2;
+
+  //   if (coastBand < 0.4) {
+  //     coastBand = 0.0;
+  //   }
+  // }
+
+  const float r = 0.57735026919;
+  vec2 p = uv - vec2(0.5);
+  for( int i = 0 ; i < 6 ; ++i ) {
+    if( ( vCoast & ( 1u << i ) ) == 0u ) {
+      continue;
+    };
+
+    // float d = - ( dot( p, N[i] ) - r );
+    float d = - ( dot( p, N[i] ));
+    // float d = distanceToEdge2*2.0 * -dot( p, N[i] );
+    coastBand = max( coastBand, smoothstep( 0.0, 0.99, d ) );
+    // coastBand = d;
+  }
+
+  coastBand += (sampleWhitenoise(vTextureCoord, 0.02) - 0.5) * 0.2;
+
+  if (coastBand < 0.4) {
+    coastBand = 0.0;
+  }
+
+  coastBand = smoothstep(0.3, 1.0, coastBand * 2.0);
+
+  if (coastBand > 0.0) {
+    vec4 coastColor = sampleAtlas(5u, vTextureCoord)*1.2;
+    fragColor = mix(fragColor, coastColor, coastBand);
+  }
+
+  float noise1 = sampleNoise(vTextureCoord, 0.02) - 0.5;
+  float noise2 = sampleNoise(vTextureCoord, 0.1) - 0.5;
+  fragColor += noise1 * 0.6;
+  fragColor += noise2 * 0.3;
+
+  // fragColor = vec4(x, x,x,1.0);
 }`;
 
 console.log(FRAGMENT_PROGRAM);
@@ -290,7 +361,8 @@ export class TerrainDrawer {
       gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
       resources: {
         atlas: terrain.textureSource,
-        noise: getAssets().textures.whitenoise.source,
+        noise: getAssets().textures.noise.source,
+        whitenoise: getAssets().textures.whitenoise.source,
       },
     });
   }
@@ -338,7 +410,7 @@ export class TerrainDrawer {
     let idx = 0;
     for (const tile of tiles) {
       const x = tile.x + (tile.y % 2 ? 0.5 : 0);
-      const y = tile.y * 0.75;
+      const y = tile.y * TILE_ROW_OFFSET;
       instancePositions[idx * 2] = x;
       instancePositions[idx * 2 + 1] = y;
       instanceTextures[idx] = this.getTextureIndex(tile);

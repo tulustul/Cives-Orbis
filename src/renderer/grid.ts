@@ -2,6 +2,7 @@ import { bridge } from "@/bridge";
 import { TilingSprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { mapUi } from "@/ui/mapUi";
+import { TILE_ROW_OFFSET } from "./constants";
 
 export class Grid {
   public sprite: TilingSprite;
@@ -17,7 +18,7 @@ export class Grid {
 
     bridge.game.start$.subscribe((startInfo) => {
       this.sprite.width = startInfo.gameInfo.mapWidth;
-      this.sprite.height = startInfo.gameInfo.mapHeight * 0.75;
+      this.sprite.height = startInfo.gameInfo.mapHeight * TILE_ROW_OFFSET;
     });
 
     mapUi.gridEnabled$.subscribe((enabled) => {

@@ -5,7 +5,7 @@ import { PlayerViewBoundingBox } from "@/core/player";
 import { GameInfo, TileCoords } from "@/core/serialization/channel";
 import { Application } from "pixi.js";
 import { Animation, Animations } from "./animation";
-import { TILE_SIZE } from "./constants";
+import { TILE_ROW_OFFSET, TILE_SIZE } from "./constants";
 import { getTileCoords } from "./utils";
 
 export interface Transform {
@@ -178,7 +178,7 @@ export class Camera {
     newScale: number,
     screenPivotX: number,
     screenPivotY: number,
-    duration = 600
+    duration = 600,
   ) {
     const t = this.transform;
 
@@ -200,7 +200,7 @@ export class Camera {
     scaleFactor: number,
     screenPivotX: number,
     screenPivotY: number,
-    duration = 600
+    duration = 600,
   ) {
     const t = this.transform;
     const currentScale = this.scaleAnimation?.options.to || t.scale;
@@ -239,12 +239,12 @@ export class Camera {
   screenToTileCoords(screenX: number, screenY: number): [number, number] {
     const t = Math.tan(Math.PI / 6);
     let [x, y] = this.screenToCanvas(screenX, screenY);
-    y /= 0.75;
+    y /= TILE_ROW_OFFSET;
     let yi = Math.floor(y);
     x = x - (yi % 2 ? 0.5 : 0);
     let xi = Math.floor(x);
 
-    const y1 = 0.25 - (y - yi) * 0.75;
+    const y1 = 0.25 - (y - yi) * TILE_ROW_OFFSET;
     if (y1 > 0) {
       const x1 = x - xi;
       if (x1 < 0.5) {
