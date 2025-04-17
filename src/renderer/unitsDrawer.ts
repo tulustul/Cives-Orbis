@@ -9,7 +9,7 @@ import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { Animation, Animations, AnimationSequence } from "./animation";
 import { getAssets } from "./assets";
 import { camera } from "./camera";
-import { TILE_SIZE } from "./constants";
+import { TILE_ROW_OFFSET, TILE_SIZE } from "./constants";
 
 export class UnitsDrawer {
   units = new Map<number, UnitDrawer>();
@@ -368,6 +368,6 @@ export class UnitDrawer {
       x += ((index - (parentUnits.length - 1) / 2) / parentUnits.length) * 0.8;
     }
 
-    return [x, (tile.y + 0.75) * 0.75];
+    return [x, (tile.y + 0.75) * TILE_ROW_OFFSET];
   }
 }

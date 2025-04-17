@@ -9,11 +9,13 @@ import atlasResourcesData from "@/assets/atlas-resources.json";
 import atlasResourcesUrl from "@/assets/atlas-resources.png";
 import gridUrl from "@/assets/grid.png";
 import whitenoiseUrl from "@/assets/whitenoise.png";
+import noiseUrl from "@/assets/noise.png";
 
 export type Assets = {
   textures: {
     grid: Texture;
     whitenoise: Texture;
+    noise: Texture;
   };
   terrainSpritesheet: Spritesheet;
   tilesSpritesheet: Spritesheet;
@@ -25,9 +27,14 @@ let assets: Assets | null = null;
 
 export async function loadAssets() {
   const grid = await Assets.load(gridUrl);
+
   const whitenoise = await Assets.load(whitenoiseUrl);
   whitenoise.source.scaleMode = "linear";
   whitenoise._source.addressMode = "repeat";
+
+  const noise = await Assets.load(noiseUrl);
+  noise.source.scaleMode = "linear";
+  noise._source.addressMode = "repeat";
 
   const tilesAtlas = await Assets.load(atlasTilesUrl);
   const tilesSpritesheet = new Spritesheet(tilesAtlas, atlasTilesData);
@@ -61,6 +68,7 @@ export async function loadAssets() {
     textures: {
       grid,
       whitenoise,
+      noise,
     },
     terrainSpritesheet,
     tilesSpritesheet,
