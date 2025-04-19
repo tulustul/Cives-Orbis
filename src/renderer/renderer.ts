@@ -68,7 +68,7 @@ export class GameRenderer {
 
   cityFocusFilter!: GrayscaleFilter;
 
-  grid!: Grid;
+  // grid!: Grid;
 
   lastScale = camera.transform.scale;
 
@@ -168,8 +168,8 @@ export class GameRenderer {
     this.politicsContainer.zIndex = 2000;
     this.overlaysContainer.zIndex = 3000;
 
-    this.grid = new Grid();
-    this.mapLayer.stage.addChild(this.grid.sprite);
+    // this.grid = new Grid();
+    // this.mapLayer.stage.addChild(this.grid.sprite);
     this.mapLayer.stage.addChild(this.yieldsLayer);
 
     camera.transform$.subscribe((t) => {

@@ -5,6 +5,7 @@ import { AttributeOptions, Container, Shader } from "pixi.js";
 import { getAssets } from "../assets";
 import { HexDrawerNew } from "../hexDrawer";
 import { bridge } from "@/bridge";
+import { mapUi } from "@/ui/mapUi";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -84,6 +85,8 @@ out vec4 fragColor;
 uniform sampler2D atlas;
 uniform sampler2D whitenoise;
 uniform sampler2D noise;
+
+uniform bool gridEnabled;
 
 const vec2 N[6] = vec2[6](
   vec2(  0.5,  HALF_SQRT3 ),
@@ -309,7 +312,10 @@ void main() {
   fragColor += noise1 * 0.6;
   fragColor += noise2 * 0.3;
 
-  // fragColor = vec4(x, x,x,1.0);
+  if (gridEnabled) {
+    float grid = max(0.0, distanceToEdge - 1.3) * 1.0;
+    fragColor += smoothstep(0.0, 0.4, grid);
+  }
 }`;
 
 // console.log(FRAGMENT_PROGRAM);
@@ -350,6 +356,10 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
       const t1 = performance.now();
       console.log("Call to updateTile took " + (t1 - t0) + " milliseconds.");
     });
+
+    mapUi.gridEnabled$.subscribe((enabled) => {
+      this.shader.resources.uniforms.uniforms.gridEnabled = enabled ? 1 : 0;
+    });
   }
 
   updateTile(tile: TileChanneled) {
@@ -374,6 +384,9 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
         atlas: terrain.textureSource,
         noise: getAssets().textures.noise.source,
         whitenoise: getAssets().textures.whitenoise.source,
+        uniforms: {
+          gridEnabled: { value: 1, type: "i32" },
+        },
       },
     });
   }
