@@ -14,11 +14,12 @@ export class TilesMapCore {
   passableAreas = new Map<number, PassableArea>();
 
   constructor(public width: number, public height: number) {
+    let id = 0;
     for (let x = 0; x < width; x++) {
       const row: TileCore[] = [];
       this.tiles.push(row);
       for (let y = 0; y < height; y++) {
-        const tile = new TileCore(x * width + y, x, y);
+        const tile = new TileCore(id++, x, y);
         row.push(tile);
         this.tilesMap.set(tile.id, tile);
       }
@@ -74,7 +75,7 @@ export class TilesMapCore {
   private computePassableArea(
     startTile: TileCore,
     passableArea: PassableArea,
-    visited: Set<TileCore>
+    visited: Set<TileCore>,
   ) {
     // Cannot use recursion here because it fails with too many recursion levels on bigger maps. Using queue instead.
     const queue: TileCore[] = [startTile];

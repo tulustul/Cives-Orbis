@@ -18,12 +18,15 @@ import { CityFocusDrawer } from "./cityFocusDrawer";
 import { ExploredTilesDrawer } from "./exploredTilesDrawer";
 import { FogOfWarFilter } from "./filters/fog-of-war-filter";
 import { GrayscaleFilter } from "./filters/grayscaleFilter";
-import { FogOfWarDrawer } from "./fog-of-war";
+import { FogOfWarMaskDrawer } from "./fog-of-war";
 import { Grid } from "./grid";
 import { Layer } from "./layer";
 import { OverlaysRenderer } from "./overlays";
 import { PathRenderer } from "./path";
-import { PoliticsDrawer } from "./politicsDrawer";
+import {
+  PoliticsAndExploredTilesDrawer,
+  PoliticsDrawer,
+} from "./politicsDrawer";
 import { MapDrawer } from "./terrain";
 import { UnitsDrawer } from "./unitsDrawer";
 import { SelectedUnitDrawer } from "./selectedUnitDrawer";
@@ -36,7 +39,8 @@ export class GameRenderer {
 
   mapDrawer!: MapDrawer;
 
-  fogOfWarDrawer!: FogOfWarDrawer;
+  fogOfWarDrawer!: FogOfWarMaskDrawer;
+  politicsAndExploredTilesDrawer!: PoliticsAndExploredTilesDrawer;
   visibleTilesDrawer!: ExploredTilesDrawer;
   cityFocusDrawer!: CityFocusDrawer;
 
@@ -48,7 +52,7 @@ export class GameRenderer {
   yieldsLayer!: IRenderLayer;
 
   fogOfWarLayer!: Layer;
-  exploredTilesLayer!: Layer;
+  // exploredTilesLayer!: Layer;
   cityFocusLayer!: Layer;
 
   overlaysContainer = new Container({ label: "overlays" });
@@ -125,16 +129,20 @@ export class GameRenderer {
 
     this.mapLayer = new Layer(this.app, "mapLayer");
     this.fogOfWarLayer = new Layer(this.app, "fogOfWarLayer");
-    this.exploredTilesLayer = new Layer(this.app, "visibleTilesLayer");
+    // this.exploredTilesLayer = new Layer(this.app, "visibleTilesLayer");
     this.cityFocusLayer = new Layer(this.app, "cityFocusLayer");
     this.yieldsLayer = new RenderLayer();
 
     this.mapDrawer = new MapDrawer(this.mapLayer.stage, this.yieldsLayer);
 
-    this.fogOfWarDrawer = new FogOfWarDrawer(this.fogOfWarLayer.stage);
-    this.visibleTilesDrawer = new ExploredTilesDrawer(
-      this.exploredTilesLayer.stage,
-    );
+    this.fogOfWarDrawer = new FogOfWarMaskDrawer(this.fogOfWarLayer.stage, 600);
+    // this.politicsAndExploredTilesDrawer = new PoliticsAndExploredTilesDrawer(
+    //   this.mapContainer,
+    //   600,
+    // );
+    // this.visibleTilesDrawer = new ExploredTilesDrawer(
+    //   this.exploredTilesLayer.stage,
+    // );
     this.cityFocusFilter = new GrayscaleFilter({
       sprite: this.cityFocusLayer.sprite,
     });
@@ -182,7 +190,7 @@ export class GameRenderer {
       this.politicsContainer.updateTransform(transform);
       this.fogOfWarLayer.stage.updateTransform(transform);
       this.cityFocusLayer.stage.updateTransform(transform);
-      this.exploredTilesLayer.stage.updateTransform(transform);
+      // this.exploredTilesLayer.stage.updateTransform(transform);
 
       this.updateMapFilters();
     });
@@ -218,7 +226,7 @@ export class GameRenderer {
 
       this.mapLayer.renderToTarget();
       this.fogOfWarLayer.renderToTarget();
-      this.exploredTilesLayer.renderToTarget();
+      // this.exploredTilesLayer.renderToTarget();
       this.cityFocusLayer.renderToTarget();
     });
   }
@@ -227,7 +235,7 @@ export class GameRenderer {
     this.app.renderer.resize(width, height);
     this.mapLayer.resize(width, height);
     this.fogOfWarLayer.resize(width, height);
-    this.exploredTilesLayer.resize(width, height);
+    // this.exploredTilesLayer.resize(width, height);
   }
 
   updateMapFilters() {
@@ -247,23 +255,23 @@ export class GameRenderer {
       );
 
       mapFilters.push(
-        new MaskFilter({
-          sprite: this.exploredTilesLayer.sprite,
-        }),
+        // new MaskFilter({
+        //   sprite: this.exploredTilesLayer.sprite,
+        // }),
         new FogOfWarFilter({ sprite: this.fogOfWarLayer.sprite }),
       );
 
-      politicsFilters.push(
-        new MaskFilter({
-          sprite: this.exploredTilesLayer.sprite,
-        }),
-      );
+      // politicsFilters.push(
+      //   new MaskFilter({
+      //     sprite: this.exploredTilesLayer.sprite,
+      //   }),
+      // );
 
-      resourcesFilters.push(
-        new MaskFilter({
-          sprite: this.exploredTilesLayer.sprite,
-        }),
-      );
+      // resourcesFilters.push(
+      //   new MaskFilter({
+      //     sprite: this.exploredTilesLayer.sprite,
+      //   }),
+      // );
     }
 
     if (mapUi.selectedCity) {
@@ -271,9 +279,11 @@ export class GameRenderer {
     }
 
     this.mapLayer.sprite.filters = mapFilters;
-    this.unitsContainer.filters = unitsFilters;
+    // this.mapLayer.sprite.mask = this.fogOfWarLayer.sprite;
+    // this.unitsContainer.filters = unitsFilters;
+    this.unitsContainer.mask = this.fogOfWarLayer.sprite;
     this.politicsContainer.filters = politicsFilters;
-    this.resourcesContainer.filters = resourcesFilters;
+    // this.resourcesContainer.mask = this.fogOfWarLayer.sprite;
   }
 }
 

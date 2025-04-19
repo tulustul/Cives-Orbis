@@ -10,6 +10,7 @@ import { TileEditor } from "./TileEditor";
 import { TilesPainter } from "./TilesPainter";
 import { UnitsPainter } from "./UnitsPainter";
 import { useEffect } from "react";
+import { bridge } from "@/bridge";
 
 export function Editor() {
   const fogOfWarEnabled = useObservable(mapUi.fogOfWarEnabled$);
@@ -51,6 +52,7 @@ export function Editor() {
               onChange={() => (mapUi.fogOfWarEnabled = !fogOfWarEnabled)}
             />
           </div>
+          <Button onClick={bridge.editor.player.revealMap}>Reveal map</Button>
           <Button onClick={() => uiState.setMode("map")}>Close</Button>
         </div>
       </div>

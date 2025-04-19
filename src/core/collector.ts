@@ -14,10 +14,13 @@ import {
   knowledgeTechToChannel,
   TechKnowledgeChanneled,
   techToChannel,
+  tileToFogOfWar,
+  resourceWithTileToChannel,
 } from "./serialization/channel";
 import { PlayerYields } from "../shared";
 import { Technology } from "./data.interface";
 import { Game } from "./game";
+import { ResourceDeposit } from "./resources";
 
 export type UnitMoveCore = {
   unit: UnitCore;
@@ -47,14 +50,16 @@ class Collector {
 
   trackedPlayer: PlayerCore | undefined;
   trackedPlayerYields: PlayerYields | undefined;
-  tilesExplored = new Set<TileCore>();
-  tilesShowed = new Set<TileCore>();
-  tilesShowedAdded = new Set<TileCore>();
+
+  tilesFogOfWar = new Set<TileCore>();
 
   research: Technology | null | undefined = undefined;
   newTechs: Technology[] = [];
 
   viewBoundingBox: PlayerViewBoundingBox | null = null;
+
+  discoveredResourceDeposits = new Set<ResourceDeposit>();
+  depletedResourceDeposits = new Set<ResourceDeposit>();
 
   turn: number | undefined;
 
@@ -119,25 +124,15 @@ class Collector {
         data: this.trackedPlayerYields,
       });
     }
-    if (this.tilesExplored.size) {
+    if (this.tilesFogOfWar.size) {
       changes.push({
-        type: "trackedPlayer.tilesExplored",
+        type: "trackedPlayer.fogOfWar",
         data: {
-          tiles: Array.from(this.tilesExplored).map(tileToTileCoords),
+          tiles: Array.from(this.tilesFogOfWar).map((t) =>
+            tileToFogOfWar(t, game),
+          ),
           viewBoundingBox: this.viewBoundingBox,
         },
-      });
-    }
-    if (this.tilesShowed.size) {
-      changes.push({
-        type: "trackedPlayer.tilesShowed",
-        data: Array.from(this.tilesShowed).map(tileToTileCoords),
-      });
-    }
-    if (this.tilesShowedAdded.size) {
-      changes.push({
-        type: "trackedPlayer.tilesShowedAdded",
-        data: Array.from(this.tilesShowedAdded).map(tileToTileCoords),
       });
     }
 
@@ -166,6 +161,19 @@ class Collector {
       changes.push({ type: "unit.moved", data: unitMoveToChannel(move) });
     }
 
+    for (const resource of this.discoveredResourceDeposits) {
+      changes.push({
+        type: "resource.discovered",
+        data: resourceWithTileToChannel(resource),
+      });
+    }
+    for (const resource of this.depletedResourceDeposits) {
+      changes.push({
+        type: "resource.depleted",
+        data: resourceWithTileToChannel(resource),
+      });
+    }
+
     this.tiles.clear();
 
     this.unitsDestroyed.clear();
@@ -180,9 +188,10 @@ class Collector {
 
     this.trackedPlayer = undefined;
     this.trackedPlayerYields = undefined;
-    this.tilesExplored.clear();
-    this.tilesShowed.clear();
-    this.tilesShowedAdded.clear();
+
+    this.tilesFogOfWar.clear();
+
+    this.discoveredResourceDeposits.clear();
 
     this.changes = [];
 
@@ -209,15 +218,9 @@ class Collector {
     }
   }
 
-  setVisibleTiles(tiles: Set<TileCore>) {
+  addFogOfWarChange(tiles: Set<TileCore>) {
     for (const tile of tiles) {
-      this.tilesShowed.add(tile);
-    }
-  }
-
-  addVisibleTiles(tiles: Set<TileCore>) {
-    for (const tile of tiles) {
-      this.tilesShowedAdded.add(tile);
+      this.tilesFogOfWar.add(tile);
     }
   }
 }

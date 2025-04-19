@@ -7,14 +7,19 @@ import {
 } from "pixi.js";
 
 import { bridge } from "@/bridge";
-import { TileChanneled, TileCoords } from "@/core/serialization/channel";
+import { PlayerViewBoundingBox } from "@/core/player";
+import {
+  FogOfWarStatus,
+  TileChanneled,
+  TileFogOfWar,
+} from "@/core/serialization/channel";
 import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
+import { mapUi } from "@/ui/mapUi";
+import { skip } from "rxjs";
 import { camera, Transform } from "./camera";
+import { TILE_ROW_OFFSET } from "./constants";
 import { renderer } from "./renderer";
 import { drawHex } from "./utils";
-import { skip } from "rxjs";
-import { PlayerViewBoundingBox } from "@/core/player";
-import { mapUi } from "@/ui/mapUi";
 
 const SEA_COLORS: Record<SeaLevel, number> = {
   [SeaLevel.deep]: 0x25619a,
@@ -63,10 +68,10 @@ export class MinimapRenderer {
       await this.build();
     });
 
-    bridge.tiles.explored$.subscribe((explored) => {
-      this.reveal(explored.tiles);
+    bridge.tiles.fogOfWar$.subscribe((fogOfWar) => {
+      this.reveal(fogOfWar.tiles);
       if (mapUi.fogOfWarEnabled) {
-        this.updateTransform(explored.viewBoundingBox);
+        this.updateTransform(fogOfWar.viewBoundingBox);
       }
       this.render();
     });
@@ -74,9 +79,9 @@ export class MinimapRenderer {
     bridge.player.tracked$.subscribe(async () => {
       if (mapUi.fogOfWarEnabled) {
         this.setAllTilesVisibility(false);
-        const explored = await bridge.tiles.getAllExplored();
-        this.reveal(explored.tiles);
-        this.updateTransform(explored.viewBoundingBox);
+        const fogOfWar = await bridge.tiles.getFogOfWar();
+        this.reveal(fogOfWar.tiles);
+        this.updateTransform(fogOfWar.viewBoundingBox);
         this.render();
       }
     });
@@ -89,9 +94,9 @@ export class MinimapRenderer {
     mapUi.fogOfWarEnabled$.pipe(skip(1)).subscribe(async (enabled) => {
       if (enabled) {
         this.setAllTilesVisibility(false);
-        const explored = await bridge.tiles.getAllExplored();
-        this.reveal(explored.tiles);
-        this.updateTransform(explored.viewBoundingBox);
+        const fogOfWar = await bridge.tiles.getFogOfWar();
+        this.reveal(fogOfWar.tiles);
+        this.updateTransform(fogOfWar.viewBoundingBox);
       } else {
         this.setAllTilesVisibility(true);
         this.updateTransform({
@@ -124,7 +129,7 @@ export class MinimapRenderer {
       this.canvasSize.width = maxSize / (h / w);
       this.canvasSize.height = maxSize;
     }
-    this.canvasSize.height *= 0.75;
+    this.canvasSize.height *= TILE_ROW_OFFSET;
   }
 
   async create(app: Application) {
@@ -153,7 +158,7 @@ export class MinimapRenderer {
     this.drawTiles(allTiles);
 
     this.setAllTilesVisibility(false);
-    const explored = await bridge.tiles.getAllExplored();
+    const explored = await bridge.tiles.getFogOfWar();
     this.reveal(explored.tiles);
     this.updateTransform(explored.viewBoundingBox);
 
@@ -182,8 +187,11 @@ export class MinimapRenderer {
     }
   }
 
-  private reveal(tiles: TileCoords[]) {
+  private reveal(tiles: TileFogOfWar[]) {
     for (const tile of tiles) {
+      if (tile.status === FogOfWarStatus.unexplored) {
+        continue;
+      }
       const g = this.tilesMap.get(tile.id);
       if (g) {
         g.visible = true;
@@ -197,19 +205,22 @@ export class MinimapRenderer {
       Math.max(15, wq),
       Math.max(
         Math.floor(15 / (this.canvasSize.width / this.canvasSize.height)),
-        hq
+        hq,
       ),
     ];
 
-    if (w / h >= this.canvasSize.width / (this.canvasSize.height / 0.75)) {
+    if (
+      w / h >=
+      this.canvasSize.width / (this.canvasSize.height / TILE_ROW_OFFSET)
+    ) {
       this.transform.scale = this.canvasSize.width / w;
     } else {
-      this.transform.scale = this.canvasSize.height / h / 0.75;
+      this.transform.scale = this.canvasSize.height / h / TILE_ROW_OFFSET;
     }
 
     const maxW = Math.floor(this.canvasSize.width / this.transform.scale);
     const maxH = Math.floor(
-      this.canvasSize.height / this.transform.scale / 0.75
+      this.canvasSize.height / this.transform.scale / TILE_ROW_OFFSET,
     );
     const offsetX = Math.min(bbox.minX, wq < maxW ? (maxW - wq) / 2 : 0);
     const offsetY = Math.min(bbox.minY, hq < maxH ? (maxH - hq) / 2 : 0);
@@ -221,7 +232,7 @@ export class MinimapRenderer {
     const y = Math.max(minOffsetY, -bbox.minY + offsetY) - 0.25;
 
     this.transform.x = x * this.transform.scale;
-    this.transform.y = y * this.transform.scale * 0.75;
+    this.transform.y = y * this.transform.scale * TILE_ROW_OFFSET;
 
     this.mapScene.position.set(this.transform.x, this.transform.y);
     this.mapScene.scale.set(this.transform.scale);
@@ -245,7 +256,7 @@ export class MinimapRenderer {
         xStart,
         yStart,
         width * this.transform.scale,
-        height * this.transform.scale
+        height * this.transform.scale,
       )
       .stroke();
 
@@ -306,7 +317,7 @@ export class MinimapRenderer {
       return;
     }
     const x = tile.x + (tile.y % 2 ? 0.5 : 0);
-    const y = tile.y * 0.75;
+    const y = tile.y * TILE_ROW_OFFSET;
 
     for (const river of tile.riverParts) {
       if (river === TileDirection.NW) {
@@ -321,21 +332,21 @@ export class MinimapRenderer {
 
       if (river === TileDirection.E) {
         graphics.moveTo(x + 1, y + 0.25);
-        graphics.lineTo(x + 1, y + 0.75);
+        graphics.lineTo(x + 1, y + TILE_ROW_OFFSET);
       }
 
       if (river === TileDirection.SE) {
-        graphics.moveTo(x + 1, y + 0.75);
+        graphics.moveTo(x + 1, y + TILE_ROW_OFFSET);
         graphics.lineTo(x + 0.5, y + 1);
       }
 
       if (river === TileDirection.SW) {
         graphics.moveTo(x + 0.5, y + 1);
-        graphics.lineTo(x + 0, y + 0.75);
+        graphics.lineTo(x + 0, y + TILE_ROW_OFFSET);
       }
 
       if (river === TileDirection.W) {
-        graphics.moveTo(x + 0, y + 0.75);
+        graphics.moveTo(x + 0, y + TILE_ROW_OFFSET);
         graphics.lineTo(x + 0, y + 0.25);
       }
     }

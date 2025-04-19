@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { TileChanneled } from "@/core/serialization/channel";
+import { ResourceWithTileChanneled } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
@@ -12,10 +12,11 @@ export class ResourcesDrawer {
   resources = new Map<number, string>();
 
   constructor(private container: Container) {
-    bridge.tiles.updated$.subscribe((tiles) => {
-      for (const tile of tiles) {
-        this.updateTile(tile);
-      }
+    bridge.resources.discovered$.subscribe((resource) => {
+      this.addResource(resource);
+    });
+    bridge.resources.depleted$.subscribe((resource) => {
+      this.removeResource(resource);
     });
 
     bridge.game.start$.subscribe(() => this.build());
@@ -40,46 +41,32 @@ export class ResourcesDrawer {
 
   private async build() {
     this.clear();
-    const tiles = await bridge.tiles.getAll();
+    const resources = await bridge.resources.getAll();
 
-    for (const tile of tiles) {
-      if (!tile.resource) {
-        continue;
-      }
-      let drawer = this.resourceDrawers.get(tile.id);
-      if (!drawer) {
-        drawer = new ResourceDrawer();
-        this.resourceDrawers.set(tile.id, drawer);
-        this.resources.set(tile.id, tile.resource.id);
-        this.container.addChild(drawer.container);
-      }
-      drawer.draw(tile);
+    for (const resource of resources) {
+      this.addResource(resource);
     }
   }
 
-  private updateTile(tile: TileChanneled) {
-    let drawer = this.resourceDrawers.get(tile.id);
-    if (!tile.resource) {
-      if (drawer) {
-        drawer.destroy();
-        this.resourceDrawers.delete(tile.id);
-        this.resources.delete(tile.id);
-      }
-      return;
-    }
-
-    if (this.resources.get(tile.id) === tile.resource.id) {
-      return;
-    }
-
+  private addResource(resource: ResourceWithTileChanneled) {
+    let drawer = this.resourceDrawers.get(resource.tile.id);
     if (!drawer) {
       drawer = new ResourceDrawer();
-      this.resourceDrawers.set(tile.id, drawer);
+      this.resourceDrawers.set(resource.tile.id, drawer);
+      this.resources.set(resource.tile.id, resource.id);
       this.container.addChild(drawer.container);
     }
+    drawer.draw(resource);
+  }
 
-    this.resources.set(tile.id, tile.resource.id);
-    drawer.draw(tile);
+  private removeResource(resource: ResourceWithTileChanneled) {
+    let drawer = this.resourceDrawers.get(resource.tile.id);
+    if (!drawer) {
+      return;
+    }
+    drawer.destroy();
+    this.resourceDrawers.delete(resource.tile.id);
+    this.resources.delete(resource.tile.id);
   }
 }
 
@@ -107,17 +94,13 @@ class ResourceDrawer {
     this.container.destroy({ children: true });
   }
 
-  public draw(tile: TileChanneled) {
-    if (!tile.resource) {
-      return;
-    }
-
-    const textureName = `${tile.resource.id}.png`;
+  public draw(resource: ResourceWithTileChanneled) {
+    const textureName = `${resource.id}.png`;
     this.resourceSprite.texture =
       this.resourcesTextures[textureName] ??
       this.resourcesTextures["resource-unknown.png"];
 
-    putContainerAtTileCentered(this.container, tile);
+    putContainerAtTileCentered(this.container, resource.tile);
     this.container.y += 0.2;
 
     const scale = getScale(camera.transform.scale);

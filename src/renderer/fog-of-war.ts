@@ -1,19 +1,101 @@
 import { bridge } from "@/bridge";
-import { Container } from "pixi.js";
-import { HexDrawer } from "./hexDrawer";
+import { TileFogOfWar } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
+import { AttributeOptions, Container, Shader } from "pixi.js";
+import { HexDrawerNew } from "./hexDrawer";
+import { getAssets } from "./assets";
 
-export class FogOfWarDrawer {
-  private hexDrawer: HexDrawer;
+const VERTEX_PROGRAM = `#version 300 es
 
-  constructor(private container: Container) {
-    this.hexDrawer = new HexDrawer(this.container);
+precision mediump float;
 
-    bridge.tiles.showed$.subscribe(() => this.bindToTrackedPlayer());
+in vec2 aVertexPosition;
+in vec2 aDistanceToCenter;
+in vec2 aInstancePosition;
+in uint aTileData;
 
-    bridge.tiles.showedAdded$.subscribe((tiles) =>
-      this.hexDrawer.addTiles(tiles)
-    );
+uniform mat3 uProjectionMatrix;
+uniform mat3 uWorldTransformMatrix;
+uniform mat3 uTransformMatrix;
+
+out vec2 point;
+out vec2 uv;
+flat out uint tileData;
+
+void main() {
+  mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
+  point = aVertexPosition - vec2(0.5, 0.5);
+  uv = aVertexPosition + aInstancePosition;
+  tileData = aTileData;
+  gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
+}`;
+
+const FRAGMENT_PROGRAM = `#version 300 es
+
+precision mediump float;
+
+const float SQRT3 = 1.73205080757;
+const float HALF_SQRT3 = 0.5 * SQRT3;
+const float sharpness = 1.9;
+
+const vec2 N[6] = vec2[6](
+  vec2(  0.5,  HALF_SQRT3 ),
+  vec2( -0.5,  HALF_SQRT3 ),
+  vec2( -1.0,          0.0 ),
+  vec2( -0.5, -HALF_SQRT3 ),
+  vec2(  0.5, -HALF_SQRT3 ),
+  vec2(  1.0,          0.0 )
+);
+
+in vec2 uv;
+in vec2 point;
+flat in uint tileData;
+out vec4 fragColor;
+
+uniform sampler2D noise;
+
+float sampleNoise(float scale) {
+  return texture( noise, uv * scale).x;
+}
+
+float getFogValue(uint data, float noise) {
+  vec2 p = point * (0.99 + noise);
+  // vec2 p = point;
+  float v = 0.0;
+  for (int i = 0; i < 6; ++i) {
+    if ((data & (1u << i)) != 0u) {
+      v = max(v, -dot(p, N[i]));
+    }
+  }
+  return clamp(sharpness - sharpness * 2.0 * v, 0.0, 1.0);
+}
+
+void main() {
+  if (tileData == 0u) {
+    discard;
+  }
+
+  float noise1 = sampleNoise(0.4) * 0.1;
+  float noise2 = sampleNoise(0.1) * 0.1;
+  float noise = min(1.0, noise1 + noise2);
+
+  float explored = getFogValue(tileData >> 2, noise);
+  float visible = 0.0;
+
+  if ((tileData & 2u) != 0u) {
+    visible = getFogValue(tileData >> 8, noise);
+  }
+
+  fragColor = vec4(explored, 0.0, 0.0, visible);
+}`;
+
+export class FogOfWarMaskDrawer extends HexDrawerNew<TileFogOfWar> {
+  tileData = new Uint32Array(this.maxInstances);
+
+  constructor(container: Container, maxInstances: number) {
+    super(container, maxInstances);
+
+    bridge.tiles.fogOfWar$.subscribe(() => this.bindToTrackedPlayer());
 
     bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
 
@@ -22,13 +104,49 @@ export class FogOfWarDrawer {
     mapUi.destroyed$.subscribe(() => this.clear());
   }
 
-  clear() {
-    this.hexDrawer.clear();
+  private async bindToTrackedPlayer() {
+    const fogOfWar = await bridge.tiles.getFogOfWar();
+    if (!this.geometry) {
+      this.addTiles(fogOfWar.tiles);
+    } else {
+      this.updateTiles(fogOfWar.tiles);
+    }
   }
 
-  private async bindToTrackedPlayer() {
-    const visibleTiles = await bridge.tiles.getAllVisible();
-    this.hexDrawer.clear();
-    this.hexDrawer.setTiles(visibleTiles);
+  updateTiles(tiles: TileFogOfWar[]) {
+    for (const tile of tiles) {
+      this.setTileAttributes(tile, this.tilesIndexMap.get(tile.id)!);
+    }
+    this.geometry!.attributes.aTileData.buffer.update();
+  }
+
+  override getGeometryAttributes(): AttributeOptions {
+    return {
+      aTileData: {
+        buffer: this.tileData,
+        format: "uint32",
+        instance: true,
+      },
+    };
+  }
+
+  override setTileAttributes(tile: TileFogOfWar, index: number) {
+    this.tileData[index] =
+      tile.status + (tile.exploredBorder << 2) + (tile.visibleBorder << 8);
+  }
+
+  override buildShader(): Shader {
+    return Shader.from({
+      gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
+
+      resources: {
+        noise: getAssets().textures.whitenoise.source,
+      },
+    });
+  }
+
+  override updateBuffers(): void {
+    super.updateBuffers();
+    this.geometry!.attributes.aTileData.buffer.update();
   }
 }

@@ -239,11 +239,15 @@ export interface UnitMoveChanneled {
   tiles: TileCoordsWithUnits[];
 }
 
-export interface ResourceChanneled {
+export type ResourceChanneled = {
   id: string;
   name: string;
   quantity: number;
-}
+};
+
+export type ResourceWithTileChanneled = ResourceChanneled & {
+  tile: TileCoords;
+};
 
 export type AreaChanneled = {
   id: number;
@@ -356,6 +360,17 @@ export function resourceToChannel(
     id: resource.def.id,
     name: resource.def.name,
     quantity: resource.quantity,
+  };
+}
+
+export function resourceWithTileToChannel(
+  resource: ResourceDeposit,
+): ResourceWithTileChanneled {
+  return {
+    id: resource.def.id,
+    name: resource.def.name,
+    quantity: resource.quantity,
+    tile: tileToTileCoords(resource.tile),
   };
 }
 
@@ -547,6 +562,54 @@ export function tileDetailsToChannel(
 
 export function tileToTileCoords(tile: TileCore): TileCoords {
   return { id: tile.id, x: tile.x, y: tile.y };
+}
+
+export enum FogOfWarStatus {
+  unexplored = 0,
+  explored = 1,
+  visible = 2,
+}
+
+export type TileFogOfWar = TileCoords & {
+  exploredBorder: number;
+  visibleBorder: number;
+  status: FogOfWarStatus;
+};
+
+export function tileToFogOfWar(tile: TileCore, game: Game): TileFogOfWar {
+  let visibleBorder = 0;
+  let exploredBorder = 0;
+
+  let status = FogOfWarStatus.unexplored;
+  if (game.trackedPlayer.visibleTiles.has(tile)) {
+    status = FogOfWarStatus.visible;
+    for (let i = 0; i < tile.fullNeighbours.length; i++) {
+      const n = tile.fullNeighbours[i];
+      if (n && !game.trackedPlayer.visibleTiles.has(n)) {
+        visibleBorder += 1 << i;
+      }
+      if (n && !game.trackedPlayer.exploredTiles.has(n)) {
+        exploredBorder += 1 << i;
+      }
+    }
+  } else if (game.trackedPlayer.exploredTiles.has(tile)) {
+    status = FogOfWarStatus.explored;
+    for (let i = 0; i < tile.fullNeighbours.length; i++) {
+      const n = tile.fullNeighbours[i];
+      if (n && !game.trackedPlayer.exploredTiles.has(n)) {
+        exploredBorder += 1 << i;
+      }
+    }
+  }
+
+  return {
+    id: tile.id,
+    x: tile.x,
+    y: tile.y,
+    visibleBorder,
+    exploredBorder,
+    status,
+  };
 }
 
 export function tileToTileCoordsWithUnits(tile: TileCore): TileCoordsWithUnits {
