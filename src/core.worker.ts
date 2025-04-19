@@ -42,15 +42,17 @@ import {
   knowledgeTechToChannel,
   PlayerChanneled,
   playerToChannel,
+  ResourceWithTileChanneled,
+  resourceWithTileToChannel,
   TileChanneled,
-  TileCoords,
   TileDetailsChanneled,
   tileDetailsToChannel,
+  TileFogOfWar,
   TileHoverDetails,
   TilesCoordsWithNeighbours,
   tilesToTileCoordsWithNeighbours,
   tileToChannel,
-  tileToTileCoords,
+  tileToFogOfWar,
   trackedPlayerToChannel,
   UnitChanneled,
   unitDetailsToChannel,
@@ -80,6 +82,7 @@ const HANDLERS = {
   "player.getSuppliedTiles": getSuppliedTiles,
   "player.getYields": getYields,
   "player.editor.grantRevokeTech": playerGrantRevokeTech,
+  "player.editor.revealMap": playerRevealMap,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -94,17 +97,18 @@ const HANDLERS = {
   "unit.getAll": unitGetAll,
 
   "tile.getAll": tileGetAll,
-  "tile.getAllVisible": tileGetAllVisible,
-  "tile.getAllExplored": tileGetAllExplored,
+  "tile.getFogOfWar": tileGetFogOfWar,
   "tile.getDetails": tileGetDetails,
   "tile.getHoverDetails": tileGetHoverDetails,
   "tile.getInRange": tileGetInRange,
   "tile.update": tileUpdate,
   "tile.bulkUpdate": tileBulkUpdate,
-  "tile.setResource": tileSetResource,
 
-  "city.getAllRevealed": getAllRevealed,
-  "city.getDetails": getCityDetails,
+  "resource.getAll": resourceGetAll,
+  "resource.editor.spawn": resourceSpawn,
+
+  "city.getAllRevealed": cityGetAllRevealed,
+  "city.getDetails": cityGetCityDetails,
   "city.produce": cityProduce,
   "city.getRange": cityGetRange,
   "city.getWorkTiles": cityGetWorkTiles,
@@ -440,22 +444,18 @@ export function tileGetAll(): TileChanneled[] {
   return Array.from(game.map.tilesMap.values()).map(tileToChannel);
 }
 
-export type TilesExploredChanneled = {
-  tiles: TileCoords[];
+export type TilesFogOfWarChanneled = {
+  tiles: TileFogOfWar[];
   viewBoundingBox: PlayerViewBoundingBox;
 };
-export function tileGetAllExplored(): TilesExploredChanneled {
-  const tiles = Array.from(game.trackedPlayer.exploredTiles).map(
-    tileToTileCoords,
+export function tileGetFogOfWar(): TilesFogOfWarChanneled {
+  const tiles = Array.from(game.map.tilesMap.values()).map((t) =>
+    tileToFogOfWar(t, game),
   );
   return {
     tiles,
     viewBoundingBox: game.trackedPlayer.viewBoundingBox,
   };
-}
-
-export function tileGetAllVisible() {
-  return Array.from(game.trackedPlayer.visibleTiles).map(tileToTileCoords);
 }
 
 export function tileGetDetails(tileId: number): TileDetailsChanneled | null {
@@ -562,12 +562,12 @@ export function tileBulkUpdate(tiles: TileUpdateOptions[]) {
   }
 }
 
-export type TileSetResourceOptions = {
+export type ResourceSpawnOptions = {
   tileId: number;
   resourceId: string | null;
   quantity: number;
 };
-export function tileSetResource(options: TileSetResourceOptions) {
+export function resourceSpawn(options: ResourceSpawnOptions) {
   const tile = game.map.tilesMap.get(options.tileId);
   if (!tile) {
     return;
@@ -578,6 +578,12 @@ export function tileSetResource(options: TileSetResourceOptions) {
     resource = getResourceDefinitionById(options.resourceId);
   }
 
+  if (tile.resource) {
+    if (game.trackedPlayer.exploredTiles.has(tile)) {
+      collector.depletedResourceDeposits.add(tile.resource);
+    }
+  }
+
   if (resource) {
     tile.resource = ResourceDeposit.from({
       def: resource,
@@ -585,19 +591,31 @@ export function tileSetResource(options: TileSetResourceOptions) {
       quantity: options.quantity,
       difficulty: 0,
     });
+
+    if (game.trackedPlayer.exploredTiles.has(tile)) {
+      collector.discoveredResourceDeposits.add(tile.resource);
+    }
   } else {
     tile.resource = null;
   }
   tile.update();
 }
 
-export function getAllRevealed() {
+export function resourceGetAll(): ResourceWithTileChanneled[] {
+  return Array.from(game.trackedPlayer.discoveredResourceDeposits).map(
+    resourceWithTileToChannel,
+  );
+}
+
+export function cityGetAllRevealed() {
   return game.citiesManager.cities
     .filter((city) => game.trackedPlayer.exploredTiles.has(city.tile))
     .map(cityToChannel);
 }
 
-export function getCityDetails(cityId: number): CityDetailsChanneled | null {
+export function cityGetCityDetails(
+  cityId: number,
+): CityDetailsChanneled | null {
   const city = game.citiesManager.citiesMap.get(cityId);
   if (!city) {
     return null;
@@ -822,4 +840,9 @@ function playerGrantRevokeTech(options: GrantRevokeTechOptions) {
   } else {
     player.knowledge.removeTech(tech);
   }
+}
+
+function playerRevealMap() {
+  const tiles = game.map.tilesMap.values();
+  game.trackedPlayer.exploreTiles(tiles);
 }

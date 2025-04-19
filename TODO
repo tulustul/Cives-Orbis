@@ -49,6 +49,16 @@ Minor features:
   ✔ spectator mode @done(25-03-11 23:35)
   ☐ cycling through tasks with tab / shift+tab
 
+New renderer:
+  layers:
+    ☐ fog of war - hex drawer + render target
+    ☐ terrain - hexdrawer + ubershader
+    ☐ map decors - sprites
+    ☐ units - sprites
+    ☐ politics + explored tiles - hex drawer + ubershader
+    ☐ other areas - hex drawer
+    ☐ resources - sprites
+
 Major features:
   ☐ City economy
     ☐ tile slots

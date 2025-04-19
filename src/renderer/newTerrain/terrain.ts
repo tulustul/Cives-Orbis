@@ -1,47 +1,10 @@
-import { TileChanneled } from "@/core/serialization/channel";
-import { Container, Geometry, Mesh, Shader } from "pixi.js";
-import { getAssets } from "../assets";
-import { Climate, SeaLevel } from "@/shared";
 import * as terrainData from "@/assets/atlas-terrain.json";
-import { TILE_HEIGHT, TILE_ROW_OFFSET } from "../constants";
-
-function buildHex(): number[] {
-  const yo = Math.sqrt(3) / 6;
-  const my = TILE_HEIGHT / 2;
-  // prettier-ignore
-  return [
-    0.5, 0.5,
-    0, 0.5 - yo,
-    0.5, 0.5 - my,
-    1, 0.5 - yo,
-    1, 0.5 + yo,
-    0.5, 0.5 + my,
-    0, 0.5 + yo,
-  ];
-}
-
-const TRIANGLES = buildHex();
-
-// prettier-ignore
-const INDEXES: number[] = [
-  0, 1, 2,
-  0, 2, 3,
-  0, 3, 4,
-  0, 4, 5,
-  0, 5, 6,
-  0, 6, 1,
-];
-
-// prettier-ignore
-const DISTANCE_TO_CENTER: number[] = [
-  0, 0,
-  1, 1,
-  1, 1,
-  1, 1,
-  1, 1,
-  1, 1,
-  1, 1,
-]
+import { TileChanneled } from "@/core/serialization/channel";
+import { Climate, SeaLevel } from "@/shared";
+import { AttributeOptions, Container, Shader } from "pixi.js";
+import { getAssets } from "../assets";
+import { HexDrawerNew } from "../hexDrawer";
+import { bridge } from "@/bridge";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -105,9 +68,9 @@ precision mediump float;
 
 #define HASHSCALE1 443.8975
 
-const float  PI         = 3.14159265359;
-const float  SQRT3      = 1.73205080757;
-const float  HALF_SQRT3 = 0.5 * SQRT3;     // ≈0.8660 - tan(60°)
+const float PI = 3.14159265359;
+const float SQRT3 = 1.73205080757;
+const float HALF_SQRT3 = 0.5 * SQRT3;
 
 in vec2 vTextureCoord;
 in vec2 uv;
@@ -349,15 +312,63 @@ void main() {
   // fragColor = vec4(x, x,x,1.0);
 }`;
 
-console.log(FRAGMENT_PROGRAM);
+// console.log(FRAGMENT_PROGRAM);
 
-export class TerrainDrawer {
-  shader: Shader;
+const SEA_LEVEL_TO_TEXTURE: Record<SeaLevel, number | null> = {
+  [SeaLevel.shallow]: terrainNameToId["water.png"],
+  [SeaLevel.deep]: terrainNameToId["deepWater.png"],
+  [SeaLevel.none]: null,
+};
 
-  constructor(public container: Container) {
+const CLIMATE_TO_TEXTURE: Record<Climate, number> = {
+  [Climate.tropical]: terrainNameToId["tropical.png"],
+  [Climate.savanna]: terrainNameToId["savanna.png"],
+  [Climate.desert]: terrainNameToId["desert.png"],
+  [Climate.arctic]: terrainNameToId["arctic.png"],
+  [Climate.temperate]: terrainNameToId["temperate.png"],
+  [Climate.tundra]: terrainNameToId["tundra.png"],
+};
+
+export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
+  instanceTextures = new Uint32Array(this.maxInstances);
+  instanceAdjacentTextures = new Uint32Array(this.maxInstances);
+  instanceCoast = new Uint32Array(this.maxInstances);
+
+  constructor(container: Container, public maxInstances: number) {
+    super(container, maxInstances);
+
+    bridge.tiles.updated$.subscribe((tiles) => {
+      const t0 = performance.now();
+      for (const tile of tiles) {
+        this.updateTile(tile);
+      }
+
+      const geo = this.geometry!;
+      geo.getAttribute("aInstanceTexture").buffer.update();
+      geo.getAttribute("aInstanceAdjancentTextures").buffer.update();
+      geo.getAttribute("aCoast").buffer.update();
+      const t1 = performance.now();
+      console.log("Call to updateTile took " + (t1 - t0) + " milliseconds.");
+    });
+  }
+
+  updateTile(tile: TileChanneled) {
+    this.tilesMap.set(tile.id, tile);
+    this.setTileAttributes(tile, this.tilesIndexMap.get(tile.id)!);
+    for (const neighbour of tile.fullNeighbours) {
+      if (neighbour) {
+        this.setTileAttributes(
+          this.tilesMap.get(neighbour)!,
+          this.tilesIndexMap.get(neighbour)!,
+        );
+      }
+    }
+  }
+
+  override buildShader() {
     const terrain = getAssets().terrainSpritesheet;
 
-    this.shader = Shader.from({
+    return Shader.from({
       gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
       resources: {
         atlas: terrain.textureSource,
@@ -367,91 +378,41 @@ export class TerrainDrawer {
     });
   }
 
-  async build(tiles: TileChanneled[]) {
-    const instancePositions = new Float32Array(tiles.length * 2);
-    const instanceTextures = new Uint32Array(tiles.length);
-    const instanceAdjacentTextures = new Uint32Array(tiles.length);
-    const instanceCoast = new Uint32Array(tiles.length);
-
-    const geometry = new Geometry({
-      attributes: {
-        aVertexPosition: { buffer: TRIANGLES, format: "float32x2" },
-        aDistanceToCenter: { buffer: DISTANCE_TO_CENTER, format: "float32x2" },
-        aInstancePosition: {
-          buffer: instancePositions,
-          format: "float32x2",
-          instance: true,
-        },
-        aInstanceTexture: {
-          buffer: instanceTextures,
-          format: "uint32",
-          instance: true,
-        },
-        aInstanceAdjancentTextures: {
-          buffer: instanceAdjacentTextures,
-          format: "uint32",
-          instance: true,
-        },
-        aCoast: {
-          buffer: instanceCoast,
-          format: "uint32",
-          instance: true,
-        },
+  override getGeometryAttributes(): AttributeOptions {
+    return {
+      aInstanceTexture: {
+        buffer: this.instanceTextures,
+        format: "uint32",
+        instance: true,
       },
-      instanceCount: tiles.length,
-      indexBuffer: INDEXES,
-    });
+      aInstanceAdjancentTextures: {
+        buffer: this.instanceAdjacentTextures,
+        format: "uint32",
+        instance: true,
+      },
+      aCoast: {
+        buffer: this.instanceCoast,
+        format: "uint32",
+        instance: true,
+      },
+    };
+  }
 
-    const tilesMap = new Map<number, TileChanneled>();
-    for (const tile of tiles) {
-      tilesMap.set(tile.id, tile);
-    }
-
-    let idx = 0;
-    for (const tile of tiles) {
-      const x = tile.x + (tile.y % 2 ? 0.5 : 0);
-      const y = tile.y * TILE_ROW_OFFSET;
-      instancePositions[idx * 2] = x;
-      instancePositions[idx * 2 + 1] = y;
-      instanceTextures[idx] = this.getTextureIndex(tile);
-      instanceAdjacentTextures[idx] = this.getAdjacentsTextureIndexes(
-        tile,
-        tilesMap,
-      );
-      instanceCoast[idx] = this.getCoast(tile, tilesMap);
-      idx++;
-    }
-
-    const mesh = new Mesh({ geometry, shader: this.shader });
-    this.container.addChild(mesh);
+  override setTileAttributes(tile: TileChanneled, index: number) {
+    this.instanceTextures[index] = this.getTextureIndex(tile);
+    this.instanceAdjacentTextures[index] = this.getAdjacentsTextureIndexes(
+      tile,
+      this.tilesMap,
+    );
+    this.instanceCoast[index] = this.getCoast(tile, this.tilesMap);
   }
 
   getTextureIndex(tile: TileChanneled): number {
-    if (tile.seaLevel === SeaLevel.shallow) {
-      return terrainNameToId["water.png"];
+    const texIndex = SEA_LEVEL_TO_TEXTURE[tile.seaLevel];
+    if (texIndex !== null) {
+      return texIndex;
     }
-    if (tile.seaLevel === SeaLevel.deep) {
-      return terrainNameToId["deepWater.png"];
-    }
-    if (tile.climate === Climate.tropical) {
-      return terrainNameToId["tropical.png"];
-    }
-    if (tile.climate === Climate.savanna) {
-      return terrainNameToId["savanna.png"];
-    }
-    if (tile.climate === Climate.desert) {
-      return terrainNameToId["desert.png"];
-    }
-    if (tile.climate === Climate.arctic) {
-      return terrainNameToId["arctic.png"];
-    }
-    if (tile.climate === Climate.temperate) {
-      return terrainNameToId["temperate.png"];
-    }
-    if (tile.climate === Climate.tundra) {
-      return terrainNameToId["tundra.png"];
-    }
-    return terrainNameToId["water.png"];
+    return CLIMATE_TO_TEXTURE[tile.climate];
   }
 
   getAdjacentsTextureIndexes(
@@ -460,18 +421,6 @@ export class TerrainDrawer {
   ): number {
     const textures = tile.fullNeighbours.map((t) => {
       let neighbour = t ? tilesMap.get(t)! : tile;
-      // if (
-      //   tile.seaLevel === SeaLevel.none &&
-      //   neighbour.seaLevel !== SeaLevel.none
-      // ) {
-      //   neighbour = tile;
-      // }
-      // if (
-      //   tile.seaLevel !== SeaLevel.none &&
-      //   neighbour.seaLevel === SeaLevel.none
-      // ) {
-      //   neighbour = tile;
-      // }
 
       return this.getTextureIndex(neighbour);
     });

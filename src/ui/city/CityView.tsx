@@ -10,7 +10,6 @@ type Props = {
   city: CityDetailsChanneled;
 };
 export function CityView({ city }: Props) {
-  console.log(city);
   useEffect(() => {
     const wereYieldsEnabled = mapUi.yieldsEnabled;
     if (!wereYieldsEnabled) {

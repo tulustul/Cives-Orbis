@@ -5,7 +5,7 @@ import { BaseTile } from "./tile.interface";
 export function getTileFullNeighbours<T extends BaseTile>(
   tiles: T[][],
   x: number,
-  y: number
+  y: number,
 ): (T | null)[] {
   return [
     getTileInDirection(tiles, tiles[x][y], TileDirection.NW),
@@ -20,7 +20,7 @@ export function getTileFullNeighbours<T extends BaseTile>(
 export function getTileNeighbours<T extends BaseTile>(
   tiles: T[][],
   x: number,
-  y: number
+  y: number,
 ): T[] {
   return getTileFullNeighbours(tiles, x, y).filter((t) => !!t) as T[];
 }
@@ -28,7 +28,7 @@ export function getTileNeighbours<T extends BaseTile>(
 export function getTileInDirection<T extends BaseTile>(
   tiles: T[][],
   tile: T,
-  direction: TileDirection
+  direction: TileDirection,
 ): T | null {
   switch (direction) {
     case TileDirection.NW:
@@ -78,7 +78,7 @@ export function getTileInDirection<T extends BaseTile>(
 
 export function getDirectionTo(
   fromtile: BaseTile,
-  toTile: BaseTile
+  toTile: BaseTile,
 ): TileDirection {
   if (
     toTile.x === fromtile.x - (fromtile.y % 2 ? 0 : 1) &&

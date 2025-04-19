@@ -110,7 +110,7 @@ export class Controls {
       1 + (event.deltaY > 0 ? -0.3 : 0.3),
       event.clientX,
       event.clientY,
-      300
+      300,
     );
   }
 
@@ -142,7 +142,7 @@ export class Controls {
       return null;
     }
 
-    const id = x * this.gameInfo.mapWidth + y;
+    const id = x * this.gameInfo.mapHeight + y;
     return { id, x, y };
   }
 

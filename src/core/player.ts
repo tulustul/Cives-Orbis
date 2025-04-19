@@ -16,6 +16,7 @@ import { InternalPolitics } from "./internal-politics";
 import { AreaCore } from "./area";
 import { PassableArea } from "./tiles-map";
 import { Knowledge } from "./knowledge";
+import { ResourceDeposit } from "./resources";
 
 export const PLAYER_COLORS: number[] = [
   0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff, 0x999999,
@@ -65,6 +66,8 @@ export class PlayerCore {
   suppliedTiles = new Set<TileCore>();
   potentialSuppliedTiles = new Set<TileCore>();
 
+  discoveredResourceDeposits = new Set<ResourceDeposit>();
+
   cssColor: string;
 
   viewBoundingBox: PlayerViewBoundingBox = {
@@ -83,19 +86,25 @@ export class PlayerCore {
     for (const tile of tiles) {
       if (!this.exploredTiles.has(tile)) {
         this.exploredTiles.add(tile);
+        this.updateViewBoundingBox(tile);
         if (tile.passableArea) {
           this.knownPassableAreas.add(tile.passableArea);
         }
-        if (this.id === this.game.trackedPlayer.id) {
-          collector.tilesExplored.add(tile);
+        if (tile.resource) {
+          this.discoveredResourceDeposits.add(tile.resource);
+          if (this.id === this.game.trackedPlayer?.id) {
+            collector.discoveredResourceDeposits.add(tile.resource);
+          }
+        }
+        if (this.id === this.game.trackedPlayer?.id) {
+          collector.tilesFogOfWar.add(tile);
           if (tile.city) {
             collector.cities.add(tile.city);
           }
         }
       }
     }
-    this.updateViewBoundingBox(tiles);
-    if (this.id === this.game.trackedPlayer.id) {
+    if (this.id === this.game.trackedPlayer?.id) {
       collector.viewBoundingBox = this.viewBoundingBox;
     }
   }
@@ -105,7 +114,7 @@ export class PlayerCore {
       if (!this.visibleTiles.has(tile)) {
         this.visibleTiles.add(tile);
         if (this.id === this.game.trackedPlayer.id) {
-          collector.tilesShowedAdded.add(tile);
+          collector.tilesFogOfWar.add(tile);
         }
       }
     }
@@ -164,7 +173,7 @@ export class PlayerCore {
     }
 
     if (this === this.game.trackedPlayer) {
-      collector.setVisibleTiles(this.visibleTiles);
+      collector.addFogOfWarChange(this.visibleTiles);
     }
   }
 
@@ -189,12 +198,10 @@ export class PlayerCore {
     return this !== player;
   }
 
-  updateViewBoundingBox(tiles: Iterable<TileCore>) {
-    for (const tile of tiles) {
-      this.viewBoundingBox.minX = Math.min(this.viewBoundingBox.minX, tile.x);
-      this.viewBoundingBox.minY = Math.min(this.viewBoundingBox.minY, tile.y);
-      this.viewBoundingBox.maxX = Math.max(this.viewBoundingBox.maxX, tile.x);
-      this.viewBoundingBox.maxY = Math.max(this.viewBoundingBox.maxY, tile.y);
-    }
+  updateViewBoundingBox(tile: TileCore) {
+    this.viewBoundingBox.minX = Math.min(this.viewBoundingBox.minX, tile.x);
+    this.viewBoundingBox.minY = Math.min(this.viewBoundingBox.minY, tile.y);
+    this.viewBoundingBox.maxX = Math.max(this.viewBoundingBox.maxX, tile.x);
+    this.viewBoundingBox.maxY = Math.max(this.viewBoundingBox.maxY, tile.y);
   }
 }

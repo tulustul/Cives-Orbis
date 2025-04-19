@@ -303,10 +303,10 @@ function loadPlayer(game: Game, data: PlayerSerialized) {
     player.ai = new AIPlayer(player);
   }
 
-  for (const tileId of data.exploredTiles) {
-    player.exploredTiles.add(game.map.tilesMap.get(tileId)!);
-  }
-  player.updateViewBoundingBox(player.exploredTiles);
+  const tiles = data.exploredTiles.map(
+    (tileId) => game.map.tilesMap.get(tileId)!,
+  );
+  player.exploreTiles(tiles);
   player.yields.total = data.yieldsTotal;
   player.updateYields();
   player.knowledge = loadKnowledge(player, data.knowledge);

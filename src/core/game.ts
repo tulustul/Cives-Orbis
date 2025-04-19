@@ -75,7 +75,6 @@ export class Game {
       if (this.activePlayer !== this.trackedPlayer) {
         this.trackedPlayer = this.activePlayer;
         collector.trackedPlayer = this.trackedPlayer;
-        collector.setVisibleTiles(this.trackedPlayer.visibleTiles);
       }
     }
   }

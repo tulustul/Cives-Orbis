@@ -62,7 +62,7 @@ export class MapDrawer {
 
   tileDrawers = new Map<number, TileDrawer>();
 
-  terrainDrawer = new TerrainDrawer(this.terrainContainer);
+  terrainDrawer: TerrainDrawer | null = null;
 
   constructor(container: Container, private yieldsLayer: IRenderLayer) {
     container.addChild(this.terrainContainer);
@@ -94,7 +94,9 @@ export class MapDrawer {
     this.clear();
     const tiles = await bridge.tiles.getAll();
 
-    this.terrainDrawer.build(tiles);
+    this.terrainDrawer = new TerrainDrawer(this.terrainContainer, tiles.length);
+
+    this.terrainDrawer.addTiles(tiles);
 
     for (const tile of tiles) {
       const drawer = new TileDrawer(tile, this.yieldsLayer);

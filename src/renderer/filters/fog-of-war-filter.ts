@@ -65,10 +65,6 @@ vec3 blendNormal(vec3 base, vec3 blend, float opacity) {
 	return (blendNormal(base, blend) * opacity + base * (1.0 - opacity));
 }
 
-vec3 setContrast(vec3 color, float contrast) {
-  return ((color - 0.5) * contrast) + 0.5;
-}
-
 vec3 makeSepia(vec3 color, float strength) {
   vec3 sepia;
 
@@ -86,19 +82,21 @@ vec3 desaturate(vec3 color, float strength) {
   return mix(color, vec3(gray), strength);
 }
 
+vec3 getFogColor(vec3 color, float fog) {
+  vec3 outColor = makeSepia(color.rgb, 0.9 * fog);
+  outColor = blendNormal(outColor, vec3(0.0, 0.0, 0.0), 0.5 * fog);
+  // outColor = desaturate(outColor, 0.8 * fog);
+  return outColor;
+}
+
 void main() {
   vec4 color = texture2D(uTexture, vTextureCoord);
   vec4 mask = texture2D(uMaskTexture, vMaskCoord);
 
-  if (mask.r < 0.5) {
-    // vec3 outColor = desaturate(color.rgb, 0.6);
-    vec3 outColor = makeSepia(color.rgb, 0.6);
-    // outColor = setContrast(outColor, 0.4);
-    outColor = blendNormal(outColor, vec3(0.0, 0.0, 0.0), 0.5);
-    gl_FragColor = vec4(outColor, color.a);
-  } else {
-    gl_FragColor = color;
-  }
+  float explored = mask.r;
+  vec3 outColor = getFogColor(color.rgb, 1.0 - mask.a);
+
+  gl_FragColor = vec4(outColor * explored, 1.0);
 }`;
 
 export class FogOfWarFilter extends Filter {

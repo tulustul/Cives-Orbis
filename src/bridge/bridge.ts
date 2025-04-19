@@ -10,8 +10,8 @@ import {
   StatsGetOptions,
   TileGetHoverDetailsOptions,
   TileGetInRangeOptions,
-  TileSetResourceOptions,
-  TilesExploredChanneled,
+  ResourceSpawnOptions,
+  TilesFogOfWarChanneled,
   TileUpdateOptions,
   UnitDoActionOptions,
   UnitFindPathOptions,
@@ -36,9 +36,11 @@ import {
   TileDetailsChanneled,
   TileHoverDetails,
   TilesCoordsWithNeighbours,
+  TileFogOfWar,
   UnitChanneled,
   UnitDetailsChanneled,
   UnitMoveChanneled,
+  ResourceWithTileChanneled,
 } from "@/core/serialization/channel";
 import { PlayerTask, PlayerYields } from "@/shared";
 import { shareReplay } from "rxjs";
@@ -73,23 +75,22 @@ export const bridge = {
   },
   tiles: {
     updated$: makeObservable<TileChanneled[]>("tiles.updated"),
-    explored$: makeObservable<TilesExploredChanneled>(
-      "trackedPlayer.tilesExplored",
-    ),
-    showed$: makeObservable<TileCoords[]>("trackedPlayer.tilesShowed"),
-    showedAdded$: makeObservable<TileCoords[]>(
-      "trackedPlayer.tilesShowedAdded",
-    ),
+    fogOfWar$: makeObservable<TilesFogOfWarChanneled>("trackedPlayer.fogOfWar"),
     getAll: () => makeCommand<TileChanneled[]>("tile.getAll"),
-    getAllExplored: () =>
-      makeCommand<TilesExploredChanneled>("tile.getAllExplored"),
-    getAllVisible: () => makeCommand<TileCoords[]>("tile.getAllVisible"),
+    getFogOfWar: () => makeCommand<TilesFogOfWarChanneled>("tile.getFogOfWar"),
     getDetails: (tileId: number) =>
       makeCommand<TileDetailsChanneled>("tile.getDetails", tileId),
     getHoverDetails: (options: TileGetHoverDetailsOptions) =>
       makeCommand<TileHoverDetails>("tile.getHoverDetails", options),
     getInRange: (options: TileGetInRangeOptions) =>
       makeCommand<TilesCoordsWithNeighbours[]>("tile.getInRange", options),
+  },
+  resources: {
+    discovered$: makeObservable<ResourceWithTileChanneled>(
+      "resource.discovered",
+    ),
+    depleted$: makeObservable<ResourceWithTileChanneled>("resource.depleted"),
+    getAll: () => makeCommand<ResourceWithTileChanneled[]>("resource.getAll"),
   },
   entities: {
     getFailedWeakRequirements: (options: EntityGetFailedWeakRequirements) =>
@@ -168,14 +169,17 @@ export const bridge = {
         makeCommand<void>("tile.update", options),
       bulkUpdate: (options: TileUpdateOptions[]) =>
         makeCommand<void>("tile.bulkUpdate", options),
-      setResource: (options: TileSetResourceOptions) =>
-        makeCommand<void>("tile.setResource", options),
+    },
+    resources: {
+      spawn: (options: ResourceSpawnOptions) =>
+        makeCommand<void>("resource.editor.spawn", options),
     },
     player: {
       trackPlayer: (playerId: number) =>
         makeCommand<PlayerChanneled>("trackedPlayer.set", playerId),
       grantRevokeTech: (options: GrantRevokeTechOptions) =>
         makeCommand<void>("player.editor.grantRevokeTech", options),
+      revealMap: () => makeCommand<void>("player.editor.revealMap"),
     },
   },
 };

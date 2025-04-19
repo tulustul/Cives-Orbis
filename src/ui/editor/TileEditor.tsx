@@ -103,7 +103,7 @@ export function TileEditor() {
         options={RESOURCE_OPTIONS}
         value={tile.resource?.id ?? null}
         onChange={(resourceId) =>
-          bridge.editor.tiles.setResource({
+          bridge.editor.resources.spawn({
             tileId: tile!.id,
             resourceId,
             quantity: 1,
