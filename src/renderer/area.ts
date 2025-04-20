@@ -1,15 +1,12 @@
 import {
+  AttributeOptions,
   Container,
-  Geometry,
-  Mesh,
-  Rectangle,
   Shader,
   ShaderFromResources,
 } from "pixi.js";
 
 import { TilesCoordsWithNeighbours } from "@/core/serialization/channel";
-import { programs as areaPrograms } from "./shaders/area-shaders";
-import { HEX_GEOMETRY } from "./utils";
+import { HexDrawerNew } from "./hexDrawer";
 
 export interface AreaPrograms {
   background: ShaderFromResources;
@@ -19,207 +16,98 @@ export interface AreaPrograms {
 export interface AreaOptions {
   color: number;
   borderSize: number;
-  borderShadow: number;
-  borderShadowStrength: number;
+  shadowSize: number;
+  shadowStrength: number;
   backgroundOpacity: number;
   visibleOnWater: boolean;
   container: Container;
   programs?: AreaPrograms;
 }
 
-const TRIANGLES: number[][] = [
-  [0.5, 0.5, 0, 0.25, 0.5, 0],
-  [0.5, 0.5, 0.5, 0, 1, 0.25],
-  [0.5, 0.5, 1, 0.25, 1, 0.75],
-  [0.5, 0.5, 1, 0.75, 0.5, 1],
-  [0.5, 0.5, 0.5, 1, 0, 0.75],
-  [0.5, 0.5, 0, 0.75, 0, 0.25],
-];
+const VERTEX_PROGRAM = `#version 300 es
 
-const LEFT_SIDE_TRIANGLES: number[][] = [
-  [0.5, 0.5, 0, 0.5, 0, 0.25],
-  [0.5, 0.5, 0.25, 0.125, 0.5, 0],
-  [0.5, 0.5, 0.75, 0.125, 1, 0.25],
-  [0.5, 0.5, 1, 0.5, 1, 0.75],
-  [0.5, 0.5, 0.75, 0.875, 0.5, 1],
-  [0.5, 0.5, 0.25, 0.875, 0, 0.75],
-];
+precision mediump float;
 
-const RIGHT_SIDE_TRIANGLES: number[][] = [
-  [0.5, 0.5, 0.5, 0, 0.75, 0.125],
-  [0.5, 0.5, 1, 0.25, 1, 0.5],
-  [0.5, 0.5, 1, 0.75, 0.75, 0.875],
-  [0.5, 0.5, 0.5, 1, 0.25, 0.875],
-  [0.5, 0.5, 0, 0.75, 0, 0.5],
-  [0.5, 0.5, 0, 0.25, 0.25, 0.125],
-];
+in vec2 aVertexPosition;
+in vec2 aDistanceToCenter;
+in vec2 aInstancePosition;
+in uint aBorders;
 
-const borderGeometries = new Map<string, Geometry>();
+uniform mat3 uProjectionMatrix;
+uniform mat3 uWorldTransformMatrix;
+uniform mat3 uTransformMatrix;
 
-const tileBounds = new Rectangle(0, 0, 1, 1);
+out vec2 point;
+out vec2 uv;
+flat out uint borders;
 
-function makeBorderGeometry(borders: string): Geometry {
-  const vertices: number[] = [];
-  const uvs: number[] = [];
+void main() {
+  mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
+  point = aVertexPosition - vec2(0.5, 0.5);
+  uv = aVertexPosition + aInstancePosition;
+  borders = aBorders;
+  gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
+}`;
 
-  for (let i = 0; i < 6; i++) {
-    if (borders[i] === "1") {
-      vertices.push(...TRIANGLES[i]);
-      uvs.push(...[0, 1, 1]);
+const FRAGMENT_PROGRAM = `#version 300 es
 
-      let leftNeighbour = i - 1;
-      if (leftNeighbour < 0) {
-        leftNeighbour += 6;
-      }
-      if (borders[leftNeighbour] === "0") {
-        vertices.push(...LEFT_SIDE_TRIANGLES[i]);
-        uvs.push(...[0, 0, 1]);
-      }
+precision mediump float;
 
-      let rightNeighbour = i + 1;
-      if (rightNeighbour > 5) {
-        rightNeighbour -= 6;
-      }
-      if (borders[rightNeighbour] === "0") {
-        vertices.push(...RIGHT_SIDE_TRIANGLES[i]);
-        uvs.push(...[0, 1, 0]);
-      }
+const float SQRT3 = 1.73205080757;
+const float HALF_SQRT3 = 0.5 * SQRT3;
+const float sharpness = 1.0;
+
+const vec2 N[6] = vec2[6](
+  vec2(  0.5,  HALF_SQRT3 ),
+  vec2( -0.5,  HALF_SQRT3 ),
+  vec2( -1.0,          0.0 ),
+  vec2( -0.5, -HALF_SQRT3 ),
+  vec2(  0.5, -HALF_SQRT3 ),
+  vec2(  1.0,          0.0 )
+);
+
+in vec2 uv;
+in vec2 point;
+flat in uint borders;
+out vec4 fragColor;
+
+uniform vec4 color;
+uniform float borderSize;
+uniform float shadowSize;
+uniform float shadowStrength;
+uniform float bgOpacity;
+
+float getFogValue(uint data) {
+  vec2 p = point;
+  float v = 0.0;
+  for (int i = 0; i < 6; ++i) {
+    if ((data & (1u << i)) != 0u) {
+      v = max(v, -dot(p, N[i]));
     }
   }
-  return new Geometry({
-    attributes: {
-      aVertexPosition: { buffer: vertices, format: "float32x2" },
-      aUvs: { buffer: uvs, format: "float32" },
-    },
-  });
+  return clamp(sharpness - sharpness * 2.0 * v, 0.0, 1.0);
 }
 
-export class Area {
-  tiles = new Set<TilesCoordsWithNeighbours>();
-  tilesById = new Map<number, TilesCoordsWithNeighbours>();
-
-  bordersByTile = new Map<number, string>();
-
-  drawer: AreaDrawer;
-
-  constructor(private options: AreaOptions) {
-    this.drawer = new AreaDrawer(this, options);
+void main() {
+  float value = 1.0 - getFogValue(borders);
+  float borderThreshold = 1.0 - borderSize;
+  if (value > borderThreshold) {
+    value = 1.0;
+  } else {
+    value = smoothstep(0.0, borderThreshold, value);
+    value = (value - (1.0 - shadowSize)) * shadowStrength;
   }
 
-  destroy() {
-    this.drawer.clear();
-  }
+  fragColor = color * max(bgOpacity, value);
+}`;
 
-  setTiles(tiles: TilesCoordsWithNeighbours[]) {
-    this.clear();
-    this.tiles = new Set(tiles);
-    for (const tile of this.tiles) {
-      this.tilesById.set(tile.id, tile);
-    }
-    this.computeAllBorders();
-
-    for (const tile of this.tiles) {
-      const borders = this.bordersByTile.get(tile.id);
-      if (borders) {
-        this.drawer.drawTileBorders(tile, borders);
-      }
-    }
-
-    if (this.options.backgroundOpacity > 0) {
-      for (const tile of this.tiles) {
-        this.drawer.drawTileBackground(tile);
-      }
-    }
-  }
-
-  addTiles(tiles: TilesCoordsWithNeighbours[]) {
-    for (const tile of tiles) {
-      this.tiles.add(tile);
-      this.tilesById.set(tile.id, tile);
-      this.drawer.drawTileBackground(tile);
-    }
-
-    this.computeBordersForTiles(tiles);
-  }
-
-  removeTiles(tiles: TilesCoordsWithNeighbours[]) {
-    this.drawer.removeTiles(tiles);
-    for (const tile of tiles) {
-      this.tiles.delete(this.tilesById.get(tile.id)!);
-      this.tilesById.delete(tile.id);
-    }
-    this.computeBordersForTiles(tiles);
-  }
-
-  private computeBordersForTiles(tiles: TilesCoordsWithNeighbours[]) {
-    const visited = new Set<number>();
-    for (const tile of tiles) {
-      if (visited.has(tile.id)) {
-        continue;
-      }
-      visited.add(tile.id);
-      this.computeTileBorders(tile);
-      this.drawer.updateTileBorders(tile);
-
-      for (const neighbourId of tile.fullNeighbours) {
-        if (
-          neighbourId == null ||
-          !this.tilesById.has(neighbourId) ||
-          visited.has(neighbourId)
-        ) {
-          continue;
-        }
-
-        const neighbour = this.tilesById.get(neighbourId)!;
-        this.computeTileBorders(neighbour);
-        this.drawer.updateTileBorders(neighbour);
-      }
-    }
-  }
-
-  private computeAllBorders() {
-    this.bordersByTile.clear();
-    for (const tile of this.tiles) {
-      this.computeTileBorders(tile);
-    }
-  }
-
-  private computeTileBorders(tile: TilesCoordsWithNeighbours) {
-    const borders = tile.fullNeighbours
-      .map((n) => (n && this.tilesById.has(n) ? "0" : "1"))
-      .join("");
-
-    if (borders === "000000") {
-      this.bordersByTile.delete(tile.id);
-    } else {
-      this.bordersByTile.set(tile.id, borders);
-    }
-  }
-
-  clear() {
-    this.bordersByTile.clear();
-    this.tiles.clear();
-    this.tilesById.clear();
-    this.drawer.clear();
-  }
-}
-
-class AreaDrawer {
-  borderShader: Shader;
-
-  backgroundShader: Shader;
-
-  bordersMap = new Map<number, Mesh<Geometry, Shader>>();
-
-  backgroundMap = new Map<number, Mesh<Geometry, Shader>>();
+export class Area extends HexDrawerNew<TilesCoordsWithNeighbours> {
+  borders = new Uint32Array(this.maxInstances);
 
   vec4Color: Float32Array;
 
-  constructor(
-    private area: Area,
-    private options: AreaOptions,
-  ) {
-    const programs = options.programs ?? areaPrograms;
+  constructor(public options: AreaOptions, maxInstances: number) {
+    super(options.container, maxInstances);
 
     this.vec4Color = new Float32Array([
       ((options.color >> 16) & 0xff) / 255, // red
@@ -227,104 +115,53 @@ class AreaDrawer {
       (options.color & 0xff) / 255, // blue
       1, // alpha
     ]);
+  }
 
-    this.borderShader = Shader.from({
-      ...programs.border,
+  override getGeometryAttributes(): AttributeOptions {
+    return {
+      aBorders: {
+        buffer: this.borders,
+        format: "uint32",
+        instance: true,
+      },
+    };
+  }
+
+  override setTileAttributes(tile: TilesCoordsWithNeighbours, index: number) {
+    this.borders[index] = tile.fullNeighbours.reduce<number>((acc, n, i) => {
+      if (n == null || !this.tilesMap.has(n)) {
+        return acc | (1 << i);
+      }
+      return acc;
+    }, 0);
+  }
+
+  override buildShader(): Shader {
+    return Shader.from({
+      gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
       resources: {
         uniforms: {
           color: { value: this.vec4Color, type: "vec4<f32>" },
           borderSize: { value: this.options.borderSize, type: "f32" },
-          borderShadow: { value: this.options.borderShadow, type: "f32" },
-          borderShadowStrength: {
-            value: this.options.borderShadowStrength,
+          shadowSize: {
+            value: this.options.shadowSize,
+            type: "f32",
+          },
+          shadowStrength: {
+            value: this.options.shadowStrength,
+            type: "f32",
+          },
+          bgOpacity: {
+            value: this.options.backgroundOpacity,
             type: "f32",
           },
         },
       },
     });
-
-    this.backgroundShader = Shader.from({
-      ...programs.background,
-      resources: {
-        uniforms: {
-          color: { value: this.vec4Color, type: "vec4<f32>" },
-          opacity: { value: this.options.backgroundOpacity, type: "f32" },
-        },
-      },
-    });
   }
 
-  removeTiles(tiles: TilesCoordsWithNeighbours[]) {
-    for (const tile of tiles) {
-      const mesh = this.backgroundMap.get(tile.id);
-      if (mesh) {
-        mesh.destroy();
-        this.backgroundMap.delete(tile.id);
-      }
-    }
-  }
-
-  drawTileBackground(tile: TilesCoordsWithNeighbours) {
-    // TODO fix
-    // if (tile.seaLevel !== SeaLevel.none && !this.options.visibleOnWater) {
-    //   return;
-    // }
-
-    const mesh = new Mesh({
-      geometry: HEX_GEOMETRY,
-      shader: this.backgroundShader,
-    });
-    mesh.position.x = tile.x + (tile.y % 2 ? 0.5 : 0);
-    mesh.position.y = tile.y * 0.75;
-    mesh.boundsArea = tileBounds;
-
-    this.options.container.addChild(mesh);
-    this.backgroundMap.set(tile.id, mesh);
-  }
-
-  updateTileBorders(tile: TilesCoordsWithNeighbours) {
-    const mesh = this.bordersMap.get(tile.id);
-    if (mesh) {
-      mesh.destroy();
-    }
-
-    if (!this.area.tilesById.has(tile.id)) {
-      return;
-    }
-
-    const borders = this.area.bordersByTile.get(tile.id);
-    if (borders) {
-      this.drawTileBorders(tile, borders);
-    } else {
-      this.bordersMap.delete(tile.id);
-    }
-  }
-
-  drawTileBorders(tile: TilesCoordsWithNeighbours, borders: string) {
-    let geometry = borderGeometries.get(borders);
-    if (!geometry) {
-      geometry = makeBorderGeometry(borders);
-      borderGeometries.set(borders, geometry);
-    }
-
-    const mesh = new Mesh({ geometry, shader: this.borderShader });
-
-    mesh.position.x = tile.x + (tile.y % 2 ? 0.5 : 0);
-    mesh.position.y = tile.y * 0.75;
-
-    this.options.container.addChild(mesh);
-    this.bordersMap.set(tile.id, mesh);
-  }
-
-  clear() {
-    for (const obj of this.bordersMap.values()) {
-      obj.destroy();
-    }
-    this.bordersMap.clear();
-
-    for (const obj of this.backgroundMap.values()) {
-      obj.destroy();
-    }
-    this.backgroundMap.clear();
+  override updateBuffers(): void {
+    super.updateBuffers();
+    this.geometry!.attributes.aBorders.buffer.update();
   }
 }
