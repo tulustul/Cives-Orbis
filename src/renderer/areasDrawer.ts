@@ -17,7 +17,7 @@ export class AreasDrawer {
   constructor(private container: Container) {
     this.unitRangeArea = new Area(
       {
-        color: 0xddffdd,
+        color: "#ddffdd",
         container: this.container,
         backgroundOpacity: 0.15,
         shadowSize: 0.3,
@@ -30,7 +30,7 @@ export class AreasDrawer {
 
     this.cityRangeArea = new Area(
       {
-        color: 0xffffff,
+        color: "#ffffff",
         container: this.container,
         backgroundOpacity: 0.2,
         shadowSize: 0.3,
@@ -43,7 +43,7 @@ export class AreasDrawer {
 
     this.cityWorkedTilesArea = new Area(
       {
-        color: 0xffa001,
+        color: "#ffa001",
         container: this.container,
         backgroundOpacity: 0.2,
         shadowSize: 0.8,
@@ -56,7 +56,7 @@ export class AreasDrawer {
 
     this.cityNotWorkedTilesArea = new Area(
       {
-        color: 0xffffff,
+        color: "#ffffff",
         container: this.container,
         backgroundOpacity: 0.2,
         shadowSize: 0.3,
@@ -69,7 +69,7 @@ export class AreasDrawer {
 
     this.editorArea = new Area(
       {
-        color: 0xffffff,
+        color: "#ffffff",
         container: this.container,
         backgroundOpacity: 0.25,
         shadowSize: 0.5,

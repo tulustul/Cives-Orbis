@@ -93,6 +93,7 @@ export class PlayerCore {
         }
         if (this.id === this.game.trackedPlayer?.id) {
           collector.tilesFogOfWar.add(tile);
+          collector.tilesExplored.add(tile);
           if (tile.city) {
             collector.cities.add(tile.city);
           }

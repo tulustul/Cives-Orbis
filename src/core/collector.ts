@@ -14,6 +14,7 @@ import {
   tilesToTileCoordsWithNeighbours,
   tileToChannel,
   tileToFogOfWar,
+  tileToTileOwnershipChannel,
   trackedPlayerToChannel,
   unitMoveToChannel,
   unitToChannel,
@@ -59,6 +60,9 @@ class Collector {
 
   discoveredResourceDeposits = new Set<ResourceDeposit>();
   depletedResourceDeposits = new Set<ResourceDeposit>();
+
+  tileOwnershipChanges = new Set<TileCore>();
+  tilesExplored = new Set<TileCore>();
 
   turn: number | undefined;
 
@@ -173,6 +177,30 @@ class Collector {
       });
     }
 
+    if (this.tileOwnershipChanges.size || this.tilesExplored.size) {
+      for (const tile of Array.from(this.tilesExplored).filter(
+        (tile) => !!tile.areaOf,
+      )) {
+        this.tileOwnershipChanges.add(tile);
+      }
+      const toUpdate = new Set<TileCore>();
+      for (const tile of this.tileOwnershipChanges) {
+        if (!game.trackedPlayer.exploredTiles.has(tile)) {
+          continue;
+        }
+        toUpdate.add(tile);
+        for (const neighbour of tile.neighbours) {
+          if (game.trackedPlayer.exploredTiles.has(neighbour)) {
+            toUpdate.add(neighbour);
+          }
+        }
+      }
+      changes.push({
+        type: "tile.ownership",
+        data: Array.from(toUpdate).map((t) => tileToTileOwnershipChannel(t)),
+      });
+    }
+
     this.tiles.clear();
 
     this.unitsDestroyed.clear();
@@ -191,6 +219,9 @@ class Collector {
     this.tilesFogOfWar.clear();
 
     this.discoveredResourceDeposits.clear();
+
+    this.tileOwnershipChanges.clear();
+    this.tilesExplored.clear();
 
     this.changes = [];
 

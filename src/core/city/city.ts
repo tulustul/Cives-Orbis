@@ -181,6 +181,10 @@ export class CityCore {
     newOwner.cities.push(this);
     newOwner.area.addBulk(cityTiles);
 
+    for (const tile of cityTiles) {
+      collector.tileOwnershipChanges.add(tile);
+    }
+
     newOwner.updateYields();
     oldOwner.updateYields();
 

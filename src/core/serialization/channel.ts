@@ -69,6 +69,11 @@ export interface TileChanneled extends BaseTile {
   fullNeighbours: (number | null)[];
 }
 
+export type TileOwnershipChanneled = TileCoords & {
+  colors: NationColors | null;
+  borders: number;
+};
+
 export interface TileDetailsChanneled extends Omit<TileChanneled, "unitsIds"> {
   units: UnitChanneled[];
   zocPlayerId: number | null;
@@ -338,6 +343,26 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     playerColor: tile.areaOf?.player.nation.colors.primary ?? null,
     fullNeighbours: tile.fullNeighbours.map((t) => t?.id ?? null),
   };
+}
+
+export function tileToTileOwnershipChannel(
+  tile: TileCore,
+  game: Game | null = null,
+): TileOwnershipChanneled {
+  let borders = 0;
+  let colors: NationColors | null = null;
+  if (tile.areaOf && (!game || game.trackedPlayer.exploredTiles.has(tile))) {
+    const player = tile.areaOf.player;
+    colors = player.nation.colors;
+    borders = tile.fullNeighbours.reduce<number>((acc, n, i) => {
+      if (n && n.areaOf?.player !== player) {
+        return acc | (1 << i);
+      }
+      return acc;
+    }, 0);
+  }
+
+  return { ...tileToTileCoords(tile), colors, borders };
 }
 
 function getCoasts(tile: TileCore): string {

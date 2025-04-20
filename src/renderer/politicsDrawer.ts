@@ -1,11 +1,9 @@
 import { bridge } from "@/bridge";
-import { TileCoords, TileFogOfWar } from "@/core/serialization/channel";
+import { TileOwnershipChanneled } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
-import { Area } from "./area";
-import { getAssets } from "./assets";
 import { HexDrawerNew } from "./hexDrawer";
-import { hexColorToNumber } from "./utils";
+import { hexColorToArray } from "./utils";
 
 const VERTEX_PROGRAM = `#version 300 es
 
@@ -14,24 +12,27 @@ precision mediump float;
 in vec2 aVertexPosition;
 in vec2 aDistanceToCenter;
 in vec2 aInstancePosition;
-in uint aIsExplored;
-in uint aExploredBorders;
+in uint aBorders;
+in vec3 aPrimaryColor;
+in vec3 aSecondaryColor;
 
 uniform mat3 uProjectionMatrix;
 uniform mat3 uWorldTransformMatrix;
 uniform mat3 uTransformMatrix;
 
-out vec2 vDistanceToCenter;
+out vec2 point;
 out vec2 uv;
-flat out uint vIsExplored;
-flat out uint vExploredBorders;
+flat out uint borders;
+flat out vec3 primaryColor;
+flat out vec3 secondaryColor;
 
 void main() {
   mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
-  vDistanceToCenter = aDistanceToCenter;
-  uv = aVertexPosition;
-  vIsExplored = aIsExplored;
-  vExploredBorders = aExploredBorders;
+  point = aVertexPosition - vec2(0.5, 0.5);
+  uv = aVertexPosition + aInstancePosition;
+  borders = aBorders;
+  primaryColor = aPrimaryColor;
+  secondaryColor = aSecondaryColor;
   gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
 }`;
 
@@ -41,7 +42,7 @@ precision mediump float;
 
 const float SQRT3 = 1.73205080757;
 const float HALF_SQRT3 = 0.5 * SQRT3;
-const float sharpness = 2.0;
+const float sharpness = 1.0;
 
 const vec2 N[6] = vec2[6](
   vec2(  0.5,  HALF_SQRT3 ),
@@ -53,162 +54,159 @@ const vec2 N[6] = vec2[6](
 );
 
 in vec2 uv;
-flat in uint vIsExplored;
-flat in uint vExploredBorders;
+in vec2 point;
+flat in uint borders;
+flat in vec3 primaryColor;
+flat in vec3 secondaryColor;
 out vec4 fragColor;
 
-uniform sampler2D noise;
+uniform float borderSize;
+uniform float shadowSize;
+uniform float shadowStrength;
+uniform float bgOpacity;
 
-float sampleNoise(vec2 uv, float scale) {
-  return texture( noise, uv * scale).x;
-}
-
-void main() {
-  if (vIsExplored == 0u) {
-    fragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    return;
-  }
-
-  vec2 p = uv - 0.5;
+float getFogValue(uint data) {
+  vec2 p = point;
   float v = 0.0;
   for (int i = 0; i < 6; ++i) {
-    if ((vExploredBorders & (1u << i)) != 0u) {
+    if ((data & (1u << i)) != 0u) {
       v = max(v, -dot(p, N[i]));
     }
   }
-
-  float noise = sampleNoise(uv, 0.02) - 0.5;
-  // v = noise * 1.5;
-
-  float alpha = clamp(sharpness - sharpness * 2.0 * v, 0.0, 1.0);
-
-  fragColor = vec4(0.0, 0.0, 0.0, 1.0 - alpha);
-  // fragColor = vec4(noise, 0.0, 0.0,noise);
-}`;
-
-export class PoliticsDrawer {
-  areas = new Map<number, Area>();
-
-  constructor(private container: Container) {
-    bridge.areas.tilesAdded$.subscribe((bridgeArea) => {
-      const area = this.areas.get(bridgeArea.id);
-      if (area) {
-        area.addTiles(bridgeArea.tiles);
-      }
-    });
-
-    bridge.areas.tilesRemoved$.subscribe((bridgeArea) => {
-      const area = this.areas.get(bridgeArea.id);
-      if (area) {
-        // area.removeTiles(bridgeArea.tiles);
-      }
-    });
-
-    bridge.game.start$.subscribe(() => this.build());
-
-    mapUi.destroyed$.subscribe(() => this.clear());
-  }
-
-  async build() {
-    this.clear();
-
-    const areas = await bridge.areas.getAll();
-
-    for (const bridgeArea of areas) {
-      const area = new Area(
-        {
-          color: hexColorToNumber(bridgeArea.primaryColor),
-          container: this.container,
-          backgroundOpacity: 0.1,
-          shadowSize: 0.2,
-          borderSize: 0.04,
-          shadowStrength: 1,
-          visibleOnWater: false,
-        },
-        600,
-      );
-
-      this.areas.set(bridgeArea.id, area);
-      area.setTiles(bridgeArea.tiles);
-    }
-  }
-
-  clear() {
-    for (const area of this.areas.values()) {
-      area.clear();
-    }
-    this.areas.clear();
-  }
+  return clamp(1.0 - 2.0 * v, 0.0, 1.0);
 }
 
-export class PoliticsAndExploredTilesDrawer extends HexDrawerNew<TileCoords> {
-  exploredBorders = new Uint32Array(this.maxInstances);
-  isExplored = new Uint32Array(this.maxInstances);
+void main() {
+  if (borders == 0u) {
+    discard;
+  }
+
+  float value = 1.0 - getFogValue(borders >> 1);
+  float borderThreshold = 1.0 - borderSize;
+  vec3 color = primaryColor;
+  if (value > borderThreshold) {
+    if (value - borderThreshold > borderSize / 2.0) {
+      color = secondaryColor;
+    }
+    value = 1.0;
+  } else {
+    value = smoothstep(0.0, borderThreshold, value);
+    value = (value - (1.0 - shadowSize)) * shadowStrength;
+  }
+
+  value = max(bgOpacity, value);
+  fragColor = vec4(color * value, value);
+}`;
+
+export class PoliticsDrawer extends HexDrawerNew<TileOwnershipChanneled> {
+  borders = new Uint32Array(this.maxInstances);
+  primaryColors = new Float32Array(this.maxInstances * 3);
+  secondaryColors = new Float32Array(this.maxInstances * 3);
+  isBuilt = false;
 
   constructor(container: Container, maxInstances: number) {
     super(container, maxInstances);
 
-    // bridge.tiles.showedAdded$.subscribe((tiles) => this.reveal(tiles));
-
-    bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
+    bridge.player.tracked$.subscribe(() => this.build());
 
     bridge.game.start$.subscribe(() => {
       this.build();
-      this.bindToTrackedPlayer();
+    });
+
+    bridge.tiles.ownership$.subscribe((tiles) => {
+      this.updateTiles(tiles);
     });
 
     mapUi.destroyed$.subscribe(() => this.clear());
   }
 
   private async build() {
-    const tiles = await bridge.tiles.getAll();
+    this.isBuilt = false;
+    const tiles = await bridge.tiles.getOwnership();
     this.setTiles(tiles);
-    this.bindToTrackedPlayer();
+    this.isBuilt = true;
   }
 
-  private reveal(tiles: TileFogOfWar[]) {
+  private updateTiles(tiles: TileOwnershipChanneled[]) {
+    if (!this.isBuilt) {
+      return;
+    }
     for (const tile of tiles) {
       const index = this.tilesIndexMap.get(tile.id)!;
-      this.isExplored[index] = 1;
-      // this.exploredBorders[index] = tile.border;
+      this.setTileAttributes(tile, index);
     }
-    this.geometry!.attributes.aIsExplored.buffer.update();
-    this.geometry!.attributes.aExploredBorders.buffer.update();
-  }
-
-  private async bindToTrackedPlayer() {
-    const exploredTiles = await bridge.tiles.getFogOfWar();
-    this.reveal(exploredTiles.tiles);
-    this.geometry!.instanceCount = this.maxInstances;
+    this.updateBuffers_();
   }
 
   override getGeometryAttributes(): AttributeOptions {
     return {
-      aIsExplored: {
-        buffer: this.isExplored,
+      aBorders: {
+        buffer: this.borders,
         format: "uint32",
         instance: true,
       },
-      aExploredBorders: {
-        buffer: this.exploredBorders,
-        format: "uint32",
+      aPrimaryColor: {
+        buffer: this.primaryColors,
+        format: "float32x3",
+        instance: true,
+      },
+      aSecondaryColor: {
+        buffer: this.secondaryColors,
+        format: "float32x3",
         instance: true,
       },
     };
+  }
+
+  override setTileAttributes(tile: TileOwnershipChanneled, index: number) {
+    if (!tile.colors) {
+      this.borders[index] = 0;
+      return;
+    }
+
+    this.borders[index] = 1 + (tile.borders << 1);
+
+    const primary = hexColorToArray(tile.colors.primary);
+    const secondary = hexColorToArray(tile.colors.secondary);
+    this.primaryColors[3 * index] = primary[0];
+    this.primaryColors[3 * index + 1] = primary[1];
+    this.primaryColors[3 * index + 2] = primary[2];
+    this.secondaryColors[3 * index] = secondary[0];
+    this.secondaryColors[3 * index + 1] = secondary[1];
+    this.secondaryColors[3 * index + 2] = secondary[2];
   }
 
   override buildShader(): Shader {
     return Shader.from({
       gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
       resources: {
-        noise: getAssets().textures.noise.source,
+        uniforms: {
+          borderSize: { value: 0.08, type: "f32" },
+          shadowSize: {
+            value: 0.5,
+            type: "f32",
+          },
+          shadowStrength: {
+            value: 1,
+            type: "f32",
+          },
+          bgOpacity: {
+            value: 0.1,
+            type: "f32",
+          },
+        },
       },
     });
   }
 
   override updateBuffers(): void {
     super.updateBuffers();
-    this.geometry!.attributes.aIsExplored.buffer.update();
-    this.geometry!.attributes.aExploredBorders.buffer.update();
+    this.updateBuffers_();
+  }
+
+  private updateBuffers_() {
+    this.geometry!.attributes.aBorders.buffer.update();
+    this.geometry!.attributes.aPrimaryColor.buffer.update();
+    this.geometry!.attributes.aSecondaryColor.buffer.update();
   }
 }

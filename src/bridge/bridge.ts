@@ -35,6 +35,7 @@ import {
   TileChanneled,
   TileDetailsChanneled,
   TileHoverDetails,
+  TileOwnershipChanneled,
   TilesCoordsWithNeighbours,
   UnitChanneled,
   UnitDetailsChanneled,
@@ -74,7 +75,10 @@ export const bridge = {
   tiles: {
     updated$: makeObservable<TileChanneled[]>("tiles.updated"),
     fogOfWar$: makeObservable<TilesFogOfWarChanneled>("trackedPlayer.fogOfWar"),
+    ownership$: makeObservable<TileOwnershipChanneled[]>("tile.ownership"),
     getAll: () => makeCommand<TileChanneled[]>("tile.getAll"),
+    getOwnership: () =>
+      makeCommand<TileOwnershipChanneled[]>("tile.getOwnership"),
     getFogOfWar: () => makeCommand<TilesFogOfWarChanneled>("tile.getFogOfWar"),
     getDetails: (tileId: number) =>
       makeCommand<TileDetailsChanneled>("tile.getDetails", tileId),

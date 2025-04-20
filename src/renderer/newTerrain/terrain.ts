@@ -387,7 +387,7 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
         noise: getAssets().textures.noise.source,
         whitenoise: getAssets().textures.whitenoise.source,
         uniforms: {
-          gridEnabled: { value: 1, type: "i32" },
+          gridEnabled: { value: mapUi.gridEnabled ? 1 : 0, type: "i32" },
         },
       },
     });
