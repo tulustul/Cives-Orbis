@@ -358,7 +358,9 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
     });
 
     mapUi.gridEnabled$.subscribe((enabled) => {
-      this.shader.resources.uniforms.uniforms.gridEnabled = enabled ? 1 : 0;
+      if (this.shader) {
+        this.shader.resources.uniforms.uniforms.gridEnabled = enabled ? 1 : 0;
+      }
     });
   }
 

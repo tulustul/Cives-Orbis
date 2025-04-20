@@ -32,7 +32,7 @@ export class CitiesManager {
     city.id = this.lastId++;
     city.population.population.set("peasant", 1);
     city.population.computeTotal();
-    city.name = `City ${city.id}`;
+    city.name = this.getNextCityName(player);
     city.tile = tile;
     city.isCoastline = !!city.tile.neighbours.find(
       (n) => n.seaLevel !== SeaLevel.none,
@@ -109,5 +109,17 @@ export class CitiesManager {
     for (const city of this.cities) {
       city.production.updateProductsList();
     }
+  }
+
+  getNextCityName(player: PlayerCore, prefix = "", iter = 0): string {
+    const existingNames = new Set(this.cities.map((c) => c.name));
+    for (const name of player.nation.cityNames) {
+      const _name = `${prefix}${name}${iter >= 2 ? " " + iter : ""}`;
+      if (!existingNames.has(_name)) {
+        return _name;
+      }
+    }
+
+    return this.getNextCityName(player, "New ", iter + 1);
   }
 }

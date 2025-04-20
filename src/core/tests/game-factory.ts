@@ -3,6 +3,7 @@ import { Game } from "@/core/game";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { TilesMapCore } from "@/core/tiles-map";
+import { pickRandomNation } from "../data-manager";
 
 export type SymbolCallbacks = {
   [key: string]: (game: Game, tile: TileCore) => void;
@@ -21,7 +22,7 @@ const defaultOptions: GameFactoryOptions = {
 function makeMap(
   mapData: string[],
   game: Game,
-  symbolCallbacks: SymbolCallbacks
+  symbolCallbacks: SymbolCallbacks,
 ) {
   const symbols = tokenizeMapSymbols(mapData);
 
@@ -37,7 +38,7 @@ function makeMap(
 function alterMap(
   mapData: string[],
   game: Game,
-  symbolCallbacks: SymbolCallbacks
+  symbolCallbacks: SymbolCallbacks,
 ) {
   const symbols = tokenizeMapSymbols(mapData);
   if (symbols.length !== game.map.height) {
@@ -77,14 +78,14 @@ function tokenizeMapSymbols(mapData: string[]) {
 
 export function makeGame(
   mapData: string[],
-  userOptions: Partial<GameFactoryOptions>
+  userOptions: Partial<GameFactoryOptions>,
 ): Game {
   const options = { ...defaultOptions, ...userOptions };
 
   const game = new Game();
 
   for (let i = 0; i < options.playersCount; i++) {
-    game.addPlayer(new PlayerCore(game, 0));
+    game.addPlayer(new PlayerCore(game, pickRandomNation()));
   }
 
   makeMap(mapData, game, options.symbolCallbacks);
@@ -97,7 +98,7 @@ export function makeGame(
 export function alterGame(
   game: Game,
   mapData: string[],
-  userOptions: Partial<GameFactoryOptions>
+  userOptions: Partial<GameFactoryOptions>,
 ) {
   const options = { ...defaultOptions, ...userOptions };
   alterMap(mapData, game, options.symbolCallbacks);

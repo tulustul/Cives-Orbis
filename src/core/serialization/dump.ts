@@ -1,10 +1,6 @@
 import { AIPlayer } from "@/ai/ai-player";
 import { CityCore } from "@/core/city";
-import {
-  ProductDefinition,
-  ProductType,
-  TileImprovementDefinition,
-} from "@/core/data.interface";
+import { ProductDefinition, ProductType } from "@/core/data.interface";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { TileRoad } from "@/core/tile-improvements";
@@ -15,6 +11,7 @@ import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
 import {
   getBuildingById,
   getIdleProductById,
+  getNationById,
   getResourceDefinitionById,
   getTechById,
   getTileImprDefinitionById,
@@ -88,7 +85,7 @@ interface CitySerialized {
 interface PlayerSerialized {
   id: number;
   ai: boolean;
-  color: number;
+  nation: string;
   exploredTiles: number[];
   yieldsTotal: Yields;
   knowledge: KnowledgeSerialized;
@@ -287,7 +284,7 @@ function dumpPlayer(player: PlayerCore): PlayerSerialized {
   return {
     id: player.id,
     ai: !!player.ai,
-    color: player.color,
+    nation: player.nation.id,
     exploredTiles: Array.from(player.exploredTiles).map((t) => t.id),
     yieldsTotal: player.yields.total,
     knowledge: dumpKnowledge(player.knowledge),
@@ -295,7 +292,8 @@ function dumpPlayer(player: PlayerCore): PlayerSerialized {
 }
 
 function loadPlayer(game: Game, data: PlayerSerialized) {
-  const player = new PlayerCore(game, data.color || 0);
+  const nation = getNationById(data.nation);
+  const player = new PlayerCore(game, nation);
 
   if (data.ai) {
     player.ai = new AIPlayer(player);

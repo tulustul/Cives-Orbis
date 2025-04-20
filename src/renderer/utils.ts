@@ -100,3 +100,7 @@ export function putContainerAtTileCentered(
   container.position.x = tile.x + (tile.y % 2 ? 0.5 : 0) + 0.5;
   container.position.y = tile.y * TILE_ROW_OFFSET + 0.5;
 }
+
+export function hexColorToNumber(hex: string): number {
+  return parseInt(hex.slice(1), 16);
+}

@@ -24,7 +24,7 @@ export function CityInfo({ city }: Props) {
     if (!elRef.current) {
       return;
     }
-    elRef.current.style.setProperty("--player-color", city.cssColor);
+    elRef.current.style.setProperty("--player-color", city.colors.primary);
   }, [city]);
 
   function transform(t: Transform) {
@@ -54,7 +54,11 @@ export function CityInfo({ city }: Props) {
 
   function getBody() {
     if (city.visibilityLevel === "basic") {
-      return <div className={styles.simpleView}>{city.name}</div>;
+      return (
+        <div className="flex items-center bg-black/70 text-xs font-bold px-2">
+          {city.name}
+        </div>
+      );
     }
 
     return (
@@ -65,7 +69,7 @@ export function CityInfo({ city }: Props) {
           nextProgress={city.totalFood + city.foodPerTurn}
           total={city.foodToGrow}
         >
-          <span>
+          <span className="text-xs font-bold">
             {city.name} ({formatTurns(city.turnsToGrow)})
           </span>
         </ProgressBar>
@@ -76,7 +80,7 @@ export function CityInfo({ city }: Props) {
           nextProgress={city.totalProduction + city.productionPerTurn}
           total={city.productionRequired ?? 0}
         >
-          <span>
+          <span className="text-xs font-bold">
             {city.productName} ({formatTurns(city.turnsToProductionEnd)})
           </span>
         </ProgressBar>
@@ -89,20 +93,25 @@ export function CityInfo({ city }: Props) {
       className={styles.city}
       ref={elRef}
       onClick={() => mapUi.selectCity(city.id)}
-      // onMouseOver={() => {
-      //   mapUi.hoverCity(city.id);
-      // }}
-      // onMouseOut={() => {
-      //   mapUi.hoverCity(null);
-      // }}
       onMouseDown={(e) => controls.onMouseDown(e.nativeEvent)}
       onMouseUp={() => controls.onMouseUp()}
       onMouseMove={(e) => controls.onMouseMove(e.nativeEvent)}
       onWheel={(e) => controls.onWheel(e.nativeEvent)}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <div className={styles.info}>
-        <div className={styles.size}>{city.size}</div>
+      <div
+        className="rounded-full flex pointer-events-auto cursor-pointer text-white overflow-hidden border-2"
+        style={{ borderColor: city.colors.primary }}
+      >
+        <div
+          className="text-xl min-w-[30px] flex items-center justify-center font-semibold"
+          style={{
+            backgroundColor: city.colors.primary,
+            color: city.colors.secondary,
+          }}
+        >
+          {city.size}
+        </div>
         {getBody()}
       </div>
     </div>

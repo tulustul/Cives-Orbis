@@ -207,7 +207,7 @@ function CityProduct({ city }: Props) {
       >
         <div className="w-full flex justify-between items-center">
           <span className="flex items-center">
-            <ProductIcon product={city.product} />
+            <ProductIcon product={city.product} city={city} />
             <span className="font-bold ml-2 text-xl">
               {city.product.definition.name}
             </span>
@@ -261,7 +261,7 @@ function CityProductsList({ city }: Props) {
                 onClick={() => produce(product)}
               >
                 <span className="flex items-center">
-                  <ProductIcon product={product} />
+                  <ProductIcon product={product} city={city} />
                   <span className="ml-2">{product.definition.name}</span>
                 </span>
                 <span className="text-sm">
@@ -276,13 +276,18 @@ function CityProductsList({ city }: Props) {
   );
 }
 
-function ProductIcon({ product }: { product: CityProductChanneled }) {
+type ProductIconProps = {
+  city: CityDetailsChanneled;
+  product: CityProductChanneled;
+};
+function ProductIcon({ city, product }: ProductIconProps) {
   if (product.definition.entityType === "unit")
     return (
       <RawUnitIcon
         type={product.definition.strength ? "military" : "civilian"}
         definitionId={product.definition.id}
-        cssColor="#ff0000"
+        primaryColor={city.colors.primary}
+        secondaryColor={city.colors.secondary}
         scale={0.4}
       />
     );

@@ -184,7 +184,7 @@ export class HexDrawerNew<T extends TileCoords> {
     });
   }
 
-  setTileAttributes(tile: T, index: number): void {}
+  setTileAttributes(_: T, __: number): void {}
 
   getGeometryAttributes(): AttributeOptions {
     return {};

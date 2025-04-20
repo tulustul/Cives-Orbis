@@ -19,7 +19,7 @@ import { skip } from "rxjs";
 import { camera, Transform } from "./camera";
 import { TILE_ROW_OFFSET } from "./constants";
 import { renderer } from "./renderer";
-import { drawHex } from "./utils";
+import { drawHex, hexColorToNumber } from "./utils";
 
 const SEA_COLORS: Record<SeaLevel, number> = {
   [SeaLevel.deep]: 0x25619a,
@@ -297,7 +297,7 @@ export class MinimapRenderer {
     if (tile.seaLevel !== SeaLevel.none) {
       color = SEA_COLORS[tile.seaLevel];
     } else if (tile.playerColor) {
-      color = tile.playerColor;
+      color = hexColorToNumber(tile.playerColor);
     } else if (tile.landForm === LandForm.mountains) {
       color = MOUNTAIN_COLOR;
     } else {

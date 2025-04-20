@@ -45,10 +45,13 @@ export function PlayersList({
           )}
           onClick={() => onSelect(player.id)}
         >
-          <span className="text-sm">Player {player.id}</span>
+          <span className="text-sm">{player.name}</span>
           <div
-            className="w-5 h-5 rounded-full"
-            style={{ backgroundColor: player.cssColor }}
+            className="w-5 h-5 rounded-full border-6 box-border"
+            style={{
+              backgroundColor: player.colors.secondary,
+              borderColor: player.colors.primary,
+            }}
           />
         </li>
       ))}

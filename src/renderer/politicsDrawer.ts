@@ -5,6 +5,7 @@ import { AttributeOptions, Container, Shader } from "pixi.js";
 import { Area } from "./area";
 import { getAssets } from "./assets";
 import { HexDrawerNew } from "./hexDrawer";
+import { hexColorToNumber } from "./utils";
 
 const VERTEX_PROGRAM = `#version 300 es
 
@@ -99,7 +100,7 @@ export class PoliticsDrawer {
     bridge.areas.tilesRemoved$.subscribe((bridgeArea) => {
       const area = this.areas.get(bridgeArea.id);
       if (area) {
-        area.removeTiles(bridgeArea.tiles);
+        // area.removeTiles(bridgeArea.tiles);
       }
     });
 
@@ -116,7 +117,7 @@ export class PoliticsDrawer {
     for (const bridgeArea of areas) {
       const area = new Area(
         {
-          color: bridgeArea.color,
+          color: hexColorToNumber(bridgeArea.primaryColor),
           container: this.container,
           backgroundOpacity: 0.1,
           shadowSize: 0.2,
@@ -169,7 +170,7 @@ export class PoliticsAndExploredTilesDrawer extends HexDrawerNew<TileCoords> {
     for (const tile of tiles) {
       const index = this.tilesIndexMap.get(tile.id)!;
       this.isExplored[index] = 1;
-      this.exploredBorders[index] = tile.border;
+      // this.exploredBorders[index] = tile.border;
     }
     this.geometry!.attributes.aIsExplored.buffer.update();
     this.geometry!.attributes.aExploredBorders.buffer.update();

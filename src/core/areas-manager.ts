@@ -7,8 +7,8 @@ export class AreasManager {
 
   lastId = 0;
 
-  make(color: number) {
-    const area = new AreaCore(color);
+  make(primaryColor: string, secondaryColor: string) {
+    const area = new AreaCore(primaryColor, secondaryColor);
     area.id = this.lastId++;
     this.areas.push(area);
     this.areasMap.set(area.id, area);

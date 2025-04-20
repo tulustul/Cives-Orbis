@@ -104,10 +104,14 @@ export type GovernmentOption = Entity &
     section: GovernmentSection;
   };
 
+export type NationColors = {
+  primary: string;
+  secondary: string;
+};
+
 export type Nation = Entity & {
-  parentNation: string | null;
-  bonuses: Bonuses;
-  citiesNames: string[];
+  cityNames: string[];
+  colors: NationColors;
 };
 
 export type ResourceDistribution = {

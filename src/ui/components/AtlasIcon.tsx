@@ -15,7 +15,7 @@ export function AtlasIcon({ name, tint, className, scale = 1 }: Props) {
     return (unitsIcons.frames as any)[name + ".png"]?.frame;
   }
 
-  const frame = getFrame(name) || getFrame("undefined");
+  const frame = getFrame(name) || getFrame("unit_undefined");
 
   const position = `-${frame.x * scale}px -${frame.y * scale}px`;
   const size = `${unitsIcons.meta.size.w * scale}px ${
