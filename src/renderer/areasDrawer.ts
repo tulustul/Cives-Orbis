@@ -1,10 +1,8 @@
 import { bridge } from "@/bridge";
-import { UnitTrait } from "@/core/data.interface";
 import {
   CityDetailsChanneled,
   UnitDetailsChanneled,
 } from "@/core/serialization/channel";
-import { programs as suppliesPrograms } from "@/renderer/shaders/supplies-shaders";
 import { mapUi } from "@/ui/mapUi";
 import { Container } from "pixi.js";
 import { Area } from "./area";
@@ -12,83 +10,75 @@ import { Area } from "./area";
 export class AreasDrawer {
   unitRangeArea: Area;
   cityRangeArea: Area;
-  cityBordersOnlyArea: Area;
   cityWorkedTilesArea: Area;
   cityNotWorkedTilesArea: Area;
   editorArea: Area;
-  suppliesRangeArea: Area;
 
   constructor(private container: Container) {
-    this.unitRangeArea = new Area({
-      color: 0xddffdd,
-      container: this.container,
-      backgroundOpacity: 0.15,
-      borderShadow: 0.4,
-      borderSize: 0.0,
-      borderShadowStrength: 2,
-      visibleOnWater: true,
-    });
+    this.unitRangeArea = new Area(
+      {
+        color: 0xddffdd,
+        container: this.container,
+        backgroundOpacity: 0.15,
+        shadowSize: 0.3,
+        borderSize: 0.0,
+        shadowStrength: 2.0,
+        visibleOnWater: true,
+      },
+      600,
+    );
 
-    this.cityRangeArea = new Area({
-      color: 0xffffff,
-      container: this.container,
-      backgroundOpacity: 0.2,
-      borderShadow: 0.3,
-      borderSize: 0.1,
-      borderShadowStrength: 1.2,
-      visibleOnWater: false,
-    });
+    this.cityRangeArea = new Area(
+      {
+        color: 0xffffff,
+        container: this.container,
+        backgroundOpacity: 0.2,
+        shadowSize: 0.3,
+        borderSize: 0.04,
+        shadowStrength: 1.2,
+        visibleOnWater: false,
+      },
+      600,
+    );
 
-    this.cityBordersOnlyArea = new Area({
-      color: 0xffffff,
-      container: this.container,
-      backgroundOpacity: 0,
-      borderShadow: 0.3,
-      borderSize: 0.1,
-      borderShadowStrength: 1.2,
-      visibleOnWater: false,
-    });
+    this.cityWorkedTilesArea = new Area(
+      {
+        color: 0xffa001,
+        container: this.container,
+        backgroundOpacity: 0.2,
+        shadowSize: 0.8,
+        borderSize: 0,
+        shadowStrength: 1,
+        visibleOnWater: true,
+      },
+      600,
+    );
 
-    this.cityWorkedTilesArea = new Area({
-      color: 0xffa001,
-      container: this.container,
-      backgroundOpacity: 0.2,
-      borderShadow: 0.8,
-      borderSize: 0,
-      borderShadowStrength: 1,
-      visibleOnWater: true,
-    });
+    this.cityNotWorkedTilesArea = new Area(
+      {
+        color: 0xffffff,
+        container: this.container,
+        backgroundOpacity: 0.2,
+        shadowSize: 0.3,
+        borderSize: 0,
+        shadowStrength: 3.5,
+        visibleOnWater: false,
+      },
+      600,
+    );
 
-    this.cityNotWorkedTilesArea = new Area({
-      color: 0xffffff,
-      container: this.container,
-      backgroundOpacity: 0.2,
-      borderShadow: 0.3,
-      borderSize: 0,
-      borderShadowStrength: 1.5,
-      visibleOnWater: false,
-    });
-
-    this.editorArea = new Area({
-      color: 0xffffff,
-      container: this.container,
-      backgroundOpacity: 0.25,
-      borderShadow: 0.5,
-      borderSize: 0.05,
-      borderShadowStrength: 1,
-      visibleOnWater: true,
-    });
-
-    this.suppliesRangeArea = new Area({
-      color: 0xffffff,
-      container: this.container,
-      backgroundOpacity: 0.25,
-      borderShadow: 0.5,
-      borderSize: 0.05,
-      borderShadowStrength: 1,
-      visibleOnWater: true,
-      programs: suppliesPrograms,
-    });
+    this.editorArea = new Area(
+      {
+        color: 0xffffff,
+        container: this.container,
+        backgroundOpacity: 0.25,
+        shadowSize: 0.5,
+        borderSize: 0.05,
+        shadowStrength: 1,
+        visibleOnWater: true,
+      },
+      600,
+    );
 
     mapUi.selectedCity$.subscribe((city) => this.onSelectedCity(city));
     mapUi.hoveredCity$.subscribe((city) => this.onHoveredCity(city));
@@ -107,7 +97,6 @@ export class AreasDrawer {
     this.editorArea.clear();
     this.cityRangeArea.clear();
     this.unitRangeArea.clear();
-    this.cityBordersOnlyArea.clear();
     this.cityWorkedTilesArea.clear();
     this.cityNotWorkedTilesArea.clear();
   }
@@ -116,7 +105,6 @@ export class AreasDrawer {
     if (cityId === null) {
       this.cityWorkedTilesArea.clear();
       this.cityNotWorkedTilesArea.clear();
-      this.cityBordersOnlyArea.clear();
       this.cityRangeArea.clear();
       return;
     }
@@ -137,12 +125,6 @@ export class AreasDrawer {
     if (!unit) {
       this.unitRangeArea.clear();
       return;
-    }
-
-    if (unit.trait === UnitTrait.military || unit.trait === UnitTrait.supply) {
-      bridge.player.getSuppliedTiles(unit.playerId).then((tiles) => {
-        this.suppliesRangeArea.setTiles(tiles);
-      });
     }
 
     bridge.units

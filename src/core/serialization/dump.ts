@@ -199,11 +199,12 @@ function dumpTiles(map: TilesMapCore): TileSerialized[] {
       if (tile.wetlands !== lastTile.wetlands) {
         diff.wetlands = tile.wetlands;
       }
-      if (tile.improvement !== lastTile.improvement) {
-        diff.improvement = tile.improvement?.id;
-      }
       if (tile.road !== lastTile.road) {
         diff.road = tile.road;
+      }
+
+      if (tile.improvement) {
+        diff.improvement = tile.improvement.id;
       }
 
       // Resources don't repeat.
@@ -249,12 +250,9 @@ function loadMap(mapData: MapSerialized) {
           ? tileData.landForm!
           : lastTile.landForm;
 
-      let improvement: TileImprovementDefinition | null = null;
       if (tileData.improvement) {
-        improvement = getTileImprDefinitionById(tileData.improvement);
+        tile.improvement = getTileImprDefinitionById(tileData.improvement);
       }
-
-      tile.improvement = improvement ? improvement! : lastTile.improvement;
 
       tile.road = tileData.road !== undefined ? tileData.road! : lastTile.road;
 

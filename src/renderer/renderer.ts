@@ -19,7 +19,6 @@ import { ExploredTilesDrawer } from "./exploredTilesDrawer";
 import { FogOfWarFilter } from "./filters/fog-of-war-filter";
 import { GrayscaleFilter } from "./filters/grayscaleFilter";
 import { FogOfWarMaskDrawer } from "./fog-of-war";
-import { Grid } from "./grid";
 import { Layer } from "./layer";
 import { OverlaysRenderer } from "./overlays";
 import { PathRenderer } from "./path";
@@ -67,8 +66,6 @@ export class GameRenderer {
   resourcesDrawer!: ResourcesDrawer;
 
   cityFocusFilter!: GrayscaleFilter;
-
-  // grid!: Grid;
 
   lastScale = camera.transform.scale;
 
@@ -168,8 +165,6 @@ export class GameRenderer {
     this.politicsContainer.zIndex = 2000;
     this.overlaysContainer.zIndex = 3000;
 
-    // this.grid = new Grid();
-    // this.mapLayer.stage.addChild(this.grid.sprite);
     this.mapLayer.stage.addChild(this.yieldsLayer);
 
     camera.transform$.subscribe((t) => {
@@ -210,17 +205,18 @@ export class GameRenderer {
 
       if (this.politicsDrawer) {
         const backgroundOpacity = Math.min(
-          0.4,
+          0.2,
           Math.max(0, (70 - scale) / 150),
         );
 
-        const borderShadow = Math.max(0.4, Math.min(0.7, (150 - scale) / 100));
+        const shadowSize = Math.max(0.2, Math.min(0.7, (150 - scale) / 200));
 
         for (const area of this.politicsDrawer.areas.values()) {
-          area.drawer.backgroundShader.resources["uniforms"].uniforms.opacity =
-            backgroundOpacity;
-          area.drawer.borderShader.resources["uniforms"].uniforms.borderShadow =
-            borderShadow;
+          if (area.shader) {
+            area.shader.resources["uniforms"].uniforms.bgOpacity =
+              backgroundOpacity;
+            area.shader!.resources["uniforms"].uniforms.shadowSize = shadowSize;
+          }
         }
       }
 

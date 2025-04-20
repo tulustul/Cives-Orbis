@@ -104,8 +104,7 @@ export class HexDrawerNew<T extends TileCoords> {
 
   geometry: Geometry | null = null;
   mesh: Mesh<Geometry, Shader> | null = null;
-
-  public shader = this.buildShader();
+  shader: Shader | null = null;
 
   constructor(public container: Container, public maxInstances: number) {
     this.instancePositions = new Float32Array(maxInstances * 2);
@@ -115,6 +114,7 @@ export class HexDrawerNew<T extends TileCoords> {
     if (this.geometry) {
       return;
     }
+    this.shader = this.buildShader();
     this.geometry = this.buildGeometry();
     this.mesh = new Mesh({ geometry: this.geometry, shader: this.shader });
     this.container.addChild(this.mesh);
@@ -123,6 +123,10 @@ export class HexDrawerNew<T extends TileCoords> {
   clear() {
     this.tilesMap.clear();
     this.tilesIndexMap.clear();
+    if (this.geometry && this.mesh) {
+      this.mesh.visible = false;
+      this.geometry.instanceCount = 0;
+    }
   }
 
   setTiles(tiles: T[]) {
@@ -154,6 +158,7 @@ export class HexDrawerNew<T extends TileCoords> {
 
     this.updateBuffers();
     this.geometry.instanceCount = this.tilesMap.size;
+    this.mesh!.visible = this.geometry.instanceCount > 0;
   }
 
   buildGeometry() {

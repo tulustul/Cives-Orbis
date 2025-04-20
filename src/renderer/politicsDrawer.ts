@@ -1,14 +1,10 @@
 import { bridge } from "@/bridge";
+import { TileCoords, TileFogOfWar } from "@/core/serialization/channel";
+import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
 import { Area } from "./area";
-import { mapUi } from "@/ui/mapUi";
-import { HexDrawerNew } from "./hexDrawer";
-import {
-  TileCoords,
-  TilesCoordsWithNeighbours,
-  TileFogOfWar,
-} from "@/core/serialization/channel";
 import { getAssets } from "./assets";
+import { HexDrawerNew } from "./hexDrawer";
 
 const VERTEX_PROGRAM = `#version 300 es
 
@@ -118,15 +114,18 @@ export class PoliticsDrawer {
     const areas = await bridge.areas.getAll();
 
     for (const bridgeArea of areas) {
-      const area = new Area({
-        color: bridgeArea.color,
-        container: this.container,
-        backgroundOpacity: 0.5,
-        borderShadow: 0.7,
-        borderSize: 0.08,
-        borderShadowStrength: 1,
-        visibleOnWater: false,
-      });
+      const area = new Area(
+        {
+          color: bridgeArea.color,
+          container: this.container,
+          backgroundOpacity: 0.1,
+          shadowSize: 0.2,
+          borderSize: 0.04,
+          shadowStrength: 1,
+          visibleOnWater: false,
+        },
+        600,
+      );
 
       this.areas.set(bridgeArea.id, area);
       area.setTiles(bridgeArea.tiles);
@@ -148,7 +147,7 @@ export class PoliticsAndExploredTilesDrawer extends HexDrawerNew<TileCoords> {
   constructor(container: Container, maxInstances: number) {
     super(container, maxInstances);
 
-    bridge.tiles.showedAdded$.subscribe((tiles) => this.reveal(tiles));
+    // bridge.tiles.showedAdded$.subscribe((tiles) => this.reveal(tiles));
 
     bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
 
