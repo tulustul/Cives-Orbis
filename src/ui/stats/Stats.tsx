@@ -54,7 +54,7 @@ export function Stats() {
                   key={selectedDataset + series.player.id}
                   id={selectedDataset + series.player.id}
                   data={series.data}
-                  color={series.player.cssColor}
+                  color={series.player.colors.primary}
                 />
               ))}
             </Chart>
@@ -97,7 +97,7 @@ function Legend({ stats }: LegendProps) {
         <div key={index} className="flex gap-1 items-center">
           <div
             className="w-4 h-4 rounded-full"
-            style={{ backgroundColor: stat.player.cssColor }}
+            style={{ backgroundColor: stat.player.colors.primary }}
           />
           <span>Player {stat.player.id}</span>
         </div>

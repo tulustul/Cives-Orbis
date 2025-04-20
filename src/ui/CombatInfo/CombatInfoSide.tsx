@@ -1,8 +1,7 @@
 import { CombatModifierType, CombatSimulationSide } from "@/core/combat";
-import clsx from "clsx";
-import styles from "./CombatInfo.module.css";
-import { ImageIcon } from "@/ui/components";
 import { UnitDefChanneled } from "@/core/serialization/channel";
+import { ImageIcon } from "@/ui/components";
+import clsx from "clsx";
 
 const MODIFIER_LABELS: Record<CombatModifierType, string> = {
   [CombatModifierType.river]: "from river",

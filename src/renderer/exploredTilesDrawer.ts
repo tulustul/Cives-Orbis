@@ -9,9 +9,9 @@ export class ExploredTilesDrawer {
   constructor(private container: Container) {
     this.hexDrawer = new HexDrawer(this.container);
 
-    bridge.tiles.showedAdded$.subscribe((tiles) =>
-      this.hexDrawer.addTiles(tiles),
-    );
+    // bridge.tiles.showedAdded$.subscribe((tiles) =>
+    //   this.hexDrawer.addTiles(tiles),
+    // );
 
     bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
 

@@ -10,6 +10,7 @@ import { Animation, Animations, AnimationSequence } from "./animation";
 import { getAssets } from "./assets";
 import { camera } from "./camera";
 import { TILE_ROW_OFFSET, TILE_SIZE } from "./constants";
+import { hexColorToNumber } from "./utils";
 
 export class UnitsDrawer {
   units = new Map<number, UnitDrawer>();
@@ -162,8 +163,9 @@ export class UnitDrawer {
     const textures = getAssets().unitsSpritesheet.textures;
     const banner = new Sprite(textures[`unitBackground-${unit.type}.png`]);
     const icon = new Sprite(textures[`${unit.definitionId}.png`]);
-    banner.tint = unit.cssColor;
+    banner.tint = hexColorToNumber(unit.colors.primary);
     banner.anchor.set(0.5, 0.5);
+    icon.tint = hexColorToNumber(unit.colors.secondary);
     icon.anchor.set(0.5, 0.5);
     this.updateUi();
     this.updatePosition();

@@ -6,7 +6,7 @@ export class AreaCore {
 
   tiles = new Set<TileCore>();
 
-  constructor(public color: number) {}
+  constructor(public primaryColor: string, public secondaryColor: string) {}
 
   add(tile: TileCore) {
     this.tiles.add(tile);

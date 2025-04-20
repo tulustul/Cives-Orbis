@@ -240,15 +240,20 @@ export class GameRenderer {
     }
 
     const mapFilters: Filter[] = [];
-    const unitsFilters: Filter[] = [];
-    const resourcesFilters: Filter[] = [];
+    // const unitsFilters: Filter[] = [];
+    // const resourcesFilters: Filter[] = [];
     const politicsFilters: Filter[] = [];
+
+    this.unitsContainer.mask = null;
+
     if (mapUi.fogOfWarEnabled) {
-      unitsFilters.push(
-        new MaskFilter({
-          sprite: this.fogOfWarLayer.sprite,
-        }),
-      );
+      this.unitsContainer.mask = this.fogOfWarLayer.sprite;
+
+      // unitsFilters.push(
+      //   new MaskFilter({
+      //     sprite: this.fogOfWarLayer.sprite,
+      //   }),
+      // );
 
       mapFilters.push(
         // new MaskFilter({
@@ -277,7 +282,6 @@ export class GameRenderer {
     this.mapLayer.sprite.filters = mapFilters;
     // this.mapLayer.sprite.mask = this.fogOfWarLayer.sprite;
     // this.unitsContainer.filters = unitsFilters;
-    this.unitsContainer.mask = this.fogOfWarLayer.sprite;
     this.politicsContainer.filters = politicsFilters;
     // this.resourcesContainer.mask = this.fogOfWarLayer.sprite;
   }

@@ -24,7 +24,8 @@ export function UnitIcon({ unit, isSelected }: Props) {
     >
       <RawUnitIcon
         type={unit.type}
-        cssColor={unit.cssColor}
+        primaryColor={unit.colors.primary}
+        secondaryColor={unit.colors.secondary}
         definitionId={unit.definitionId}
       />
     </div>
@@ -33,13 +34,15 @@ export function UnitIcon({ unit, isSelected }: Props) {
 
 type RawUnitIconProps = {
   type: string;
-  cssColor: string;
+  primaryColor: string;
+  secondaryColor: string;
   definitionId: string;
   scale?: number;
 };
 export function RawUnitIcon({
   type,
-  cssColor,
+  primaryColor,
+  secondaryColor,
   definitionId,
   scale = 0.5,
 }: RawUnitIconProps) {
@@ -49,9 +52,14 @@ export function RawUnitIcon({
         className={styles.icon}
         name={`unitBackground-${type}`}
         scale={scale}
-        tint={cssColor}
+        tint={primaryColor}
       />
-      <AtlasIcon className={styles.icon} name={definitionId} scale={scale} />
+      <AtlasIcon
+        className={styles.icon}
+        name={definitionId}
+        scale={scale}
+        tint={secondaryColor}
+      />
     </div>
   );
 }

@@ -7,12 +7,14 @@ import {
   Building,
   Entity,
   IdleProduct,
+  Nation,
   ResourceDefinition,
   Technology,
   TileImprovementDefinition,
   UnitDefinition,
 } from "./data.interface";
 import { TILE_IMPROVEMENTS } from "@/data/tileImprovements";
+import { NATIONS } from "@/data/nations";
 
 const ENTITIES_MAP = new Map<string, Entity>();
 
@@ -170,4 +172,27 @@ export function getTileImprDefinitionById(
     throw Error(`DataManager: No resource with id "${id}"`);
   }
   return resource;
+}
+
+const NATIONS_MAP = new Map<string, Nation>();
+for (const nation of NATIONS) {
+  NATIONS_MAP.set(nation.id, nation);
+  ENTITIES_MAP.set(nation.id, nation);
+}
+
+export function getNationById(id: string): Nation {
+  const nation = NATIONS_MAP.get(id);
+  if (!nation) {
+    throw Error(`DataManager: No nation with id "${id}"`);
+  }
+  return nation;
+}
+
+export function pickRandomNation(exclude: Nation[] = []): Nation {
+  const filteredNations = NATIONS.filter((nation) => !exclude.includes(nation));
+  if (filteredNations.length === 0) {
+    throw new Error("No nations left to pick from");
+  }
+  const randomIndex = Math.floor(Math.random() * filteredNations.length);
+  return filteredNations[randomIndex];
 }

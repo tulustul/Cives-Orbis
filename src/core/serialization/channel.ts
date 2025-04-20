@@ -15,6 +15,7 @@ import {
   Entity,
   EntityType,
   IdleProduct,
+  NationColors,
   ProductDefinition,
   ProductType,
   TechEra,
@@ -64,7 +65,7 @@ export interface TileChanneled extends BaseTile {
   resource: ResourceChanneled | null;
   roads: string;
   coasts: string;
-  playerColor: number | null;
+  playerColor: string | null;
   fullNeighbours: (number | null)[];
 }
 
@@ -94,7 +95,7 @@ export interface CityChanneled {
   size: number;
   tile: TileCoords;
   playerId: number;
-  cssColor: string;
+  colors: NationColors;
 
   totalFood: number;
   foodToGrow: number;
@@ -120,6 +121,7 @@ export interface CityDetailsChanneled {
   size: number;
   tile: TileCoords;
   playerId: number;
+  colors: NationColors;
 
   totalFood: number;
   foodToGrow: number;
@@ -165,15 +167,15 @@ export type ProductDefinitionChanneled = {
 
 export interface PlayerChanneled {
   id: number;
-  color: number;
-  cssColor: string;
+  name: string;
+  colors: NationColors;
   areaId: number;
   isAi: boolean;
 }
 
 export interface TrackedPlayerChanneled {
   id: number;
-  color: number;
+  colors: NationColors;
   exploredTiles: TileCoords[];
   visibleTiles: TileCoords[];
   units: number[];
@@ -189,7 +191,7 @@ export interface UnitChanneled {
   definitionId: string;
   type: "military" | "civilian";
   actions: "all" | "some" | "none";
-  cssColor: string;
+  colors: NationColors;
   parentId: number | null;
   childrenIds: number[];
   actionPointsLeft: number;
@@ -212,7 +214,7 @@ export type UnitDetailsChanneled = {
   definition: UnitDefChanneled;
   type: "military" | "civilian";
   trait: UnitTrait;
-  cssColor: string;
+  colors: NationColors;
   parentId: number | null;
   childrenIds: number[];
   actionPointsLeft: number;
@@ -251,7 +253,8 @@ export type ResourceWithTileChanneled = ResourceChanneled & {
 
 export type AreaChanneled = {
   id: number;
-  color: number;
+  primaryColor: string;
+  secondaryColor: string;
   tiles: TilesCoordsWithNeighbours[];
 };
 
@@ -332,7 +335,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
       .map((n) => (!n || n.road === null ? "0" : "1"))
       .join(""),
     coasts: getCoasts(tile),
-    playerColor: tile.areaOf?.player.color ?? null,
+    playerColor: tile.areaOf?.player.nation.colors.primary ?? null,
     fullNeighbours: tile.fullNeighbours.map((t) => t?.id ?? null),
   };
 }
@@ -380,7 +383,7 @@ export function cityToChannel(city: CityCore): CityChanneled {
     visibilityLevel: city.getVisibilityFor(city.player.game.trackedPlayer),
     name: city.name,
     playerId: city.player.id,
-    cssColor: city.player.cssColor,
+    colors: city.player.nation.colors,
     tile: tileToTileCoords(city.tile),
     foodPerTurn: city.perTurn.food,
 
@@ -412,6 +415,7 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
     perTurn: city.perTurn,
     tileYields: city.tileYields,
     yields: city.yields,
+    colors: city.player.nation.colors,
 
     totalFood: city.population.totalFood,
     foodToGrow: city.population.getFoodToGrow(),
@@ -452,8 +456,8 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
 export function playerToChannel(player: PlayerCore): PlayerChanneled {
   return {
     id: player.id,
-    color: player.color,
-    cssColor: player.cssColor,
+    name: player.nation.name,
+    colors: player.nation.colors,
     areaId: player.area.id,
     isAi: !!player.ai,
   };
@@ -464,7 +468,7 @@ export function trackedPlayerToChannel(
 ): TrackedPlayerChanneled {
   return {
     id: player.id,
-    color: player.color,
+    colors: player.nation.colors,
     exploredTiles: Array.from(player.exploredTiles).map(tileToTileCoords),
     visibleTiles: Array.from(player.visibleTiles).map(tileToTileCoords),
     units: player.units.map((u) => u.id),
@@ -480,7 +484,7 @@ export function unitToChannel(unit: UnitCore): UnitChanneled {
     type: unit.definition.strength > 0 ? "military" : "civilian",
     tile: tileToTileCoordsWithUnits(unit.tile),
     definitionId: unit.definition.id,
-    cssColor: unit.player.cssColor,
+    colors: unit.player.nation.colors,
     parentId: unit.parent?.id || null,
     childrenIds: unit.children.map((c) => c.id),
     health: unit.health,
@@ -505,7 +509,7 @@ export function unitDetailsToChannel(unit: UnitCore): UnitDetailsChanneled {
     tile: tileToTileCoords(unit.tile),
     definition: unitDefToChannel(unit.definition),
     trait: unit.definition.trait,
-    cssColor: unit.player.cssColor,
+    colors: unit.player.nation.colors,
     parentId: unit.parent?.id || null,
     childrenIds: unit.children.map((c) => c.id),
     actionPointsLeft: unit.actionPointsLeft,

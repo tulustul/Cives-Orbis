@@ -12,21 +12,19 @@ import {
   getTechById,
   getTileImprDefinitionById,
   getUnitById,
+  pickRandomNation,
   TECHNOLOGIES,
 } from "./core/data-manager";
 import {
   Entity,
   HaveRequirements,
+  Nation,
   ResourceDefinition,
 } from "./core/data.interface";
 import { Game } from "./core/game";
 import { moveAlongPath } from "./core/movement";
 import { findPath } from "./core/pathfinding";
-import {
-  PLAYER_COLORS,
-  PlayerCore,
-  PlayerViewBoundingBox,
-} from "./core/player";
+import { PlayerCore, PlayerViewBoundingBox } from "./core/player";
 import { getFailedWeakRequirements } from "./core/requirements";
 import { ResourceDeposit } from "./core/resources";
 import {
@@ -192,8 +190,13 @@ export interface MapGeneratorOptions {
 function newGameHandler(options: MapGeneratorOptions): GameStartInfo {
   game = new Game();
 
+  const nations: Nation[] = [];
+
   for (let i = 0; i < options.humanPlayersCount + options.aiPlayersCount; i++) {
-    const player = new PlayerCore(game, PLAYER_COLORS[i]);
+    const nation = pickRandomNation(nations);
+    nations.push(nation);
+
+    const player = new PlayerCore(game, nation);
 
     if (i >= options.humanPlayersCount) {
       player.ai = new AIPlayer(player);
@@ -735,7 +738,8 @@ export function cityOptimizeYields(cityId: number) {
 export function getAllArea(): AreaChanneled[] {
   return Array.from(game.areasManager.areasMap.values()).map((area) => ({
     id: area.id,
-    color: area.color,
+    primaryColor: area.primaryColor,
+    secondaryColor: area.secondaryColor,
     tiles: Array.from(area.tiles).map(tilesToTileCoordsWithNeighbours),
   }));
 }

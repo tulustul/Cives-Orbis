@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { PlayersList } from "./PlayersList";
 import { bridge } from "@/bridge";
-import { TechKnowledgeChanneled } from "@/core/serialization/channel";
+import { GrantOrRevoke } from "@/core.worker";
+import { useEffect, useState } from "react";
 import {
   Multiselect,
   MultiselectAddedOrRemoved,
   MultiselectOnChange,
   Option,
 } from "../components";
-import { GrantOrRevoke, GrantRevokeTechOptions } from "@/core.worker";
+import { PlayersList } from "./PlayersList";
 
 export function PlayersEditor() {
   const [trackedPlayerId, setTrackedPlayerId] = useState(0);

@@ -17,12 +17,7 @@ import { AreaCore } from "./area";
 import { PassableArea } from "./tiles-map";
 import { Knowledge } from "./knowledge";
 import { ResourceDeposit } from "./resources";
-
-export const PLAYER_COLORS: number[] = [
-  0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff, 0x999999,
-  0xdddddd, 0xfbacac, 0xe6b873, 0x39862b, 0x2e716e, 0x7457bb, 0xab57bb,
-  0x79583c, 0xb6bbe6, 0xb6bce6,
-];
+import { Nation } from "./data.interface";
 
 export type PlayerViewBoundingBox = {
   minX: number;
@@ -68,8 +63,6 @@ export class PlayerCore {
 
   discoveredResourceDeposits = new Set<ResourceDeposit>();
 
-  cssColor: string;
-
   viewBoundingBox: PlayerViewBoundingBox = {
     minX: Infinity,
     minY: Infinity,
@@ -77,9 +70,11 @@ export class PlayerCore {
     maxY: -Infinity,
   };
 
-  constructor(public game: Game, public color: number) {
-    this.area = this.game.areasManager.make(this.color);
-    this.cssColor = "#" + color.toString(16).padStart(6, "0");
+  constructor(public game: Game, public nation: Nation) {
+    this.area = this.game.areasManager.make(
+      nation.colors.primary,
+      nation.colors.secondary,
+    );
   }
 
   exploreTiles(tiles: Iterable<TileCore>) {
