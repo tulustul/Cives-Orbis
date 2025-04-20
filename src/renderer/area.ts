@@ -7,6 +7,7 @@ import {
 
 import { TilesCoordsWithNeighbours } from "@/core/serialization/channel";
 import { HexDrawerNew } from "./hexDrawer";
+import { hexColorToArray } from "./utils";
 
 export interface AreaPrograms {
   background: ShaderFromResources;
@@ -14,7 +15,7 @@ export interface AreaPrograms {
 }
 
 export interface AreaOptions {
-  color: number;
+  color: string;
   borderSize: number;
   shadowSize: number;
   shadowStrength: number;
@@ -55,7 +56,6 @@ precision mediump float;
 
 const float SQRT3 = 1.73205080757;
 const float HALF_SQRT3 = 0.5 * SQRT3;
-const float sharpness = 1.0;
 
 const vec2 N[6] = vec2[6](
   vec2(  0.5,  HALF_SQRT3 ),
@@ -85,7 +85,7 @@ float getFogValue(uint data) {
       v = max(v, -dot(p, N[i]));
     }
   }
-  return clamp(sharpness - sharpness * 2.0 * v, 0.0, 1.0);
+  return clamp(1.0 - 2.0 * v, 0.0, 1.0);
 }
 
 void main() {
@@ -104,17 +104,12 @@ void main() {
 export class Area extends HexDrawerNew<TilesCoordsWithNeighbours> {
   borders = new Uint32Array(this.maxInstances);
 
-  vec4Color: Float32Array;
+  vec4Color: ReturnType<typeof hexColorToArray>;
 
   constructor(public options: AreaOptions, maxInstances: number) {
     super(options.container, maxInstances);
 
-    this.vec4Color = new Float32Array([
-      ((options.color >> 16) & 0xff) / 255, // red
-      ((options.color >> 8) & 0xff) / 255, // green
-      (options.color & 0xff) / 255, // blue
-      1, // alpha
-    ]);
+    this.vec4Color = hexColorToArray(options.color);
   }
 
   override getGeometryAttributes(): AttributeOptions {

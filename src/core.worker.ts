@@ -47,10 +47,12 @@ import {
   tileDetailsToChannel,
   TileFogOfWar,
   TileHoverDetails,
+  TileOwnershipChanneled,
   TilesCoordsWithNeighbours,
   tilesToTileCoordsWithNeighbours,
   tileToChannel,
   tileToFogOfWar,
+  tileToTileOwnershipChannel,
   trackedPlayerToChannel,
   UnitChanneled,
   unitDetailsToChannel,
@@ -95,6 +97,7 @@ const HANDLERS = {
   "unit.getAll": unitGetAll,
 
   "tile.getAll": tileGetAll,
+  "tile.getOwnership": tileGetOwnership,
   "tile.getFogOfWar": tileGetFogOfWar,
   "tile.getDetails": tileGetDetails,
   "tile.getHoverDetails": tileGetHoverDetails,
@@ -445,6 +448,12 @@ function unitGetAll(): UnitChanneled[] {
 
 export function tileGetAll(): TileChanneled[] {
   return Array.from(game.map.tilesMap.values()).map(tileToChannel);
+}
+
+export function tileGetOwnership(): TileOwnershipChanneled[] {
+  return Array.from(game.map.tilesMap.values()).map((t) =>
+    tileToTileOwnershipChannel(t, game),
+  );
 }
 
 export type TilesFogOfWarChanneled = {

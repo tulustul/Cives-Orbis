@@ -204,8 +204,8 @@ export const NATIONS: Nation[] = [
     entityType: "nation",
     name: "Aztec",
     colors: {
-      primary: "#9e3b25",
-      secondary: "#95d3c6"
+      primary: "#a74a24",
+      secondary: "#5eeeff"
     },
     cityNames: [
       "Tenochtitlan",
@@ -984,7 +984,7 @@ export const NATIONS: Nation[] = [
     name: "Spain",
     colors: {
       primary: "#a72525",
-      secondary: "#d3c628"
+      secondary: "#ffec00"
     },
     cityNames: [
       "Madrid",

@@ -3,7 +3,6 @@ import {
   Container,
   Filter,
   IRenderLayer,
-  MaskFilter,
   RenderLayer,
   UpdateTransformOptions,
 } from "pixi.js";
@@ -22,14 +21,11 @@ import { FogOfWarMaskDrawer } from "./fog-of-war";
 import { Layer } from "./layer";
 import { OverlaysRenderer } from "./overlays";
 import { PathRenderer } from "./path";
-import {
-  PoliticsAndExploredTilesDrawer,
-  PoliticsDrawer,
-} from "./politicsDrawer";
+import { PoliticsDrawer } from "./politicsDrawer";
+import { ResourcesDrawer } from "./resourcesDrawer";
+import { SelectedUnitDrawer } from "./selectedUnitDrawer";
 import { MapDrawer } from "./terrain";
 import { UnitsDrawer } from "./unitsDrawer";
-import { SelectedUnitDrawer } from "./selectedUnitDrawer";
-import { ResourcesDrawer } from "./resourcesDrawer";
 
 export class GameRenderer {
   app!: Application;
@@ -39,7 +35,6 @@ export class GameRenderer {
   mapDrawer!: MapDrawer;
 
   fogOfWarDrawer!: FogOfWarMaskDrawer;
-  politicsAndExploredTilesDrawer!: PoliticsAndExploredTilesDrawer;
   visibleTilesDrawer!: ExploredTilesDrawer;
   cityFocusDrawer!: CityFocusDrawer;
 
@@ -61,7 +56,7 @@ export class GameRenderer {
   politicsContainer = new Container({ label: "politics" });
   unitsDrawer = new UnitsDrawer(this.unitsContainer);
   areaDrawer = new AreasDrawer(this.overlaysContainer);
-  politicsDrawer = new PoliticsDrawer(this.politicsContainer);
+  politicsDrawer = new PoliticsDrawer(this.politicsContainer, 600);
   selectedUnitDrawer = new SelectedUnitDrawer(this.mapContainer);
   resourcesDrawer!: ResourcesDrawer;
 
@@ -203,22 +198,22 @@ export class GameRenderer {
         this.resourcesDrawer.setScale(scale);
       }
 
-      if (this.politicsDrawer) {
-        const backgroundOpacity = Math.min(
-          0.2,
-          Math.max(0, (70 - scale) / 150),
-        );
+      // if (this.politicsDrawer) {
+      //   const backgroundOpacity = Math.min(
+      //     0.2,
+      //     Math.max(0, (70 - scale) / 150),
+      //   );
 
-        const shadowSize = Math.max(0.2, Math.min(0.7, (150 - scale) / 200));
+      //   const shadowSize = Math.max(0.2, Math.min(0.7, (150 - scale) / 200));
 
-        for (const area of this.politicsDrawer.areas.values()) {
-          if (area.shader) {
-            area.shader.resources["uniforms"].uniforms.bgOpacity =
-              backgroundOpacity;
-            area.shader!.resources["uniforms"].uniforms.shadowSize = shadowSize;
-          }
-        }
-      }
+      //   for (const area of this.politicsDrawer.areas.values()) {
+      //     if (area.shader) {
+      //       area.shader.resources["uniforms"].uniforms.bgOpacity =
+      //         backgroundOpacity;
+      //       area.shader!.resources["uniforms"].uniforms.shadowSize = shadowSize;
+      //     }
+      //   }
+      // }
 
       this.mapLayer.renderToTarget();
       this.fogOfWarLayer.renderToTarget();

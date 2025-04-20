@@ -104,3 +104,13 @@ export function putContainerAtTileCentered(
 export function hexColorToNumber(hex: string): number {
   return parseInt(hex.slice(1), 16);
 }
+
+export function hexColorToArray(hex: string): [number, number, number, number] {
+  const hexNumber = hexColorToNumber(hex);
+  return [
+    ((hexNumber >> 16) & 0xff) / 255, // red
+    ((hexNumber >> 8) & 0xff) / 255, // green
+    (hexNumber & 0xff) / 255, // blue
+    1, // alpha
+  ];
+}
