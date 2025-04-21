@@ -2,8 +2,9 @@ import { bridge } from "@/bridge";
 import { TileOwnershipChanneled } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
-import { HexDrawerNew } from "./hexDrawer";
+import { HexDrawer } from "./hexDrawer";
 import { hexColorToArray } from "./utils";
+import { camera } from "./camera";
 
 const VERTEX_PROGRAM = `#version 300 es
 
@@ -98,14 +99,16 @@ void main() {
   fragColor = vec4(color * value, value);
 }`;
 
-export class PoliticsDrawer extends HexDrawerNew<TileOwnershipChanneled> {
-  borders = new Uint32Array(this.maxInstances);
-  primaryColors = new Float32Array(this.maxInstances * 3);
-  secondaryColors = new Float32Array(this.maxInstances * 3);
-  isBuilt = false;
+export class PoliticsDrawer extends HexDrawer<TileOwnershipChanneled> {
+  borders = new Uint32Array(0);
+  primaryColors = new Float32Array(0);
+  secondaryColors = new Float32Array(0);
 
-  constructor(container: Container, maxInstances: number) {
-    super(container, maxInstances);
+  isBuilt = false;
+  lastScale = camera.transform.scale;
+
+  constructor(container: Container) {
+    super(container);
 
     bridge.player.tracked$.subscribe(() => this.build());
 
@@ -117,7 +120,27 @@ export class PoliticsDrawer extends HexDrawerNew<TileOwnershipChanneled> {
       this.updateTiles(tiles);
     });
 
+    camera.transform$.subscribe(() => {
+      if (!this.shader) {
+        return;
+      }
+
+      const scale = camera.transform.scale;
+
+      const backgroundOpacity = Math.min(0.3, Math.max(0, (70 - scale) / 150));
+
+      const shadowSize = Math.max(0.3, Math.min(1.0, (150 - scale) / 150));
+
+      const uniforms = this.shader.resources["uniforms"].uniforms;
+      uniforms.bgOpacity = backgroundOpacity;
+      uniforms.shadowSize = shadowSize;
+    });
+
     mapUi.destroyed$.subscribe(() => this.clear());
+
+    mapUi.politicsEnabled$.subscribe((enabled) => {
+      this.container.visible = enabled;
+    });
   }
 
   private async build() {
@@ -205,8 +228,15 @@ export class PoliticsDrawer extends HexDrawerNew<TileOwnershipChanneled> {
   }
 
   private updateBuffers_() {
-    this.geometry!.attributes.aBorders.buffer.update();
-    this.geometry!.attributes.aPrimaryColor.buffer.update();
-    this.geometry!.attributes.aSecondaryColor.buffer.update();
+    this.geometry?.getAttribute("aBorders").buffer.update();
+    this.geometry?.getAttribute("aPrimaryColor").buffer.update();
+    this.geometry?.getAttribute("aSecondaryColor").buffer.update();
+  }
+
+  override initializeBuffers(maxInstances: number) {
+    super.initializeBuffers(maxInstances);
+    this.borders = new Uint32Array(maxInstances);
+    this.primaryColors = new Float32Array(maxInstances * 3);
+    this.secondaryColors = new Float32Array(maxInstances * 3);
   }
 }

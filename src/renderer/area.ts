@@ -6,7 +6,7 @@ import {
 } from "pixi.js";
 
 import { TilesCoordsWithNeighbours } from "@/core/serialization/channel";
-import { HexDrawerNew } from "./hexDrawer";
+import { HexDrawer } from "./hexDrawer";
 import { hexColorToArray } from "./utils";
 
 export interface AreaPrograms {
@@ -101,13 +101,13 @@ void main() {
   fragColor = color * max(bgOpacity, value);
 }`;
 
-export class Area extends HexDrawerNew<TilesCoordsWithNeighbours> {
-  borders = new Uint32Array(this.maxInstances);
+export class Area extends HexDrawer<TilesCoordsWithNeighbours> {
+  borders = new Uint32Array(0);
 
   vec4Color: ReturnType<typeof hexColorToArray>;
 
-  constructor(public options: AreaOptions, maxInstances: number) {
-    super(options.container, maxInstances);
+  constructor(public options: AreaOptions) {
+    super(options.container);
 
     this.vec4Color = hexColorToArray(options.color);
   }
@@ -155,8 +155,13 @@ export class Area extends HexDrawerNew<TilesCoordsWithNeighbours> {
     });
   }
 
+  override initializeBuffers(maxInstances: number) {
+    super.initializeBuffers(maxInstances);
+    this.borders = new Uint32Array(maxInstances);
+  }
+
   override updateBuffers(): void {
     super.updateBuffers();
-    this.geometry!.attributes.aBorders.buffer.update();
+    this.geometry?.getAttribute("aBorders").buffer.update();
   }
 }

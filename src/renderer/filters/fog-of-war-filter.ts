@@ -93,6 +93,9 @@ void main() {
   vec4 color = texture2D(uTexture, vTextureCoord);
   vec4 mask = texture2D(uMaskTexture, vMaskCoord);
 
+  // gl_FragColor = mask;
+  // return;
+
   float explored = mask.r;
   vec3 outColor = getFogColor(color.rgb, 1.0 - mask.a);
 

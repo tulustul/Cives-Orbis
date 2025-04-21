@@ -72,10 +72,8 @@ export class CityExpansion {
       this.tiles.add(tile);
       this.city.workers.notWorkedTiles.add(tile);
       tile.areaOf = this.city;
-      this.city.player.area.add(tile);
       this.city.player.exploreTiles([tile]);
       this.city.player.exploreTiles(tile.neighbours);
-      // collector.tiles.add(tile);
       collector.tileOwnershipChanges.add(tile);
     }
   }
@@ -84,8 +82,6 @@ export class CityExpansion {
     if (this.tiles.has(tile)) {
       this.tiles.delete(tile);
       tile.areaOf = null;
-      this.city.player.area.remove(tile);
-      // collector.tiles.add(tile);
       collector.tileOwnershipChanges.add(tile);
     }
   }

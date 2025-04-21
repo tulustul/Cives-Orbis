@@ -6,67 +6,16 @@ import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
 import { TILE_ROW_OFFSET } from "./constants";
-import { TerrainDrawer } from "./newTerrain/terrain";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
+import { camera } from "./camera";
+import { merge } from "rxjs";
 
-// const SEA_TEXTURES: Record<SeaLevel, string> = {
-//   [SeaLevel.deep]: "hexWaterDeep.png",
-//   [SeaLevel.shallow]: "hexWaterShallow.png",
-//   [SeaLevel.none]: "",
-// };
-
-// const CLIMATE_TEXTURES: Record<Climate, Record<LandForm, string>> = {
-//   [Climate.temperate]: {
-//     [LandForm.plains]: "hexTemperatePlains.png",
-//     [LandForm.hills]: "hexTemperateHills.png",
-//     [LandForm.mountains]: "hexMountain.png",
-//   },
-//   [Climate.desert]: {
-//     [LandForm.plains]: "hexDesertPlains.png",
-//     [LandForm.hills]: "hexDesertHills.png",
-//     [LandForm.mountains]: "hexDesertMountain.png",
-//   },
-//   [Climate.savanna]: {
-//     [LandForm.plains]: "hexSavannaPlains.png",
-//     [LandForm.hills]: "hexSavannaHills.png",
-//     [LandForm.mountains]: "hexDesertMountain.png",
-//   },
-//   [Climate.tropical]: {
-//     [LandForm.plains]: "hexTropicalPlains.png",
-//     [LandForm.hills]: "hexTropicalHills.png",
-//     [LandForm.mountains]: "hexMountain.png",
-//   },
-//   [Climate.tundra]: {
-//     [LandForm.plains]: "hexTundraPlains.png",
-//     [LandForm.hills]: "hexTundraHills.png",
-//     [LandForm.mountains]: "hexArcticMountain.png",
-//   },
-//   [Climate.arctic]: {
-//     [LandForm.plains]: "hexArcticPlains.png",
-//     [LandForm.hills]: "hexArcticHills.png",
-//     [LandForm.mountains]: "hexArcticMountain.png",
-//   },
-// };
-
-// const FOREST_TEXTURES: Record<Climate, string> = {
-//   [Climate.temperate]: "hexTemperateForest.png",
-//   [Climate.tropical]: "hexTropicalForest.png",
-//   [Climate.tundra]: "hexTundraForest.png",
-//   [Climate.savanna]: "",
-//   [Climate.desert]: "",
-//   [Climate.arctic]: "",
-// };
-
-export class MapDrawer {
-  terrainContainer = new Container({ label: "terrain" });
-
+export class MapDecorsDrawer {
   tileDrawers = new Map<number, TileDrawer>();
 
-  terrainDrawer: TerrainDrawer | null = null;
+  yieldsEnabled = mapUi.yieldsEnabled;
 
-  constructor(container: Container, private yieldsLayer: IRenderLayer) {
-    container.addChild(this.terrainContainer);
-
+  constructor(private container: Container, private yieldsLayer: IRenderLayer) {
     bridge.tiles.updated$.subscribe((tiles) => {
       const t0 = performance.now();
       for (const tile of tiles) {
@@ -77,10 +26,22 @@ export class MapDrawer {
     });
 
     bridge.game.start$.subscribe(() => {
-      measureTime("build map", () => this.build());
+      measureTime("map decors build", () => this.build());
     });
 
     mapUi.destroyed$.subscribe(() => this.clear());
+
+    merge(mapUi.yieldsEnabled$, camera.scale$).subscribe(() =>
+      this.setYieldsVisible(),
+    );
+  }
+
+  setYieldsVisible() {
+    if (mapUi.yieldsEnabled && camera.transform.scale > 30) {
+      this.container.parent.addChild(this.yieldsLayer);
+    } else {
+      this.container.parent.removeChild(this.yieldsLayer);
+    }
   }
 
   clear() {
@@ -94,15 +55,11 @@ export class MapDrawer {
     this.clear();
     const tiles = await bridge.tiles.getAll();
 
-    this.terrainDrawer = new TerrainDrawer(this.terrainContainer, tiles.length);
-
-    this.terrainDrawer.addTiles(tiles);
-
     for (const tile of tiles) {
       const drawer = new TileDrawer(tile, this.yieldsLayer);
       this.tileDrawers.set(tile.id, drawer);
-      this.terrainContainer.addChild(drawer.container);
       drawer.draw(tile);
+      this.container.addChild(drawer.container);
     }
   }
 
@@ -118,10 +75,8 @@ class TileDrawer {
   container = new Container();
 
   tilesTextures = getAssets().tilesSpritesheet.textures;
-  resourcesTextures = getAssets().resourcesSpritesheet.textures;
 
   yieldsGraphics = new Graphics();
-  // terrainSprite = new Sprite(this.tilesTextures["hexTropicalPlains.png"]);
   resourceSprite: Sprite | null = null;
   improvementSprite: Sprite | null = null;
   roadSprite: Sprite | null = null;
@@ -133,9 +88,6 @@ class TileDrawer {
 
   constructor(private tile: TileChanneled, private yieldsLayer: IRenderLayer) {
     this.container.zIndex = tile.y;
-
-    // putContainerAtTile(this.terrainSprite, tile);
-    // this.container.addChild(this.terrainSprite);
   }
 
   public destroy() {
@@ -145,11 +97,9 @@ class TileDrawer {
 
   public draw(tile: TileChanneled) {
     this.tile = tile;
-    // this.drawTerrain();
     this.drawRiver();
     this.drawDecors();
     this.drawImprovement();
-    // this.drawResource();
     this.drawRoads();
     this.drawCity();
     this.drawYields();
@@ -175,43 +125,7 @@ class TileDrawer {
       this.container.addChild(this.forestSprite);
       putContainerAtTileCentered(this.forestSprite, this.tile, 2.0);
     }
-
-    // if (this.tile.coasts) {
-    //   const textureName = `hexCoast${this.tile.coasts}-00.png`;
-    //   this.coastsSprite = new Sprite(this.tilesTextures[textureName]);
-    //   this.coastsSprite.anchor.set(0.5, 0.67);
-    //   this.container.addChild(this.coastsSprite);
-    //   putContainerAtTileCentered(this.coastsSprite, this.tile, 3.1);
-    // }
   }
-
-  // private drawTerrain() {
-  //   let textureName: string;
-
-  //   if (this.tile.wetlands) {
-  //     if (this.tile.forest) {
-  //       textureName = "hexMarshForest.png";
-  //     } else {
-  //       textureName = "hexMarsh.png";
-  //     }
-  //   } else if (this.tile.forest) {
-  //     textureName = FOREST_TEXTURES[this.tile.climate];
-  //   } else if (this.tile.seaLevel === SeaLevel.none) {
-  //     if (
-  //       this.tile.climate === Climate.desert &&
-  //       this.tile.landForm === LandForm.plains &&
-  //       this.tile.riverParts.length
-  //     ) {
-  //       textureName = "hexDesertFlooded.png";
-  //     } else {
-  //       textureName = CLIMATE_TEXTURES[this.tile.climate][this.tile.landForm];
-  //     }
-  //   } else {
-  //     textureName = SEA_TEXTURES[this.tile.seaLevel];
-  //   }
-
-  //   // this.terrainSprite.texture = this.tilesTextures[textureName];
-  // }
 
   private drawImprovement() {
     if (this.tile.improvement === null) {
@@ -232,31 +146,7 @@ class TileDrawer {
     const textureName = `${this.tile.improvement.id}.png`;
     this.improvementSprite.texture = this.tilesTextures[textureName];
     putContainerAtTileCentered(this.improvementSprite, this.tile, 2);
-    // putSpriteAtTileCentered(this.improvementSprite, this.tile);
   }
-
-  // private drawResource() {
-  // if (this.tile.resource === null) {
-  //   if (this.resourceSprite) {
-  //     this.resourceSprite.visible = false;
-  //   }
-  //   return;
-  // }
-  // if (!this.resourceSprite) {
-  //   this.resourceSprite = new Sprite();
-  //   // this.resourceSprite.zIndex = 20;
-  //   this.container.addChild(this.resourceSprite);
-  //   this.resourcesLayer.attach(this.resourceSprite);
-  // }
-  // this.resourceSprite.visible = true;
-  // const textureName = `${this.tile.resource.id}.png`;
-  // const texture = this.tilesTextures[`tile-${this.tile.resource.id}.png`];
-  // if (texture) {
-  //   this.resourceSprite.texture = texture;
-  //   putSpriteAtTileCentered(this.resourceSprite, this.tile, 1);
-  // } else {
-  // }
-  // }
 
   private drawRoads() {
     if (this.tile.road === null || this.tile.cityId !== null) {

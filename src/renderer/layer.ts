@@ -1,17 +1,21 @@
 import { Application, Container, RenderTexture, Sprite } from "pixi.js";
 
 export class Layer {
-  texture: RenderTexture;
+  texture: RenderTexture | null = null;
 
   sprite = new Sprite();
 
   stage = new Container();
 
-  constructor(
-    private app: Application,
-    label: string,
-  ) {
+  app: Application | null = null;
+
+  constructor(label: string) {
     this.stage.label = label;
+  }
+
+  bindToApp(app: Application) {
+    this.app = app;
+
     this.texture = RenderTexture.create({
       width: app.renderer.width,
       height: app.renderer.height,
@@ -20,6 +24,9 @@ export class Layer {
   }
 
   renderToTarget() {
+    if (!this.app || !this.texture) {
+      return;
+    }
     this.app.renderer.render({ container: this.stage, target: this.texture });
     this.app.render();
   }
@@ -31,7 +38,7 @@ export class Layer {
     this.sprite.width = width;
     this.sprite.height = height;
 
-    this.texture.destroy();
+    this.texture?.destroy();
     this.texture = newTexture;
   }
 }

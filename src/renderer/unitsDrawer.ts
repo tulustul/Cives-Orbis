@@ -72,6 +72,10 @@ export class UnitsDrawer {
     });
 
     mapUi.destroyed$.subscribe(() => this.clear());
+
+    camera.scale$.subscribe((scale) => {
+      this.setScale(scale);
+    });
   }
 
   private updateUnit(unit: UnitChanneled) {

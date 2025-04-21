@@ -175,11 +175,9 @@ export class CityCore {
     const index = oldOwner.cities.indexOf(this);
     if (index !== -1) {
       oldOwner.cities.splice(index, 1);
-      oldOwner.area.removeBulk(cityTiles);
     }
 
     newOwner.cities.push(this);
-    newOwner.area.addBulk(cityTiles);
 
     for (const tile of cityTiles) {
       collector.tileOwnershipChanges.add(tile);

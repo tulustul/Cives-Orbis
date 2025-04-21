@@ -1,9 +1,10 @@
+import { TileCoords } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { Container } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";
 
 export class CityFocusDrawer {
-  private hexDrawer: HexDrawer;
+  private hexDrawer: HexDrawer<TileCoords>;
 
   constructor(private container: Container) {
     this.hexDrawer = new HexDrawer(this.container);

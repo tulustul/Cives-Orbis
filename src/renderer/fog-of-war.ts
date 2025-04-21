@@ -2,7 +2,7 @@ import { bridge } from "@/bridge";
 import { TileFogOfWar } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
-import { HexDrawerNew } from "./hexDrawer";
+import { HexDrawer } from "./hexDrawer";
 import { getAssets } from "./assets";
 
 const VERTEX_PROGRAM = `#version 300 es
@@ -89,11 +89,11 @@ void main() {
   fragColor = vec4(explored, 0.0, 0.0, visible);
 }`;
 
-export class FogOfWarMaskDrawer extends HexDrawerNew<TileFogOfWar> {
-  tileData = new Uint32Array(this.maxInstances);
+export class FogOfWarMaskDrawer extends HexDrawer<TileFogOfWar> {
+  tileData = new Uint32Array(0);
 
-  constructor(container: Container, maxInstances: number) {
-    super(container, maxInstances);
+  constructor(container: Container) {
+    super(container);
 
     bridge.tiles.fogOfWar$.subscribe(() => this.bindToTrackedPlayer());
 
@@ -106,7 +106,7 @@ export class FogOfWarMaskDrawer extends HexDrawerNew<TileFogOfWar> {
 
   private async bindToTrackedPlayer() {
     const fogOfWar = await bridge.tiles.getFogOfWar();
-    if (!this.geometry) {
+    if (this.tilesMap.size === 0) {
       this.addTiles(fogOfWar.tiles);
     } else {
       this.updateTiles(fogOfWar.tiles);
@@ -117,7 +117,7 @@ export class FogOfWarMaskDrawer extends HexDrawerNew<TileFogOfWar> {
     for (const tile of tiles) {
       this.setTileAttributes(tile, this.tilesIndexMap.get(tile.id)!);
     }
-    this.geometry!.attributes.aTileData.buffer.update();
+    this.updateBuffers_();
   }
 
   override getGeometryAttributes(): AttributeOptions {
@@ -145,8 +145,16 @@ export class FogOfWarMaskDrawer extends HexDrawerNew<TileFogOfWar> {
     });
   }
 
+  override initializeBuffers(maxInstances: number) {
+    super.initializeBuffers(maxInstances);
+    this.tileData = new Uint32Array(maxInstances);
+  }
+
   override updateBuffers(): void {
     super.updateBuffers();
-    this.geometry!.attributes.aTileData.buffer.update();
+  }
+
+  private updateBuffers_() {
+    this.geometry?.getAttribute("aTileData").buffer.update();
   }
 }

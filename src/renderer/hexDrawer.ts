@@ -1,16 +1,8 @@
 import { TileCoords } from "@/core/serialization/channel";
-import {
-  AttributeOptions,
-  Container,
-  Geometry,
-  Mesh,
-  Shader,
-  Sprite,
-} from "pixi.js";
-import { getAssets } from "./assets";
-import { drawTileSprite } from "./utils";
-import { HEX } from "./hexGeometry";
+import { AttributeOptions, Container, Geometry, Mesh, Shader } from "pixi.js";
 import { TILE_ROW_OFFSET } from "./constants";
+import { HEX } from "./hexGeometry";
+import { bridge } from "@/bridge";
 
 const VERTEX_PROGRAM = `#version 300 es
 
@@ -44,59 +36,7 @@ void main() {
   fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }`;
 
-export class HexDrawer {
-  private renderedTiles = new Map<number, Sprite>();
-
-  private texture = getAssets().tilesSpritesheet.textures["hexMask.png"];
-
-  constructor(private container: Container) {}
-
-  clear() {
-    for (const sprite of this.renderedTiles.values()) {
-      sprite.destroy();
-    }
-    this.renderedTiles.clear();
-  }
-
-  public async setTiles(tiles: TileCoords[]) {
-    const tilesSet = new Set(tiles.map((t) => t.id));
-
-    for (const tileId of this.renderedTiles.keys()) {
-      if (!tilesSet.has(tileId)) {
-        this.destroyTile(tileId);
-      }
-    }
-    for (const tile of tiles) {
-      if (!this.renderedTiles.has(tile.id)) {
-        this.renderTile(tile);
-      }
-    }
-  }
-
-  public addTiles(tiles: TileCoords[]) {
-    for (const tile of tiles) {
-      if (!this.renderedTiles.has(tile.id)) {
-        this.renderTile(tile);
-      }
-    }
-  }
-
-  public renderTile(tile: TileCoords) {
-    const sprite = drawTileSprite(tile, this.texture);
-    this.container.addChild(sprite);
-    this.renderedTiles.set(tile.id, sprite);
-  }
-
-  public destroyTile(tileId: number) {
-    const sprite = this.renderedTiles.get(tileId);
-    this.renderedTiles.delete(tileId);
-    if (sprite) {
-      sprite.destroy();
-    }
-  }
-}
-
-export class HexDrawerNew<T extends TileCoords> {
+export class HexDrawer<T extends TileCoords> {
   instancePositions: Float32Array;
 
   tilesMap = new Map<number, T>();
@@ -106,15 +46,27 @@ export class HexDrawerNew<T extends TileCoords> {
   mesh: Mesh<Geometry, Shader> | null = null;
   shader: Shader | null = null;
 
-  constructor(public container: Container, public maxInstances: number) {
-    this.instancePositions = new Float32Array(maxInstances * 2);
+  constructor(public container: Container) {
+    this.instancePositions = new Float32Array(0);
+
+    bridge.game.start$.subscribe((gameStartInfo) => {
+      this.clear();
+      this.buildMesh(
+        gameStartInfo.gameInfo.mapHeight * gameStartInfo.gameInfo.mapWidth,
+      );
+    });
   }
 
-  buildMeshIfNeeded() {
-    if (this.geometry) {
-      return;
+  buildMesh(maxInstances: number) {
+    this.mesh?.destroy();
+    this.geometry?.destroy();
+
+    this.initializeBuffers(maxInstances);
+
+    if (!this.shader) {
+      this.shader = this.buildShader();
     }
-    this.shader = this.buildShader();
+
     this.geometry = this.buildGeometry();
     this.mesh = new Mesh({ geometry: this.geometry, shader: this.shader });
     this.container.addChild(this.mesh);
@@ -135,9 +87,8 @@ export class HexDrawerNew<T extends TileCoords> {
   }
 
   addTiles(tiles: T[]) {
-    this.buildMeshIfNeeded();
     if (!this.geometry) {
-      throw new Error("Geometry is not built");
+      return;
     }
 
     let index = this.tilesMap.size;
@@ -191,9 +142,10 @@ export class HexDrawerNew<T extends TileCoords> {
   }
 
   updateBuffers() {
-    if (!this.geometry) {
-      throw new Error("Geometry is not built");
-    }
-    this.geometry.attributes.aInstancePosition.buffer.update();
+    this.geometry?.getAttribute("aInstancePosition").buffer.update();
+  }
+
+  initializeBuffers(maxInstances: number) {
+    this.instancePositions = new Float32Array(maxInstances * 2);
   }
 }
