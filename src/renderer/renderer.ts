@@ -63,7 +63,7 @@ export class GameRenderer {
     this.yieldsLayer,
   );
   unitsDrawer = new UnitsDrawer(this.unitsContainer);
-  areaDrawer = new AreasDrawer(this.overlaysContainer);
+  // areaDrawer = new AreasDrawer(this.overlaysContainer);
   selectedUnitDrawer = new SelectedUnitDrawer(this.terrainContainer);
   overlays = new OverlaysDrawer(this.overlaysContainer);
   path = new PathDrawer(this.overlaysContainer);
@@ -146,6 +146,7 @@ export class GameRenderer {
   onTick() {
     animationsManager.update(this.app.ticker.deltaMS);
     this.selectedUnitDrawer.tick(this.app.ticker.deltaMS);
+    this.terrainDrawer.tick(this.app.ticker.lastTime);
 
     this.mapLayer.renderToTarget();
     this.fogOfWarLayer.renderToTarget();

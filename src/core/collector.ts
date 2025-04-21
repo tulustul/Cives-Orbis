@@ -39,8 +39,6 @@ type CollectorChange = {
 };
 
 class Collector {
-  enabled = false;
-
   changes: CollectorChange[] = [];
 
   tiles = new Set<TileCore>();
