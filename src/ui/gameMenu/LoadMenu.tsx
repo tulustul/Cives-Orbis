@@ -29,7 +29,6 @@ export function LoadMenu() {
     await bridge.game.load(data);
 
     menu.hide();
-    uiState.setMode("map");
     setWaiting(false);
   }
 

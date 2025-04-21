@@ -19,6 +19,7 @@ Bugs:
   ☐ fix not existing workers showing up on the map
   ☐ fix destroying units doesn't update the units occupying the same tile
   ☐ settler still in the UI after founding the city
+  ☐ clear CityInfo whne changing tracked player
 
 Performance:
   ✔ optimize workers AI @done(25-03-10 23:14)
@@ -61,14 +62,15 @@ New renderer:
     ✔ simplify containers hierarchy @done(25-04-21 12:22)
     ✔ automatic buffer size @done(25-04-21 12:52)
     ✔ proper clear and rebuild @done(25-04-21 12:52)
+    ☐ rewrite minimap to HexDrawer
     ☐ fix console errors and warnings
     ☐ update tile / update terrain
-    ☐ cache commands
+    ✔ cache commands @done(25-04-21 13:55)
     ☐ don't draw politics background on the water
     ☐ fix hot reloading slowing down the app
     ☐ fix hex shape in mouse hover
     ☐ zoom - hide/show cities - remove transition
-    ☐ optimize fog of war - partial update
+    ✔ optimize fog of war - partial update @done(25-04-21 14:37)
 
 Major features:
   ☐ City economy

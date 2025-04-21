@@ -43,6 +43,8 @@ const maxSize = 300;
 type Size = { width: number; height: number };
 
 export class MinimapRenderer {
+  tiles = new Map<number, TileChanneled>();
+
   canvasSize: Size = { width: 0, height: 0 };
   mapSize: Size = { width: 0, height: 0 };
 
@@ -72,6 +74,15 @@ export class MinimapRenderer {
       this.reveal(fogOfWar.tiles);
       if (mapUi.fogOfWarEnabled) {
         this.updateTransform(fogOfWar.viewBoundingBox);
+      }
+      this.render();
+    });
+
+    bridge.tiles.ownership$.subscribe((tiles) => {
+      for (const tileOwnership of tiles) {
+        const tile = this.tiles.get(tileOwnership.id)!;
+        tile.playerColor = tileOwnership.colors ?? null;
+        this.drawTile(tile);
       }
       this.render();
     });
@@ -283,6 +294,7 @@ export class MinimapRenderer {
   }
 
   private drawTile(tile: TileChanneled) {
+    this.tiles.set(tile.id, tile);
     let g = this.tilesMap.get(tile.id);
     if (g) {
       g.clear();
@@ -297,14 +309,12 @@ export class MinimapRenderer {
     if (tile.seaLevel !== SeaLevel.none) {
       color = SEA_COLORS[tile.seaLevel];
     } else if (tile.playerColor) {
-      color = hexColorToNumber(tile.playerColor);
+      color = hexColorToNumber(tile.playerColor.primary);
     } else if (tile.landForm === LandForm.mountains) {
       color = MOUNTAIN_COLOR;
     } else {
       color = CLIMATE_COLORS[tile.climate];
     }
-
-    g.clear();
 
     drawHex(g, tile.x, tile.y);
     g.fill({ color });

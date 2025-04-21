@@ -1,3 +1,4 @@
+import { TilesFogOfWarChanneled } from "@/core.worker";
 import { PlayerYields } from "../shared";
 import { CityCore } from "./city";
 import { Technology } from "./data.interface";
@@ -11,7 +12,7 @@ import {
   resourceWithTileToChannel,
   TechKnowledgeChanneled,
   techToChannel,
-  tilesToTileCoordsWithNeighbours,
+  TileFogOfWar,
   tileToChannel,
   tileToFogOfWar,
   tileToTileOwnershipChannel,
@@ -32,8 +33,15 @@ export type CityRevealedResult = {
   action: "center" | "none";
 };
 
+type CollectorChange = {
+  type: string;
+  data: any;
+};
+
 class Collector {
-  changes: any[] = [];
+  enabled = false;
+
+  changes: CollectorChange[] = [];
 
   tiles = new Set<TileCore>();
 
@@ -45,9 +53,6 @@ class Collector {
   cities = new Set<CityCore>();
   citiesDestroyed = new Set<number>();
 
-  areaTilesAdded = new Map<number, TileCore[]>();
-  areaTilesRemoved = new Map<number, TileCore[]>();
-
   trackedPlayer: PlayerCore | undefined;
   trackedPlayerYields: PlayerYields | undefined;
 
@@ -55,8 +60,6 @@ class Collector {
 
   research: Technology | null | undefined = undefined;
   newTechs: Technology[] = [];
-
-  viewBoundingBox: PlayerViewBoundingBox | null = null;
 
   discoveredResourceDeposits = new Set<ResourceDeposit>();
   depletedResourceDeposits = new Set<ResourceDeposit>();
@@ -98,19 +101,6 @@ class Collector {
       });
     }
 
-    for (const [id, tiles] of this.areaTilesAdded.entries()) {
-      changes.push({
-        type: "area.tilesAdded",
-        data: { id, tiles: tiles.map(tilesToTileCoordsWithNeighbours) },
-      });
-    }
-    for (const [id, tiles] of this.areaTilesRemoved.entries()) {
-      changes.push({
-        type: "area.tilesRemoved",
-        data: { id, tiles: tiles.map(tilesToTileCoordsWithNeighbours) },
-      });
-    }
-
     if (this.turn) {
       changes.push({ type: "game.turn", data: this.turn });
     }
@@ -127,16 +117,20 @@ class Collector {
         data: this.trackedPlayerYields,
       });
     }
+
     if (this.tilesFogOfWar.size) {
-      changes.push({
-        type: "trackedPlayer.fogOfWar",
-        data: {
-          tiles: Array.from(this.tilesFogOfWar).map((t) =>
-            tileToFogOfWar(t, game),
-          ),
-          viewBoundingBox: this.viewBoundingBox,
-        },
-      });
+      const toUpdate = new Set<TileCore>();
+      for (const tile of this.tilesFogOfWar) {
+        toUpdate.add(tile);
+        for (const neighbour of tile.neighbours) {
+          toUpdate.add(neighbour);
+        }
+      }
+      const data: TilesFogOfWarChanneled = {
+        tiles: Array.from(toUpdate).map((t) => tileToFogOfWar(t, game)),
+        viewBoundingBox: game.trackedPlayer.viewBoundingBox,
+      };
+      changes.push({ type: "trackedPlayer.fogOfWar", data });
     }
 
     if (this.research !== undefined) {
@@ -210,9 +204,6 @@ class Collector {
     this.cities.clear();
     this.citiesDestroyed.clear();
 
-    this.areaTilesAdded.clear();
-    this.areaTilesRemoved.clear();
-
     this.trackedPlayer = undefined;
     this.trackedPlayerYields = undefined;
 
@@ -227,31 +218,7 @@ class Collector {
 
     this.turn = undefined;
 
-    this.viewBoundingBox = null;
-
     return changes;
-  }
-
-  addAreaTiles(areaId: number, tiles: TileCore[]) {
-    if (!this.areaTilesAdded.has(areaId)) {
-      this.areaTilesAdded.set(areaId, tiles);
-    } else {
-      this.areaTilesAdded.get(areaId)!.push(...tiles);
-    }
-  }
-
-  removeAreaTiles(areaId: number, tiles: TileCore[]) {
-    if (!this.areaTilesRemoved.has(areaId)) {
-      this.areaTilesRemoved.set(areaId, tiles);
-    } else {
-      this.areaTilesRemoved.get(areaId)!.push(...tiles);
-    }
-  }
-
-  addFogOfWarChange(tiles: Set<TileCore>) {
-    for (const tile of tiles) {
-      this.tilesFogOfWar.add(tile);
-    }
   }
 }
 
