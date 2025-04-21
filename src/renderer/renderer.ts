@@ -28,6 +28,7 @@ import { merge } from "rxjs";
 import { bridge } from "@/bridge";
 import { awaitingExecutors } from "@/bridge/worker";
 import { useUiState } from "@/ui/uiState";
+import { TerrainDrawerSimple } from "./terrainDrawerSimple";
 
 function makeContainer(label: string, options: ContainerOptions = {}) {
   return new Container({
@@ -63,7 +64,7 @@ export class GameRenderer {
     this.yieldsLayer,
   );
   unitsDrawer = new UnitsDrawer(this.unitsContainer);
-  // areaDrawer = new AreasDrawer(this.overlaysContainer);
+  areaDrawer = new AreasDrawer(this.overlaysContainer);
   selectedUnitDrawer = new SelectedUnitDrawer(this.terrainContainer);
   overlays = new OverlaysDrawer(this.overlaysContainer);
   path = new PathDrawer(this.overlaysContainer);
