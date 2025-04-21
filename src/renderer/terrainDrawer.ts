@@ -8,6 +8,8 @@ import { HexDrawer } from "./hexDrawer";
 import { getAssets } from "./assets";
 import { measureTime } from "@/utils";
 import { HEX } from "./hexGeometry";
+import { render } from "sass-embedded";
+import { renderer } from "./renderer";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -88,6 +90,7 @@ uniform sampler2D atlas;
 uniform sampler2D whitenoise;
 uniform sampler2D noise;
 
+uniform float time;
 uniform bool gridEnabled;
 
 const vec2 N[6] = vec2[6](
@@ -140,8 +143,8 @@ float sampleNoise(vec2 uv, float scale) {
 // https://iquilezles.org/articles/texturerepetition/
 vec4 textureNoTile(sampler2D samp, vec2 uv, vec4 offset) {
     // sample variation pattern
-    // float k = sampleWhitenoise(uv, 0.01); // cheap (cache friendly) lookup
-    float k = noiseFn( uv * 1.0 );
+    float k = sampleWhitenoise(uv, 0.01);
+    // float k = noiseFn( uv );
 
     // compute index
     float index = k*8.0;
@@ -166,8 +169,15 @@ vec4 textureNoTile(sampler2D samp, vec2 uv, vec4 offset) {
 
 vec4 sampleAtlas(uint textureId, vec2 uv) {
   vec4 offset = uvOffsets[textureId];
-  // uv = fract(uv);
-  // return texture(atlas, offset.xy + uv * offset.zw);
+  if (textureId == ${terrainNameToId["water.png"]}u || textureId == ${
+  terrainNameToId["deepWater.png"]
+}u) {
+    vec2 wave = vec2(
+      cos(time * .07 + uv.y * 4.0) * .01 + sin(time * .015 + uv.y * 5.0) * .017,
+      cos(time * .05 + uv.x * 5.0) * .013 + sin(time * .02 + uv.x * 5.0) * .021
+    );
+    uv += wave + time * 0.0005;
+  }
   return textureNoTile(atlas, uv, offset);
 }
 
@@ -200,6 +210,18 @@ float sdHex( vec2 p ) {
   p -= vec2( 0.5 );             // move centre to the origin
   p  = abs( p );                // first sextant is enough
   return max( dot( p, vec2( HALF_SQRT3, .5 ) ), p.y ) - 0.5;
+}
+
+float getBorder(uint data) {
+  vec2 p = uv - vec2(0.5);
+  // vec2 p = point;
+  float v = 0.0;
+  for (int i = 0; i < 6; ++i) {
+    if ((data & (1u << i)) != 0u) {
+      v = max(v, -dot(p, N[i]));
+    }
+  }
+  return clamp(1.0 - 2.0 * v, 0.0, 1.0);
 }
 
 void main() {
@@ -261,7 +283,6 @@ void main() {
 
   vec4 edgeColor = mix(texA, texB, a);
 
-
   const float BLEND = 0.25;
   bool needCoast = ((vCoast & (1u<<edge)) != 0u);
 
@@ -271,42 +292,27 @@ void main() {
     fragColor = base;
   }
 
-  float coastBand = 0.0;
+  float coastBand = 1.0 - getBorder(vCoast) * 1.5;
+  float riverBand = 1.0 - getBorder(vCoast >> 6) * 3.5;
 
-  // if (needCoast) {
-  //   coastBand = distanceToEdge2;
-  //   // + (sampleWhitenoise(vTextureCoord, 0.02) - 0.5) * 0.2;
+  // float coastNoise = 1.0 + ((sampleWhitenoise(vTextureCoord, 0.02)) - 0.5) * 0.5;
+  // coastBand *= coastNoise;
+  // riverBand *= coastNoise;
 
-  //   if (coastBand < 0.4) {
-  //     coastBand = 0.0;
-  //   }
-  // }
-
-  const float r = 0.57735026919;
-  vec2 p = uv - vec2(0.5);
-  for( int i = 0 ; i < 6 ; ++i ) {
-    if( ( vCoast & ( 1u << i ) ) == 0u ) {
-      continue;
-    };
-
-    // float d = - ( dot( p, N[i] ) - r );
-    float d = - ( dot( p, N[i] ));
-    // float d = distanceToEdge2*2.0 * -dot( p, N[i] );
-    coastBand = max( coastBand, smoothstep( 0.0, 0.99, d ) );
-    // coastBand = d;
-  }
-
-  coastBand += (sampleWhitenoise(vTextureCoord, 0.02) - 0.5) * 0.2;
-
-  if (coastBand < 0.4) {
-    coastBand = 0.0;
-  }
-
-  coastBand = smoothstep(0.3, 1.0, coastBand * 2.0);
+  float coastSize = vInstanceTexture == ${
+    terrainNameToId["water.png"]
+  }u ? 0.7 : 0.2;
+  coastBand = smoothstep(coastSize, 1.0, coastBand);
+  riverBand = smoothstep(0.5, 1.0, riverBand);
 
   if (coastBand > 0.0) {
-    vec4 coastColor = sampleAtlas(5u, vTextureCoord)*1.2;
+    vec4 coastColor = sampleAtlas(5u, vTextureCoord)*1.3;
     fragColor = mix(fragColor, coastColor, coastBand);
+  }
+
+  if (riverBand > 0.0) {
+    vec4 coastColor = sampleAtlas(11u, vTextureCoord);
+    fragColor = mix(fragColor, coastColor, riverBand);
   }
 
   float noise1 = sampleNoise(vTextureCoord, 0.02) - 0.5;
@@ -370,6 +376,12 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     });
   }
 
+  public tick(time: number) {
+    if (this.shader) {
+      this.shader.resources.uniforms.uniforms.time = time / 50;
+    }
+  }
+
   private async build() {
     this.isBuilt = false;
     this.clear();
@@ -402,6 +414,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
         whitenoise: getAssets().textures.whitenoise.source,
         uniforms: {
           gridEnabled: { value: mapUi.gridEnabled ? 1 : 0, type: "i32" },
+          time: { value: renderer.app.ticker.elapsedMS / 1000, type: "f32" },
         },
       },
     });
@@ -434,7 +447,9 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
       tile,
       this.tilesMap,
     );
-    this.instanceCoast[index] = this.getCoast(tile, this.tilesMap);
+    const coast = this.getCoast(tile, this.tilesMap);
+    const river = this.getRiver(tile);
+    this.instanceCoast[index] = coast + (river << 6);
   }
 
   getTextureIndex(tile: TileChanneled): number {
@@ -492,6 +507,14 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
       (coast[4] << 4) +
       (coast[5] << 5)
     );
+  }
+
+  getRiver(tile: TileChanneled): number {
+    let river = 0;
+    for (const r of tile.riverParts) {
+      river += 1 << r;
+    }
+    return river;
   }
 
   override initializeBuffers(maxInstances: number) {

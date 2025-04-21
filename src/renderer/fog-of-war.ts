@@ -108,10 +108,8 @@ export class FogOfWarMaskDrawer extends HexDrawer<TileFogOfWar> {
   private async bindToTrackedPlayer() {
     const fogOfWar = await bridge.tiles.getFogOfWar();
     if (this.tilesMap.size === 0) {
-      console.log("fogOfWar 1");
       this.addTiles(fogOfWar.tiles);
     } else {
-      console.log("fogOfWar 2");
       this.updateTiles(fogOfWar.tiles);
     }
   }

@@ -50,27 +50,18 @@ Minor features:
   ✔ spectator mode @done(25-03-11 23:35)
   ☐ cycling through tasks with tab / shift+tab
 
-New renderer:
-  layers:
-    ✔ fog of war - hex drawer + render target @done(25-04-20 23:00)
-    ✔ terrain - hexdrawer + ubershader @done(25-04-20 23:00)
-    ✔ map decors - sprites @done(25-04-20 23:00)
-    ✔ units - sprites @done(25-04-20 23:00)
-    ✔ politics + explored tiles - hex drawer + ubershader @done(25-04-20 23:00)
-    ✔ other areas - hex drawer @done(25-04-20 23:00)
-    ✔ resources - sprites @done(25-04-20 23:00)
-    ✔ simplify containers hierarchy @done(25-04-21 12:22)
-    ✔ automatic buffer size @done(25-04-21 12:52)
-    ✔ proper clear and rebuild @done(25-04-21 12:52)
-    ☐ rewrite minimap to HexDrawer
-    ☐ fix console errors and warnings
-    ☐ update tile / update terrain
-    ✔ cache commands @done(25-04-21 13:55)
-    ☐ don't draw politics background on the water
-    ☐ fix hot reloading slowing down the app
-    ☐ fix hex shape in mouse hover
-    ☐ zoom - hide/show cities - remove transition
-    ✔ optimize fog of war - partial update @done(25-04-21 14:37)
+  ✔ simplify containers hierarchy @done(25-04-21 12:22)
+  ✔ automatic buffer size @done(25-04-21 12:52)
+  ✔ proper clear and rebuild @done(25-04-21 12:52)
+  ☐ rewrite minimap to HexDrawer
+  ✔ fix console errors and warnings @done(25-04-21 15:44)
+  ☐ update tile / update terrain
+  ✔ cache commands @done(25-04-21 13:55)
+  ☐ don't draw politics background on the water
+  ☐ fix hot reloading slowing down the app
+  ☐ fix hex shape in mouse hover
+  ☐ zoom - hide/show cities - remove transition
+  ✔ optimize fog of war - partial update @done(25-04-21 14:37)
 
 Major features:
   ☐ City economy

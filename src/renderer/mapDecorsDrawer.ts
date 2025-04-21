@@ -97,7 +97,6 @@ class TileDrawer {
 
   public draw(tile: TileChanneled) {
     this.tile = tile;
-    this.drawRiver();
     this.drawDecors();
     this.drawImprovement();
     this.drawRoads();
@@ -185,60 +184,6 @@ class TileDrawer {
     }
 
     this.citySprite.visible = true;
-  }
-
-  private drawRiver() {
-    if (!this.tile.riverParts.length) {
-      if (this.riverGraphics) {
-        this.riverGraphics.clear();
-        this.riverGraphics.visible = false;
-      }
-      return;
-    }
-
-    if (!this.riverGraphics) {
-      this.riverGraphics = new Graphics();
-      this.container.addChild(this.riverGraphics);
-    }
-
-    this.riverGraphics.visible = true;
-
-    this.riverGraphics.position.x = this.tile.x + (this.tile.y % 2 ? 0.5 : 0);
-    this.riverGraphics.position.y = this.tile.y * TILE_ROW_OFFSET;
-    this.container.addChild(this.riverGraphics);
-
-    for (const river of this.tile.riverParts) {
-      if (river === TileDirection.NW) {
-        this.riverGraphics.moveTo(0, 0.25);
-        this.riverGraphics.lineTo(0.5, 0);
-      }
-
-      if (river === TileDirection.NE) {
-        this.riverGraphics.moveTo(0.5, 0);
-        this.riverGraphics.lineTo(1, 0.25);
-      }
-
-      if (river === TileDirection.E) {
-        this.riverGraphics.moveTo(1, 0.25);
-        this.riverGraphics.lineTo(1, 0.75);
-      }
-
-      if (river === TileDirection.SE) {
-        this.riverGraphics.moveTo(1, 0.75);
-        this.riverGraphics.lineTo(0.5, 1);
-      }
-
-      if (river === TileDirection.SW) {
-        this.riverGraphics.moveTo(0.5, 1);
-        this.riverGraphics.lineTo(0, 0.75);
-      }
-
-      if (river === TileDirection.W) {
-        this.riverGraphics.moveTo(0, 0.75);
-        this.riverGraphics.lineTo(0, 0.25);
-      }
-    }
-    this.riverGraphics.stroke({ width: 0.07, color: 0x4169e1 });
   }
 
   private drawYields() {

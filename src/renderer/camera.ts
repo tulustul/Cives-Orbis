@@ -249,7 +249,7 @@ export class Camera {
     x = x - (yi % 2 ? 0.5 : 0);
     let xi = Math.floor(x);
 
-    const y1 = 0.25 - (y - yi) * TILE_ROW_OFFSET;
+    const y1 = 0.5 - Math.sqrt(3) / 6 - (y - yi) * TILE_ROW_OFFSET;
     if (y1 > 0) {
       const x1 = x - xi;
       if (x1 < 0.5) {
