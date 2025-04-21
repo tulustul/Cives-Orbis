@@ -7,6 +7,7 @@ import { mapUi } from "@/ui/mapUi";
 import { HexDrawer } from "./hexDrawer";
 import { getAssets } from "./assets";
 import { measureTime } from "@/utils";
+import { HEX } from "./hexGeometry";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -408,6 +409,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
 
   override getGeometryAttributes(): AttributeOptions {
     return {
+      aDistanceToCenter: { buffer: HEX.centerDistance, format: "float32x2" },
       aInstanceTexture: {
         buffer: this.instanceTextures,
         format: "uint32",

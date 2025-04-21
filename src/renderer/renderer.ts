@@ -25,6 +25,9 @@ import { MapDecorsDrawer } from "./mapDecorsDrawer";
 import { UnitsDrawer } from "./unitsDrawer";
 import { TerrainDrawer } from "./terrainDrawer";
 import { merge } from "rxjs";
+import { bridge } from "@/bridge";
+import { awaitingExecutors } from "@/bridge/worker";
+import { useUiState } from "@/ui/uiState";
 
 function makeContainer(label: string, options: ContainerOptions = {}) {
   return new Container({
@@ -70,6 +73,10 @@ export class GameRenderer {
   cityFocusDrawer = new CityFocusDrawer(this.cityFocusLayer.stage);
 
   constructor() {
+    bridge.game.start$.subscribe(() => {
+      this.waitForAppReady();
+    });
+
     merge(mapUi.fogOfWarEnabled$, mapUi.selectedCity$).subscribe(() => {
       this.updateMapFilters();
     });
@@ -94,6 +101,7 @@ export class GameRenderer {
       antialias: true,
       bezierSmoothness: 1,
     });
+    this.app.ticker.stop();
 
     camera.setApp(this.app);
     this.canvas = canvas;
@@ -113,6 +121,18 @@ export class GameRenderer {
     this.app.ticker.add(() => this.onTick());
 
     this.updateMapFilters();
+  }
+
+  waitForAppReady() {
+    setTimeout(() => {
+      this.app.ticker.stop();
+      if (awaitingExecutors.length) {
+        this.waitForAppReady();
+      } else {
+        this.app.ticker.start();
+        setTimeout(() => useUiState.getState().setMode("map"));
+      }
+    }, 10);
   }
 
   resize(width: number, height: number) {

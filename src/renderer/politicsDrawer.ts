@@ -11,7 +11,6 @@ const VERTEX_PROGRAM = `#version 300 es
 precision mediump float;
 
 in vec2 aVertexPosition;
-in vec2 aDistanceToCenter;
 in vec2 aInstancePosition;
 in uint aBorders;
 in vec3 aPrimaryColor;

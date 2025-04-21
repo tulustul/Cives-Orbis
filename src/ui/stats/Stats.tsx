@@ -99,7 +99,7 @@ function Legend({ stats }: LegendProps) {
             className="w-4 h-4 rounded-full"
             style={{ backgroundColor: stat.player.colors.primary }}
           />
-          <span>Player {stat.player.id}</span>
+          <span>{stat.player.name}</span>
         </div>
       ))}
     </div>

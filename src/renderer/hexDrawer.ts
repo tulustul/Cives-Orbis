@@ -9,7 +9,6 @@ const VERTEX_PROGRAM = `#version 300 es
 precision mediump float;
 
 in vec2 aVertexPosition;
-in vec2 aDistanceToCenter;
 in vec2 aInstancePosition;
 
 uniform mat3 uProjectionMatrix;
@@ -20,15 +19,12 @@ out vec2 vDistanceToCenter;
 
 void main() {
   mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
-  vDistanceToCenter = aDistanceToCenter;
   gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
 }`;
 
 const FRAGMENT_PROGRAM = `#version 300 es
 
 precision mediump float;
-
-in vec2 vDistanceToCenter;
 
 out vec4 fragColor;
 
@@ -116,7 +112,6 @@ export class HexDrawer<T extends TileCoords> {
     return new Geometry({
       attributes: {
         aVertexPosition: { buffer: HEX.vertices, format: "float32x2" },
-        aDistanceToCenter: { buffer: HEX.centerDistance, format: "float32x2" },
         aInstancePosition: {
           buffer: this.instancePositions,
           format: "float32x2",

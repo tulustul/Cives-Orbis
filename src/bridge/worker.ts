@@ -7,17 +7,32 @@ export const awaitingExecutors: ((value: any) => void)[] = [];
 
 export const bridgeHandlers = new Map<string, (data: any) => void>();
 
+const cache = new Map<string, Promise<any>>();
+
 export function makeObservable<T>(type: string): Observable<T> {
   return new Observable<T>((subscriber) => {
     bridgeHandlers.set(type, (data) => subscriber.next(data));
   }).pipe(share<T>());
 }
 
-export function makeCommand<T>(command: string, data: any = {}) {
-  return new Promise<T>((resolve) => {
+export function makeCommand<T>(command: string, data: any = {}): Promise<T> {
+  const cacheKey = `${command}:${JSON.stringify(data)}`;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey) as Promise<T>;
+  }
+
+  const promise = new Promise<T>((resolve) => {
     awaitingExecutors.push(resolve);
     worker.postMessage({ command, data });
   });
+
+  if (command.includes(".get")) {
+    cache.set(cacheKey, promise);
+  } else {
+    cache.clear();
+  }
+
+  return promise;
 }
 
 export function initWorkerListeners() {

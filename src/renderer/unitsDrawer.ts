@@ -43,16 +43,9 @@ export class UnitsDrawer {
       }
     });
 
-    bridge.units.updated$.subscribe((unit) => {
-      const drawer = this.units.get(unit.id);
-      if (drawer) {
-        drawer.unit = unit;
-        drawer.updateUi();
-      }
-    });
-
     bridge.game.start$.subscribe(() => {
       this.clear();
+      this.build();
     });
 
     mapUi.selectedUnit$.subscribe((unit) => {
@@ -76,6 +69,13 @@ export class UnitsDrawer {
     camera.scale$.subscribe((scale) => {
       this.setScale(scale);
     });
+  }
+
+  private async build() {
+    const units = await bridge.units.getAll();
+    for (const unit of units) {
+      this.updateUnit(unit);
+    }
   }
 
   private updateUnit(unit: UnitChanneled) {

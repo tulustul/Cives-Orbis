@@ -805,14 +805,15 @@ export class RealisticMapGenerator implements MapGenerator {
   }
 
   private findStartingPositions() {
+    const margin = 6;
     const maxTries = 10000;
     let tries = 0;
     while (
       tries < maxTries &&
       this.startingLocations.length < this.startingLocationsCount
     ) {
-      const x = Math.floor(Math.random() * this.width);
-      const y = Math.floor(Math.random() * this.height);
+      const x = margin + Math.floor(Math.random() * (this.width - margin * 2));
+      const y = margin + Math.floor(Math.random() * (this.height - margin * 2));
       const tile = this.map.tiles[x][y];
       if (
         tile.seaLevel === SeaLevel.none &&

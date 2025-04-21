@@ -225,6 +225,8 @@ function newGameHandler(options: MapGeneratorOptions): GameStartInfo {
   game.start();
 
   const startInfo = gameToGameStartInfo(game);
+
+  collector.flush(game);
   collector.changes.push({ type: "game.start", data: startInfo });
   collector.changes.push({
     type: "trackedPlayer.yields",
@@ -251,6 +253,8 @@ function loadHandler(data: string) {
   game = loadGame(JSON.parse(data));
 
   const startInfo = gameToGameStartInfo(game);
+
+  collector.flush(game);
   collector.changes.push({ type: "game.start", data: startInfo });
   collector.changes.push({
     type: "trackedPlayer.yields",

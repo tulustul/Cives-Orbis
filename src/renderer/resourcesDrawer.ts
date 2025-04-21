@@ -19,7 +19,9 @@ export class ResourcesDrawer {
       this.removeResource(resource);
     });
 
-    bridge.game.start$.subscribe(() => this.build());
+    bridge.game.start$.subscribe(() => this.bindToTrackedPlayer());
+
+    bridge.player.tracked$.subscribe(() => this.bindToTrackedPlayer());
 
     mapUi.destroyed$.subscribe(() => this.clear());
 
@@ -47,7 +49,7 @@ export class ResourcesDrawer {
     }
   }
 
-  private async build() {
+  private async bindToTrackedPlayer() {
     this.clear();
     const resources = await bridge.resources.getAll();
 

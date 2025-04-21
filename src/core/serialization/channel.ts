@@ -65,7 +65,7 @@ export interface TileChanneled extends BaseTile {
   resource: ResourceChanneled | null;
   roads: string;
   coasts: string;
-  playerColor: string | null;
+  playerColor: NationColors | null;
   fullNeighbours: (number | null)[];
 }
 
@@ -339,7 +339,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
       .map((n) => (!n || n.road === null ? "0" : "1"))
       .join(""),
     coasts: getCoasts(tile),
-    playerColor: tile.areaOf?.player.nation.colors.primary ?? null,
+    playerColor: tile.areaOf?.player.nation.colors ?? null,
     fullNeighbours: tile.fullNeighbours.map((t) => t?.id ?? null),
   };
 }

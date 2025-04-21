@@ -59,8 +59,6 @@ export function NewGameMenu() {
     });
 
     menu.hide();
-
-    uiState.setMode("map");
   }
   return (
     <MenuScreen

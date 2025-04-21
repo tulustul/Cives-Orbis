@@ -92,8 +92,16 @@ export class PlayerCore {
         }
       }
     }
-    if (this.id === this.game.trackedPlayer?.id) {
-      collector.viewBoundingBox = this.viewBoundingBox;
+  }
+
+  hideTiles(tiles: Iterable<TileCore>) {
+    for (const tile of tiles) {
+      if (this.visibleTiles.has(tile)) {
+        this.visibleTiles.delete(tile);
+        if (this.id === this.game.trackedPlayer.id) {
+          collector.tilesFogOfWar.add(tile);
+        }
+      }
     }
   }
 
@@ -147,7 +155,13 @@ export class PlayerCore {
   }
 
   updateVisibleTiles() {
+    let oldVisibleTiles: Set<TileCore> | null = null;
+    if (this === this.game.trackedPlayer) {
+      oldVisibleTiles = new Set(this.visibleTiles);
+    }
+
     this.visibleTiles.clear();
+
     for (const city of this.cities) {
       // TODO replace with city.visibleTiles
       for (const tile of city.expansion.tiles) {
@@ -160,8 +174,19 @@ export class PlayerCore {
       }
     }
 
-    if (this === this.game.trackedPlayer) {
-      collector.addFogOfWarChange(this.visibleTiles);
+    if (this === this.game.trackedPlayer && oldVisibleTiles) {
+      for (const tile of this.visibleTiles) {
+        // tile shown
+        if (!oldVisibleTiles.has(tile)) {
+          collector.tilesFogOfWar.add(tile);
+        }
+      }
+      for (const tile of oldVisibleTiles) {
+        // tile hidden
+        if (!this.visibleTiles.has(tile)) {
+          collector.tilesFogOfWar.add(tile);
+        }
+      }
     }
   }
 
