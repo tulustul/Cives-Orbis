@@ -7,7 +7,7 @@ import { getTileCenter } from "./utils";
 
 const FONT_SIZE = 0.25;
 
-export class PathRenderer {
+export class PathDrawer {
   pathGraphics = new Graphics();
   labelsContainer = new Container({ cullable: true });
 

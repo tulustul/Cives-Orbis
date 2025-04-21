@@ -22,7 +22,6 @@ import {
 } from "@/core.worker";
 import { CombatSimulation } from "@/core/combat";
 import {
-  AreaChanneled,
   CityChanneled,
   CityDetailsChanneled,
   EntityChanneled,
@@ -143,14 +142,6 @@ export const bridge = {
       makeCommand<CityDetailsChanneled | null>("city.unworkTile", options),
     optimizeYields: (cityId: number) =>
       makeCommand<CityDetailsChanneled | null>("city.optimizeYields", cityId),
-  },
-  areas: {
-    tilesAdded$: makeObservable<AreaChanneled>("area.tilesAdded"),
-    tilesRemoved$: makeObservable<AreaChanneled>("area.tilesRemoved"),
-    destroyed$: makeObservable<number>("area.destroyed"),
-    getAll: () => makeCommand<AreaChanneled[]>("area.getAll"),
-    getTiles: (areaId: number) =>
-      makeCommand<TilesCoordsWithNeighbours[]>("area.getTiles", areaId),
   },
   technologies: {
     researchUpdated$: makeObservable<TechKnowledgeChanneled | null>(

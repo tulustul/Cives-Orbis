@@ -28,7 +28,6 @@ import { PlayerCore, PlayerViewBoundingBox } from "./core/player";
 import { getFailedWeakRequirements } from "./core/requirements";
 import { ResourceDeposit } from "./core/resources";
 import {
-  AreaChanneled,
   CityDetailsChanneled,
   cityDetailsToChannel,
   cityToChannel,
@@ -116,9 +115,6 @@ const HANDLERS = {
   "city.workTile": cityWorkTile,
   "city.unworkTile": cityUnworkTile,
   "city.optimizeYields": cityOptimizeYields,
-
-  "area.getAll": getAllArea,
-  "area.getTiles": getAreaTiles,
 
   "entity.getFailedWeakRequirements": entityGetFailedWeakRequirements,
   "entity.getDetails": entityGetDetails,
@@ -742,24 +738,6 @@ export function cityOptimizeYields(cityId: number) {
   city.workers.optimizeYields();
 
   return cityDetailsToChannel(city);
-}
-
-export function getAllArea(): AreaChanneled[] {
-  return Array.from(game.areasManager.areasMap.values()).map((area) => ({
-    id: area.id,
-    primaryColor: area.primaryColor,
-    secondaryColor: area.secondaryColor,
-    tiles: Array.from(area.tiles).map(tilesToTileCoordsWithNeighbours),
-  }));
-}
-
-export function getAreaTiles(areaId: number): TilesCoordsWithNeighbours[] {
-  const area = game.areasManager.areasMap.get(areaId);
-  if (!area) {
-    return [];
-  }
-
-  return Array.from(area.tiles).map(tilesToTileCoordsWithNeighbours);
 }
 
 export type EntityGetFailedWeakRequirements = {

@@ -22,6 +22,14 @@ export class ResourcesDrawer {
     bridge.game.start$.subscribe(() => this.build());
 
     mapUi.destroyed$.subscribe(() => this.clear());
+
+    mapUi.resourcesEnabled$.subscribe((enabled) => {
+      this.container.visible = enabled;
+    });
+
+    camera.scale$.subscribe((scale) => {
+      this.setScale(scale);
+    });
   }
 
   clear() {

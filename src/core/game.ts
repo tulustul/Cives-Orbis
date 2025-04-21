@@ -1,12 +1,11 @@
+import { CitiesManager } from "./cities-manager";
+import { CitiesNetworks } from "./cities-network";
+import { collector } from "./collector";
+import { Debug } from "./debug";
 import { PlayerCore } from "./player";
+import { Stats } from "./stats";
 import { TilesMapCore } from "./tiles-map";
 import { UnitsManager } from "./unit-manager";
-import { Debug } from "./debug";
-import { CitiesManager } from "./cities-manager";
-import { AreasManager } from "./areas-manager";
-import { collector } from "./collector";
-import { CitiesNetworks } from "./cities-network";
-import { Stats } from "./stats";
 
 export class Game {
   debug = new Debug();
@@ -23,8 +22,6 @@ export class Game {
   humanPlayer: PlayerCore | null = null;
 
   turn = 1;
-
-  areasManager = new AreasManager();
 
   unitsManager = new UnitsManager();
 

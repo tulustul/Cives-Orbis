@@ -15,70 +15,55 @@ export class AreasDrawer {
   editorArea: Area;
 
   constructor(private container: Container) {
-    this.unitRangeArea = new Area(
-      {
-        color: "#ddffdd",
-        container: this.container,
-        backgroundOpacity: 0.15,
-        shadowSize: 0.3,
-        borderSize: 0.0,
-        shadowStrength: 2.0,
-        visibleOnWater: true,
-      },
-      600,
-    );
+    this.unitRangeArea = new Area({
+      color: "#ddffdd",
+      container: this.container,
+      backgroundOpacity: 0.15,
+      shadowSize: 0.3,
+      borderSize: 0.0,
+      shadowStrength: 2.0,
+      visibleOnWater: true,
+    });
 
-    this.cityRangeArea = new Area(
-      {
-        color: "#ffffff",
-        container: this.container,
-        backgroundOpacity: 0.2,
-        shadowSize: 0.3,
-        borderSize: 0.04,
-        shadowStrength: 1.2,
-        visibleOnWater: false,
-      },
-      600,
-    );
+    this.cityRangeArea = new Area({
+      color: "#ffffff",
+      container: this.container,
+      backgroundOpacity: 0.2,
+      shadowSize: 0.3,
+      borderSize: 0.04,
+      shadowStrength: 1.2,
+      visibleOnWater: false,
+    });
 
-    this.cityWorkedTilesArea = new Area(
-      {
-        color: "#ffa001",
-        container: this.container,
-        backgroundOpacity: 0.2,
-        shadowSize: 0.8,
-        borderSize: 0,
-        shadowStrength: 1,
-        visibleOnWater: true,
-      },
-      600,
-    );
+    this.cityWorkedTilesArea = new Area({
+      color: "#ffa001",
+      container: this.container,
+      backgroundOpacity: 0.2,
+      shadowSize: 0.8,
+      borderSize: 0,
+      shadowStrength: 1,
+      visibleOnWater: true,
+    });
 
-    this.cityNotWorkedTilesArea = new Area(
-      {
-        color: "#ffffff",
-        container: this.container,
-        backgroundOpacity: 0.2,
-        shadowSize: 0.3,
-        borderSize: 0,
-        shadowStrength: 3.5,
-        visibleOnWater: false,
-      },
-      600,
-    );
+    this.cityNotWorkedTilesArea = new Area({
+      color: "#ffffff",
+      container: this.container,
+      backgroundOpacity: 0.2,
+      shadowSize: 0.3,
+      borderSize: 0,
+      shadowStrength: 3.5,
+      visibleOnWater: false,
+    });
 
-    this.editorArea = new Area(
-      {
-        color: "#ffffff",
-        container: this.container,
-        backgroundOpacity: 0.25,
-        shadowSize: 0.5,
-        borderSize: 0.05,
-        shadowStrength: 1,
-        visibleOnWater: true,
-      },
-      600,
-    );
+    this.editorArea = new Area({
+      color: "#ffffff",
+      container: this.container,
+      backgroundOpacity: 0.25,
+      shadowSize: 0.5,
+      borderSize: 0.05,
+      shadowStrength: 1,
+      visibleOnWater: true,
+    });
 
     mapUi.selectedCity$.subscribe((city) => this.onSelectedCity(city));
     mapUi.hoveredCity$.subscribe((city) => this.onHoveredCity(city));

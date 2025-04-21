@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, distinct, map } from "rxjs";
 
 import { bridge } from "@/bridge";
 import { PlayerViewBoundingBox } from "@/core/player";
@@ -29,6 +29,11 @@ export class Camera {
   private _transform$ = new BehaviorSubject<Transform>(this.transform);
   transform$ = this._transform$.asObservable();
   private transformChanged = false;
+
+  scale$ = this._transform$.pipe(
+    map((t) => t.scale),
+    distinct(),
+  );
 
   private app!: Application;
 

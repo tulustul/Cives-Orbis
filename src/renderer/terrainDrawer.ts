@@ -2,10 +2,11 @@ import * as terrainData from "@/assets/atlas-terrain.json";
 import { TileChanneled } from "@/core/serialization/channel";
 import { Climate, SeaLevel } from "@/shared";
 import { AttributeOptions, Container, Shader } from "pixi.js";
-import { getAssets } from "../assets";
-import { HexDrawerNew } from "../hexDrawer";
 import { bridge } from "@/bridge";
 import { mapUi } from "@/ui/mapUi";
+import { HexDrawer } from "./hexDrawer";
+import { getAssets } from "./assets";
+import { measureTime } from "@/utils";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -318,8 +319,6 @@ void main() {
   }
 }`;
 
-// console.log(FRAGMENT_PROGRAM);
-
 const SEA_LEVEL_TO_TEXTURE: Record<SeaLevel, number | null> = {
   [SeaLevel.shallow]: terrainNameToId["water.png"],
   [SeaLevel.deep]: terrainNameToId["deepWater.png"],
@@ -335,24 +334,30 @@ const CLIMATE_TO_TEXTURE: Record<Climate, number> = {
   [Climate.tundra]: terrainNameToId["tundra.png"],
 };
 
-export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
-  instanceTextures = new Uint32Array(this.maxInstances);
-  instanceAdjacentTextures = new Uint32Array(this.maxInstances);
-  instanceCoast = new Uint32Array(this.maxInstances);
+export class TerrainDrawer extends HexDrawer<TileChanneled> {
+  instanceTextures = new Uint32Array(0);
+  instanceAdjacentTextures = new Uint32Array(0);
+  instanceCoast = new Uint32Array(0);
 
-  constructor(container: Container, public maxInstances: number) {
-    super(container, maxInstances);
+  isBuilt = false;
+
+  constructor(container: Container) {
+    super(container);
+
+    bridge.game.start$.subscribe(() => {
+      measureTime("terrain build", () => this.build());
+    });
 
     bridge.tiles.updated$.subscribe((tiles) => {
+      if (!this.isBuilt) {
+        return;
+      }
       const t0 = performance.now();
       for (const tile of tiles) {
         this.updateTile(tile);
       }
 
-      const geo = this.geometry!;
-      geo.getAttribute("aInstanceTexture").buffer.update();
-      geo.getAttribute("aInstanceAdjancentTextures").buffer.update();
-      geo.getAttribute("aCoast").buffer.update();
+      this.updateBuffers_();
       const t1 = performance.now();
       console.log("Call to updateTile took " + (t1 - t0) + " milliseconds.");
     });
@@ -362,6 +367,14 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
         this.shader.resources.uniforms.uniforms.gridEnabled = enabled ? 1 : 0;
       }
     });
+  }
+
+  private async build() {
+    this.isBuilt = false;
+    this.clear();
+    const tiles = await bridge.tiles.getAll();
+    this.setTiles(tiles);
+    this.isBuilt = true;
   }
 
   updateTile(tile: TileChanneled) {
@@ -434,10 +447,10 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
     tile: TileChanneled,
     tilesMap: Map<number, TileChanneled>,
   ): number {
-    const textures = tile.fullNeighbours.map((t) => {
-      let neighbour = t ? tilesMap.get(t)! : tile;
+    const textures = tile.fullNeighbours.map((n) => {
+      let neighbour = n ? tilesMap.get(n) : null;
 
-      return this.getTextureIndex(neighbour);
+      return this.getTextureIndex(neighbour ?? tile);
     });
 
     return (
@@ -451,8 +464,8 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
   }
 
   getCoast(tile: TileChanneled, tilesMap: Map<number, TileChanneled>): number {
-    const coast = tile.fullNeighbours.map((t) => {
-      let neighbour = t ? tilesMap.get(t)! : tile;
+    const coast = tile.fullNeighbours.map((n) => {
+      let neighbour = (n ? tilesMap.get(n) : null) ?? tile;
       if (
         tile.seaLevel === SeaLevel.none &&
         neighbour.seaLevel !== SeaLevel.none
@@ -477,5 +490,18 @@ export class TerrainDrawer extends HexDrawerNew<TileChanneled> {
       (coast[4] << 4) +
       (coast[5] << 5)
     );
+  }
+
+  override initializeBuffers(maxInstances: number) {
+    super.initializeBuffers(maxInstances);
+    this.instanceTextures = new Uint32Array(maxInstances);
+    this.instanceAdjacentTextures = new Uint32Array(maxInstances);
+    this.instanceCoast = new Uint32Array(maxInstances);
+  }
+
+  private updateBuffers_(): void {
+    this.geometry?.getAttribute("aInstanceTexture").buffer.update();
+    this.geometry?.getAttribute("aInstanceAdjancentTextures").buffer.update();
+    this.geometry?.getAttribute("aCoast").buffer.update();
   }
 }

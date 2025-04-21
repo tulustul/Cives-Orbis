@@ -5,7 +5,7 @@ import { drawClosedHex, drawHex, getTileCoords } from "./utils";
 import { mapUi } from "@/ui/mapUi";
 import { TileCoords } from "@/core/serialization/channel";
 
-export class OverlaysRenderer {
+export class OverlaysDrawer {
   hoveredTileGraphics = new Graphics();
 
   selectedTileGraphics = new Graphics();
@@ -20,7 +20,7 @@ export class OverlaysRenderer {
     this.buildSelectedTileGraphics();
 
     mapUi.hoveredTile$.subscribe((tile) =>
-      this.displayAtTile(this.hoveredTileGraphics, tile)
+      this.displayAtTile(this.hoveredTileGraphics, tile),
     );
 
     mapUi.selectedTile$.subscribe((tile) => {

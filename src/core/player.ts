@@ -13,7 +13,6 @@ import {
 import { collector } from "./collector";
 import { PlayerYields } from "../shared";
 import { InternalPolitics } from "./internal-politics";
-import { AreaCore } from "./area";
 import { PassableArea } from "./tiles-map";
 import { Knowledge } from "./knowledge";
 import { ResourceDeposit } from "./resources";
@@ -50,8 +49,6 @@ export class PlayerCore {
     perTurn: { ...EMPTY_YIELDS },
   };
 
-  area: AreaCore;
-
   ai: AIPlayer | null = null;
 
   internalPolitics = new InternalPolitics();
@@ -70,12 +67,7 @@ export class PlayerCore {
     maxY: -Infinity,
   };
 
-  constructor(public game: Game, public nation: Nation) {
-    this.area = this.game.areasManager.make(
-      nation.colors.primary,
-      nation.colors.secondary,
-    );
-  }
+  constructor(public game: Game, public nation: Nation) {}
 
   exploreTiles(tiles: Iterable<TileCore>) {
     for (const tile of tiles) {

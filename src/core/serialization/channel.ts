@@ -174,7 +174,6 @@ export interface PlayerChanneled {
   id: number;
   name: string;
   colors: NationColors;
-  areaId: number;
   isAi: boolean;
 }
 
@@ -483,7 +482,6 @@ export function playerToChannel(player: PlayerCore): PlayerChanneled {
     id: player.id,
     name: player.nation.name,
     colors: player.nation.colors,
-    areaId: player.area.id,
     isAi: !!player.ai,
   };
 }
