@@ -12,11 +12,11 @@ import { mapUi } from "./mapUi";
 import { PlayerYields } from "./PlayerYields";
 import { Research } from "./Research";
 import { SpectatorPanel } from "./SpectatorPanel";
+import { TileDetails } from "./TileDetails";
 import { TileUnits } from "./TileUnits";
 import { Toolbar } from "./Toolbar";
 import { TurnsCounter } from "./TurnCounter";
 import { UnitPanel } from "./UnitPanel";
-import { TileDetails } from "./TileDetails";
 
 export function MapMode() {
   const city = useObservable(mapUi.selectedCity$);

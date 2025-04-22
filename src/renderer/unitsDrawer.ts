@@ -1,5 +1,6 @@
 import { bridge } from "@/bridge";
 import {
+  TileCoords,
   TileCoordsWithUnits,
   UnitChanneled,
 } from "@/core/serialization/channel";
@@ -14,8 +15,22 @@ import { hexColorToNumber } from "./utils";
 
 export class UnitsDrawer {
   units = new Map<number, UnitDrawer>();
+  unitsPerTile = new Map<number, number[]>();
 
   private selectedDrawer: UnitDrawer | null = null;
+
+  private lastTile: TileCoords | null = null;
+
+  private interactiveContainer = new Container({
+    label: "interactive",
+    interactive: true,
+    interactiveChildren: true,
+  });
+  private nonInteractiveContainer = new Container({
+    label: "non-interactive",
+    interactive: false,
+    interactiveChildren: false,
+  });
 
   constructor(private container: Container) {
     bridge.units.updated$.subscribe((unit) => {
@@ -26,6 +41,7 @@ export class UnitsDrawer {
       const drawer = this.units.get(unitId);
       if (drawer) {
         this.units.delete(unitId);
+        this.removeUnitFromTile(unitId, drawer.unit.tile.id);
         this.updateNeighbours(drawer, drawer.unit.tile);
         drawer.destroy();
       }
@@ -41,6 +57,8 @@ export class UnitsDrawer {
         this.updateNeighbours(drawer, move.tiles[0]);
         this.updateNeighbours(drawer, move.tiles[move.tiles.length - 1]);
       }
+      this.removeUnitFromTile(move.unitId, move.tiles[0].id);
+      this.addUnitToTile(move.unitId, move.tiles[move.tiles.length - 1].id);
     });
 
     bridge.game.start$.subscribe(() => {
@@ -64,11 +82,28 @@ export class UnitsDrawer {
       }
     });
 
+    mapUi.hoveredTile$.subscribe((tile) => {
+      // This is a mechanism to optimize hit testing the units.
+      // Thanks to this, only a small subset of units are actually interactive.
+      if (this.lastTile) {
+        this.setInteractive(this.lastTile.id, false);
+      }
+      if (tile) {
+        this.setInteractive(tile.id, true);
+      }
+      this.lastTile = tile;
+    });
+
     mapUi.destroyed$.subscribe(() => this.clear());
 
     camera.scale$.subscribe((scale) => {
       this.setScale(scale);
     });
+
+    this.container.addChild(
+      this.interactiveContainer,
+      this.nonInteractiveContainer,
+    );
   }
 
   private async build() {
@@ -103,14 +138,55 @@ export class UnitsDrawer {
     }
   }
 
+  private addUnitToTile(unitId: number, tileId: number) {
+    let tileUnits = this.unitsPerTile.get(tileId);
+    if (!tileUnits) {
+      tileUnits = [];
+      this.unitsPerTile.set(tileId, tileUnits);
+    }
+    tileUnits.push(unitId);
+  }
+
+  private removeUnitFromTile(unitId: number, tileId: number) {
+    const tileUnits = this.unitsPerTile.get(tileId);
+    if (tileUnits) {
+      tileUnits.splice(tileUnits.indexOf(unitId), 1);
+    }
+  }
+
+  private setInteractive(tileId: number, interactive: boolean) {
+    const unitIds = this.unitsPerTile.get(tileId);
+    if (!unitIds) {
+      return;
+    }
+
+    const container = interactive
+      ? this.interactiveContainer
+      : this.nonInteractiveContainer;
+
+    for (const unitId of unitIds) {
+      const drawer = this.units.get(unitId);
+      if (drawer) {
+        container.addChild(drawer.container);
+        drawer.dehighlight();
+      }
+    }
+
+    if (!interactive && this.selectedDrawer) {
+      this.selectedDrawer.dehighlight();
+    }
+  }
+
   private makeUnitDrawer(unit: UnitChanneled) {
     const drawer = new UnitDrawer(unit);
-    this.container.addChild(drawer.container);
+    this.nonInteractiveContainer.addChild(drawer.container);
     this.units.set(unit.id, drawer);
 
     const [unitScale, alpha] = getAlphaAndScale(camera.transform.scale);
     drawer.container.alpha = alpha;
     drawer.container.scale.set(unitScale);
+
+    this.addUnitToTile(unit.id, unit.tile.id);
 
     return drawer;
   }
@@ -142,7 +218,7 @@ function getAlphaAndScale(scale: number) {
 }
 
 export class UnitDrawer {
-  public container = new Container();
+  public container = new Container({ interactive: true });
   public iconContainer = new Container();
   private g = new Graphics();
   private childrenCountText: Text | null = null;
@@ -177,7 +253,6 @@ export class UnitDrawer {
     this.iconContainer.addChild(banner, icon);
     this.container.addChild(this.iconContainer, this.g);
 
-    this.container.interactive = true;
     this.container.on("pointerover", () => this.highlight());
     this.container.on("pointerout", () => this.dehighlight());
     this.container.on("click", () => mapUi.selectUnit(this.unit.id));
