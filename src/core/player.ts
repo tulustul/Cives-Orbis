@@ -163,8 +163,7 @@ export class PlayerCore {
     this.visibleTiles.clear();
 
     for (const city of this.cities) {
-      // TODO replace with city.visibleTiles
-      for (const tile of city.expansion.tiles) {
+      for (const tile of city.expansion.visibleTiles) {
         this.visibleTiles.add(tile);
       }
     }

@@ -75,6 +75,11 @@ export class CityExpansion {
       this.city.player.exploreTiles([tile]);
       this.city.player.exploreTiles(tile.neighbours);
       collector.tileOwnershipChanges.add(tile);
+
+      this.visibleTiles.add(tile);
+      for (const neighbour of tile.neighbours) {
+        this.visibleTiles.add(neighbour);
+      }
     }
   }
 
