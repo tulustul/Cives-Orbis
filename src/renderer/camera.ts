@@ -23,7 +23,7 @@ export interface BoundingBox {
 
 export class Camera {
   MAX_ZOOM = TILE_SIZE; // tile graphics width in pixels
-  MIN_ZOOM = 2;
+  MIN_ZOOM = 10;
 
   transform = { x: 0, y: 0, scale: 130 };
   private _transform$ = new BehaviorSubject<Transform>(this.transform);
