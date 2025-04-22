@@ -1,13 +1,17 @@
 import {
   Application,
   Container,
+  ContainerOptions,
   Filter,
   RenderLayer,
   UpdateTransformOptions,
-  ContainerOptions,
 } from "pixi.js";
 
+import { bridge } from "@/bridge";
+import { awaitingExecutors } from "@/bridge/worker";
 import { mapUi } from "@/ui/mapUi";
+import { useUiState } from "@/ui/uiState";
+import { merge } from "rxjs";
 import { animationsManager } from "./animation";
 import { AreasDrawer } from "./areasDrawer";
 import { camera, Transform } from "./camera";
@@ -16,19 +20,14 @@ import { FogOfWarFilter } from "./filters/fog-of-war-filter";
 import { GrayscaleFilter } from "./filters/grayscaleFilter";
 import { FogOfWarMaskDrawer } from "./fog-of-war";
 import { Layer } from "./layer";
+import { MapDecorsDrawer } from "./mapDecorsDrawer";
 import { OverlaysDrawer } from "./overlaysDrawer";
 import { PathDrawer } from "./pathDrawer";
 import { PoliticsDrawer } from "./politicsDrawer";
 import { ResourcesDrawer } from "./resourcesDrawer";
 import { SelectedUnitDrawer } from "./selectedUnitDrawer";
-import { MapDecorsDrawer } from "./mapDecorsDrawer";
-import { UnitsDrawer } from "./unitsDrawer";
 import { TerrainDrawer } from "./terrainDrawer";
-import { merge } from "rxjs";
-import { bridge } from "@/bridge";
-import { awaitingExecutors } from "@/bridge/worker";
-import { useUiState } from "@/ui/uiState";
-import { TerrainDrawerSimple } from "./terrainDrawerSimple";
+import { UnitsDrawer } from "./unitsDrawer";
 
 function makeContainer(label: string, options: ContainerOptions = {}) {
   return new Container({
@@ -37,6 +36,7 @@ function makeContainer(label: string, options: ContainerOptions = {}) {
     interactiveChildren: false,
     sortableChildren: false,
     cullableChildren: false,
+    isRenderGroup: true,
     ...options,
   });
 }
