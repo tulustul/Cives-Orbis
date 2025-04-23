@@ -2,11 +2,11 @@ import { bridge } from "@/bridge";
 import { importSave, loadGameData } from "@/saving";
 import { Button, Modal, Spinner } from "@/ui/components";
 import { useRef, useState } from "react";
+import { mapUi } from "../mapUi";
 import { useUiState } from "../uiState";
 import { useMenu } from "./gameMenuStore";
-import { SavesList } from "./SavesList";
 import { MenuScreen } from "./MenuScreen";
-import { mapUi } from "../mapUi";
+import { SavesList } from "./SavesList";
 
 export function LoadMenu() {
   const [waiting, setWaiting] = useState(false);

@@ -38,7 +38,17 @@ export class TileCore implements BaseTile {
   climate = Climate.temperate;
   landForm = LandForm.plains;
   seaLevel = SeaLevel.deep;
+
   riverParts: TileDirection[] = [];
+
+  /* Extra information for the rendering shader. Data is stored as bits for each edge/corner.
+  0-5: edge has no river (0), edge has river (1)
+  6-11: river is flowing clockwise (0), river is flowing counter-clockwise (1)
+  12-17: corner is a river source (1)
+  18-23: corner is a river mouth (1)
+  */
+  river = 0;
+
   forest = false;
   wetlands = false;
   improvement: TileImprovementDefinition | null = null;
@@ -303,5 +313,24 @@ export class TileCore implements BaseTile {
     }
 
     return false;
+  }
+
+  computeRiverData() {
+    this.river = 0;
+    for (const dir of this.riverParts) {
+      this.river |= 1 << dir;
+    }
+
+    // for (const dir of this.riverParts) {
+    //   const n1 = this.fullNeighbours[dir];
+    //   const n2 = this.fullNeighbours[dir === 0 ? 5 : dir - 1];
+    //   if (!n1 || !n2) {
+    //     continue;
+    //   }
+
+    //   if (this.river & (1 << (neighbourDir + 12))) {
+    //     this.river |= 1 << (dir + 18);
+    //   }
+    // }
   }
 }
