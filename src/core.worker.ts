@@ -493,7 +493,7 @@ export function tileGetHoverDetails(
 
   let combatSimulation: CombatSimulationChanneled | null = null;
 
-  if (options.selectedUnitId) {
+  if (options.selectedUnitId && game.trackedPlayer.visibleTiles.has(tile)) {
     const selectedUnit = game.unitsManager.unitsMap.get(options.selectedUnitId);
     if (selectedUnit) {
       const enemyUnit = tile.getFirstEnemyUnit(selectedUnit);

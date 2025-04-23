@@ -577,12 +577,16 @@ export function tileDetailsToChannel(
   tile: TileCore,
   forPlayer: PlayerCore,
 ): TileDetailsChanneled {
+  let units: UnitChanneled[] = [];
+  if (forPlayer.visibleTiles.has(tile)) {
+    units = tile.units.map((u) => unitToChannel(u));
+  }
   return {
     ...tileToChannel(tile),
     zocPlayerId: tile.zocPlayer?.id ?? null,
     zocNoMansLand: tile.zocNoMansLand,
     isSupplied: tile.isSuppliedByPlayer(forPlayer),
-    units: tile.units.map((u) => unitToChannel(u)),
+    units,
     isExplored: forPlayer.exploredTiles.has(tile),
   };
 }

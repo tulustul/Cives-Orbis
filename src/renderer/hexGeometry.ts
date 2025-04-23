@@ -5,7 +5,6 @@ function buildHex(): number[] {
   const my = TILE_HEIGHT / 2;
   // prettier-ignore
   return [
-    0.5, 0.5,
     0, 0.5 - yo,
     0.5, 0.5 - my,
     1, 0.5 - yo,
@@ -21,25 +20,11 @@ const vertices = buildHex();
 const indexes: number[] = [
   0, 1, 2,
   0, 2, 3,
-  0, 3, 4,
-  0, 4, 5,
-  0, 5, 6,
-  0, 6, 1,
+  0, 3, 5,
+  3, 4, 5,
 ];
-
-// prettier-ignore
-const centerDistance: number[] = [
-  0, 0,
-  1, 1,
-  1, 1,
-  1, 1,
-  1, 1,
-  1, 1,
-  1, 1,
-]
 
 export const HEX = {
   vertices,
   indexes,
-  centerDistance,
 };

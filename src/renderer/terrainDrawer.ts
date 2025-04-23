@@ -7,9 +7,6 @@ import { mapUi } from "@/ui/mapUi";
 import { HexDrawer } from "./hexDrawer";
 import { getAssets } from "./assets";
 import { measureTime } from "@/utils";
-import { HEX } from "./hexGeometry";
-import { render } from "sass-embedded";
-import { renderer } from "./renderer";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -39,7 +36,6 @@ const VERTEX_PROGRAM = `#version 300 es
 precision mediump float;
 
 in vec2 aVertexPosition;
-in vec2 aDistanceToCenter;
 in vec2 aInstancePosition;
 in uint aInstanceTexture;
 in uint aInstanceAdjancentTextures;
@@ -49,21 +45,19 @@ uniform mat3 uProjectionMatrix;
 uniform mat3 uWorldTransformMatrix;
 uniform mat3 uTransformMatrix;
 
-out vec2 vTextureCoord;
-out vec2 vDistanceToCenter;
 out vec2 uv;
-flat out uint vInstanceTexture;
-flat out uint vInstanceAdjancentTextures;
-flat out uint vCoast;
+out vec2 point;
+flat out uint texId;
+flat out uint adjacentTexId;
+flat out uint coast;
 
 void main() {
   mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
-  vTextureCoord = aVertexPosition + aInstancePosition;
-  uv = aVertexPosition;
-  vDistanceToCenter = aDistanceToCenter;
-  vInstanceTexture = aInstanceTexture;
-  vCoast = aCoast;
-  vInstanceAdjancentTextures = aInstanceAdjancentTextures;
+  uv = aVertexPosition + aInstancePosition;
+  point = aVertexPosition - vec2(0.5, 0.5);
+  texId = aInstanceTexture;
+  coast = aCoast;
+  adjacentTexId = aInstanceAdjancentTextures;
   gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
 }`;
 
@@ -77,12 +71,11 @@ const float PI = 3.14159265359;
 const float SQRT3 = 1.73205080757;
 const float HALF_SQRT3 = 0.5 * SQRT3;
 
-in vec2 vTextureCoord;
 in vec2 uv;
-in vec2 vDistanceToCenter;
-flat in uint vInstanceTexture;
-flat in uint vInstanceAdjancentTextures;
-flat in uint vCoast;
+in vec2 point;
+flat in uint texId;
+flat in uint adjacentTexId;
+flat in uint coast;
 
 out vec4 fragColor;
 
@@ -106,45 +99,25 @@ vec4[] uvOffsets = vec4[](
   ${buildUvOffsets()}
 );
 
-float rand(vec2 p) {
-	vec3 p3  = fract(vec3(p.xyx) * HASHSCALE1);
-	p3 += dot(p3, p3.yzx + 19.19);
-	return fract((p3.x + p3.y) * p3.z);
-}
-
-float noiseFn(vec2 p){
-	vec2 ip = floor(p);
-	vec2 u = fract(p);
-	u = u*u*(3.0-2.0*u);
-
-	float res = mix(
-		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
-		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);
-	//return res*res;
-    return res;
-}
-
 float sum( vec3 v ) {
   return v.x+v.y+v.z;
 }
 
-vec2 tileUV(vec2 uv, vec4 offset) {
-  return offset.xy + fract(uv) * offset.zw;
+vec2 tileUV(vec2 point, vec4 offset) {
+  return offset.xy + fract(point) * offset.zw;
 }
 
-float sampleWhitenoise(vec2 uv, float scale) {
-  return texture( whitenoise, uv * scale).x;
+float sampleWhitenoise(vec2 point, float scale) {
+  return texture( whitenoise, point * scale).x;
 }
 
-float sampleNoise(vec2 uv, float scale) {
-  return texture( noise, uv * scale).x;
+float sampleNoise(vec2 point, float scale) {
+  return texture( noise, point * scale).x;
 }
 
 // https://iquilezles.org/articles/texturerepetition/
-vec4 textureNoTile(sampler2D samp, vec2 uv, vec4 offset) {
-    // sample variation pattern
-    float k = sampleWhitenoise(uv, 0.01);
-    // float k = noiseFn( uv );
+vec4 textureNoTile(sampler2D samp, vec2 point, vec4 offset) {
+    float k = sampleWhitenoise(point, 0.01);
 
     // compute index
     float index = k*8.0;
@@ -156,29 +129,29 @@ vec4 textureNoTile(sampler2D samp, vec2 uv, vec4 offset) {
     vec2 offb = sin(vec2(3.0,7.0)*(i+1.0)); // can replace with any other hash
 
     // compute derivatives for mip-mapping
-    vec2 dx = dFdx(uv);
-    vec2 dy = dFdy(uv);
+    vec2 dx = dFdx(point);
+    vec2 dy = dFdy(point);
 
     // sample the two closest virtual patterns
-    vec3 cola = textureGrad( samp, tileUV(uv + offa, offset), dx, dy ).xyz;
-    vec3 colb = textureGrad( samp, tileUV(uv + offb, offset), dx, dy ).xyz;
+    vec3 cola = textureGrad( samp, tileUV(point + offa, offset), dx, dy ).xyz;
+    vec3 colb = textureGrad( samp, tileUV(point + offb, offset), dx, dy ).xyz;
 
     // interpolate between the two virtual patterns
     return vec4(mix( cola, colb, smoothstep(0.2,0.8,f-0.1*sum(cola-colb))), 1.0);
 }
 
-vec4 sampleAtlas(uint textureId, vec2 uv) {
+vec4 sampleAtlas(uint textureId, vec2 point) {
   vec4 offset = uvOffsets[textureId];
   if (textureId == ${terrainNameToId["water.png"]}u || textureId == ${
   terrainNameToId["deepWater.png"]
 }u) {
     vec2 wave = vec2(
-      cos(time * .07 + uv.y * 4.0) * .01 + sin(time * .015 + uv.y * 5.0) * .017,
-      cos(time * .05 + uv.x * 5.0) * .013 + sin(time * .02 + uv.x * 5.0) * .021
+      cos(time * .07 + point.y * 4.0) * .01 + sin(time * .015 + point.y * 5.0) * .017,
+      cos(time * .05 + point.x * 5.0) * .013 + sin(time * .02 + point.x * 5.0) * .021
     );
-    uv += wave + time * 0.0005;
+    point += wave + time * 0.0005;
   }
-  return textureNoTile(atlas, uv, offset);
+  return textureNoTile(atlas, point, offset);
 }
 
 void unpackNeighbours( uint packed, out uint n[6] ) {
@@ -190,138 +163,88 @@ void unpackNeighbours( uint packed, out uint n[6] ) {
   n[5] =  packed        & 31u;
 }
 
-uint edgeFromPos( vec2 p ) {
-  float a = atan( p.y - .5, p.x - .5 ) + PI / 6.0;   // 0° = centre of edge 0
-  if( a < 0.0 ) {
-    a += 2.0 * PI;
-  }
-  return uint( floor( a / ( PI / 3.0 ) ) );          // 60° sectors
-}
-
 uint previousEdge( uint edge ) {
   return ( edge + 5u ) % 6u;
 }
 
-uint nextEdge( uint edge ) {
-  return ( edge + 1u ) % 6u;
-}
-
-float sdHex( vec2 p ) {
-  p -= vec2( 0.5 );             // move centre to the origin
-  p  = abs( p );                // first sextant is enough
-  return max( dot( p, vec2( HALF_SQRT3, .5 ) ), p.y ) - 0.5;
-}
-
 float getBorder(uint data) {
-  vec2 p = uv - vec2(0.5);
-  // vec2 p = point;
   float v = 0.0;
   for (int i = 0; i < 6; ++i) {
     if ((data & (1u << i)) != 0u) {
-      v = max(v, -dot(p, N[i]));
+      v = max(v, -dot(point, N[i]));
     }
   }
   return clamp(1.0 - 2.0 * v, 0.0, 1.0);
 }
 
-void main() {
-  float distanceToEdge = length(vDistanceToCenter);
-  float distanceToEdge2 = length(uv - vec2(0.5, 0.5));
-  vec4 base = sampleAtlas(vInstanceTexture, vTextureCoord);
-
+vec4 mixNeighbours(vec4 baseColor, float angle) {
   uint  neigh[6];
-  unpackNeighbours( vInstanceAdjancentTextures, neigh );
-
-  float angle = atan(uv.y-0.5, uv.x-0.5);
-  if (angle < 0.0) {
-    angle += 2.0 * PI;
-  }
-
-  uint texAId = vInstanceTexture;
-  uint texBId = vInstanceTexture;
-  float a;
-
-  float angle2 = angle + PI / 6.0 + PI * 2.0 / 3.0;
-  if (angle2 > 2.0 * PI) {
-    angle2 -= 2.0 * PI;
-  }
-  uint edge = uint(floor(angle2 / (PI / 3.0)));
-  // edge -= 1u;
-  if (edge < 0u) {
-    edge = 5u;
-  }
-  uint edgeN  = ( edge + 1u ) % 6u; // next edge CCW
-  // uint  edge   = edgeFromPos( uv );
+  unpackNeighbours( adjacentTexId, neigh );
 
   uint sector = uint(floor(angle / (2.0 * PI) * 6.0));
+  float edgeAlpha = (angle - float(sector) * PI / 3.0) / (PI / 3.0);
   sector = ( sector + 3u ) % 6u;
-  uint nextSector = ( sector + 1u ) % 6u;
 
-  if (angle < PI / 3.0) {
-    a = angle / (PI / 3.0);
-  } else if (angle < 2.0 * PI / 3.0) {
-    a = (angle - PI / 3.0) / (PI / 3.0);
-  } else if (angle < 3.0 * PI / 3.0) {
-    a = (angle - 2.1 * PI / 3.0) / (PI / 3.0);
-  } else if (angle < 4.0 * PI / 3.0) {
-    a = (angle - 3.0 * PI / 3.0) / (PI / 3.0);
-  } else if (angle < 5.0 * PI / 3.0) {
-    a = (angle - 4.0 * PI / 3.0) / (PI / 3.0);
-  } else if (angle < 6.0 * PI / 3.0) {
-    a = (angle - 5.0 * PI / 3.0) / (PI / 3.0);
-  }
+  vec4 texA = sampleAtlas(neigh[previousEdge(sector)], uv);
+  vec4 texB = sampleAtlas(neigh[sector], uv);
 
-  // float sectorFrac = fract( ( atan( uv.y - .5, uv.x - .5 ) + PI/6.0 ) / ( PI / 3.0 ) );
-  float sectorFrac = fract( ( angle - PI/6.0 ) / ( PI / 3.0 ) );
+  vec4 edgeColor = mix(texA, texB, edgeAlpha);
+  return mix(baseColor, edgeColor, length(point));
+}
 
-  vec4 texA = sampleAtlas(neigh[previousEdge(sector)], vTextureCoord);
-  vec4 texB = sampleAtlas(neigh[sector], vTextureCoord);
-
-  float mixSize = 0.2;
-  float d = distanceToEdge / 2.6;
-  float mixValue = d;
-
-  vec4 edgeColor = mix(texA, texB, a);
-
-  const float BLEND = 0.25;
-  bool needCoast = ((vCoast & (1u<<edge)) != 0u);
-
-  if (!needCoast) {
-    fragColor = mix(base, edgeColor, mixValue);
-  } else {
-    fragColor = base;
-  }
-
-  float coastBand = 1.0 - getBorder(vCoast) * 1.5;
-  float riverBand = 1.0 - getBorder(vCoast >> 6) * 3.5;
-
-  // float coastNoise = 1.0 + ((sampleWhitenoise(vTextureCoord, 0.02)) - 0.5) * 0.5;
-  // coastBand *= coastNoise;
-  // riverBand *= coastNoise;
-
-  float coastSize = vInstanceTexture == ${
-    terrainNameToId["water.png"]
-  }u ? 0.7 : 0.2;
+vec4 applyCoast(vec4 color) {
+  float coastBand = 1.0 - getBorder(coast) * 1.5;
+  float coastSize = texId == ${terrainNameToId["water.png"]}u ? 0.7 : 0.2;
   coastBand = smoothstep(coastSize, 1.0, coastBand);
-  riverBand = smoothstep(0.5, 1.0, riverBand);
 
   if (coastBand > 0.0) {
-    vec4 coastColor = sampleAtlas(5u, vTextureCoord)*1.3;
-    fragColor = mix(fragColor, coastColor, coastBand);
+    vec4 coastColor = sampleAtlas(${
+      terrainNameToId["temperate1.png"]
+    }u, uv)*1.3;
+    color = mix(color, coastColor, coastBand);
   }
+
+  return color;
+}
+
+vec4 applyRiver(vec4 color) {
+  float riverBand = 1.0 - getBorder(coast >> 6) * 3.5;
+  riverBand = smoothstep(0.5, 1.0, riverBand);
 
   if (riverBand > 0.0) {
-    vec4 coastColor = sampleAtlas(11u, vTextureCoord);
-    fragColor = mix(fragColor, coastColor, riverBand);
+    vec4 coastColor = sampleAtlas(${terrainNameToId["water.png"]}u, uv);
+    color = mix(color, coastColor, riverBand);
   }
 
-  float noise1 = sampleNoise(vTextureCoord, 0.02) - 0.5;
-  float noise2 = sampleNoise(vTextureCoord, 0.1) - 0.5;
-  fragColor += noise1 * 0.6;
-  fragColor += noise2 * 0.3;
+  return color;
+}
+
+vec4 applyNoise(vec4 color) {
+  float noise1 = sampleNoise(uv, 0.02) - 0.5;
+  float noise2 = sampleNoise(uv, 0.1) - 0.5;
+  color += noise1 * 0.6;
+  color += noise2 * 0.3;
+  return color;
+}
+
+void main() {
+  vec4 base = sampleAtlas(texId, uv);
+
+  float angle = atan(point.y, point.x);
+  angle = angle < 0.0 ? angle + 2.0 * PI : angle;
+
+  uint edge = uint(floor(angle / (PI / 3.0)));
+  edge = (edge + 3u) % 6u;
+
+  bool needCoast = ((coast & (1u<<edge)) != 0u);
+
+  fragColor = needCoast ? base : mixNeighbours(base, angle);
+  fragColor = applyCoast(fragColor);
+  fragColor = applyRiver(fragColor);
+  fragColor = applyNoise(fragColor);
 
   if (gridEnabled) {
-    float grid = max(0.0, distanceToEdge - 1.3) * 1.0;
+    float grid = max(0.0, length(point) - 1.3) * 1.0;
     fragColor += smoothstep(0.0, 0.4, grid);
   }
 }`;
@@ -414,7 +337,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
         whitenoise: getAssets().textures.whitenoise.source,
         uniforms: {
           gridEnabled: { value: mapUi.gridEnabled ? 1 : 0, type: "i32" },
-          time: { value: renderer.app.ticker.elapsedMS / 1000, type: "f32" },
+          time: { value: 0, type: "f32" },
         },
       },
     });
@@ -422,7 +345,6 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
 
   override getGeometryAttributes(): AttributeOptions {
     return {
-      aDistanceToCenter: { buffer: HEX.centerDistance, format: "float32x2" },
       aInstanceTexture: {
         buffer: this.instanceTextures,
         format: "uint32",
@@ -465,9 +387,10 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     tilesMap: Map<number, TileChanneled>,
   ): number {
     const textures = tile.fullNeighbours.map((n) => {
-      let neighbour = n ? tilesMap.get(n) : null;
-
-      return this.getTextureIndex(neighbour ?? tile);
+      let neighbour = (n ? tilesMap.get(n) : null) ?? tile;
+      return isLandWaterTransition(tile, neighbour)
+        ? this.getTextureIndex(tile)
+        : this.getTextureIndex(neighbour);
     });
 
     return (
@@ -483,20 +406,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
   getCoast(tile: TileChanneled, tilesMap: Map<number, TileChanneled>): number {
     const coast = tile.fullNeighbours.map((n) => {
       let neighbour = (n ? tilesMap.get(n) : null) ?? tile;
-      if (
-        tile.seaLevel === SeaLevel.none &&
-        neighbour.seaLevel !== SeaLevel.none
-      ) {
-        return 1;
-      }
-      if (
-        tile.seaLevel !== SeaLevel.none &&
-        neighbour.seaLevel === SeaLevel.none
-      ) {
-        return 1;
-      }
-
-      return 0;
+      return isLandWaterTransition(tile, neighbour) ? 1 : 0;
     });
 
     return (
@@ -529,4 +439,11 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     this.geometry?.getAttribute("aInstanceAdjancentTextures").buffer.update();
     this.geometry?.getAttribute("aCoast").buffer.update();
   }
+}
+
+function isLandWaterTransition(tileA: TileChanneled, tileB: TileChanneled) {
+  return (
+    (tileA.seaLevel === SeaLevel.none && tileB.seaLevel !== SeaLevel.none) ||
+    (tileA.seaLevel !== SeaLevel.none && tileB.seaLevel === SeaLevel.none)
+  );
 }
