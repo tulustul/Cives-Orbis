@@ -3,6 +3,7 @@ import {
   Container,
   ContainerOptions,
   Filter,
+  Rectangle,
   RenderLayer,
   UpdateTransformOptions,
 } from "pixi.js";
@@ -65,8 +66,8 @@ export class GameRenderer {
   );
   unitsDrawer = new UnitsDrawer(this.unitsContainer);
   areaDrawer = new AreasDrawer(this.overlaysContainer);
-  selectedUnitDrawer = new SelectedUnitDrawer(this.terrainContainer);
   overlays = new OverlaysDrawer(this.overlaysContainer);
+  selectedUnitDrawer = new SelectedUnitDrawer(this.overlaysContainer);
   path = new PathDrawer(this.overlaysContainer);
   politicsDrawer = new PoliticsDrawer(this.politicsContainer);
   resourcesDrawer = new ResourcesDrawer(this.resourcesContainer);
@@ -92,6 +93,8 @@ export class GameRenderer {
     const [width, height] = [window.innerWidth, window.innerHeight];
 
     this.app = new Application();
+
+    // For PixiJS Devtools.
     (globalThis as any).__PIXI_APP__ = this.app;
 
     await this.app.init({
@@ -122,6 +125,7 @@ export class GameRenderer {
     this.app.ticker.add(() => this.onTick());
 
     this.updateMapFilters();
+    this.fixContainerBounds(this.unitsContainer);
   }
 
   waitForAppReady() {
@@ -142,6 +146,16 @@ export class GameRenderer {
     this.fogOfWarLayer.resize(width, height);
     this.cityFocusLayer.resize(width, height);
     this.updateMapFilters();
+    this.fixContainerBounds(this.unitsContainer);
+  }
+
+  fixContainerBounds(container: Container) {
+    container.boundsArea = new Rectangle(
+      0,
+      0,
+      this.app.renderer.width,
+      this.app.renderer.height,
+    );
   }
 
   onTick() {
