@@ -35,6 +35,7 @@ export function CityInfo({ city }: Props) {
     const box = camera.tileBoundingBox;
     const tile = city.tile;
     if (
+      t.scale > 30 &&
       tile.x >= box.xStart &&
       tile.x <= box.xEnd &&
       tile.y >= box.yStart &&

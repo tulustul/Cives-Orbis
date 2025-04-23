@@ -130,7 +130,6 @@ export class PoliticsDrawer extends HexDrawer<TileOwnershipChanneled> {
 
       const shadowSize = Math.max(0.2, Math.min(1.0, (150 - scale) / 150));
       const borderSize = Math.max(0.08, Math.min(0.5, (140 - scale) / 400));
-      console.log(borderSize);
 
       const uniforms = this.shader.resources["uniforms"].uniforms;
       uniforms.bgOpacity = backgroundOpacity;

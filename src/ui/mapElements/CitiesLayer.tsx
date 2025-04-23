@@ -52,11 +52,7 @@ export function CitiesLayer() {
 
     const t = camera.transform;
 
-    let opacity = 1;
-    if (t.scale < 30) {
-      opacity = Math.max(0, 1 - (30 - t.scale) / 8);
-    }
-    elRef.current.style.opacity = opacity.toString();
+    elRef.current.style.display = t.scale > 30 ? "block" : "none";
   }
 
   return (
