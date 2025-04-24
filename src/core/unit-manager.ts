@@ -1,12 +1,10 @@
-import { UnitCore } from "./unit";
-import { PlayerCore } from "./player";
-import { TileCore } from "./tile";
 import { collector } from "./collector";
 import { getUnitById } from "./data-manager";
 import { moveAlongPath } from "./movement";
+import { PlayerCore } from "./player";
+import { TileCore } from "./tile";
+import { UnitCore } from "./unit";
 import { zocAddUnit, zocForgetUnit } from "./zoc";
-import { SuppliesBlocker, SuppliesProducer } from "./supplies";
-import { UnitTrait } from "./data.interface";
 
 export class UnitsManager {
   units: UnitCore[] = [];
@@ -35,17 +33,17 @@ export class UnitsManager {
 
     zocAddUnit(unit);
 
-    if (unit.definition.trait === UnitTrait.military) {
-      unit.suppliesBlocker = new SuppliesBlocker(tile, player);
-    }
+    // if (unit.definition.trait === UnitTrait.military) {
+    //   unit.suppliesBlocker = new SuppliesBlocker(tile, player);
+    // }
 
-    if (unit.definition.trait === UnitTrait.supply) {
-      unit.suppliesProducer = new SuppliesProducer(
-        tile,
-        player,
-        unit.definition.supplyRange
-      );
-    }
+    // if (unit.definition.trait === UnitTrait.supply) {
+    //   unit.suppliesProducer = new SuppliesProducer(
+    //     tile,
+    //     player,
+    //     unit.definition.supplyRange,
+    //   );
+    // }
 
     return unit;
   }
@@ -99,24 +97,26 @@ export class UnitsManager {
 
       if (unit.actionPointsLeft < unit.definition.actionPoints) {
         unit.actionPointsLeft = unit.definition.actionPoints;
-        collector.units.add(unit);
-      }
-
-      if (unit.isSupplied) {
-        if (unit.supplies < 100) {
-          unit.supplies = 100;
+        if (unit.isPlayerTracked) {
           collector.units.add(unit);
         }
-      } else {
-        unit.supplies = Math.max(0, unit.supplies - 20);
-        if (!unit.supplies) {
-          // unit.health -= 10; // TODO disabled until fully implemented
-          if (unit.health <= 0) {
-            this.destroy(unit);
-          }
-        }
-        collector.units.add(unit);
       }
+
+      //   if (unit.isSupplied) {
+      //     if (unit.supplies < 100) {
+      //       unit.supplies = 100;
+      //       collector.units.add(unit);
+      //     }
+      //   } else {
+      //     unit.supplies = Math.max(0, unit.supplies - 20);
+      //     if (!unit.supplies) {
+      //       // unit.health -= 10; // TODO disabled until fully implemented
+      //       if (unit.health <= 0) {
+      //         this.destroy(unit);
+      //       }
+      //     }
+      //     collector.units.add(unit);
+      //   }
     }
   }
 }

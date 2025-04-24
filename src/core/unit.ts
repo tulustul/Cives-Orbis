@@ -29,7 +29,7 @@ export class UnitCore {
     public tile: TileCore,
     public definition: UnitDefinition,
     public player: PlayerCore,
-    private unitManager: UnitsManager
+    private unitManager: UnitsManager,
   ) {
     this.actionPointsLeft = definition.actionPoints;
   }
@@ -42,7 +42,9 @@ export class UnitCore {
     ACTIONS[action].fn(this.player.game, this);
 
     if (!collector.unitsDestroyed.has(this.id)) {
-      collector.units.add(this);
+      if (this.isPlayerTracked) {
+        collector.units.add(this);
+      }
     }
   }
 
@@ -80,7 +82,9 @@ export class UnitCore {
     if (order !== "go") {
       this.path = null;
     }
-    collector.units.add(this);
+    if (this.isPlayerTracked) {
+      collector.units.add(this);
+    }
   }
 
   getPathDestination(): TileCore | null {
@@ -100,7 +104,7 @@ export class UnitCore {
       this.tile,
       this.actionPointsLeft,
       result,
-      actionPointsLeftAtTile
+      actionPointsLeftAtTile,
     );
 
     if (result.size === 1) {
@@ -114,7 +118,7 @@ export class UnitCore {
     tile = this.tile,
     actionPointsLeft = this.actionPointsLeft,
     result: Set<TileCore>,
-    actionPointsLeftAtTile: Map<TileCore, number>
+    actionPointsLeftAtTile: Map<TileCore, number>,
   ) {
     if (actionPointsLeft <= 0) {
       return result;
@@ -141,7 +145,7 @@ export class UnitCore {
             neighbour,
             newActionPointsLeft,
             result,
-            actionPointsLeftAtTile
+            actionPointsLeftAtTile,
           );
         }
       }
@@ -184,5 +188,9 @@ export class UnitCore {
       return true;
     }
     return this.tile.isSuppliedByPlayer(this.player);
+  }
+
+  get isPlayerTracked() {
+    return this.player.game.trackedPlayer === this.player;
   }
 }

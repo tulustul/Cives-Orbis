@@ -126,7 +126,7 @@ function move(unit: UnitCore, tile: TileCore) {
 
 function _move(unit: UnitCore, tile: TileCore, cost: number) {
   zocForgetUnit(unit);
-  unit.suppliesProducer?.forget();
+  // unit.suppliesProducer?.forget();
 
   const index = unit.tile.units.indexOf(unit);
   if (index !== -1) {
@@ -142,15 +142,15 @@ function _move(unit: UnitCore, tile: TileCore, cost: number) {
   unit.player.showTiles(visibleTiles);
   for (const child of unit.children) {
     _move(child, tile, 0);
-    collector.units.add(child);
+    // collector.units.add(child);
   }
 
   zocAddUnit(unit);
-  if (unit.suppliesProducer) {
-    unit.suppliesProducer.tile = tile;
-    unit.suppliesProducer.add();
-  }
-  unit.suppliesBlocker?.update(tile);
+  // if (unit.suppliesProducer) {
+  //   unit.suppliesProducer.tile = tile;
+  //   unit.suppliesProducer.add();
+  // }
+  // unit.suppliesBlocker?.update(tile);
 }
 
 export function moveAlongPath(unit: UnitCore) {
@@ -161,7 +161,7 @@ export function moveAlongPath(unit: UnitCore) {
 
   unit.setOrder(unit.path.length ? "go" : null);
 
-  collector.units.add(unit);
+  // collector.units.add(unit);
   const tiles: TileCore[] = [unit.tile];
   collector.moves.push({ unit, tiles });
 

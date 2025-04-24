@@ -5,10 +5,8 @@ import { getMoveCost, getMoveResult, MoveResult } from "./movement";
 export function findPath(
   unit: UnitCore,
   end: TileCore,
-  start?: TileCore
+  start?: TileCore,
 ): TileCore[][] | null {
-  const startTime = performance.now();
-
   if (!start) {
     start = unit.tile;
   }
@@ -54,8 +52,6 @@ export function findPath(
     tilesToVisit.delete(nextTile);
 
     if (nextTile === end) {
-      const endTime = performance.now();
-      console.debug(`pathfinding took ${(endTime - startTime).toFixed(3)}ms`);
       return reconstructPath(cameFrom, end);
     }
 
@@ -90,7 +86,7 @@ export function findPath(
           costsSoFar.set(neighbour, costSoFar);
           tilesToVisit.set(
             neighbour,
-            costSoFar + getEuclideanDistance(neighbour, end) * turnCost
+            costSoFar + getEuclideanDistance(neighbour, end) * turnCost,
           );
           cameFrom.set(neighbour, [turn, newActionPointsLeft, nextTile]);
         }
@@ -98,22 +94,19 @@ export function findPath(
     }
   }
 
-  const endTime = performance.now();
-  console.debug(`pathfinding took ${(endTime - startTime).toFixed(3)}ms`);
-
   return null;
 }
 
 function getEuclideanDistance(start: TileCore, end: TileCore) {
   return Math.sqrt(
     (start.x - end.x) * (start.x - end.x) +
-      (start.y - end.y) * (start.y - end.y)
+      (start.y - end.y) * (start.y - end.y),
   );
 }
 
 function reconstructPath(
   cameFrom: Map<TileCore, [number, number, TileCore | null]>,
-  target: TileCore
+  target: TileCore,
 ): TileCore[][] {
   let lastTile = target;
   let lastTurn: number | null = null;
