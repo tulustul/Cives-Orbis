@@ -32,6 +32,9 @@ export class UnitsDrawer {
     interactiveChildren: false,
   });
 
+  private tilesToUpdateNeighbours = new Map<number, TileCoordsWithUnits>();
+  private tilesTimeout: NodeJS.Timeout | null = null;
+
   constructor(private container: Container) {
     bridge.units.updated$.subscribe((unit) => {
       this.updateUnit(unit);
@@ -42,7 +45,7 @@ export class UnitsDrawer {
       if (drawer) {
         this.units.delete(unitId);
         this.removeUnitFromTile(unitId, drawer.unit.tile.id);
-        this.updateNeighbours(drawer, drawer.unit.tile);
+        this.scheduleNeighboursUpdate(drawer.unit.tile);
         drawer.destroy();
       }
     });
@@ -54,8 +57,8 @@ export class UnitsDrawer {
       const drawer = this.units.get(move.unitId);
       if (drawer) {
         drawer.animatePosition(move.tiles);
-        this.updateNeighbours(drawer, move.tiles[0]);
-        this.updateNeighbours(drawer, move.tiles[move.tiles.length - 1]);
+        this.scheduleNeighboursUpdate(move.tiles[0]);
+        this.scheduleNeighboursUpdate(move.tiles[move.tiles.length - 1]);
       }
       this.removeUnitFromTile(move.unitId, move.tiles[0].id);
       this.addUnitToTile(move.unitId, move.tiles[move.tiles.length - 1].id);
@@ -125,15 +128,33 @@ export class UnitsDrawer {
 
   private updateDrawer(drawer: UnitDrawer) {
     drawer.updateUi();
-    this.updateNeighbours(drawer, drawer.unit.tile);
+    this.scheduleNeighboursUpdate(drawer.unit.tile);
   }
 
-  private updateNeighbours(drawer: UnitDrawer, tile: TileCoordsWithUnits) {
+  private scheduleNeighboursUpdate(tile: TileCoordsWithUnits) {
+    // Delays the update to the next tick. Improves perceived performance and avoids updating the same units a couple of times.
+    this.tilesToUpdateNeighbours.set(tile.id, tile);
+    if (!this.tilesTimeout) {
+      this.tilesTimeout = setTimeout(() => {
+        this.updateNeighbours();
+        this.tilesTimeout = null;
+      });
+    }
+  }
+
+  updateNeighbours() {
+    for (const tile of this.tilesToUpdateNeighbours.values()) {
+      this.updateTileUnits(tile);
+    }
+    this.tilesToUpdateNeighbours.clear();
+  }
+
+  private updateTileUnits(tile: TileCoordsWithUnits) {
     for (const unit of tile.units) {
-      const otherDrawer = this.units.get(unit.id);
-      if (otherDrawer && otherDrawer !== drawer) {
-        otherDrawer.unit.tile = tile;
-        otherDrawer.correctPosition();
+      const drawer = this.units.get(unit.id);
+      if (drawer && !drawer.animation) {
+        drawer.unit.tile = tile;
+        drawer.correctPosition();
       }
     }
   }
@@ -223,7 +244,7 @@ export class UnitDrawer {
   private g = new Graphics();
   private childrenCountText: Text | null = null;
   private isSelected = false;
-  private animation: Animation<any> | AnimationSequence | null = null;
+  public animation: Animation<any> | AnimationSequence | null = null;
 
   static selectionFilter = new OutlineFilter({
     color: 0xffffff,
