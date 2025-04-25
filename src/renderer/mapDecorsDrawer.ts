@@ -71,6 +71,20 @@ export class MapDecorsDrawer {
   }
 }
 
+const mountainTextures = ["mountain-2.png"];
+
+const hillsTextures = [
+  "savanna-hill.png",
+  "hill-1.png",
+  "hill-2.png",
+  "hill-3.png",
+  "hill-desert-1.png",
+  "hill-desert-2.png",
+  "hill-desert-3.png",
+  "hill-grassy-1.png",
+  "hill-snowy-1.png",
+];
+
 class TileDrawer {
   container = new Container();
 
@@ -82,7 +96,7 @@ class TileDrawer {
   roadSprite: Sprite | null = null;
   citySprite: Sprite | null = null;
   riverGraphics: Graphics | null = null;
-  hillSprite: Sprite | null = null;
+  hillSprites: Sprite[] = [];
   forestSprite: Sprite | null = null;
   coastsSprite: Sprite | null = null;
 
@@ -105,11 +119,40 @@ class TileDrawer {
   }
 
   private drawDecors() {
+    let landFormTextures: string[] | null = null;
+
     if (this.tile.landForm === LandForm.mountains) {
-      this.hillSprite = new Sprite(this.tilesTextures["mountain.png"]);
-      this.hillSprite.anchor.set(0.5, 0.7);
-      this.container.addChild(this.hillSprite);
-      putContainerAtTileCentered(this.hillSprite, this.tile, 2);
+      landFormTextures = mountainTextures;
+    } else if (this.tile.landForm === LandForm.hills) {
+      // landFormTextures = hillsTextures;
+    }
+
+    const offsets = [
+      { x: -0.3, y: -0.2 },
+      { x: 0.15, y: 0.0 },
+      { x: 0, y: 0.1 },
+      { x: 0.25, y: 0.3 },
+      { x: -0.1, y: -0.4 },
+      { x: -0.2, y: -0.1 },
+    ];
+    if (landFormTextures) {
+      for (let i = 0; i < 6; i++) {
+        const textureName =
+          landFormTextures[Math.floor(Math.random() * landFormTextures.length)];
+        const sprite = new Sprite(this.tilesTextures[textureName]);
+        this.hillSprites.push(sprite);
+        sprite.anchor.set(0.5, 0.7);
+        this.container.addChild(sprite);
+        putContainerAtTileCentered(sprite, this.tile, 2);
+
+        sprite.scale.x *= 0.8 + variance(0.15);
+        sprite.scale.y *= 0.8 + variance(0.15);
+
+        const offset = offsets[i];
+        sprite.position.x += offset.x + variance(0.1);
+        sprite.position.y += offset.y + variance(0.1);
+        sprite.zIndex = sprite.position.y;
+      }
     }
 
     if (this.tile.forest) {
@@ -207,4 +250,8 @@ class TileDrawer {
     }
     this.yieldsGraphics.fill({ color });
   }
+}
+
+function variance(scale: number) {
+  return (Math.random() - 0.5) * 2 * scale;
 }
