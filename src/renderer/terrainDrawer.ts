@@ -1,6 +1,6 @@
 import * as terrainData from "@/assets/atlas-terrain.json";
 import { TileChanneled } from "@/core/serialization/channel";
-import { Climate, SeaLevel } from "@/shared";
+import { Climate, LandForm, SeaLevel } from "@/shared";
 import { AttributeOptions, Container, Shader } from "pixi.js";
 import { bridge } from "@/bridge";
 import { mapUi } from "@/ui/mapUi";
@@ -198,9 +198,7 @@ vec4 applyCoast(vec4 color) {
   coastBand = smoothstep(coastSize, 1.0, coastBand);
 
   if (coastBand > 0.0) {
-    vec4 coastColor = sampleAtlas(${
-      terrainNameToId["temperate1.png"]
-    }u, uv)*1.3;
+    vec4 coastColor = sampleAtlas(${terrainNameToId["beach.png"]}u, uv);
     color = mix(color, coastColor, coastBand);
   }
 
@@ -257,8 +255,8 @@ const SEA_LEVEL_TO_TEXTURE: Record<SeaLevel, number | null> = {
 
 const CLIMATE_TO_TEXTURE: Record<Climate, number> = {
   [Climate.tropical]: terrainNameToId["tropical.png"],
-  [Climate.savanna]: terrainNameToId["savanna.png"],
-  [Climate.desert]: terrainNameToId["desert.png"],
+  [Climate.savanna]: terrainNameToId["savanna1.png"],
+  [Climate.desert]: terrainNameToId["desert2.png"],
   [Climate.arctic]: terrainNameToId["arctic.png"],
   [Climate.temperate]: terrainNameToId["temperate.png"],
   [Climate.tundra]: terrainNameToId["tundra.png"],
