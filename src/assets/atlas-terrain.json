@@ -1,13 +1,21 @@
 {
 	"meta": {
 		"image": "atlas-terrain.png",
-		"size": {"w":1280,"h":1024},
+		"size": {"w":1290,"h":1032},
 		"scale": "1"
 	},
 	"frames": {
-		"arctic.png":
+		"arctic-1.png":
 		{
-			"frame": {"x":0,"y":0,"w":256,"h":256},
+			"frame": {"x":1,"y":1,"w":256,"h":256},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
+			"sourceSize": {"w":256,"h":256}
+		},
+		"arctic-2.png":
+		{
+			"frame": {"x":259,"y":1,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -15,15 +23,7 @@
 		},
 		"beach.png":
 		{
-			"frame": {"x":256,"y":0,"w":256,"h":256},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-			"sourceSize": {"w":256,"h":256}
-		},
-		"coast.png":
-		{
-			"frame": {"x":0,"y":256,"w":256,"h":256},
+			"frame": {"x":1,"y":259,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -31,23 +31,7 @@
 		},
 		"deepWater.png":
 		{
-			"frame": {"x":256,"y":256,"w":256,"h":256},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-			"sourceSize": {"w":256,"h":256}
-		},
-		"desert.png":
-		{
-			"frame": {"x":512,"y":0,"w":256,"h":256},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-			"sourceSize": {"w":256,"h":256}
-		},
-		"desert1.png":
-		{
-			"frame": {"x":512,"y":256,"w":256,"h":256},
+			"frame": {"x":259,"y":259,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -55,23 +39,15 @@
 		},
 		"desert2.png":
 		{
-			"frame": {"x":0,"y":512,"w":256,"h":256},
+			"frame": {"x":517,"y":1,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"savanna-hills.png":
+		"savanna-3.png":
 		{
-			"frame": {"x":256,"y":512,"w":256,"h":256},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-			"sourceSize": {"w":256,"h":256}
-		},
-		"savanna.png":
-		{
-			"frame": {"x":512,"y":512,"w":256,"h":256},
+			"frame": {"x":517,"y":259,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -79,15 +55,7 @@
 		},
 		"savanna1.png":
 		{
-			"frame": {"x":768,"y":0,"w":256,"h":256},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-			"sourceSize": {"w":256,"h":256}
-		},
-		"steppe.png":
-		{
-			"frame": {"x":768,"y":256,"w":256,"h":256},
+			"frame": {"x":1,"y":517,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -95,47 +63,47 @@
 		},
 		"temperate.png":
 		{
-			"frame": {"x":768,"y":512,"w":256,"h":256},
+			"frame": {"x":259,"y":517,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"temperate2.png":
+		"tropical-2.png":
 		{
-			"frame": {"x":0,"y":768,"w":256,"h":256},
+			"frame": {"x":517,"y":517,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"temperate3.png":
+		"tropical-hills-6.png":
 		{
-			"frame": {"x":256,"y":768,"w":256,"h":256},
+			"frame": {"x":775,"y":1,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"tropical.png":
+		"tropical-hills-7.png":
 		{
-			"frame": {"x":512,"y":768,"w":256,"h":256},
+			"frame": {"x":775,"y":259,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"tundra.png":
+		"tundra-1.png":
 		{
-			"frame": {"x":768,"y":768,"w":256,"h":256},
+			"frame": {"x":775,"y":517,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"tundra1.png":
+		"tundra-3.png":
 		{
-			"frame": {"x":1024,"y":0,"w":256,"h":256},
+			"frame": {"x":1,"y":775,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -143,7 +111,7 @@
 		},
 		"water.png":
 		{
-			"frame": {"x":1024,"y":256,"w":256,"h":256},
+			"frame": {"x":259,"y":775,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -151,11 +119,59 @@
 		},
 		"whitenoise.png":
 		{
-			"frame": {"x":1024,"y":512,"w":256,"h":256},
+			"frame": {"x":517,"y":775,"w":256,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
+		},
+		"hill-arctic-1.png":
+		{
+			"frame": {"x":775,"y":775,"w":256,"h":145},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":145},
+			"sourceSize": {"w":256,"h":145}
+		},
+		"hill-desert-1.png":
+		{
+			"frame": {"x":1033,"y":1,"w":256,"h":138},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
+			"sourceSize": {"w":256,"h":138}
+		},
+		"hill-savanna-1.png":
+		{
+			"frame": {"x":1033,"y":141,"w":256,"h":138},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
+			"sourceSize": {"w":256,"h":138}
+		},
+		"hill-temperate-1.png":
+		{
+			"frame": {"x":1033,"y":281,"w":256,"h":138},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
+			"sourceSize": {"w":256,"h":138}
+		},
+		"hill-tropical-1.png":
+		{
+			"frame": {"x":1033,"y":421,"w":256,"h":138},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
+			"sourceSize": {"w":256,"h":138}
+		},
+		"hill-tundra-1.png":
+		{
+			"frame": {"x":1033,"y":561,"w":256,"h":138},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
+			"sourceSize": {"w":256,"h":138}
 		}
 	}
 }

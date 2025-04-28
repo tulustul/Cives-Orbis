@@ -53,7 +53,10 @@ export class GameRenderer {
   fogOfWarLayer = new Layer("fogOfWarLayer");
   cityFocusLayer = new Layer("cityFocusLayer");
 
-  terrainContainer = makeContainer("terrain", { parent: this.mapLayer.stage });
+  terrainContainer = makeContainer("terrain", {
+    parent: this.mapLayer.stage,
+    sortableChildren: true,
+  });
   unitsContainer = makeContainer("units", { interactiveChildren: true });
   resourcesContainer = makeContainer("resources");
   politicsContainer = makeContainer("politics");

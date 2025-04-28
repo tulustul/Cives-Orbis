@@ -67,6 +67,8 @@ export interface TileChanneled extends BaseTile {
   coasts: string;
   playerColor: NationColors | null;
   fullNeighbours: (number | null)[];
+  landFormNeighbours: number;
+  river: number;
 }
 
 export type TileOwnershipChanneled = TileCoords & {
@@ -341,6 +343,8 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     coasts: getCoasts(tile),
     playerColor: tile.areaOf?.player.nation.colors ?? null,
     fullNeighbours: tile.fullNeighbours.map((t) => t?.id ?? null),
+    landFormNeighbours: tile.landFormNeighbours,
+    river: tile.river,
   };
 }
 

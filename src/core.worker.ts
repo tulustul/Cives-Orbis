@@ -551,12 +551,6 @@ export function tileUpdate(options: TileUpdateOptions) {
     return;
   }
 
-  if (options.road !== undefined && options.road !== tile.road) {
-    for (const n of tile.neighbours) {
-      collector.tiles.add(n);
-    }
-  }
-
   const _tile = {
     ...options,
     improvement: options.improvement
@@ -566,6 +560,11 @@ export function tileUpdate(options: TileUpdateOptions) {
 
   Object.assign(tile, _tile);
   tile.update();
+
+  for (const n of tile.neighbours) {
+    n.update();
+    collector.tiles.add(n);
+  }
 }
 
 export function tileBulkUpdate(tiles: TileUpdateOptions[]) {
