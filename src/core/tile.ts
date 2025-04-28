@@ -41,13 +41,19 @@ export class TileCore implements BaseTile {
 
   riverParts: TileDirection[] = [];
 
-  /* Extra information for the rendering shader. Data is stored as bits for each edge/corner.
+  /* Extra information for the renderer. Data is stored as bits for each edge/corner.
   0-5: edge has no river (0), edge has river (1)
   6-11: river is flowing clockwise (0), river is flowing counter-clockwise (1)
   12-17: corner is a river source (1)
   18-23: corner is a river mouth (1)
   */
   river = 0;
+
+  /* Extra information for the renderer.
+  Bits 0-5: mountains
+  Bits 6-11: hills
+  */
+  landFormNeighbours = 0;
 
   forest = false;
   wetlands = false;
@@ -265,6 +271,8 @@ export class TileCore implements BaseTile {
       // TODO this loop can be optimized by computing only the cost from neighbour to this tile.
       neighbour.computeMovementCosts();
     }
+    this.computeRiverData();
+    this.computeLandFormData();
     collector.tiles.add(this);
   }
 
@@ -332,5 +340,20 @@ export class TileCore implements BaseTile {
     //     this.river |= 1 << (dir + 18);
     //   }
     // }
+  }
+
+  computeLandFormData() {
+    this.landFormNeighbours = 0;
+    for (let i = 0; i < this.fullNeighbours.length; i++) {
+      const neighbour = this.fullNeighbours[i];
+      if (!neighbour) {
+        continue;
+      }
+      if (neighbour.landForm === LandForm.mountains) {
+        this.landFormNeighbours |= 1 << i;
+      } else if (neighbour.landForm === LandForm.hills) {
+        this.landFormNeighbours |= 1 << (i + 6);
+      }
+    }
   }
 }

@@ -7,6 +7,7 @@ import { mapUi } from "@/ui/mapUi";
 import { HexDrawer } from "./hexDrawer";
 import { getAssets } from "./assets";
 import { measureTime } from "@/utils";
+import { HEX } from "./hexGeometry";
 
 type TerrainTextureName = keyof typeof terrainData.frames;
 
@@ -36,9 +37,11 @@ const VERTEX_PROGRAM = `#version 300 es
 precision mediump float;
 
 in vec2 aVertexPosition;
+in vec2 aCenterDistance;
 in vec2 aInstancePosition;
 in uint aInstanceTexture;
 in uint aInstanceAdjancentTextures;
+in uint aInstanceDecorTex;
 in uint aCoast;
 
 uniform mat3 uProjectionMatrix;
@@ -47,8 +50,10 @@ uniform mat3 uTransformMatrix;
 
 out vec2 uv;
 out vec2 point;
+out vec2 centerDistance;
 flat out uint texId;
 flat out uint adjacentTexId;
+flat out uint decorTex;
 flat out uint coast;
 
 void main() {
@@ -56,6 +61,8 @@ void main() {
   uv = aVertexPosition + aInstancePosition;
   point = aVertexPosition - vec2(0.5, 0.5);
   texId = aInstanceTexture;
+  decorTex = aInstanceDecorTex;
+  centerDistance = aCenterDistance;
   coast = aCoast;
   adjacentTexId = aInstanceAdjancentTextures;
   gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
@@ -73,9 +80,11 @@ const float HALF_SQRT3 = 0.5 * SQRT3;
 
 in vec2 uv;
 in vec2 point;
+in vec2 centerDistance;
 flat in uint texId;
 flat in uint adjacentTexId;
 flat in uint coast;
+flat in uint decorTex;
 
 out vec4 fragColor;
 
@@ -117,7 +126,7 @@ float sampleNoise(vec2 point, float scale) {
 
 // https://iquilezles.org/articles/texturerepetition/
 vec4 textureNoTile(sampler2D samp, vec2 point, vec4 offset) {
-    float k = sampleWhitenoise(point, 0.01);
+    float k = sampleWhitenoise(point, 0.002);
 
     // compute index
     float index = k*8.0;
@@ -152,6 +161,15 @@ vec4 sampleAtlas(uint textureId, vec2 point) {
     point += wave + time * 0.0005;
   }
   return textureNoTile(atlas, point, offset);
+  // return texture(atlas, tileUV(point, offset));
+}
+
+vec4 sampleSprite(uint textureId, vec2 point) {
+  vec4 offset = uvOffsets[textureId];
+  point.y -= 0.25;
+  vec2 uv = (offset.xy + point * offset.z);
+  uv = clamp(uv, offset.xy, offset.xy + offset.zw);
+  return texture(atlas, uv);
 }
 
 void unpackNeighbours( uint packed, out uint n[6] ) {
@@ -234,15 +252,21 @@ void main() {
   uint edge = uint(floor(angle / (PI / 3.0)));
   edge = (edge + 3u) % 6u;
 
-  bool needCoast = ((coast & (1u<<edge)) != 0u);
+  bool needCoast = ((coast & (1u << edge)) != 0u);
 
   fragColor = needCoast ? base : mixNeighbours(base, angle);
+
+  if (decorTex != 0u) {
+    vec4 spriteColor = sampleSprite(decorTex, point + vec2(0.5, 0.5));
+    fragColor = fragColor * (1.0 - spriteColor.a) + spriteColor;
+  }
+
   fragColor = applyCoast(fragColor);
   fragColor = applyRiver(fragColor);
   fragColor = applyNoise(fragColor);
 
   if (gridEnabled) {
-    float grid = max(0.0, length(point) - 1.3) * 1.0;
+    float grid = max(0.0, length(centerDistance) - 1.3) * 1.0;
     fragColor += smoothstep(0.0, 0.4, grid);
   }
 }`;
@@ -254,18 +278,39 @@ const SEA_LEVEL_TO_TEXTURE: Record<SeaLevel, number | null> = {
 };
 
 const CLIMATE_TO_TEXTURE: Record<Climate, number> = {
-  [Climate.tropical]: terrainNameToId["tropical.png"],
+  [Climate.tropical]: terrainNameToId["tropical-2.png"],
+  [Climate.savanna]: terrainNameToId["savanna-3.png"],
+  [Climate.desert]: terrainNameToId["desert2.png"],
+  [Climate.arctic]: terrainNameToId["arctic-1.png"],
+  [Climate.temperate]: terrainNameToId["temperate.png"],
+  [Climate.tundra]: terrainNameToId["tundra-3.png"],
+};
+
+const CLIMATE_HILLS_TO_TEXTURE: Record<Climate, number> = {
+  // [Climate.tropical]: terrainNameToId["tropical-2.png"],
+  [Climate.tropical]: terrainNameToId["hill-tropical-1.png"],
+  [Climate.savanna]: terrainNameToId["hill-savanna-1.png"],
+  [Climate.desert]: terrainNameToId["hill-desert-1.png"],
+  [Climate.arctic]: terrainNameToId["hill-arctic-1.png"],
+  [Climate.temperate]: terrainNameToId["hill-temperate-1.png"],
+  [Climate.tundra]: terrainNameToId["hill-tundra-1.png"],
+};
+
+const CLIMATE_MOUNTAINS_TO_TEXTURE: Record<Climate, number> = {
+  // [Climate.tropical]: terrainNameToId["tropical-2.png"],
+  [Climate.tropical]: terrainNameToId["tropical-2.png"],
   [Climate.savanna]: terrainNameToId["savanna1.png"],
   [Climate.desert]: terrainNameToId["desert2.png"],
-  [Climate.arctic]: terrainNameToId["arctic.png"],
+  [Climate.arctic]: terrainNameToId["arctic-1.png"],
   [Climate.temperate]: terrainNameToId["temperate.png"],
-  [Climate.tundra]: terrainNameToId["tundra.png"],
+  [Climate.tundra]: terrainNameToId["tundra-3.png"],
 };
 
 export class TerrainDrawer extends HexDrawer<TileChanneled> {
   instanceTextures = new Uint32Array(0);
   instanceAdjacentTextures = new Uint32Array(0);
   instanceCoast = new Uint32Array(0);
+  instanceDecorTex = new Uint32Array(0);
 
   isBuilt = false;
 
@@ -343,6 +388,10 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
 
   override getGeometryAttributes(): AttributeOptions {
     return {
+      aCenterDistance: {
+        buffer: HEX.centerDistance,
+        format: "float32x2",
+      },
       aInstanceTexture: {
         buffer: this.instanceTextures,
         format: "uint32",
@@ -350,6 +399,11 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
       },
       aInstanceAdjancentTextures: {
         buffer: this.instanceAdjacentTextures,
+        format: "uint32",
+        instance: true,
+      },
+      aInstanceDecorTex: {
+        buffer: this.instanceDecorTex,
         format: "uint32",
         instance: true,
       },
@@ -370,6 +424,14 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     const coast = this.getCoast(tile, this.tilesMap);
     const river = this.getRiver(tile);
     this.instanceCoast[index] = coast + (river << 6);
+    this.instanceDecorTex[index] = this.getDecorTextureIndex(tile);
+  }
+
+  getDecorTextureIndex(tile: TileChanneled): number {
+    if (tile.landForm === LandForm.hills) {
+      return CLIMATE_HILLS_TO_TEXTURE[tile.climate];
+    }
+    return 0;
   }
 
   getTextureIndex(tile: TileChanneled): number {
@@ -377,6 +439,12 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     if (texIndex !== null) {
       return texIndex;
     }
+    // if (tile.decorTex === LandForm.hills) {
+    //   return CLIMATE_HILLS_TO_TEXTURE[tile.climate];
+    // }
+    // if (tile.decorTex === LandForm.mountains) {
+    //   return CLIMATE_MOUNTAINS_TO_TEXTURE[tile.climate];
+    // }
     return CLIMATE_TO_TEXTURE[tile.climate];
   }
 
@@ -430,11 +498,13 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     this.instanceTextures = new Uint32Array(maxInstances);
     this.instanceAdjacentTextures = new Uint32Array(maxInstances);
     this.instanceCoast = new Uint32Array(maxInstances);
+    this.instanceDecorTex = new Uint32Array(maxInstances);
   }
 
   private updateBuffers_(): void {
     this.geometry?.getAttribute("aInstanceTexture").buffer.update();
     this.geometry?.getAttribute("aInstanceAdjancentTextures").buffer.update();
+    this.geometry?.getAttribute("aInstanceDecorTex").buffer.update();
     this.geometry?.getAttribute("aCoast").buffer.update();
   }
 }

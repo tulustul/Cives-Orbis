@@ -68,6 +68,7 @@ spritesheet(
     trim: true,
     powerOfTwo: false,
     square: false,
+    padding: 1,
   },
   function (err) {
     if (err) throw err;

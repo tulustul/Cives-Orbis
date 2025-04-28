@@ -43,6 +43,7 @@ export class TilesMapCore {
         tile.computeMovementCosts();
         tile.computeSweetSpotValue();
         tile.computeRiverData();
+        tile.computeLandFormData();
       }
     }
     this.precomputePassableAreas();

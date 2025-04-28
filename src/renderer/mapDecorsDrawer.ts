@@ -1,14 +1,14 @@
 import { bridge } from "@/bridge";
 import { TileChanneled } from "@/core/serialization/channel";
-import { Climate, LandForm, TileDirection } from "@/shared";
+import { Climate, LandForm } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
+import { merge } from "rxjs";
 import { getAssets } from "./assets";
+import { camera } from "./camera";
 import { TILE_ROW_OFFSET } from "./constants";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
-import { camera } from "./camera";
-import { merge } from "rxjs";
 
 export class MapDecorsDrawer {
   tileDrawers = new Map<number, TileDrawer>();
@@ -73,17 +73,25 @@ export class MapDecorsDrawer {
 
 const mountainTextures = ["mountain-2.png"];
 
-const hillsTextures = [
-  "savanna-hill.png",
-  "hill-1.png",
-  "hill-2.png",
-  "hill-3.png",
-  "hill-desert-1.png",
-  "hill-desert-2.png",
-  "hill-desert-3.png",
-  "hill-grassy-1.png",
-  "hill-snowy-1.png",
-];
+const hillsByClimate: Record<Climate, string[]> = {
+  [Climate.tropical]: [
+    "hill-tropical-1.png",
+    // "hill-2.png",
+    // "hill-3.png",
+  ],
+  [Climate.temperate]: ["hill-grassy-1.png"],
+  [Climate.tundra]: ["hill-grassy-1.png"],
+  [Climate.arctic]: ["hill-snowy-1.png"],
+  [Climate.desert]: [
+    "hill-desert-1.png",
+    // "hill-desert-2.png",
+    // "hill-desert-3.png",
+  ],
+  [Climate.savanna]: [
+    "hill-1.png",
+    // "savanna-hill.png",
+  ],
+};
 
 class TileDrawer {
   container = new Container();
@@ -91,14 +99,9 @@ class TileDrawer {
   tilesTextures = getAssets().tilesSpritesheet.textures;
 
   yieldsGraphics = new Graphics();
-  resourceSprite: Sprite | null = null;
-  improvementSprite: Sprite | null = null;
-  roadSprite: Sprite | null = null;
-  citySprite: Sprite | null = null;
-  riverGraphics: Graphics | null = null;
-  hillSprites: Sprite[] = [];
-  forestSprite: Sprite | null = null;
-  coastsSprite: Sprite | null = null;
+
+  private spritesPool: Sprite[] = [];
+  private spritesPoolIndex = 0;
 
   constructor(private tile: TileChanneled, private yieldsLayer: IRenderLayer) {
     this.container.zIndex = tile.y;
@@ -107,9 +110,15 @@ class TileDrawer {
   public destroy() {
     this.yieldsLayer.detach(this.yieldsGraphics);
     this.container.destroy({ children: true });
+    this.spritesPool = [];
+    this.spritesPoolIndex = 0;
   }
 
   public draw(tile: TileChanneled) {
+    this.spritesPoolIndex = 0;
+    for (const sprite of this.spritesPool) {
+      sprite.visible = false;
+    }
     this.tile = tile;
     this.drawDecors();
     this.drawImprovement();
@@ -118,115 +127,126 @@ class TileDrawer {
     this.drawYields();
   }
 
+  private nextSprite() {
+    let sprite = this.spritesPool[this.spritesPoolIndex++];
+    if (!sprite) {
+      sprite = new Sprite();
+      this.spritesPool.push(sprite);
+      this.container.addChild(sprite);
+    }
+    sprite.visible = true;
+    return sprite;
+  }
+
   private drawDecors() {
     let landFormTextures: string[] | null = null;
 
     if (this.tile.landForm === LandForm.mountains) {
       landFormTextures = mountainTextures;
     } else if (this.tile.landForm === LandForm.hills) {
-      // landFormTextures = hillsTextures;
+      // landFormTextures = hillsByClimate[this.tile.climate];
     }
 
     const offsets = [
-      { x: -0.3, y: -0.2 },
-      { x: 0.15, y: 0.0 },
-      { x: 0, y: 0.1 },
-      { x: 0.25, y: 0.3 },
-      { x: -0.1, y: -0.4 },
-      { x: -0.2, y: -0.1 },
+      { x: -0.25, y: -0.5, scale: 0.9 },
+      { x: 0.25, y: -0.5, scale: 0.9 },
+      { x: 0.5, y: 0, scale: 0.9 },
     ];
+
     if (landFormTextures) {
-      for (let i = 0; i < 6; i++) {
-        const textureName =
-          landFormTextures[Math.floor(Math.random() * landFormTextures.length)];
-        const sprite = new Sprite(this.tilesTextures[textureName]);
-        this.hillSprites.push(sprite);
-        sprite.anchor.set(0.5, 0.7);
-        this.container.addChild(sprite);
-        putContainerAtTileCentered(sprite, this.tile, 2);
+      this.drawDecor(landFormTextures, { x: 0, y: 0, scale: 1.0 });
 
-        sprite.scale.x *= 0.8 + variance(0.15);
-        sprite.scale.y *= 0.8 + variance(0.15);
+      for (let i = 0; i < offsets.length; i++) {
+        const isNeigbourMountain =
+          (this.tile.landFormNeighbours & (1 << i)) !== 0;
+        const isNeighbourHill =
+          (this.tile.landFormNeighbours & (1 << (i + 6))) !== 0;
 
-        const offset = offsets[i];
-        sprite.position.x += offset.x + variance(0.1);
-        sprite.position.y += offset.y + variance(0.1);
-        sprite.zIndex = sprite.position.y;
+        const isRiver = (this.tile.river & (1 << i)) !== 0;
+        const isMountain = this.tile.landForm === LandForm.mountains;
+        // const isHill = this.tile.landForm === LandForm.hills;
+
+        if (isRiver) {
+          continue;
+        }
+
+        // if (isNeigbourMountain || (isHill && isNeighbourHill)) {
+        if (isNeigbourMountain) {
+          this.drawDecor(landFormTextures, offsets[i]);
+        }
       }
     }
 
     if (this.tile.forest) {
       let textureName = "forest.png";
       if (this.tile.climate === Climate.tropical) {
-        textureName = "jungle.png";
+        textureName = "jungle-3.png";
       } else if (this.tile.climate === Climate.temperate) {
-        textureName = "forest-temperate.png";
+        textureName = "forest-temperate-2.png";
       }
-      this.forestSprite = new Sprite(this.tilesTextures[textureName]);
-      this.forestSprite.anchor.set(0.5, 0.6);
-      this.container.addChild(this.forestSprite);
-      putContainerAtTileCentered(this.forestSprite, this.tile, 2.0);
+      const forestSprite = this.nextSprite();
+      forestSprite.texture = this.tilesTextures[textureName];
+      forestSprite.anchor.set(0.5, 0.6);
+      putContainerAtTileCentered(forestSprite, this.tile, 1.8);
     }
+  }
+
+  private drawDecor(
+    textures: string[],
+    offset: { x: number; y: number; scale: number },
+  ) {
+    const textureName = textures[Math.floor(Math.random() * textures.length)];
+    const sprite = this.nextSprite();
+    sprite.texture = this.tilesTextures[textureName];
+    sprite.anchor.set(0.5, 0.5);
+    putContainerAtTileCentered(sprite, this.tile, 2);
+
+    sprite.scale.x *= offset.scale; // + variance(0.2);
+    sprite.scale.y *= offset.scale; // + variance(0.2);
+
+    sprite.position.x += offset.x; // + variance(0.1);
+    sprite.position.y += offset.y; // + variance(0.1);
+
+    sprite.zIndex = sprite.position.y;
   }
 
   private drawImprovement() {
     if (this.tile.improvement === null) {
-      if (this.improvementSprite) {
-        this.improvementSprite.visible = false;
-      }
       return;
+      7;
     }
 
-    if (!this.improvementSprite) {
-      this.improvementSprite = new Sprite();
-      this.improvementSprite.anchor.set(0.5, 0.5);
-      this.container.addChild(this.improvementSprite);
-    }
-
-    this.improvementSprite.visible = true;
+    const sprite = this.nextSprite();
+    sprite.anchor.set(0.5, 0.5);
 
     const textureName = `${this.tile.improvement.id}.png`;
-    this.improvementSprite.texture = this.tilesTextures[textureName];
-    putContainerAtTileCentered(this.improvementSprite, this.tile, 2);
+    sprite.texture = this.tilesTextures[textureName];
+    putContainerAtTileCentered(sprite, this.tile, 2);
   }
 
   private drawRoads() {
     if (this.tile.road === null || this.tile.cityId !== null) {
-      if (this.roadSprite) {
-        this.roadSprite.visible = false;
-      }
       return;
     }
 
-    if (!this.roadSprite) {
-      this.roadSprite = new Sprite();
-      this.roadSprite.zIndex = 10;
-      this.container.addChild(this.roadSprite);
-    }
-
-    this.roadSprite.visible = true;
+    const sprite = this.nextSprite();
+    sprite.anchor.set(0, 0);
+    sprite.zIndex = 10;
 
     const textureName = `hexRoad-${this.tile.roads}-00.png`;
-    this.roadSprite.texture = this.tilesTextures[textureName];
-    putContainerAtTile(this.roadSprite, this.tile);
+    sprite.texture = this.tilesTextures[textureName];
+    putContainerAtTile(sprite, this.tile);
   }
 
   private drawCity() {
     if (this.tile.cityId === null) {
-      if (this.citySprite) {
-        this.citySprite.visible = false;
-      }
       return;
     }
 
-    if (!this.citySprite) {
-      this.citySprite = new Sprite();
-      this.citySprite.texture = this.tilesTextures["village.png"];
-      this.container.addChild(this.citySprite);
-      putContainerAtTile(this.citySprite, this.tile);
-    }
-
-    this.citySprite.visible = true;
+    const sprite = this.nextSprite();
+    sprite.anchor.set(0, 0);
+    sprite.texture = this.tilesTextures["village.png"];
+    putContainerAtTile(sprite, this.tile);
   }
 
   private drawYields() {
