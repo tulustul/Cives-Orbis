@@ -13,6 +13,8 @@ export function CitiesLayer() {
 
   const gameInfo = useObservable(bridge.game.start$);
 
+  const trackedPlayer = useObservable(bridge.player.tracked$);
+
   useEffect(() => {
     const updateSubscription = bridge.cities.updated$.subscribe((updated) => {
       const updatedIds = new Set(updated.map((u) => u.id));
@@ -32,7 +34,7 @@ export function CitiesLayer() {
     if (gameInfo) {
       build();
     }
-  }, [gameInfo]);
+  }, [gameInfo, trackedPlayer]);
 
   useEffect(() => {
     const subscription = camera.transform$.subscribe(transform);

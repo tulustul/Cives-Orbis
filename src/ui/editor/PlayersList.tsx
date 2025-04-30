@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { PlayerChanneled } from "@/core/serialization/channel";
 import { bridge } from "@/bridge";
+import { useObservable } from "@/utils";
 
 type Props = {
   selectedPlayerId: number | null;
@@ -16,9 +17,11 @@ export function PlayersList({
 }: Props) {
   const [players, setPlayers] = useState<PlayerChanneled[]>([]);
 
+  const gameStartInfo = useObservable(bridge.game.start$);
+
   useEffect(() => {
     fetchPlayers();
-  }, []);
+  }, [gameStartInfo]);
 
   async function fetchPlayers() {
     const players = await bridge.game.getAllPlayers();
