@@ -9,6 +9,10 @@ import { getAssets } from "./assets";
 import { camera } from "./camera";
 import { TILE_ROW_OFFSET } from "./constants";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
+import * as terrainData from "@/assets/atlas-tiles.json";
+import { FOREST_BY_CLIMATE, MOUNTAIN_BY_CLIMATE } from "./tileTextures";
+
+type TileTextureName = keyof typeof terrainData.frames;
 
 export class MapDecorsDrawer {
   tileDrawers = new Map<number, TileDrawer>();
@@ -71,28 +75,6 @@ export class MapDecorsDrawer {
   }
 }
 
-const mountainTextures = ["mountain-2.png"];
-
-const hillsByClimate: Record<Climate, string[]> = {
-  [Climate.tropical]: [
-    "hill-tropical-1.png",
-    // "hill-2.png",
-    // "hill-3.png",
-  ],
-  [Climate.temperate]: ["hill-grassy-1.png"],
-  [Climate.tundra]: ["hill-grassy-1.png"],
-  [Climate.arctic]: ["hill-snowy-1.png"],
-  [Climate.desert]: [
-    "hill-desert-1.png",
-    // "hill-desert-2.png",
-    // "hill-desert-3.png",
-  ],
-  [Climate.savanna]: [
-    "hill-1.png",
-    // "savanna-hill.png",
-  ],
-};
-
 class TileDrawer {
   container = new Container();
 
@@ -121,8 +103,8 @@ class TileDrawer {
     }
     this.tile = tile;
     this.drawDecors();
-    this.drawImprovement();
     this.drawRoads();
+    this.drawImprovement();
     this.drawCity();
     this.drawYields();
   }
@@ -139,73 +121,55 @@ class TileDrawer {
   }
 
   private drawDecors() {
-    let landFormTextures: string[] | null = null;
-
-    if (this.tile.landForm === LandForm.mountains) {
-      landFormTextures = mountainTextures;
-    } else if (this.tile.landForm === LandForm.hills) {
-      // landFormTextures = hillsByClimate[this.tile.climate];
-    }
-
     const offsets = [
       { x: -0.25, y: -0.5, scale: 0.9 },
       { x: 0.25, y: -0.5, scale: 0.9 },
       { x: 0.5, y: 0, scale: 0.9 },
     ];
 
-    if (landFormTextures) {
-      this.drawDecor(landFormTextures, { x: 0, y: 0, scale: 1.0 });
+    if (this.tile.landForm === LandForm.mountains) {
+      const textureName = MOUNTAIN_BY_CLIMATE[this.tile.climate];
+      this.drawDecor(textureName, { x: 0, y: 0, scale: 1.0 });
 
       for (let i = 0; i < offsets.length; i++) {
         const isNeigbourMountain =
           (this.tile.landFormNeighbours & (1 << i)) !== 0;
-        const isNeighbourHill =
-          (this.tile.landFormNeighbours & (1 << (i + 6))) !== 0;
 
         const isRiver = (this.tile.river & (1 << i)) !== 0;
-        const isMountain = this.tile.landForm === LandForm.mountains;
-        // const isHill = this.tile.landForm === LandForm.hills;
 
         if (isRiver) {
           continue;
         }
 
-        // if (isNeigbourMountain || (isHill && isNeighbourHill)) {
         if (isNeigbourMountain) {
-          this.drawDecor(landFormTextures, offsets[i]);
+          this.drawDecor(textureName, offsets[i]);
         }
       }
     }
 
     if (this.tile.forest) {
-      let textureName = "forest.png";
-      if (this.tile.climate === Climate.tropical) {
-        textureName = "jungle-3.png";
-      } else if (this.tile.climate === Climate.temperate) {
-        textureName = "forest-temperate-2.png";
-      }
       const forestSprite = this.nextSprite();
-      forestSprite.texture = this.tilesTextures[textureName];
+      forestSprite.texture =
+        this.tilesTextures[FOREST_BY_CLIMATE[this.tile.climate]];
       forestSprite.anchor.set(0.5, 0.6);
-      putContainerAtTileCentered(forestSprite, this.tile, 1.8);
+      putContainerAtTileCentered(forestSprite, this.tile);
     }
   }
 
   private drawDecor(
-    textures: string[],
+    textureName: TileTextureName,
     offset: { x: number; y: number; scale: number },
   ) {
-    const textureName = textures[Math.floor(Math.random() * textures.length)];
     const sprite = this.nextSprite();
     sprite.texture = this.tilesTextures[textureName];
     sprite.anchor.set(0.5, 0.5);
-    putContainerAtTileCentered(sprite, this.tile, 2);
+    putContainerAtTileCentered(sprite, this.tile, 1);
 
-    sprite.scale.x *= offset.scale; // + variance(0.2);
-    sprite.scale.y *= offset.scale; // + variance(0.2);
+    sprite.scale.x *= offset.scale;
+    sprite.scale.y *= offset.scale;
 
-    sprite.position.x += offset.x; // + variance(0.1);
-    sprite.position.y += offset.y; // + variance(0.1);
+    sprite.position.x += offset.x;
+    sprite.position.y += offset.y;
 
     sprite.zIndex = sprite.position.y;
   }
@@ -221,7 +185,7 @@ class TileDrawer {
 
     const textureName = `${this.tile.improvement.id}.png`;
     sprite.texture = this.tilesTextures[textureName];
-    putContainerAtTileCentered(sprite, this.tile, 2);
+    putContainerAtTileCentered(sprite, this.tile, 0.6);
   }
 
   private drawRoads() {
@@ -231,7 +195,7 @@ class TileDrawer {
 
     const sprite = this.nextSprite();
     sprite.anchor.set(0, 0);
-    sprite.zIndex = 10;
+    // sprite.zIndex = 10;
 
     const textureName = `hexRoad-${this.tile.roads}-00.png`;
     sprite.texture = this.tilesTextures[textureName];
@@ -245,7 +209,7 @@ class TileDrawer {
 
     const sprite = this.nextSprite();
     sprite.anchor.set(0, 0);
-    sprite.texture = this.tilesTextures["village.png"];
+    sprite.texture = this.tilesTextures["city.png"];
     putContainerAtTile(sprite, this.tile);
   }
 
@@ -270,8 +234,4 @@ class TileDrawer {
     }
     this.yieldsGraphics.fill({ color });
   }
-}
-
-function variance(scale: number) {
-  return (Math.random() - 0.5) * 2 * scale;
 }

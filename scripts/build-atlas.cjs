@@ -16,7 +16,7 @@ spritesheet(
     trim: true,
     powerOfTwo: true,
     square: false,
-    padding:2
+    padding:4
   },
   function (err) {
     if (err) throw err;
@@ -56,23 +56,5 @@ spritesheet(
     if (err) throw err;
 
     console.log("units successfully generated");
-  },
-);
-
-spritesheet(
-  "src/assets-src/cleaned/terrain/*.png",
-  {
-    format: "json",
-    name: "atlas-terrain",
-    path: "src/assets",
-    trim: true,
-    powerOfTwo: false,
-    square: false,
-    padding: 1,
-  },
-  function (err) {
-    if (err) throw err;
-
-    console.log("terrain successfully generated");
   },
 );

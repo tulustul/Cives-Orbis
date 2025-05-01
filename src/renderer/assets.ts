@@ -3,8 +3,6 @@ import atlasTilesData from "@/assets/atlas-tiles.json";
 import atlasTilesUrl from "@/assets/atlas-tiles.png";
 import atlasUnitsData from "@/assets/atlas-units.json";
 import atlasUnitsUrl from "@/assets/atlas-units.png";
-import atlasTerrainData from "@/assets/atlas-terrain.json";
-import atlasTerrainUrl from "@/assets/atlas-terrain.png";
 import atlasResourcesData from "@/assets/atlas-resources.json";
 import atlasResourcesUrl from "@/assets/atlas-resources.png";
 import gridUrl from "@/assets/grid.png";
@@ -17,7 +15,6 @@ export type Assets = {
     whitenoise: Texture;
     noise: Texture;
   };
-  terrainSpritesheet: Spritesheet;
   tilesSpritesheet: Spritesheet;
   unitsSpritesheet: Spritesheet;
   resourcesSpritesheet: Spritesheet;
@@ -48,13 +45,6 @@ export async function loadAssets() {
   unitsSpritesheet.textureSource.scaleMode = "linear";
   await unitsSpritesheet.parse();
 
-  const terrainAtlas = await Assets.load(atlasTerrainUrl);
-  const terrainSpritesheet = new Spritesheet(terrainAtlas, atlasTerrainData);
-  terrainSpritesheet.textureSource.autoGenerateMipmaps = false;
-  terrainSpritesheet.textureSource.scaleMode = "nearest";
-  terrainAtlas._source.addressMode = "repeat";
-  await terrainSpritesheet.parse();
-
   const resourcesAtlas = await Assets.load(atlasResourcesUrl);
   const resourcesSpritesheet = new Spritesheet(
     resourcesAtlas,
@@ -70,7 +60,6 @@ export async function loadAssets() {
       whitenoise,
       noise,
     },
-    terrainSpritesheet,
     tilesSpritesheet,
     unitsSpritesheet,
     resourcesSpritesheet,

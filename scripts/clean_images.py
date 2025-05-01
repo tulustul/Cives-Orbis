@@ -1,14 +1,13 @@
 from collections.abc import Generator
-import pdb
 from PIL import Image
 from pathlib import Path
 import numpy as np
 
-TARGET_SIZE = (128, 128)
+TARGET_SIZE = (256, 256)
 TERRAIN_TARGET_SIZE = (256, 256)
+RESOURCES_TARGET_SIZE = (128, 128)
 INPUT_DIR = "src/assets-src/originals"
 OUTPUT_DIR = "src/assets-src/cleaned"
-# OUTPUT_DIR = "src/assets"
 
 
 def clean_image(input_path: Path, output_path: Path):
@@ -17,7 +16,13 @@ def clean_image(input_path: Path, output_path: Path):
     if image.mode == "RGBA" and "coasts" not in str(input_path):
         image = crop_out_transparency(image)
 
-    size = TERRAIN_TARGET_SIZE if "terrain" in str(input_path) else TARGET_SIZE
+    str_input_path = str(input_path)
+    if "terrain" in str_input_path:
+        size = TERRAIN_TARGET_SIZE
+    elif "resources" in str_input_path:
+        size = RESOURCES_TARGET_SIZE
+    else:
+        size = TARGET_SIZE
 
     image.thumbnail(size)
     image.save(output_path)
@@ -50,7 +55,7 @@ def get_input_paths() -> Generator[str]:
 def clean_images():
     for input_path in get_input_paths():
         output_path = Path(str(input_path).replace(INPUT_DIR, OUTPUT_DIR))
-        output_path.parent.mkdir(exist_ok=True)
+        output_path.parent.mkdir(exist_ok=True, parents=True)
         clean_image(input_path, output_path)
 
 
