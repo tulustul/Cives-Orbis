@@ -69,6 +69,7 @@ export interface TileChanneled extends BaseTile {
   fullNeighbours: (number | null)[];
   landFormNeighbours: number;
   river: number;
+  forestData: number;
 }
 
 export type TileOwnershipChanneled = TileCoords & {
@@ -345,6 +346,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     fullNeighbours: tile.fullNeighbours.map((t) => t?.id ?? null),
     landFormNeighbours: tile.landFormNeighbours,
     river: tile.river,
+    forestData: tile.forestData,
   };
 }
 

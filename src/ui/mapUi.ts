@@ -89,6 +89,8 @@ export class MapUi {
   allowMapPanning = true;
 
   constructor() {
+    this.loadSettings();
+
     bridge.tiles.updated$.subscribe(async (tiles) => {
       const selectedTile = this._selectedTile$.value;
       if (selectedTile) {
@@ -302,6 +304,7 @@ export class MapUi {
   }
   set gridEnabled(enabled: boolean) {
     this._gridEnabled$.next(enabled);
+    this.saveSettings();
   }
 
   get yieldsEnabled() {
@@ -309,6 +312,7 @@ export class MapUi {
   }
   set yieldsEnabled(enabled: boolean) {
     this._yieldsEnabled$.next(enabled);
+    this.saveSettings();
   }
 
   get resourcesEnabled() {
@@ -316,6 +320,7 @@ export class MapUi {
   }
   set resourcesEnabled(enabled: boolean) {
     this._resourcesEnabled$.next(enabled);
+    this.saveSettings();
   }
 
   get politicsEnabled() {
@@ -323,12 +328,39 @@ export class MapUi {
   }
   set politicsEnabled(enabled: boolean) {
     this._politicsEnabled$.next(enabled);
+    this.saveSettings();
   }
 
   clear() {
     this.selectingTileEnabled = false;
     this._hoveredTile$.next(null);
     this._selectedTile$.next(null);
+  }
+
+  private saveSettings() {
+    const mapSettings = {
+      gridEnabled: this.gridEnabled,
+      yieldsEnabled: this.yieldsEnabled,
+      resourcesEnabled: this.resourcesEnabled,
+      politicsEnabled: this.politicsEnabled,
+    };
+    localStorage.setItem("settings.map", JSON.stringify(mapSettings));
+  }
+
+  private loadSettings() {
+    try {
+      const mapSettings = JSON.parse(
+        localStorage.getItem("settings.map") ?? "",
+      );
+      if (mapSettings) {
+        this._gridEnabled$.next(mapSettings?.gridEnabled ?? false);
+        this._yieldsEnabled$.next(mapSettings?.yieldsEnabled ?? true);
+        this._resourcesEnabled$.next(mapSettings?.resourcesEnabled ?? true);
+        this._politicsEnabled$.next(mapSettings?.politicsEnabled ?? true);
+      }
+    } catch (e) {
+      return {};
+    }
   }
 }
 

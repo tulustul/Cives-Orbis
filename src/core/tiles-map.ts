@@ -44,6 +44,7 @@ export class TilesMapCore {
         tile.computeSweetSpotValue();
         tile.computeRiverData();
         tile.computeLandFormData();
+        tile.computeForestData();
       }
     }
     this.precomputePassableAreas();

@@ -70,7 +70,7 @@ export const WETLANDS_CLIMATES = new Set<Climate>([
 export function isForestable(tile: BaseTile): boolean {
   return (
     tile.seaLevel === SeaLevel.none &&
-    tile.landForm === LandForm.plains &&
+    tile.landForm !== LandForm.mountains &&
     FORESTABLE_CLIMATES.has(tile.climate)
   );
 }

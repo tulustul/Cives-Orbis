@@ -1,6 +1,7 @@
+import * as terrainData from "@/assets/atlas-tiles.json";
 import { bridge } from "@/bridge";
 import { TileChanneled } from "@/core/serialization/channel";
-import { Climate, LandForm } from "@/shared";
+import { LandForm } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
@@ -8,9 +9,8 @@ import { merge } from "rxjs";
 import { getAssets } from "./assets";
 import { camera } from "./camera";
 import { TILE_ROW_OFFSET } from "./constants";
+import { MOUNTAIN_BY_CLIMATE } from "./tileTextures";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
-import * as terrainData from "@/assets/atlas-tiles.json";
-import { FOREST_BY_CLIMATE, MOUNTAIN_BY_CLIMATE } from "./tileTextures";
 
 type TileTextureName = keyof typeof terrainData.frames;
 
@@ -147,13 +147,13 @@ class TileDrawer {
       }
     }
 
-    if (this.tile.forest) {
-      const forestSprite = this.nextSprite();
-      forestSprite.texture =
-        this.tilesTextures[FOREST_BY_CLIMATE[this.tile.climate]];
-      forestSprite.anchor.set(0.5, 0.6);
-      putContainerAtTileCentered(forestSprite, this.tile);
-    }
+    // if (this.tile.forest) {
+    //   const forestSprite = this.nextSprite();
+    //   forestSprite.texture =
+    //     this.tilesTextures[FOREST_BY_CLIMATE[this.tile.climate]];
+    //   forestSprite.anchor.set(0.5, 0.6);
+    //   putContainerAtTileCentered(forestSprite, this.tile);
+    // }
   }
 
   private drawDecor(
