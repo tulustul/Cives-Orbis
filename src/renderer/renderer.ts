@@ -17,7 +17,7 @@ import { animationsManager } from "./animation";
 import { AreasDrawer } from "./areasDrawer";
 import { camera, Transform } from "./camera";
 import { CityFocusDrawer } from "./cityFocusDrawer";
-import { FogOfWarFilter } from "./filters/fog-of-war-filter";
+import { FogOfWarFilter } from "./filters/fogOfWarFilter";
 import { GrayscaleFilter } from "./filters/grayscaleFilter";
 import { FogOfWarMaskDrawer } from "./fog-of-war";
 import { Layer } from "./layer";
@@ -57,7 +57,10 @@ export class GameRenderer {
     parent: this.mapLayer.stage,
     sortableChildren: true,
   });
-  unitsContainer = makeContainer("units", { interactiveChildren: true });
+  unitsContainer = makeContainer("units", {
+    interactiveChildren: true,
+    sortableChildren: true,
+  });
   resourcesContainer = makeContainer("resources");
   politicsContainer = makeContainer("politics");
   overlaysContainer = makeContainer("overlays");
@@ -76,6 +79,8 @@ export class GameRenderer {
   resourcesDrawer = new ResourcesDrawer(this.resourcesContainer);
   fogOfWarDrawer = new FogOfWarMaskDrawer(this.fogOfWarLayer.stage);
   cityFocusDrawer = new CityFocusDrawer(this.cityFocusLayer.stage);
+
+  // noiseFilter: TerrainNoiseFilter | null = null;
 
   constructor() {
     bridge.game.start$.subscribe(() => {
@@ -123,6 +128,9 @@ export class GameRenderer {
     this.app.stage.addChild(this.resourcesContainer);
     this.app.stage.addChild(this.unitsContainer);
 
+    // this.noiseFilter = new TerrainNoiseFilter({ sprite: this.mapLayer.sprite });
+    // this.mapLayer.stage.filters = [this.noiseFilter];
+
     camera.transform$.subscribe((t) => this.onCameraChange(t));
 
     this.app.ticker.add(() => this.onTick());
@@ -165,6 +173,9 @@ export class GameRenderer {
     animationsManager.update(this.app.ticker.deltaMS);
     this.selectedUnitDrawer.tick(this.app.ticker.deltaMS);
     this.terrainDrawer.tick(this.app.ticker.lastTime);
+    // if (this.noiseFilter) {
+    //   this.noiseFilter.time = this.app.ticker.lastTime;
+    // }
 
     this.mapLayer.renderToTarget();
     this.fogOfWarLayer.renderToTarget();

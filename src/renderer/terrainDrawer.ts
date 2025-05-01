@@ -1,21 +1,25 @@
-import * as terrainData from "@/assets/atlas-terrain.json";
-import { TileChanneled } from "@/core/serialization/channel";
-import { Climate, LandForm, SeaLevel } from "@/shared";
-import { AttributeOptions, Container, Shader } from "pixi.js";
+import * as terrainData from "@/assets/atlas-tiles.json";
 import { bridge } from "@/bridge";
+import { TileChanneled } from "@/core/serialization/channel";
+import { LandForm, SeaLevel } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
-import { HexDrawer } from "./hexDrawer";
-import { getAssets } from "./assets";
 import { measureTime } from "@/utils";
+import { AttributeOptions, Container, Shader } from "pixi.js";
+import { getAssets } from "./assets";
+import { HexDrawer } from "./hexDrawer";
 import { HEX } from "./hexGeometry";
+import {
+  HILL_BY_CLIMATE,
+  TILE_BY_CLIMATE,
+  TILE_BY_SEA_LEVEL,
+  TileTextureName,
+} from "./tileTextures";
 
-type TerrainTextureName = keyof typeof terrainData.frames;
+const terrainKeys = Object.keys(terrainData.frames) as TileTextureName[];
 
-const terrainKeys = Object.keys(terrainData.frames) as TerrainTextureName[];
-
-const terrainNameToId: Record<TerrainTextureName, number> = {} as any;
+const tileNameToId: Record<TileTextureName | "", number> = { "": null } as any;
 for (let i = 0; i < terrainKeys.length; i++) {
-  terrainNameToId[terrainKeys[i]] = i;
+  tileNameToId[terrainKeys[i]] = i;
 }
 
 function buildUvOffsets() {
@@ -69,7 +73,6 @@ void main() {
 }`;
 
 const FRAGMENT_PROGRAM = `#version 300 es
-
 precision mediump float;
 
 #define HASHSCALE1 443.8975
@@ -126,7 +129,7 @@ float sampleNoise(vec2 point, float scale) {
 
 // https://iquilezles.org/articles/texturerepetition/
 vec4 textureNoTile(sampler2D samp, vec2 point, vec4 offset) {
-    float k = sampleWhitenoise(point, 0.002);
+    float k = sampleWhitenoise(point, 0.006);
 
     // compute index
     float index = k*8.0;
@@ -151,8 +154,8 @@ vec4 textureNoTile(sampler2D samp, vec2 point, vec4 offset) {
 
 vec4 sampleAtlas(uint textureId, vec2 point) {
   vec4 offset = uvOffsets[textureId];
-  if (textureId == ${terrainNameToId["water.png"]}u || textureId == ${
-  terrainNameToId["deepWater.png"]
+  if (textureId == ${tileNameToId["water.png"]}u || textureId == ${
+  tileNameToId["deepWater.png"]
 }u) {
     vec2 wave = vec2(
       cos(time * .07 + point.y * 4.0) * .01 + sin(time * .015 + point.y * 5.0) * .017,
@@ -164,12 +167,15 @@ vec4 sampleAtlas(uint textureId, vec2 point) {
   // return texture(atlas, tileUV(point, offset));
 }
 
-vec4 sampleSprite(uint textureId, vec2 point) {
+vec4 sampleSprite(vec4 originalColor, uint textureId, vec2 point) {
   vec4 offset = uvOffsets[textureId];
   point.y -= 0.25;
-  vec2 uv = (offset.xy + point * offset.z);
-  uv = clamp(uv, offset.xy, offset.xy + offset.zw);
-  return texture(atlas, uv);
+  vec2 uv = (offset.xy + vec2(offset.z / 2.0, offset.w / 1.2) + point * offset.z);
+  vec2 clampedUv = clamp(uv, offset.xy, offset.xy + offset.zw);
+  if (uv.x == clampedUv.x && uv.y == clampedUv.y) {
+    return texture(atlas, uv);
+  }
+  return originalColor;
 }
 
 void unpackNeighbours( uint packed, out uint n[6] ) {
@@ -212,11 +218,11 @@ vec4 mixNeighbours(vec4 baseColor, float angle) {
 
 vec4 applyCoast(vec4 color) {
   float coastBand = 1.0 - getBorder(coast) * 1.5;
-  float coastSize = texId == ${terrainNameToId["water.png"]}u ? 0.7 : 0.2;
+  float coastSize = texId == ${tileNameToId["water.png"]}u ? 0.7 : 0.2;
   coastBand = smoothstep(coastSize, 1.0, coastBand);
 
   if (coastBand > 0.0) {
-    vec4 coastColor = sampleAtlas(${terrainNameToId["beach.png"]}u, uv);
+    vec4 coastColor = sampleAtlas(${tileNameToId["beach.png"]}u, uv);
     color = mix(color, coastColor, coastBand);
   }
 
@@ -228,7 +234,7 @@ vec4 applyRiver(vec4 color) {
   riverBand = smoothstep(0.5, 1.0, riverBand);
 
   if (riverBand > 0.0) {
-    vec4 coastColor = sampleAtlas(${terrainNameToId["water.png"]}u, uv);
+    vec4 coastColor = sampleAtlas(${tileNameToId["water.png"]}u, uv);
     color = mix(color, coastColor, riverBand);
   }
 
@@ -256,13 +262,14 @@ void main() {
 
   fragColor = needCoast ? base : mixNeighbours(base, angle);
 
+  fragColor = applyCoast(fragColor);
+  fragColor = applyRiver(fragColor);
+
   if (decorTex != 0u) {
-    vec4 spriteColor = sampleSprite(decorTex, point + vec2(0.5, 0.5));
+    vec4 spriteColor = sampleSprite(fragColor, decorTex, point);
     fragColor = fragColor * (1.0 - spriteColor.a) + spriteColor;
   }
 
-  fragColor = applyCoast(fragColor);
-  fragColor = applyRiver(fragColor);
   fragColor = applyNoise(fragColor);
 
   if (gridEnabled) {
@@ -270,41 +277,6 @@ void main() {
     fragColor += smoothstep(0.0, 0.4, grid);
   }
 }`;
-
-const SEA_LEVEL_TO_TEXTURE: Record<SeaLevel, number | null> = {
-  [SeaLevel.shallow]: terrainNameToId["water.png"],
-  [SeaLevel.deep]: terrainNameToId["deepWater.png"],
-  [SeaLevel.none]: null,
-};
-
-const CLIMATE_TO_TEXTURE: Record<Climate, number> = {
-  [Climate.tropical]: terrainNameToId["tropical-2.png"],
-  [Climate.savanna]: terrainNameToId["savanna-3.png"],
-  [Climate.desert]: terrainNameToId["desert2.png"],
-  [Climate.arctic]: terrainNameToId["arctic-1.png"],
-  [Climate.temperate]: terrainNameToId["temperate.png"],
-  [Climate.tundra]: terrainNameToId["tundra-3.png"],
-};
-
-const CLIMATE_HILLS_TO_TEXTURE: Record<Climate, number> = {
-  // [Climate.tropical]: terrainNameToId["tropical-2.png"],
-  [Climate.tropical]: terrainNameToId["hill-tropical-1.png"],
-  [Climate.savanna]: terrainNameToId["hill-savanna-1.png"],
-  [Climate.desert]: terrainNameToId["hill-desert-1.png"],
-  [Climate.arctic]: terrainNameToId["hill-arctic-1.png"],
-  [Climate.temperate]: terrainNameToId["hill-temperate-1.png"],
-  [Climate.tundra]: terrainNameToId["hill-tundra-1.png"],
-};
-
-const CLIMATE_MOUNTAINS_TO_TEXTURE: Record<Climate, number> = {
-  // [Climate.tropical]: terrainNameToId["tropical-2.png"],
-  [Climate.tropical]: terrainNameToId["tropical-2.png"],
-  [Climate.savanna]: terrainNameToId["savanna1.png"],
-  [Climate.desert]: terrainNameToId["desert2.png"],
-  [Climate.arctic]: terrainNameToId["arctic-1.png"],
-  [Climate.temperate]: terrainNameToId["temperate.png"],
-  [Climate.tundra]: terrainNameToId["tundra-3.png"],
-};
 
 export class TerrainDrawer extends HexDrawer<TileChanneled> {
   instanceTextures = new Uint32Array(0);
@@ -370,7 +342,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
   }
 
   override buildShader() {
-    const terrain = getAssets().terrainSpritesheet;
+    const terrain = getAssets().tilesSpritesheet;
 
     return Shader.from({
       gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
@@ -429,13 +401,16 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
 
   getDecorTextureIndex(tile: TileChanneled): number {
     if (tile.landForm === LandForm.hills) {
-      return CLIMATE_HILLS_TO_TEXTURE[tile.climate];
+      return tileNameToId[HILL_BY_CLIMATE[tile.climate]];
     }
+    // if (tile.forest) {
+    //   return CLIMATE_FOREST_TO_TEXTURE[tile.climate];
+    // }
     return 0;
   }
 
   getTextureIndex(tile: TileChanneled): number {
-    const texIndex = SEA_LEVEL_TO_TEXTURE[tile.seaLevel];
+    const texIndex = tileNameToId[TILE_BY_SEA_LEVEL[tile.seaLevel]];
     if (texIndex !== null) {
       return texIndex;
     }
@@ -445,7 +420,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     // if (tile.decorTex === LandForm.mountains) {
     //   return CLIMATE_MOUNTAINS_TO_TEXTURE[tile.climate];
     // }
-    return CLIMATE_TO_TEXTURE[tile.climate];
+    return tileNameToId[TILE_BY_CLIMATE[tile.climate]];
   }
 
   getAdjacentsTextureIndexes(
