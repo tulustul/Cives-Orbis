@@ -55,6 +55,12 @@ export class TileCore implements BaseTile {
   */
   landFormNeighbours = 0;
 
+  /** Extra information for the renderer.
+   * Bits 0-5: 1 if neighbour has a forest
+   * Bit 6: 1 if this tile has a forest
+   */
+  forestData = 0;
+
   forest = false;
   wetlands = false;
   improvement: TileImprovementDefinition | null = null;
@@ -273,6 +279,7 @@ export class TileCore implements BaseTile {
     }
     this.computeRiverData();
     this.computeLandFormData();
+    this.computeForestData();
     collector.tiles.add(this);
   }
 
@@ -354,6 +361,22 @@ export class TileCore implements BaseTile {
       } else if (neighbour.landForm === LandForm.hills) {
         this.landFormNeighbours |= 1 << (i + 6);
       }
+    }
+  }
+
+  computeForestData() {
+    this.forestData = 0;
+    for (let i = 0; i < this.fullNeighbours.length; i++) {
+      const neighbour = this.fullNeighbours[i];
+      if (!neighbour) {
+        continue;
+      }
+      if (neighbour.forest) {
+        this.forestData |= 1 << i;
+      }
+    }
+    if (this.forest) {
+      this.forestData |= 1 << 6;
     }
   }
 }
