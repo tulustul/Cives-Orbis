@@ -61,6 +61,7 @@ flat out uint adjacentTexId;
 flat out uint decorTex;
 flat out uint coast;
 flat out uint forest;
+flat out vec2 coords;
 
 void main() {
   mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
@@ -72,6 +73,7 @@ void main() {
   coast = aCoast;
   forest = aForest;
   adjacentTexId = aInstanceAdjancentTextures;
+  coords = aInstancePosition;
   gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
 }`;
 
@@ -83,6 +85,9 @@ precision mediump float;
 const float PI = 3.14159265359;
 const float SQRT3 = 1.73205080757;
 const float HALF_SQRT3 = 0.5 * SQRT3;
+const float ROW_STEP = 0.75 * (2.0 / SQRT3);
+const float COL_SHIFT = 0.5;
+const float HALF_TILE_HEIGHT = 1.0 / sqrt(3.0);
 
 in vec2 uv;
 in vec2 point;
@@ -92,6 +97,7 @@ flat in uint adjacentTexId;
 flat in uint coast;
 flat in uint decorTex;
 flat in uint forest;
+flat in vec2 coords;
 
 out vec4 fragColor;
 
@@ -265,15 +271,43 @@ vec2 hash2D(vec2 p) {
     return vec2(hash1D(p), hash1D(p + vec2(27.17, 91.43)));
 }
 
+vec2 worldToAxial(vec2 p) {
+  float r = floor(p.y / ROW_STEP);
+  float q = p.x - COL_SHIFT * mod(r, 2.0);
+  return vec2(q, p.y / ROW_STEP);
+}
+
+vec2 axialToWorld(vec2 a) {
+  float r = floor(a.y);
+  float x = a.x + COL_SHIFT * mod(r, 2.0);
+  float y = a.y * ROW_STEP;
+  return vec2(x, y);
+}
+
+vec2 worldToLocal(vec2 p) {
+  // p.y = p.y / ROW_STEP;
+  // int y = int(floor(p.y));
+  // if (y % 2 == 1) {
+  //   p.x -= 0.5;
+  // }
+  return (p - coords) - vec2(0.5, 0.5);
+}
+
+vec2 localToWorld(vec2 a) {
+  float r = floor(a.y);
+  float x = a.x + COL_SHIFT * mod(r, 2.0);
+  float y = a.y * ROW_STEP;
+  return vec2(x, y);
+}
 
 float getBorder2(uint data, vec2 p) {
   float v = 0.0;
   for (int i = 0; i < 6; ++i) {
-    if ((data & (1u << i)) != 0u) {
+    if ((data & (1u << i)) == 0u) {
       v = max(v, -dot(p, N[i]));
     }
   }
-  return v;
+  return clamp(v, 0.0, 0.5);
 }
 
 vec4 applyForest(vec4 color) {
@@ -281,39 +315,55 @@ vec4 applyForest(vec4 color) {
     return color;
   }
 
-  float treeGridScale = 14.0;
-  float baseTreeDensity = 1.0;
-  float densityMultiplier = 1.0;
-  float treeRadius = 0.17;
+  float gridSize = 25.0;
+  float treeRadius = 0.09;
+  // float treeRadius = 0.01;
+  float tileHeight =  2.0 / sqrt(3.0);
+  float tileRowOffset = tileHeight * 0.75;
+  float rowStep      = 0.75 * (2.0 / SQRT3);   // vertical centre‑to‑centre
+  float colShiftHalf = 0.5;                    // 0.5 x‑shift for odd rows
 
-  vec2 baseGridCoords = floor(uv * treeGridScale);
+  vec2 baseGridWorld = floor(uv * gridSize);
   float totalP = 0.0;
 
-  float v = 1.0 - getBorder(forest & ~coast & ~(coast >> 6), point);
+  vec2 centerDistanceGrid = floor(centerDistance * gridSize) / (gridSize);
 
-  for (int dy = -2; dy <= 2; ++dy) {
-    for (int dx = -2; dx <= 2; ++dx) {
-      vec2 currentGridCoords = baseGridCoords + vec2(dx, dy);
+  uint borders = forest & ~coast & ~(coast >> 6);
+  float v0 = getBorder2(borders, point);
 
-      vec2 currentGridCoords2 = currentGridCoords / treeGridScale - floor(currentGridCoords / treeGridScale) - vec2(0.5, 0.5);
+  vec2 pointGrid = floor(point*gridSize) / gridSize;
+  if (int(floor(coords.y)) % 2 == 1) {
+    pointGrid.x -= (1.0 / gridSize) / 2.0;
+  }
 
-      // float v = 1.0 - getBorder2(forest & ~coast & ~(coast >> 6), currentGridCoords2) * 2.0;
-      // float probability = clamp(v, 0.0, 1.0);
-      float probability = clamp(v + (1.0 - length(centerDistance)) - 0.2, 0.0, 0.8);
+  int overlaps = 2;
+
+  for (int dy = -overlaps; dy <= overlaps; ++dy) {
+    for (int dx = -overlaps; dx <= overlaps; ++dx) {
+      vec2 gridWorld = baseGridWorld + vec2(dx, dy);
+      vec2 gridLocal = worldToLocal(gridWorld / gridSize);
+
+      float v = getBorder2(borders, gridLocal);
+
+      float probability = pow(0.4 - v, 1.0);
 
       totalP += probability;
 
-      float treeExistenceValue = hash1D(currentGridCoords + 0.5);
-      float densityThreshold = baseTreeDensity * densityMultiplier * probability;
+      float treeExistenceValue = hash1D(gridWorld + 0.5);
 
-      if (treeExistenceValue < densityThreshold) {
-        vec2 randomOffset = hash2D(currentGridCoords * 100.0);
-        vec2 treeWorldPos = (currentGridCoords + randomOffset) / treeGridScale;
+      // color = vec4((gridLocal + vec2(0.5, 0.5)), 0.0, 1.0);
+      // continue;
 
-        float distToTree = max(abs(uv.x-treeWorldPos.x), abs(uv.y-treeWorldPos.y));
+      if (treeExistenceValue < probability) {
+        vec2 randomOffset = hash2D(gridWorld * 100.0) * 1.0;
+        vec2 treePosWorld = (gridWorld + randomOffset) / gridSize;
 
-        if (distToTree < treeRadius) {
-          vec2 spriteUv = (uv - treeWorldPos) / (treeRadius * 2.0) + 0.5;
+        float distToTree = max(abs(uv.x-treePosWorld.x), abs(uv.y-treePosWorld.y));
+
+        float d = length(uv - treePosWorld);
+
+        if (d < treeRadius) {
+          vec2 spriteUv = (uv - treePosWorld) / (treeRadius * 2.0) + 0.5;
 
           if (spriteUv.x >= 0.0 && spriteUv.x <= 1.0 && spriteUv.y >= 0.0 && spriteUv.y <= 1.0) {
             vec4 treeColor = sampleSprite(color, ${
@@ -326,7 +376,7 @@ vec4 applyForest(vec4 color) {
     }
   }
 
-  // color.r += totalP / 9.0;
+  // color.r += totalP / pow(float(overlaps) * 2.0 + 1.0, 2.0);
   return color;
 }
 
