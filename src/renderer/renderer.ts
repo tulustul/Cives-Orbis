@@ -57,10 +57,7 @@ export class GameRenderer {
     parent: this.mapLayer.stage,
     sortableChildren: true,
   });
-  unitsContainer = makeContainer("units", {
-    interactiveChildren: true,
-    sortableChildren: true,
-  });
+  unitsContainer = makeContainer("units", { interactiveChildren: true });
   resourcesContainer = makeContainer("resources");
   politicsContainer = makeContainer("politics");
   overlaysContainer = makeContainer("overlays");

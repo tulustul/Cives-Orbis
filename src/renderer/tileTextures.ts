@@ -29,9 +29,9 @@ export const HILL_BY_CLIMATE: Record<Climate, TileTextureName> = {
 
 export const FOREST_BY_CLIMATE: Record<Climate, TileTextureName | ""> = {
   [Climate.tropical]: "tree-tropical-4.png",
-  [Climate.savanna]: "",
-  [Climate.desert]: "",
-  [Climate.arctic]: "",
+  [Climate.savanna]: "tree-tropical-4.png",
+  [Climate.desert]: "tree-tropical-4.png",
+  [Climate.arctic]: "tree-tropical-4.png",
   [Climate.temperate]: "tree-temperate-1.png",
   [Climate.tundra]: "tree-tropical-4.png",
 };

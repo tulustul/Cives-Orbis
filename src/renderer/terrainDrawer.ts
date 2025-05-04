@@ -9,6 +9,7 @@ import { getAssets } from "./assets";
 import { HexDrawer } from "./hexDrawer";
 import { HEX } from "./hexGeometry";
 import {
+  FOREST_BY_CLIMATE,
   HILL_BY_CLIMATE,
   TILE_BY_CLIMATE,
   TILE_BY_SEA_LEVEL,
@@ -253,7 +254,7 @@ vec4 applyCoast(vec4 color) {
 
 vec4 applyRiver(vec4 color) {
   float riverBand = 1.0 - getBorder(coast >> 6, point) * 3.5;
-  riverBand = smoothstep(0.5, 1.0, riverBand);
+  riverBand = smoothstep(0.1, 1.0, riverBand);
 
   if (riverBand > 0.0) {
     vec4 coastColor = sampleAtlas(${tileNameToId["water.png"]}u, uv);
@@ -395,9 +396,8 @@ vec4 applyForest(vec4 color, float minY, float maxY) {
           vec2 spriteUv = (uv - treePosWorld) / (treeRadius * 2.0) + 0.5;
 
           if (spriteUv.x >= 0.0 && spriteUv.x <= 1.0 && spriteUv.y >= 0.0 && spriteUv.y <= 1.0) {
-            vec4 treeColor = sampleSprite(color, ${
-              tileNameToId["tree-tropical-4.png"]
-            }u, spriteUv - vec2(0.5, 0.5));
+            uint textureId = forest >> 7;
+            vec4 treeColor = sampleSprite(color, textureId, spriteUv - vec2(0.5, 0.5));
             color = color * (1.0 - treeColor.a) + treeColor;
           }
         }
@@ -598,8 +598,16 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     const river = this.getRiver(tile);
     this.instanceCoast[index] = coast + (river << 6);
     this.instanceDecorTex[index] = this.getDecorTextureIndex(tile);
-    this.instanceForest[index] = tile.forestData;
+    this.instanceForest[index] = this.getForestData(tile);
+    console.log(this.instanceForest[index]);
     this.instanceRoad[index] = tile.roadData;
+  }
+
+  getForestData(tile: TileChanneled): number {
+    // const textureName =
+    //   FOREST_BY_CLIMATE[tile.climate] ?? "tree-tropical-4.png";
+    const textureName: TileTextureName = "tree-tropical-4.png";
+    return tile.forestData + (tileNameToId[textureName] << 7);
   }
 
   getDecorTextureIndex(tile: TileChanneled): number {
