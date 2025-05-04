@@ -8,6 +8,7 @@ export function MapSettings() {
   const yieldsEnabled = useObservable(mapUi.yieldsEnabled$);
   const resourcesEnabled = useObservable(mapUi.resourcesEnabled$);
   const politicsEnabled = useObservable(mapUi.politicsEnabled$);
+  const unitsEnabled = useObservable(mapUi.unitsEnabled$);
 
   return (
     <OrnateBox borderType="small">
@@ -31,6 +32,11 @@ export function MapSettings() {
           label="Politics"
           checked={politicsEnabled ?? true}
           onChange={() => (mapUi.politicsEnabled = !politicsEnabled)}
+        />
+        <Switch
+          label="Units"
+          checked={unitsEnabled ?? true}
+          onChange={() => (mapUi.unitsEnabled = !unitsEnabled)}
         />
       </div>
     </OrnateBox>

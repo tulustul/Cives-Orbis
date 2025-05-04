@@ -103,7 +103,6 @@ class TileDrawer {
     }
     this.tile = tile;
     this.drawDecors();
-    this.drawRoads();
     this.drawImprovement();
     this.drawCity();
     this.drawYields();
@@ -146,14 +145,6 @@ class TileDrawer {
         }
       }
     }
-
-    // if (this.tile.forest) {
-    //   const forestSprite = this.nextSprite();
-    //   forestSprite.texture =
-    //     this.tilesTextures[FOREST_BY_CLIMATE[this.tile.climate]];
-    //   forestSprite.anchor.set(0.5, 0.6);
-    //   putContainerAtTileCentered(forestSprite, this.tile);
-    // }
   }
 
   private drawDecor(
@@ -186,20 +177,6 @@ class TileDrawer {
     const textureName = `${this.tile.improvement.id}.png`;
     sprite.texture = this.tilesTextures[textureName];
     putContainerAtTileCentered(sprite, this.tile, 0.6);
-  }
-
-  private drawRoads() {
-    if (this.tile.road === null || this.tile.cityId !== null) {
-      return;
-    }
-
-    const sprite = this.nextSprite();
-    sprite.anchor.set(0, 0);
-    // sprite.zIndex = 10;
-
-    const textureName = `hexRoad-${this.tile.roads}-00.png`;
-    sprite.texture = this.tilesTextures[textureName];
-    putContainerAtTile(sprite, this.tile);
   }
 
   private drawCity() {

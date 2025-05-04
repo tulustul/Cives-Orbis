@@ -94,10 +94,7 @@ function buildImprovement(
 function buildRoad(unit: UnitCore) {
   unit.actionPointsLeft = 0;
   unit.tile.road = TileRoad.road;
-  unit.tile.update();
-  for (const neighbour of unit.tile.neighbours) {
-    neighbour.update();
-  }
+  unit.tile.updateWithNeighbours();
   unit.player.updateUnitsWithoutOrders();
 }
 

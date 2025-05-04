@@ -53,7 +53,7 @@ export class CitiesManager {
     tile.forest = false;
     tile.wetlands = false;
     tile.road = TileRoad.road;
-    tile.update();
+    tile.updateWithNeighbours();
 
     for (const t of tile.getTilesInRange(3)) {
       t.sweetSpotValue = 0;

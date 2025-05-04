@@ -48,6 +48,7 @@ in uint aInstanceAdjancentTextures;
 in uint aInstanceDecorTex;
 in uint aCoast;
 in uint aForest;
+in uint aRoad;
 
 uniform mat3 uProjectionMatrix;
 uniform mat3 uWorldTransformMatrix;
@@ -61,6 +62,7 @@ flat out uint adjacentTexId;
 flat out uint decorTex;
 flat out uint coast;
 flat out uint forest;
+flat out uint road;
 flat out vec2 coords;
 
 void main() {
@@ -72,6 +74,7 @@ void main() {
   centerDistance = aCenterDistance;
   coast = aCoast;
   forest = aForest;
+  road = aRoad;
   adjacentTexId = aInstanceAdjancentTextures;
   coords = aInstancePosition;
   gl_Position = vec4((mvp * vec3(aVertexPosition + aInstancePosition, 1.0)).xy, 0.0, 1.0);
@@ -97,6 +100,7 @@ flat in uint adjacentTexId;
 flat in uint coast;
 flat in uint decorTex;
 flat in uint forest;
+flat in uint road;
 flat in vec2 coords;
 
 out vec4 fragColor;
@@ -117,6 +121,15 @@ const vec2 N[6] = vec2[6](
   vec2(  1.0,          0.0 )
 );
 
+const vec2 EDGE_MID_POINTS[6] = vec2[6](
+  vec2( -0.25, -SQRT3 / 4.0 ),
+  vec2( 0.25, -SQRT3 / 4.0 ),
+  vec2( 0.5, 0.0 ),
+  vec2( 0.25, SQRT3 / 4.0 ),
+  vec2( -0.25, SQRT3 / 4.0 ),
+  vec2( -0.5, 0.0 )
+);
+
 vec4[] uvOffsets = vec4[](
   ${buildUvOffsets()}
 );
@@ -129,8 +142,8 @@ vec2 tileUV(vec2 point, vec4 offset) {
   return offset.xy + fract(point) * offset.zw;
 }
 
-float sampleWhitenoise(vec2 point, float scale) {
-  return texture( whitenoise, point * scale).x;
+float sampleWhitenoise(vec2 p, float scale) {
+  return texture( whitenoise, p * scale).x;
 }
 
 float sampleNoise(vec2 point, float scale) {
@@ -177,9 +190,9 @@ vec4 sampleAtlas(uint textureId, vec2 point) {
   // return texture(atlas, tileUV(point, offset));
 }
 
-vec4 sampleSprite(vec4 originalColor, uint textureId, vec2 uv) {
+vec4 sampleSprite(vec4 originalColor, uint textureId, vec2 p) {
   vec4 offset = uvOffsets[textureId];
-  vec2 realUv = (offset.xy + vec2(offset.z / 2.0, offset.w / 2.0) + uv * offset.z);
+  vec2 realUv = (offset.xy + vec2(offset.z / 2.0, offset.w / 2.0) + p * offset.z);
   vec2 clampedUv = clamp(realUv, offset.xy, offset.xy + offset.zw);
   if (realUv.x == clampedUv.x && realUv.y == clampedUv.y) {
     return texture(atlas, realUv);
@@ -226,7 +239,7 @@ vec4 mixNeighbours(vec4 baseColor, float angle) {
 }
 
 vec4 applyCoast(vec4 color) {
-  float coastBand = 1.0 - getBorder(coast, point) * 1.5;
+  float coastBand = 1.0 - getBorder(coast, point) * 2.5;
   float coastSize = texId == ${tileNameToId["water.png"]}u ? 0.7 : 0.2;
   coastBand = smoothstep(coastSize, 1.0, coastBand);
 
@@ -253,8 +266,8 @@ vec4 applyRiver(vec4 color) {
 vec4 applyNoise(vec4 color) {
   float noise1 = sampleNoise(uv, 0.02) - 0.5;
   float noise2 = sampleNoise(uv, 0.1) - 0.5;
-  color += noise1 * 0.6;
-  color += noise2 * 0.3;
+  color += noise1 * 0.4;
+  color += noise2 * 0.2;
   return color;
 }
 
@@ -271,34 +284,10 @@ vec2 hash2D(vec2 p) {
     return vec2(hash1D(p), hash1D(p + vec2(27.17, 91.43)));
 }
 
-vec2 worldToAxial(vec2 p) {
-  float r = floor(p.y / ROW_STEP);
-  float q = p.x - COL_SHIFT * mod(r, 2.0);
-  return vec2(q, p.y / ROW_STEP);
-}
-
-vec2 axialToWorld(vec2 a) {
-  float r = floor(a.y);
-  float x = a.x + COL_SHIFT * mod(r, 2.0);
-  float y = a.y * ROW_STEP;
-  return vec2(x, y);
-}
-
 vec2 worldToLocal(vec2 p) {
-  // p.y = p.y / ROW_STEP;
-  // int y = int(floor(p.y));
-  // if (y % 2 == 1) {
-  //   p.x -= 0.5;
-  // }
   return (p - coords) - vec2(0.5, 0.5);
 }
 
-vec2 localToWorld(vec2 a) {
-  float r = floor(a.y);
-  float x = a.x + COL_SHIFT * mod(r, 2.0);
-  float y = a.y * ROW_STEP;
-  return vec2(x, y);
-}
 
 float getBorder2(uint data, vec2 p) {
   float v = 0.0;
@@ -310,18 +299,54 @@ float getBorder2(uint data, vec2 p) {
   return clamp(v, 0.0, 0.5);
 }
 
-vec4 applyForest(vec4 color) {
+float segPointDistance(vec2 A, vec2 B, vec2 P) {
+    vec2 AB = B - A;
+    float len2 = dot(AB, AB);
+
+    // Degenerate segment → treat AB as a point
+    if (len2 == 0.0)
+        return length(P - A);
+
+    // Projection parameter, clamped to [0, 1]
+    float t = clamp(dot(P - A, AB) / len2, 0.0, 1.0);
+
+    // Closest point on the segment
+    vec2 proj = A + AB * t;
+
+    return length(P - proj);
+}
+
+float getRoadMask(vec2 p, vec2 uv2) {
+  if ((road & (1u << 6)) == 0u) {
+    return 1.0;
+  }
+
+  float noise1 = (sampleNoise(uv2, 0.15) - 0.5) * 0.35;
+  float noise2 = (sampleNoise(uv2+0.3, 0.15) - 0.5) * 0.35;
+
+  float v = 1.0;
+  for (int i = 0; i < 6; i++) {
+    if ((road & (1u << i)) != 0u) {
+      vec2 a = vec2(noise1, noise2);
+      vec2 midPoint = EDGE_MID_POINTS[i];
+      float d = segPointDistance(a, midPoint, p);
+      v = min(v, d);
+    }
+  }
+
+  return v;
+}
+
+vec4 applyForest(vec4 color, float minY, float maxY) {
   if ((forest & (1u << 6)) == 0u) {
     return color;
   }
 
-  float gridSize = 25.0;
+  float gridSize = 30.0;
   float treeRadius = 0.09;
-  // float treeRadius = 0.01;
-  float tileHeight =  2.0 / sqrt(3.0);
-  float tileRowOffset = tileHeight * 0.75;
-  float rowStep      = 0.75 * (2.0 / SQRT3);   // vertical centre‑to‑centre
-  float colShiftHalf = 0.5;                    // 0.5 x‑shift for odd rows
+  float tileHeight =  2.0 / sqrt(3.0);float tileRowOffset = tileHeight * 0.75;
+  float rowStep      = 0.75 * (2.0 / SQRT3);
+  float colShiftHalf = 0.5;
 
   vec2 baseGridWorld = floor(uv * gridSize);
   float totalP = 0.0;
@@ -343,16 +368,20 @@ vec4 applyForest(vec4 color) {
       vec2 gridWorld = baseGridWorld + vec2(dx, dy);
       vec2 gridLocal = worldToLocal(gridWorld / gridSize);
 
+      if (gridLocal.y < minY || gridLocal.y > maxY) {
+        continue;
+      }
+
       float v = getBorder2(borders, gridLocal);
+
+      float roadMask = smoothstep(0.32, 0.5, 0.5 - getRoadMask(gridLocal, gridWorld));
+      v = max(v, roadMask);
 
       float probability = pow(0.4 - v, 1.0);
 
       totalP += probability;
 
       float treeExistenceValue = hash1D(gridWorld + 0.5);
-
-      // color = vec4((gridLocal + vec2(0.5, 0.5)), 0.0, 1.0);
-      // continue;
 
       if (treeExistenceValue < probability) {
         vec2 randomOffset = hash2D(gridWorld * 100.0) * 1.0;
@@ -380,6 +409,25 @@ vec4 applyForest(vec4 color) {
   return color;
 }
 
+vec4 applyRoad(vec4 color) {
+  float v = getRoadMask(point, uv);
+
+  if (v < 0.03) {
+    v = 1.0 - smoothstep(0.0, 0.03, v);
+    vec4 roadColor;
+    float alpha = 1.0;
+    if (v < 0.4) {
+      roadColor = vec4(0.0, 0.0, 0.0, 1.0);
+      alpha = sqrt(v);
+    } else {
+      roadColor = vec4(0.509, 0.34, 0.011, 1.0);
+    }
+    color = mix(color, roadColor, alpha);
+  }
+
+  return color;
+}
+
 void main() {
   vec4 base = sampleAtlas(texId, uv);
 
@@ -395,12 +443,21 @@ void main() {
 
   fragColor = applyCoast(fragColor);
   fragColor = applyRiver(fragColor);
-  fragColor = applyForest(fragColor);
+
+  float forestThreshold = 1.0;
+  if (decorTex != 0u) {
+    forestThreshold = decorTex == ${tileNameToId["mountain.png"]}u ? 0.2 : 0.0;
+  }
+
+  fragColor = applyForest(fragColor, -1.0, forestThreshold);
 
   if (decorTex != 0u) {
     vec4 spriteColor = sampleSprite(fragColor, decorTex, point);
     fragColor = fragColor * (1.0 - spriteColor.a) + spriteColor;
+    fragColor = applyForest(fragColor, forestThreshold, 1.0);
   }
+
+  fragColor = applyRoad(fragColor);
 
   fragColor = applyNoise(fragColor);
 
@@ -416,6 +473,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
   instanceCoast = new Uint32Array(0);
   instanceDecorTex = new Uint32Array(0);
   instanceForest = new Uint32Array(0);
+  instanceRoad = new Uint32Array(0);
 
   isBuilt = false;
 
@@ -522,6 +580,11 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
         format: "uint32",
         instance: true,
       },
+      aRoad: {
+        buffer: this.instanceRoad,
+        format: "uint32",
+        instance: true,
+      },
     };
   }
 
@@ -536,15 +599,16 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     this.instanceCoast[index] = coast + (river << 6);
     this.instanceDecorTex[index] = this.getDecorTextureIndex(tile);
     this.instanceForest[index] = tile.forestData;
+    this.instanceRoad[index] = tile.roadData;
   }
 
   getDecorTextureIndex(tile: TileChanneled): number {
+    // if (tile.landForm === LandForm.mountains) {
+    //   return tileNameToId["mountain.png"];
+    // }
     if (tile.landForm === LandForm.hills) {
       return tileNameToId[HILL_BY_CLIMATE[tile.climate]];
     }
-    // if (tile.forest) {
-    //   return CLIMATE_FOREST_TO_TEXTURE[tile.climate];
-    // }
     return 0;
   }
 
@@ -614,6 +678,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     this.instanceCoast = new Uint32Array(maxInstances);
     this.instanceDecorTex = new Uint32Array(maxInstances);
     this.instanceForest = new Uint32Array(maxInstances);
+    this.instanceRoad = new Uint32Array(maxInstances);
   }
 
   private updateBuffers_(): void {
@@ -622,6 +687,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     this.geometry?.getAttribute("aInstanceDecorTex").buffer.update();
     this.geometry?.getAttribute("aCoast").buffer.update();
     this.geometry?.getAttribute("aForest").buffer.update();
+    this.geometry?.getAttribute("aRoad").buffer.update();
   }
 }
 

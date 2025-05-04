@@ -3,7 +3,7 @@ import { PlayerYields } from "../shared";
 import { CityCore } from "./city";
 import { Technology } from "./data.interface";
 import { Game } from "./game";
-import { PlayerCore, PlayerViewBoundingBox } from "./player";
+import { PlayerCore } from "./player";
 import { ResourceDeposit } from "./resources";
 import {
   CityChanneled,
@@ -12,7 +12,6 @@ import {
   resourceWithTileToChannel,
   TechKnowledgeChanneled,
   techToChannel,
-  TileFogOfWar,
   tileToChannel,
   tileToFogOfWar,
   tileToTileOwnershipChannel,
