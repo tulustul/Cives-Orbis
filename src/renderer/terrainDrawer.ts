@@ -9,7 +9,6 @@ import { getAssets } from "./assets";
 import { HexDrawer } from "./hexDrawer";
 import { HEX } from "./hexGeometry";
 import {
-  FOREST_BY_CLIMATE,
   HILL_BY_CLIMATE,
   TILE_BY_CLIMATE,
   TILE_BY_SEA_LEVEL,
