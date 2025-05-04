@@ -559,12 +559,7 @@ export function tileUpdate(options: TileUpdateOptions) {
   };
 
   Object.assign(tile, _tile);
-  tile.update();
-
-  for (const n of tile.neighbours) {
-    n.update();
-    collector.tiles.add(n);
-  }
+  tile.updateWithNeighbours();
 }
 
 export function tileBulkUpdate(tiles: TileUpdateOptions[]) {

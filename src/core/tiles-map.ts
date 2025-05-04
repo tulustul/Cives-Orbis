@@ -42,9 +42,7 @@ export class TilesMapCore {
         tile.computeYields();
         tile.computeMovementCosts();
         tile.computeSweetSpotValue();
-        tile.computeRiverData();
-        tile.computeLandFormData();
-        tile.computeForestData();
+        tile.computeRenderingData();
       }
     }
     this.precomputePassableAreas();

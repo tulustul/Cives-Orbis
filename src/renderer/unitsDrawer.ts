@@ -99,6 +99,10 @@ export class UnitsDrawer {
 
     mapUi.destroyed$.subscribe(() => this.clear());
 
+    mapUi.unitsEnabled$.subscribe((enabled) => {
+      this.container.visible = enabled;
+    });
+
     camera.scale$.subscribe((scale) => {
       this.setScale(scale);
     });

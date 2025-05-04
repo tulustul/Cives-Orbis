@@ -19,7 +19,7 @@ Bugs:
   ☐ fix not existing workers showing up on the map
   ☐ fix destroying units doesn't update the units occupying the same tile
   ☐ settler still in the UI after founding the city
-  ☐ clear CityInfo whne changing tracked player
+  ✔ clear CityInfo whne changing tracked player @done(25-05-04 21:56)
 
 Performance:
   ✔ optimize workers AI @done(25-03-10 23:14)
@@ -30,7 +30,7 @@ Refactor:
 Minor features:
   ✔ selected unit marker @done(25-03-01 14:24)
   ✔ show on map that using is sleeping/skipping move @done(25-03-11 23:35)
-  ☐ store game settings in local storage
+  ✔ store game settings in local storage @done(25-05-04 21:56)
   ✔ style city view @done(25-03-10 23:14)
   ✔ minimap autoscale to explored area @done(25-03-12 23:06)
   ☐ limit map panning/zoom to explored map area
@@ -55,12 +55,12 @@ Minor features:
   ✔ proper clear and rebuild @done(25-04-21 12:52)
   ☐ rewrite minimap to HexDrawer
   ✔ fix console errors and warnings @done(25-04-21 15:44)
-  ☐ update tile / update terrain
+  ✔ update tile / update terrain @done(25-05-04 21:56)
   ✔ cache commands @done(25-04-21 13:55)
   ☐ don't draw politics background on the water
   ☐ fix hot reloading slowing down the app
   ☐ fix hex shape in mouse hover
-  ☐ zoom - hide/show cities - remove transition
+  ✔ zoom - hide/show cities - remove transition @done(25-05-04 21:56)
   ✔ optimize fog of war - partial update @done(25-04-21 14:37)
 
 Major features:

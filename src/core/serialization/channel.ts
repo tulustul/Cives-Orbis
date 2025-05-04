@@ -70,6 +70,7 @@ export interface TileChanneled extends BaseTile {
   landFormNeighbours: number;
   river: number;
   forestData: number;
+  roadData: number;
 }
 
 export type TileOwnershipChanneled = TileCoords & {
@@ -347,6 +348,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     landFormNeighbours: tile.landFormNeighbours,
     river: tile.river,
     forestData: tile.forestData,
+    roadData: tile.roadData,
   };
 }
 

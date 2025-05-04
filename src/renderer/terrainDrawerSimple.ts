@@ -3,7 +3,6 @@ import { TileChanneled } from "@/core/serialization/channel";
 import { SeaLevel } from "@/shared";
 import { measureTime } from "@/utils";
 import { AttributeOptions, Container, Shader } from "pixi.js";
-import { getAssets } from "./assets";
 import { HexDrawer } from "./hexDrawer";
 
 const VERTEX_PROGRAM = `#version 300 es
@@ -192,7 +191,7 @@ export class TerrainDrawerSimple extends HexDrawer<TileChanneled> {
     });
   }
 
-  public tick(time: number) {}
+  public tick(_: number) {}
 
   private async build() {
     this.isBuilt = false;
@@ -216,8 +215,6 @@ export class TerrainDrawerSimple extends HexDrawer<TileChanneled> {
   }
 
   override buildShader() {
-    const terrain = getAssets().terrainSpritesheet;
-
     return Shader.from({
       gl: { fragment: FRAGMENT_PROGRAM, vertex: VERTEX_PROGRAM },
     });

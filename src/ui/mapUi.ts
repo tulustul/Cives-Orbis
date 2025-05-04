@@ -86,6 +86,9 @@ export class MapUi {
   private _politicsEnabled$ = new BehaviorSubject<boolean>(true);
   politicsEnabled$ = this._politicsEnabled$.pipe(distinctUntilChanged());
 
+  private _unitsEnabled$ = new BehaviorSubject<boolean>(true);
+  unitsEnabled$ = this._unitsEnabled$.pipe(distinctUntilChanged());
+
   allowMapPanning = true;
 
   constructor() {
@@ -329,6 +332,13 @@ export class MapUi {
   set politicsEnabled(enabled: boolean) {
     this._politicsEnabled$.next(enabled);
     this.saveSettings();
+  }
+
+  get unitsEnabled() {
+    return this._unitsEnabled$.value;
+  }
+  set unitsEnabled(enabled: boolean) {
+    this._unitsEnabled$.next(enabled);
   }
 
   clear() {

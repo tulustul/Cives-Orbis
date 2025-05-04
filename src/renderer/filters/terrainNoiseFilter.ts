@@ -1,4 +1,3 @@
-import { getAsset } from "node:sea";
 import {
   Filter,
   FilterSystem,
@@ -104,7 +103,6 @@ void main() {
 export class TerrainNoiseFilter extends Filter {
   private readonly _textureMatrix: TextureMatrix;
   sprite: Sprite;
-  private _strength = 1;
   uniformsGroup: UniformGroup<{
     uFilterMatrix: {
       value: Matrix;

@@ -61,6 +61,12 @@ export class TileCore implements BaseTile {
    */
   forestData = 0;
 
+  /** Extra information for the renderer.
+   * Bits 0-5: 1 if neighbour has a road
+   * Bit 6: 1 if this tile has a road
+   */
+  roadData = 0;
+
   forest = false;
   wetlands = false;
   improvement: TileImprovementDefinition | null = null;
@@ -277,10 +283,15 @@ export class TileCore implements BaseTile {
       // TODO this loop can be optimized by computing only the cost from neighbour to this tile.
       neighbour.computeMovementCosts();
     }
-    this.computeRiverData();
-    this.computeLandFormData();
-    this.computeForestData();
+    this.computeRenderingData();
     collector.tiles.add(this);
+  }
+
+  updateWithNeighbours() {
+    this.update();
+    for (const neighbour of this.neighbours) {
+      neighbour.update();
+    }
   }
 
   get isWater() {
@@ -330,6 +341,13 @@ export class TileCore implements BaseTile {
     return false;
   }
 
+  computeRenderingData() {
+    this.computeRiverData();
+    this.computeLandFormData();
+    this.computeForestData();
+    this.computeRoadData();
+  }
+
   computeRiverData() {
     this.river = 0;
     for (const dir of this.riverParts) {
@@ -377,6 +395,22 @@ export class TileCore implements BaseTile {
     }
     if (this.forest) {
       this.forestData |= 1 << 6;
+    }
+  }
+
+  computeRoadData() {
+    this.roadData = 0;
+    for (let i = 0; i < this.fullNeighbours.length; i++) {
+      const neighbour = this.fullNeighbours[i];
+      if (!neighbour) {
+        continue;
+      }
+      if (neighbour.road !== null) {
+        this.roadData |= 1 << i;
+      }
+    }
+    if (this.road !== null) {
+      this.roadData |= 1 << 6;
     }
   }
 }
