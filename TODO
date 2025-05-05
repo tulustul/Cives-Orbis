@@ -20,6 +20,9 @@ Bugs:
   ☐ fix destroying units doesn't update the units occupying the same tile
   ☐ settler still in the UI after founding the city
   ✔ clear CityInfo whne changing tracked player @done(25-05-04 21:56)
+  ☐ units drawer layout broken after some time
+  ☐ units remnants on the map
+
 
 Performance:
   ✔ optimize workers AI @done(25-03-10 23:14)

@@ -11,24 +11,25 @@ export type AnimationOptions<T extends number | number[]> = {
 
 export type SequenceOptions = {
   animations: Animation[];
+  onComplete?: () => void;
 };
 
 export class Animations {
   static new<T extends number | number[]>(
-    options: AnimationOptions<T>
+    options: AnimationOptions<T>,
   ): Animation<any> {
     if (Array.isArray(options.from)) {
       return new MultiValueAnimation(
-        options as unknown as AnimationOptions<number[]>
+        options as unknown as AnimationOptions<number[]>,
       ) as unknown as Animation<T>;
     }
     return new ValueAnimation(
-      options as unknown as AnimationOptions<number>
+      options as unknown as AnimationOptions<number>,
     ) as unknown as Animation<T>;
   }
 
   static run<T extends number | number[]>(
-    options: AnimationOptions<T>
+    options: AnimationOptions<T>,
   ): Animation<T> {
     const animation = Animations.new(options);
     animationsManager.add(animation);
@@ -87,7 +88,7 @@ export class AnimationsManager {
 }
 
 export interface BaseAnimation<
-  T extends number | number[] = number | number[]
+  T extends number | number[] = number | number[],
 > {
   step(stepTime: number): T | null;
   fn: (x: T) => void;
@@ -149,7 +150,7 @@ export class MultiValueAnimation implements Animation<number[]> {
     this.progress += stepTime;
     const eased = this.easing(this.progress / this.options.duration);
     return this.options.from.map(
-      (from, i) => from + this.diff[i] * Math.min(eased, 1)
+      (from, i) => from + this.diff[i] * Math.min(eased, 1),
     );
   }
 }
@@ -163,6 +164,7 @@ export class AnimationSequence {
   constructor(public options: SequenceOptions) {
     this.animations = options.animations;
     this.currentAnimation = this.animations.shift();
+    this.onComplete = options.onComplete;
   }
 
   step(stepTime: number): number | number[] | null {

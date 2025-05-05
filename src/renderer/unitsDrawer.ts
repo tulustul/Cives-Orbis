@@ -45,6 +45,12 @@ export class UnitsDrawer {
       if (drawer) {
         this.units.delete(unitId);
         this.removeUnitFromTile(unitId, drawer.unit.tile.id);
+        const unitIndex = drawer.unit.tile.units.findIndex(
+          (u) => u.id === unitId,
+        );
+        if (unitIndex !== -1) {
+          drawer.unit.tile.units.splice(unitIndex, 1);
+        }
         this.scheduleNeighboursUpdate(drawer.unit.tile);
         drawer.destroy();
       }
@@ -154,11 +160,15 @@ export class UnitsDrawer {
   }
 
   private updateTileUnits(tile: TileCoordsWithUnits) {
+    let i = 0;
     for (const unit of tile.units) {
       const drawer = this.units.get(unit.id);
-      if (drawer && !drawer.animation) {
-        drawer.unit.tile = tile;
-        drawer.correctPosition();
+      if (drawer) {
+        drawer.container.zIndex = i++;
+        if (!drawer.animation) {
+          drawer.unit.tile = tile;
+          drawer.correctPosition();
+        }
       }
     }
   }
@@ -189,11 +199,13 @@ export class UnitsDrawer {
       ? this.interactiveContainer
       : this.nonInteractiveContainer;
 
+    let i = 0;
     for (const unitId of unitIds) {
       const drawer = this.units.get(unitId);
       if (drawer) {
         container.addChild(drawer.container);
         drawer.dehighlight();
+        drawer.container.zIndex = i++;
       }
     }
 
@@ -207,8 +219,8 @@ export class UnitsDrawer {
     this.nonInteractiveContainer.addChild(drawer.container);
     this.units.set(unit.id, drawer);
 
-    const [unitScale, alpha] = getAlphaAndScale(camera.transform.scale);
-    drawer.container.alpha = alpha;
+    const unitScale = getAlphaAndScale(camera.transform.scale);
+    this.container.visible = camera.transform.scale > 30;
     drawer.container.scale.set(unitScale);
 
     this.addUnitToTile(unit.id, unit.tile.id);
@@ -217,8 +229,8 @@ export class UnitsDrawer {
   }
 
   public setScale(scale: number) {
-    const [unitScale, alpha] = getAlphaAndScale(scale);
-    this.container.alpha = alpha;
+    const unitScale = getAlphaAndScale(scale);
+    this.container.visible = scale > 30;
     for (const drawer of this.units.values()) {
       drawer.container.scale.set(unitScale);
     }
@@ -233,13 +245,7 @@ export class UnitsDrawer {
 }
 
 function getAlphaAndScale(scale: number) {
-  let alpha = 1;
-  if (scale < 20) {
-    // alpha = 0;
-    alpha = Math.max(0, 1 - (20 - scale) / 8);
-  }
-  const unitScale = Math.pow(0.5 / TILE_SIZE / scale, 0.5);
-  return [unitScale, alpha];
+  return Math.pow(0.5 / TILE_SIZE / scale, 0.5);
 }
 
 export class UnitDrawer {
@@ -249,6 +255,7 @@ export class UnitDrawer {
   private childrenCountText: Text | null = null;
   private isSelected = false;
   public animation: Animation<any> | AnimationSequence | null = null;
+  private targetPosition: [number, number] | null = null;
 
   static selectionFilter = new OutlineFilter({
     color: 0xffffff,
@@ -295,8 +302,8 @@ export class UnitDrawer {
     if (this.unit.canControl) {
       if (this.unit.actions === "none") {
         this.iconContainer.alpha = 0.5;
-        // } else if (this.unit.order === "skip" || this.unit.order === "sleep") {
-        //   this.iconContainer.alpha = 0.7;
+      } else if (this.unit.order === "skip" || this.unit.order === "sleep") {
+        this.iconContainer.alpha = 0.8;
       } else {
         this.iconContainer.alpha = 1;
       }
@@ -379,7 +386,6 @@ export class UnitDrawer {
 
   correctPosition() {
     this.cancelAnimation();
-    this.updateZIndex();
     this.animation = Animations.run({
       from: [this.container.x, this.container.y],
       to: this.tileToUnitPosition(this.unit.tile),
@@ -399,6 +405,12 @@ export class UnitDrawer {
       .slice(1)
       .map((tile) => this.tileToUnitPosition(tile));
 
+    if (positions.length === 0) {
+      return;
+    }
+
+    this.targetPosition = positions[positions.length - 1];
+
     this.animation = Animations.sequence({
       animations: positions.map((pos, i) => {
         return Animations.new({
@@ -416,15 +428,19 @@ export class UnitDrawer {
               console.warn("not found container");
             }
           },
-          onComplete: () => (this.animation = null),
         });
       }),
+      onComplete: () => (this.animation = null),
     });
   }
 
   private cancelAnimation() {
     if (this.animation) {
       Animations.cancel(this.animation);
+      if (this.targetPosition) {
+        this.container.position.set(...this.targetPosition);
+        this.targetPosition = null;
+      }
       this.animation = null;
     }
   }
