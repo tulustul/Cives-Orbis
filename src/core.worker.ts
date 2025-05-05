@@ -265,7 +265,13 @@ function loadHandler(data: string) {
 }
 
 function nextPlayerHandler() {
-  game.nextPlayer();
+  game.trackedPlayer.moveAllUnits();
+
+  // Some units may still have moves available.
+  const task = getNextTask();
+  if (!task) {
+    game.nextPlayer();
+  }
 }
 
 function revealWorld() {

@@ -39,6 +39,8 @@ export class AIPlayer {
   constructor(public player: PlayerCore) {}
 
   nextTurn() {
+    this.player.moveAllUnits();
+
     const operations = this.prepareOperations();
 
     this.updatePriorities();
@@ -72,7 +74,7 @@ export class AIPlayer {
     for (const operations of operationsMap.values()) {
       const totalPriority = operations.reduce(
         (acc, op) => acc + op.priority,
-        0
+        0,
       );
       const value = Math.random() * totalPriority;
       let accPriority = 0;

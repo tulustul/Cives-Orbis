@@ -8,7 +8,6 @@ import { UnitCore, UnitOrder } from "@/core/unit";
 import { Yields } from "@/core/yields";
 import { BaseTile, PlayerYields, SeaLevel } from "@/shared";
 import { Bonuses } from "../bonus";
-import { UnitMoveCore } from "../collector";
 import { CombatSimulation } from "../combat";
 import {
   Building,
@@ -574,10 +573,13 @@ export function unitToUnitPathChannelled(
   };
 }
 
-export function unitMoveToChannel(move: UnitMoveCore): UnitMoveChanneled {
+export function unitMoveToChannel(
+  unit: UnitCore,
+  tiles: TileCore[],
+): UnitMoveChanneled {
   return {
-    unitId: move.unit.id,
-    tiles: move.tiles.map(tileToTileCoordsWithUnits),
+    unitId: unit.id,
+    tiles: tiles.map(tileToTileCoordsWithUnits),
   };
 }
 

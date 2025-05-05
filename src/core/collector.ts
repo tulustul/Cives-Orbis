@@ -22,11 +22,6 @@ import {
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 
-export type UnitMoveCore = {
-  unit: UnitCore;
-  tiles: TileCore[];
-};
-
 export type CityRevealedResult = {
   city: CityChanneled;
   action: "center" | "none";
@@ -45,7 +40,7 @@ class Collector {
   units = new Set<UnitCore>();
   unitsDestroyed = new Set<number>();
 
-  moves: UnitMoveCore[] = [];
+  moves = new Map<UnitCore, TileCore[]>();
 
   cities = new Set<CityCore>();
   citiesDestroyed = new Set<number>();
@@ -151,8 +146,11 @@ class Collector {
     }
     this.newTechs = [];
 
-    for (const move of this.moves) {
-      changes.push({ type: "unit.moved", data: unitMoveToChannel(move) });
+    for (const [unit, tiles] of this.moves.entries()) {
+      changes.push({
+        type: "unit.moved",
+        data: unitMoveToChannel(unit, tiles),
+      });
     }
 
     for (const resource of this.discoveredResourceDeposits) {
@@ -196,7 +194,7 @@ class Collector {
 
     this.unitsDestroyed.clear();
     this.units.clear();
-    this.moves = [];
+    this.moves.clear();
 
     this.cities.clear();
     this.citiesDestroyed.clear();
@@ -216,6 +214,15 @@ class Collector {
     this.turn = undefined;
 
     return changes;
+  }
+
+  addMove(unit: UnitCore, tiles: TileCore[]) {
+    const oldTiles = this.moves.get(unit);
+    if (oldTiles === undefined) {
+      this.moves.set(unit, tiles);
+      return;
+    }
+    oldTiles.push(...tiles);
   }
 }
 

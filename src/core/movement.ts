@@ -161,9 +161,8 @@ export function moveAlongPath(unit: UnitCore) {
 
   unit.setOrder(unit.path.length ? "go" : null);
 
-  // collector.units.add(unit);
   const tiles: TileCore[] = [unit.tile];
-  collector.moves.push({ unit, tiles });
+  collector.addMove(unit, tiles);
 
   while (unit.actionPointsLeft && unit.path.length) {
     const targetTile = unit.path[0][0];

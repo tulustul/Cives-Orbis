@@ -17,6 +17,7 @@ import { PassableArea } from "./tiles-map";
 import { Knowledge } from "./knowledge";
 import { ResourceDeposit } from "./resources";
 import { Nation } from "./data.interface";
+import { moveAlongPath } from "./movement";
 
 export type PlayerViewBoundingBox = {
   minX: number;
@@ -215,5 +216,13 @@ export class PlayerCore {
     this.viewBoundingBox.minY = Math.min(this.viewBoundingBox.minY, tile.y);
     this.viewBoundingBox.maxX = Math.max(this.viewBoundingBox.maxX, tile.x);
     this.viewBoundingBox.maxY = Math.max(this.viewBoundingBox.maxY, tile.y);
+  }
+
+  moveAllUnits() {
+    for (const unit of this.units) {
+      if (unit.path) {
+        moveAlongPath(unit);
+      }
+    }
   }
 }
