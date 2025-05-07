@@ -1,7 +1,7 @@
 import { RawBuilding } from "@/core/data.interface";
 import {
   CityHaveBuildingRequirement,
-  CityNeverRequirement
+  NeverRequirement
 } from "@/core/requirements";
 
 export const BUILDINGS: RawBuilding[] = [
@@ -11,7 +11,7 @@ export const BUILDINGS: RawBuilding[] = [
     name: "Palace",
     productionCost: 0,
     bonuses: { yieldValue: { culture: 1, knowledge: 1 } },
-    strongRequirements: [new CityNeverRequirement()],
+    strongRequirements: [new NeverRequirement()],
     weakRequirements: []
   },
   {

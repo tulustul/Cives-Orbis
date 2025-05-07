@@ -1,0 +1,29 @@
+{
+  "$schema": "./schemas/Buildings.schema.json",
+  "items": [
+    {
+      "id": "idle_product_growth",
+      "name": "Growth",
+      "productionCost": -1,
+      "strongRequirements": [],
+      "weakRequirements": [],
+      "bonuses": { "transferProductionToFood": 0.25 }
+    },
+    {
+      "id": "idle_product_culture",
+      "name": "Culture",
+      "productionCost": -1,
+      "strongRequirements": [],
+      "weakRequirements": [],
+      "bonuses": { "transferProductionToCulture": 0.25 }
+    },
+    {
+      "id": "idle_product_public_works",
+      "name": "Public works",
+      "productionCost": -1,
+      "strongRequirements": [],
+      "weakRequirements": [],
+      "bonuses": { "transferProductionToPublicWorks": 0.25 }
+    }
+  ]
+}

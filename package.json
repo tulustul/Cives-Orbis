@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "debug": "vite --debug hmr",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build": "tsc -b && vite build",
+    "build:atlas": "./scripts/build-atlas.cjs",
+    "build:assets": "./scripts/build_assets.sh",
+    "build:schemas": "./scripts/build-schemas.cjs"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.31.0",
@@ -43,6 +46,7 @@
     "spritesheet-js": "^1.2.8",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
+    "typescript-json-schema": "^0.65.1",
     "vite": "^6.1.0",
     "vitest": "^3.0.7"
   }

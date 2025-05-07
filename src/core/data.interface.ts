@@ -11,7 +11,8 @@ export type EntityType =
   | "resource"
   | "technology"
   | "tileImprovement"
-  | "nation";
+  | "nation"
+  | "populationType";
 
 export type Entity = {
   entityType: EntityType;
@@ -115,8 +116,8 @@ export type Nation = Entity & {
 };
 
 export type ResourceDistribution = {
-  landForm?: LandForm[];
-  seaLevel?: SeaLevel;
+  landForms?: LandForm[];
+  seaLevels?: SeaLevel[];
   climates?: Climate[];
   forest?: boolean;
 

@@ -140,11 +140,11 @@ export function isResourcePossible(
     return false;
   }
 
-  if (dis.seaLevel !== undefined && dis.seaLevel !== tile.seaLevel) {
+  if (dis.seaLevels !== undefined && dis.seaLevels !== tile.seaLevel) {
     return false;
   }
 
-  if (dis.landForm !== undefined && !dis.landForm.includes(tile.landForm)) {
+  if (dis.landForms !== undefined && !dis.landForms.includes(tile.landForm)) {
     return false;
   }
 

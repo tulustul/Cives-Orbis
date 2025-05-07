@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "BaseProductDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "bonuses": {
+          "additionalProperties": false,
+          "properties": {
+            "transferProductionToCulture": {
+              "type": "number"
+            },
+            "transferProductionToFood": {
+              "type": "number"
+            },
+            "transferProductionToPublicWorks": {
+              "type": "number"
+            },
+            "yieldFactor": {
+              "$ref": "#/definitions/Partial<Yields>"
+            },
+            "yieldValue": {
+              "$ref": "#/definitions/Partial<Yields>"
+            }
+          },
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "productionCost": {
+          "type": "number"
+        },
+        "resourceRequirements": {
+          "$ref": "#/definitions/Record<string,number>"
+        },
+        "strongRequirements": {
+          "items": {
+            "$ref": "#/definitions/JsonRequirement"
+          },
+          "type": "array"
+        },
+        "weakRequirements": {
+          "items": {
+            "$ref": "#/definitions/JsonRequirement"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "bonuses",
+        "id",
+        "name",
+        "productionCost",
+        "strongRequirements",
+        "weakRequirements"
+      ],
+      "type": "object"
+    },
+    "JsonRequirement": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "technology": {
+              "type": "string"
+            },
+            "type": {
+              "const": "never",
+              "type": "string"
+            }
+          },
+          "required": [
+            "technology",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "building": {
+              "type": "string"
+            },
+            "type": {
+              "const": "cityHaveBuilding",
+              "type": "string"
+            }
+          },
+          "required": [
+            "building",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "size": {
+              "type": "number"
+            },
+            "type": {
+              "const": "citySize",
+              "type": "string"
+            }
+          },
+          "required": [
+            "size",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "cityIsCoastline",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Partial<Yields>": {
+      "additionalProperties": false,
+      "properties": {
+        "culture": {
+          "type": "number"
+        },
+        "faith": {
+          "type": "number"
+        },
+        "food": {
+          "type": "number"
+        },
+        "gold": {
+          "type": "number"
+        },
+        "knowledge": {
+          "type": "number"
+        },
+        "production": {
+          "type": "number"
+        },
+        "publicWorks": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "Record<string,number>": {
+      "additionalProperties": false,
+      "type": "object"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/definitions/BaseProductDefinition"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}

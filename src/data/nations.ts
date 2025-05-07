@@ -1077,14 +1077,4 @@ export const NATIONS: Nation[] = [
       "Qunu"
     ]
   }
-  // {
-  //   id: "nation_",
-  //   entityType: "nation",
-  //   name: "",
-  //   colors: {
-  //     primary: "#35236b",
-  //     secondary: "#e9c322"
-  //   },
-  //   citiesNames: []
-  // }
 ];

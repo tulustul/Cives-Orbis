@@ -1,11 +1,6 @@
 #!/usr/bin/env node
 
-
-// const os = require("os");
-// os.tmpDir = os.tmpdir
-
 const spritesheet = require("spritesheet-js");
-// import * as spritesheet from "spritesheet-js";
 
 spritesheet(
   "src/assets-src/cleaned/tiles/**/*.png",

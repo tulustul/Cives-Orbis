@@ -28,7 +28,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "incremental": true
   },
   "include": ["src"]
 }

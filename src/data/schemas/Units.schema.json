@@ -1,0 +1,246 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "JsonRequirement": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "technology": {
+              "type": "string"
+            },
+            "type": {
+              "const": "never",
+              "type": "string"
+            }
+          },
+          "required": [
+            "technology",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "building": {
+              "type": "string"
+            },
+            "type": {
+              "const": "cityHaveBuilding",
+              "type": "string"
+            }
+          },
+          "required": [
+            "building",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "size": {
+              "type": "number"
+            },
+            "type": {
+              "const": "citySize",
+              "type": "string"
+            }
+          },
+          "required": [
+            "size",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "cityIsCoastline",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "JsonUnit": {
+      "additionalProperties": false,
+      "properties": {
+        "actionPoints": {
+          "type": "number"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/definitions/UnitAction"
+          },
+          "type": "array"
+        },
+        "bonuses": {
+          "additionalProperties": false,
+          "properties": {
+            "transferProductionToCulture": {
+              "type": "number"
+            },
+            "transferProductionToFood": {
+              "type": "number"
+            },
+            "transferProductionToPublicWorks": {
+              "type": "number"
+            },
+            "yieldFactor": {
+              "$ref": "#/definitions/Partial<Yields>"
+            },
+            "yieldValue": {
+              "$ref": "#/definitions/Partial<Yields>"
+            }
+          },
+          "type": "object"
+        },
+        "capacity": {
+          "type": "number"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "productionCost": {
+          "type": "number"
+        },
+        "resourceRequirements": {
+          "$ref": "#/definitions/Record<string,number>"
+        },
+        "strength": {
+          "type": "number"
+        },
+        "strongRequirements": {
+          "items": {
+            "$ref": "#/definitions/JsonRequirement"
+          },
+          "type": "array"
+        },
+        "supplyRange": {
+          "type": "number"
+        },
+        "trait": {
+          "$ref": "#/definitions/UnitTraitName"
+        },
+        "type": {
+          "$ref": "#/definitions/UnitTypeName"
+        },
+        "weakRequirements": {
+          "items": {
+            "$ref": "#/definitions/JsonRequirement"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "actionPoints",
+        "actions",
+        "bonuses",
+        "capacity",
+        "id",
+        "name",
+        "productionCost",
+        "strength",
+        "strongRequirements",
+        "supplyRange",
+        "trait",
+        "type",
+        "weakRequirements"
+      ],
+      "type": "object"
+    },
+    "Partial<Yields>": {
+      "additionalProperties": false,
+      "properties": {
+        "culture": {
+          "type": "number"
+        },
+        "faith": {
+          "type": "number"
+        },
+        "food": {
+          "type": "number"
+        },
+        "gold": {
+          "type": "number"
+        },
+        "knowledge": {
+          "type": "number"
+        },
+        "production": {
+          "type": "number"
+        },
+        "publicWorks": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "Record<string,number>": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "UnitAction": {
+      "enum": [
+        "buildClayPit",
+        "buildCottage",
+        "buildFarm",
+        "buildFishery",
+        "buildHuntingGround",
+        "buildIrrigation",
+        "buildLumbermill",
+        "buildMine",
+        "buildPasture",
+        "buildPlantation",
+        "buildQuarry",
+        "buildRoad",
+        "foundCity"
+      ],
+      "type": "string"
+    },
+    "UnitTraitName": {
+      "enum": [
+        "explorer",
+        "military",
+        "settler",
+        "supply",
+        "worker"
+      ],
+      "type": "string"
+    },
+    "UnitTypeName": {
+      "enum": [
+        "land",
+        "naval"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/definitions/JsonUnit"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}

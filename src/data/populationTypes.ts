@@ -1,4 +1,4 @@
-import { ResourceType } from "@/core/data.interface";
+import { Entity, ResourceType } from "@/core/data.interface";
 import { Yields } from "../core/yields";
 
 export type PopulationType = "peasant" | "artisan" | "elite" | "slave";
@@ -20,6 +20,17 @@ export enum ResourceCategory {
 export type PopulationTypeDefinition = {
   id: PopulationType;
   name: string;
+  description: string;
+  foodConsumptionMultiplier: number;
+  extraYields: Partial<Yields>;
+  priority: number; // Lower number = higher priority for assignment
+  growthRate: number; // Base growth rate per turn when needs are 100% met
+  declineRate: number; // Base decline rate per turn when needs are 0% met
+  // Resources needed for growth
+  resourceNeeds: ResourceNeed[];
+};
+export type PopulationTypeDefinition2 = Entity & {
+  entityType: "populationType";
   description: string;
   foodConsumptionMultiplier: number;
   extraYields: Partial<Yields>;
@@ -91,8 +102,3 @@ export const POPULATION_TYPES: Record<
     ]
   }
 };
-
-// Get population types sorted by priority (for assignment logic)
-export const POPULATION_TYPES_BY_PRIORITY = Object.values(POPULATION_TYPES)
-  .sort((a, b) => a.priority - b.priority)
-  .map((type) => type.id);

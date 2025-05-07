@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "JsonNation": {
+      "additionalProperties": false,
+      "properties": {
+        "cityNames": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "colors": {
+          "additionalProperties": false,
+          "properties": {
+            "primary": {
+              "type": "string"
+            },
+            "secondary": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "primary",
+            "secondary"
+          ],
+          "type": "object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "cityNames",
+        "colors",
+        "id",
+        "name"
+      ],
+      "type": "object"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/definitions/JsonNation"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}

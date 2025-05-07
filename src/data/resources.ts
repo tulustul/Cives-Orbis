@@ -16,7 +16,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 2 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -40,7 +40,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 2 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -64,7 +64,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 2 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -109,7 +109,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -133,7 +133,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -157,7 +157,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -181,7 +181,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -205,7 +205,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -229,7 +229,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -253,7 +253,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -277,7 +277,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -301,7 +301,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { production: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -325,7 +325,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         climates: [Climate.temperate, Climate.savanna],
         landFormProbability: {
           [LandForm.plains]: 0.25,
@@ -350,7 +350,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         climates: [Climate.temperate, Climate.savanna],
         landFormProbability: {
           [LandForm.plains]: 0.25,
@@ -375,7 +375,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         climates: [Climate.temperate, Climate.savanna],
         landFormProbability: {
           [LandForm.plains]: 0.25,
@@ -400,7 +400,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -424,7 +424,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -448,7 +448,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -472,7 +472,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.shallow,
+        seaLevels: SeaLevel.shallow,
         landFormProbability: {
           [LandForm.plains]: 1,
           [LandForm.hills]: 1
@@ -496,7 +496,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.shallow,
+        seaLevels: SeaLevel.shallow,
         landFormProbability: {
           [LandForm.plains]: 1,
           [LandForm.hills]: 1
@@ -520,7 +520,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.shallow,
+        seaLevels: SeaLevel.shallow,
         landFormProbability: {
           [LandForm.plains]: 1,
           [LandForm.hills]: 1
@@ -544,7 +544,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { food: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.shallow,
+        seaLevels: SeaLevel.shallow,
         landFormProbability: {
           [LandForm.plains]: 1,
           [LandForm.hills]: 1
@@ -568,7 +568,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 5 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -598,7 +598,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -628,7 +628,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -652,7 +652,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -676,7 +676,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -700,7 +700,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -724,7 +724,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -748,7 +748,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -772,7 +772,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -796,7 +796,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -820,7 +820,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -844,7 +844,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -868,7 +868,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -892,7 +892,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -916,7 +916,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -940,7 +940,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -964,7 +964,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -994,7 +994,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1018,7 +1018,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1042,7 +1042,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1066,7 +1066,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1090,7 +1090,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1114,7 +1114,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1138,7 +1138,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75
@@ -1162,7 +1162,7 @@ export const RESOURCES_DEFINITIONS: RawResourceDefinition[] = [
         yieldValue: { gold: 3 }
       },
       distribution: {
-        seaLevel: SeaLevel.none,
+        seaLevels: SeaLevel.none,
         landFormProbability: {
           [LandForm.plains]: 0.25,
           [LandForm.hills]: 0.75

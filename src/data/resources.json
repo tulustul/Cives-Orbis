@@ -1,0 +1,1072 @@
+{
+  "$schema": "./schemas/Resources.schema.json",
+  "items": [
+    {
+      "id": "resource_stone",
+      "name": "Stone",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-quarry",
+        "bonuses": {
+          "yieldValue": {
+            "production": 1
+          }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": {
+            "production": 2
+          }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_limestone",
+      "name": "Limestone",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-quarry",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 2 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_marble",
+      "name": "Marble",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-quarry",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 2 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_clay",
+      "name": "Clay",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-clayPit",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 2 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_wood",
+      "name": "Wood",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-lumbermill",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 2 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_copperOre",
+      "name": "Copper Ore",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_tinOre",
+      "name": "Tin Ore",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_pig",
+      "name": "Pig",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_ironOre",
+      "name": "Iron Ore",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_salt",
+      "name": "Salt",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_coal",
+      "name": "Coal",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_gem",
+      "name": "Gem",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_sapphire",
+      "name": "Sapphire",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_amber",
+      "name": "Amber",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_wheat",
+      "name": "Wheat",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "climates": ["temperate", "savanna"],
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_tomato",
+      "name": "Tomato",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "climates": ["temperate", "savanna"],
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_sulphur",
+      "name": "Sulphur",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "climates": ["temperate", "savanna"],
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_cinnamon",
+      "name": "Cinnamon",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_maize",
+      "name": "Maize",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_rice",
+      "name": "Rice",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_fish",
+      "name": "Fish",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-fishery",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "shallow",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_whale",
+      "name": "Whale",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-fishery",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "shallow",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_camel",
+      "name": "Camel",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "shallow",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_pearl",
+      "name": "Pearl",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-fishery",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        },
+        "distribution": {
+          "seaLevel": "shallow",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_goldOre",
+      "name": "Gold Ore",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 5 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_gold",
+      "name": "Gold",
+      "resourceType": "material"
+    },
+    {
+      "id": "resource_silverOre",
+      "name": "Silver Ore",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_silver",
+      "name": "Silver",
+      "resourceType": "material"
+    },
+    {
+      "id": "resource_tobacco",
+      "name": "Tobacco",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_cattle",
+      "name": "Cattle",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_coffe",
+      "name": "Coffe",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_goat",
+      "name": "Goat",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_sheep",
+      "name": "Sheep",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_elephant",
+      "name": "Elephant",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_fur",
+      "name": "Fur",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-huntingGround",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_grape",
+      "name": "Grape",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_olive",
+      "name": "Olive",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_spice",
+      "name": "Spice",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_dye",
+      "name": "Dye",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_orange",
+      "name": "Orange",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_apple",
+      "name": "Apple",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_lemon",
+      "name": "Lemon",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_diamond",
+      "name": "Diamond",
+      "resourceType": "luxury",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_glassware",
+      "name": "Glassware",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_horse",
+      "name": "Horse",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_game",
+      "name": "Wild Game",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-huntingGround",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_ox",
+      "name": "Ox",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_llama",
+      "name": "Llama",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_chicken",
+      "name": "Chicken",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_oil",
+      "name": "Oil",
+      "resourceType": "food",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_cotton",
+      "name": "Cotton",
+      "resourceType": "material",
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 3 }
+        },
+        "distribution": {
+          "seaLevel": "none",
+          "landForm": ["plains", "hills"],
+          "quantityMedian": 3,
+          "quantityStddev": 2
+        }
+      }
+    },
+    {
+      "id": "resource_wine",
+      "name": "Wine",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_beer",
+      "name": "Beer",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_oliveOil",
+      "name": "Olive Oil",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_textile",
+      "name": "Textile",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_brick",
+      "name": "Brick",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_silk",
+      "name": "Silk",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_bread",
+      "name": "Bread",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_wool",
+      "name": "Wool",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_cheese",
+      "name": "Cheese",
+      "resourceType": "food"
+    },
+    {
+      "id": "resource_jewelry",
+      "name": "Jewelry",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_bronze",
+      "name": "Bronze Ingot",
+      "resourceType": "material"
+    },
+    {
+      "id": "resource_iron",
+      "name": "Iron Ingot",
+      "resourceType": "material"
+    },
+    {
+      "id": "resource_pottery",
+      "name": "Pottery",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_ivory",
+      "name": "Ivory",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_perfume",
+      "name": "Perfume",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_copper",
+      "name": "Copper",
+      "resourceType": "luxury"
+    },
+    {
+      "id": "resource_steel",
+      "name": "Steel",
+      "resourceType": "luxury"
+    }
+  ]
+}

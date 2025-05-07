@@ -1,6 +1,6 @@
 import { CityCore } from "./city";
-import { PlayerCore } from "./player";
 import { HaveRequirements } from "./data.interface";
+import { PlayerCore } from "./player";
 
 export abstract class Requirement {
   id = "";
@@ -38,7 +38,7 @@ export function getFailedWeakRequirements(
     .map((r) => [r.id, r.context]);
 }
 
-export class CityNeverRequirement extends Requirement {
+export class NeverRequirement extends Requirement {
   override id = "never";
 
   check() {
@@ -47,7 +47,7 @@ export class CityNeverRequirement extends Requirement {
 }
 
 export class CityHaveBuildingRequirement extends Requirement {
-  override id = "building";
+  override id = "cityHaveBuilding";
 
   constructor(buildingId: string) {
     super();
@@ -63,7 +63,7 @@ export class CityHaveBuildingRequirement extends Requirement {
 }
 
 export class CitySizeRequirement extends Requirement {
-  override id = "size";
+  override id = "citySize";
 
   constructor(size: number) {
     super();
@@ -79,7 +79,7 @@ export class CitySizeRequirement extends Requirement {
 }
 
 export class CoastlineCityRequirement extends Requirement {
-  override id = "coastlineCity";
+  override id = "cityIsCoastline";
 
   check(_: PlayerCore, city: CityCore | null) {
     if (!city) {

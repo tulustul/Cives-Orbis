@@ -1,0 +1,613 @@
+{
+  "$schema": "./schemas/Techs.schema.json",
+  "items": [
+    {
+      "id": "tech_society",
+      "name": "Society",
+      "requiredTechnologies": [],
+      "cost": 0,
+      "era": "Copper Age",
+      "unlocks": [
+        "unit_worker",
+        "unit_scout",
+        "unit_warrior",
+        "building_palace",
+        "building_monument",
+        "building_elderCouncil"
+      ],
+      "layout": {
+        "x": 50.0,
+        "y": 473.00000000000006,
+        "linksMiddlePoint": [
+          { "tech": "tech_agriculture", "point": 0.0 },
+          { "tech": "tech_animalHusbandry", "point": 0.0 },
+          { "tech": "tech_copperWorking", "point": 0.0 },
+          { "tech": "tech_hunting", "point": 0.0 },
+          { "tech": "tech_fishing", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_agriculture",
+      "name": "Agriculture",
+      "requiredTechnologies": ["tech_society"],
+      "cost": 20,
+      "era": "Copper Age",
+      "unlocks": [
+        "building_well",
+        "building_slave_market",
+        "farm",
+        "idle_product_growth",
+        "tile-impr-farm"
+      ],
+      "layout": {
+        "x": 490.00000000000006,
+        "y": 209.00000000000003,
+        "linksMiddlePoint": [
+          { "tech": "tech_pottery", "point": 0.0 },
+          { "tech": "tech_irrigation", "point": -484.0000000000001 }
+        ]
+      }
+    },
+    {
+      "id": "tech_animalHusbandry",
+      "name": "Animal Husbandry",
+      "requiredTechnologies": ["tech_society"],
+      "cost": 20,
+      "era": "Copper Age",
+      "unlocks": [
+        "resource_cattle",
+        "resource_sheep",
+        "resource_goat",
+        "resource_pig",
+        "tile-impr-pasture"
+      ],
+      "layout": {
+        "x": 490.00000000000006,
+        "y": 385.00000000000006,
+        "linksMiddlePoint": [{ "tech": "tech_wheel", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_pottery",
+      "name": "Pottery",
+      "requiredTechnologies": ["tech_agriculture"],
+      "cost": 20,
+      "era": "Copper Age",
+      "unlocks": [
+        "building_granary",
+        "unit_settler",
+        "resource_pottery",
+        "tile-impr-clayPit"
+      ],
+      "layout": {
+        "x": 930.0000000000001,
+        "y": 253.00000000000003,
+        "linksMiddlePoint": [
+          { "tech": "tech_writing", "point": 0.0 },
+          { "tech": "tech_irrigation", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_wheel",
+      "name": "Wheel",
+      "requiredTechnologies": ["tech_animalHusbandry"],
+      "cost": 25,
+      "era": "Copper Age",
+      "unlocks": [],
+      "layout": {
+        "x": 930.0000000000001,
+        "y": 385.00000000000006,
+        "linksMiddlePoint": [{ "tech": "tech_chariotry", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_fishing",
+      "name": "Fishing",
+      "requiredTechnologies": ["tech_society"],
+      "cost": 20,
+      "era": "Copper Age",
+      "unlocks": ["resource_fish", "tile-impr-fishery"],
+      "layout": {
+        "x": 490.00000000000006,
+        "y": 737.0000000000001,
+        "linksMiddlePoint": [{ "tech": "tech_sailing", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_masonry",
+      "name": "Masonry",
+      "requiredTechnologies": ["tech_copperWorking"],
+      "cost": 35,
+      "era": "Copper Age",
+      "unlocks": ["tile-impr-quarry"],
+      "layout": {
+        "x": 930.0000000000001,
+        "y": 594.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_bronzeWorking", "point": 0.0 },
+          { "tech": "tech_construction", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_sailing",
+      "name": "Sailing",
+      "requiredTechnologies": ["tech_fishing"],
+      "cost": 25,
+      "era": "Copper Age",
+      "unlocks": ["unit_tireme", "unit_galley", "resource_pearls"],
+      "layout": {
+        "x": 930.0000000000001,
+        "y": 770.0000000000001,
+        "linksMiddlePoint": [{ "tech": "tech_shipbuilding", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_hunting",
+      "name": "Hunting",
+      "requiredTechnologies": ["tech_society"],
+      "cost": 20,
+      "era": "Copper Age",
+      "unlocks": ["resource_furs", "tile-impr-huntingGround"],
+      "layout": {
+        "x": 490.00000000000006,
+        "y": 473.00000000000006,
+        "linksMiddlePoint": [{ "tech": "tech_archery", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_archery",
+      "name": "Archery",
+      "requiredTechnologies": ["tech_hunting"],
+      "cost": 30,
+      "era": "Copper Age",
+      "unlocks": [],
+      "layout": {
+        "x": 930.0000000000001,
+        "y": 473.00000000000006,
+        "linksMiddlePoint": [{ "tech": "tech_chariotry", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_copperWorking",
+      "name": "Copper Working",
+      "requiredTechnologies": ["tech_society"],
+      "cost": 20,
+      "era": "Copper Age",
+      "unlocks": ["resource_copper_ore", "tile-impr-mine"],
+      "layout": {
+        "x": 490.00000000000006,
+        "y": 561.0,
+        "linksMiddlePoint": [{ "tech": "tech_masonry", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_writing",
+      "name": "Writing",
+      "requiredTechnologies": ["tech_pottery"],
+      "cost": 40,
+      "era": "Bronze Age",
+      "unlocks": ["building_library"],
+      "layout": {
+        "x": 1370.0,
+        "y": 253.00000000000003,
+        "linksMiddlePoint": [
+          { "tech": "tech_calendar", "point": 0.0 },
+          { "tech": "tech_mathematics", "point": 0.0 },
+          { "tech": "tech_literature", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_chariotry",
+      "name": "Chariotry",
+      "requiredTechnologies": ["tech_wheel", "tech_archery"],
+      "cost": 50,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 1370.0,
+        "y": 429.00000000000006,
+        "linksMiddlePoint": [{ "tech": "tech_horsebackRiding", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_bronzeWorking",
+      "name": "Bronze Working",
+      "requiredTechnologies": ["tech_masonry"],
+      "cost": 30,
+      "era": "Bronze Age",
+      "unlocks": [
+        "building_workshop",
+        "unit_supply_wagon",
+        "resource_bronze",
+        "tile-impr-lumbermill"
+      ],
+      "layout": {
+        "x": 1370.0,
+        "y": 550.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_metallurgy", "point": 48.400000000000006 }
+        ]
+      }
+    },
+    {
+      "id": "tech_calendar",
+      "name": "Calendar",
+      "requiredTechnologies": ["tech_writing", "tech_irrigation"],
+      "cost": 40,
+      "era": "Bronze Age",
+      "unlocks": ["tile-impr-plantation"],
+      "layout": {
+        "x": 1810.0000000000002,
+        "y": 165.0,
+        "linksMiddlePoint": [{ "tech": "tech_astrology", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_mathematics",
+      "name": "Mathematics",
+      "requiredTechnologies": ["tech_writing"],
+      "cost": 45,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 1810.0000000000002,
+        "y": 253.00000000000003,
+        "linksMiddlePoint": [
+          { "tech": "tech_astrology", "point": 0.0 },
+          { "tech": "tech_currency", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_astrology",
+      "name": "Astrology",
+      "requiredTechnologies": ["tech_calendar", "tech_mathematics"],
+      "cost": 45,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 2250.0,
+        "y": 165.0,
+        "linksMiddlePoint": [{ "tech": "tech_astronomy", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_irrigation",
+      "name": "Irrigation",
+      "requiredTechnologies": ["tech_agriculture", "tech_pottery"],
+      "cost": 50,
+      "era": "Bronze Age",
+      "unlocks": ["building_big_granary", "tile-impr-irrigation"],
+      "layout": {
+        "x": 1370.0,
+        "y": 165.0,
+        "linksMiddlePoint": [{ "tech": "tech_calendar", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_construction",
+      "name": "Constructions",
+      "requiredTechnologies": ["tech_masonry"],
+      "cost": 60,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 1370.0,
+        "y": 638.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_shipbuilding", "point": -48.400000000000006 }
+        ]
+      }
+    },
+    {
+      "id": "tech_horsebackRiding",
+      "name": "Horseback Riding",
+      "requiredTechnologies": ["tech_chariotry"],
+      "cost": 50,
+      "era": "Bronze Age",
+      "unlocks": ["resource_horses"],
+      "layout": {
+        "x": 2250.0,
+        "y": 572.0,
+        "linksMiddlePoint": [{ "tech": "tech_stirrup", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_currency",
+      "name": "Currency",
+      "requiredTechnologies": ["tech_mathematics"],
+      "cost": 50,
+      "era": "Bronze Age",
+      "unlocks": ["tile-impr-cottage"],
+      "layout": {
+        "x": 2250.0,
+        "y": 253.00000000000003,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_engineering",
+      "name": "Engineering",
+      "requiredTechnologies": ["tech_ironWorking"],
+      "cost": 60,
+      "era": "Bronze Age",
+      "unlocks": ["building_all_doing_building", "idle_product_public_works"],
+      "layout": {
+        "x": 3130.0000000000005,
+        "y": 550.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_mechanics", "point": 0.0 },
+          { "tech": "tech_cropRotation", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_optics",
+      "name": "Optics",
+      "requiredTechnologies": ["tech_glassBlowing"],
+      "cost": 50,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3130.0000000000005,
+        "y": 770.0000000000001,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_shipbuilding",
+      "name": "Ship Building",
+      "requiredTechnologies": ["tech_sailing", "tech_construction"],
+      "cost": 65,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 1810.0000000000002,
+        "y": 770.0000000000001,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_literature",
+      "name": "Literature",
+      "requiredTechnologies": ["tech_writing"],
+      "cost": 50,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 1810.0000000000002,
+        "y": 363.00000000000006,
+        "linksMiddlePoint": [
+          { "tech": "tech_cartography", "point": 0.0 },
+          { "tech": "tech_philosophy", "point": 0.0 },
+          { "tech": "tech_poetry", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_metallurgy",
+      "name": "Metallurgy",
+      "requiredTechnologies": ["tech_bronzeWorking"],
+      "cost": 80,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 1810.0000000000002,
+        "y": 638.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_jewelry", "point": 0.0 },
+          { "tech": "tech_ironWorking", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_cartography",
+      "name": "Cartography",
+      "requiredTechnologies": ["tech_literature"],
+      "cost": 60,
+      "era": "Bronze Age",
+      "unlocks": [],
+      "layout": {
+        "x": 2250.0,
+        "y": 484.00000000000006,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_ironWorking",
+      "name": "Iron Working",
+      "requiredTechnologies": ["tech_metallurgy"],
+      "cost": 60,
+      "era": "Iron Age",
+      "unlocks": ["unit_uber_warrior", "resource_iron", "resource_iron_ore"],
+      "layout": {
+        "x": 2712.0,
+        "y": 638.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_stirrup", "point": 0.0 },
+          { "tech": "tech_engineering", "point": 0.0 },
+          { "tech": "tech_metalArmor", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_philosophy",
+      "name": "Philosophy",
+      "requiredTechnologies": ["tech_literature"],
+      "cost": 70,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 2690.0,
+        "y": 319.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_education", "point": 0.0 },
+          { "tech": "tech_anatomy", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_poetry",
+      "name": "Drama and Poetry",
+      "requiredTechnologies": ["tech_literature"],
+      "cost": 70,
+      "era": "Iron Age",
+      "unlocks": ["idle_product_culture"],
+      "layout": {
+        "x": 2690.0,
+        "y": 407.00000000000006,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_astronomy",
+      "name": "Astronomy",
+      "requiredTechnologies": ["tech_astrology"],
+      "cost": 90,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 2690.0,
+        "y": 165.0,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_stirrup",
+      "name": "Stirrup",
+      "requiredTechnologies": ["tech_horsebackRiding", "tech_ironWorking"],
+      "cost": 90,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3130.0000000000005,
+        "y": 462.00000000000006,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_jewelry",
+      "name": "Jewelry",
+      "requiredTechnologies": ["tech_metallurgy"],
+      "cost": 80,
+      "era": "Iron Age",
+      "unlocks": ["resource_jewelry", "resource_gems"],
+      "layout": {
+        "x": 2250.0,
+        "y": 726.0000000000001,
+        "linksMiddlePoint": [{ "tech": "tech_glassBlowing", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_education",
+      "name": "Education",
+      "requiredTechnologies": ["tech_philosophy"],
+      "cost": 100,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3130.0000000000005,
+        "y": 275.0,
+        "linksMiddlePoint": [
+          { "tech": "tech_alchemy", "point": 0.0 },
+          { "tech": "tech_medicine", "point": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "tech_anatomy",
+      "name": "Anatomy",
+      "requiredTechnologies": ["tech_philosophy"],
+      "cost": 90,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3130.0000000000005,
+        "y": 187.00000000000003,
+        "linksMiddlePoint": [{ "tech": "tech_medicine", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_metalArmor",
+      "name": "Metal Armor",
+      "requiredTechnologies": ["tech_ironWorking"],
+      "cost": 80,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3130.0000000000005,
+        "y": 638.0,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_glassBlowing",
+      "name": "Glass Blowing",
+      "requiredTechnologies": ["tech_jewelry"],
+      "cost": 85,
+      "era": "Iron Age",
+      "unlocks": ["resource_glassware"],
+      "layout": {
+        "x": 2712.0,
+        "y": 770.0000000000001,
+        "linksMiddlePoint": [{ "tech": "tech_optics", "point": 0.0 }]
+      }
+    },
+    {
+      "id": "tech_mechanics",
+      "name": "Mechanics",
+      "requiredTechnologies": ["tech_engineering"],
+      "cost": 90,
+      "era": "Iron Age",
+      "unlocks": ["building_big_workshop"],
+      "layout": {
+        "x": 3570.0000000000005,
+        "y": 550.0,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_cropRotation",
+      "name": "Crop Rotation",
+      "requiredTechnologies": ["tech_engineering"],
+      "cost": 90,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3570.0000000000005,
+        "y": 440.00000000000006,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_medicine",
+      "name": "Medicine",
+      "requiredTechnologies": ["tech_anatomy", "tech_education"],
+      "cost": 100,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3570.0000000000005,
+        "y": 187.00000000000003,
+        "linksMiddlePoint": []
+      }
+    },
+    {
+      "id": "tech_alchemy",
+      "name": "Alchemy",
+      "requiredTechnologies": ["tech_education"],
+      "cost": 100,
+      "era": "Iron Age",
+      "unlocks": [],
+      "layout": {
+        "x": 3570.0000000000005,
+        "y": 275.0,
+        "linksMiddlePoint": []
+      }
+    }
+  ]
+}

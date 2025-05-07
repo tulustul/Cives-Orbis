@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "Partial<Yields>": {
+      "additionalProperties": false,
+      "properties": {
+        "culture": {
+          "type": "number"
+        },
+        "faith": {
+          "type": "number"
+        },
+        "food": {
+          "type": "number"
+        },
+        "gold": {
+          "type": "number"
+        },
+        "knowledge": {
+          "type": "number"
+        },
+        "production": {
+          "type": "number"
+        },
+        "publicWorks": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "ResourceType": {
+      "enum": [
+        "commodity",
+        "food",
+        "luxury",
+        "material"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "declineRate": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "extraYields": {
+            "$ref": "#/definitions/Partial<Yields>"
+          },
+          "foodConsumptionMultiplier": {
+            "type": "number"
+          },
+          "growthRate": {
+            "type": "number"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "number"
+          },
+          "resourceNeeds": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "amountExponent": {
+                  "type": "number"
+                },
+                "diversityExponent": {
+                  "type": "number"
+                },
+                "resourceType": {
+                  "$ref": "#/definitions/ResourceType"
+                }
+              },
+              "required": [
+                "amountExponent",
+                "diversityExponent",
+                "resourceType"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "declineRate",
+          "description",
+          "extraYields",
+          "foodConsumptionMultiplier",
+          "growthRate",
+          "id",
+          "name",
+          "priority",
+          "resourceNeeds"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}

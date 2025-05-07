@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "JsonTechnology": {
+      "additionalProperties": false,
+      "properties": {
+        "cost": {
+          "type": "number"
+        },
+        "era": {
+          "$ref": "#/definitions/TechEra"
+        },
+        "id": {
+          "type": "string"
+        },
+        "layout": {
+          "additionalProperties": false,
+          "properties": {
+            "linksMiddlePoint": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "point": {
+                    "type": "number"
+                  },
+                  "tech": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "point",
+                  "tech"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "linksMiddlePoint",
+            "x",
+            "y"
+          ],
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "requiredTechnologies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "unlocks": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "cost",
+        "era",
+        "id",
+        "layout",
+        "name",
+        "requiredTechnologies",
+        "unlocks"
+      ],
+      "type": "object"
+    },
+    "TechEra": {
+      "enum": [
+        "AI Age",
+        "Bronze Age",
+        "Coal Age",
+        "Copper Age",
+        "Electric Age",
+        "Gunpowder Age",
+        "Industrial Age",
+        "Information Age",
+        "Iron Age",
+        "Steel Age"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/definitions/JsonTechnology"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}

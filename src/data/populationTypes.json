@@ -1,0 +1,83 @@
+{
+  "$schema": "./schemas/PopulationTypes.schema.json",
+  "items": [
+    {
+      "id": "population_type_slave",
+      "name": "Slave",
+      "description": "Forced laborers who consume less food but have limited productivity",
+      "foodConsumptionMultiplier": 0.7,
+      "extraYields": {},
+      "priority": 1,
+      "growthRate": 0,
+      "declineRate": 0.01,
+      "resourceNeeds": [
+        {
+          "resourceType": "food",
+          "amountExponent": 1,
+          "diversityExponent": 1
+        }
+      ]
+    },
+    {
+      "id": "population_type_peasant",
+      "name": "Peasant",
+      "description": "Common citizens who work the fields and produce food",
+      "foodConsumptionMultiplier": 1.0,
+      "extraYields": {},
+      "priority": 2,
+      "growthRate": 0.05,
+      "declineRate": 0.08,
+      "resourceNeeds": [
+        {
+          "resourceType": "food",
+          "amountExponent": 1.05,
+          "diversityExponent": 1.05
+        }
+      ]
+    },
+    {
+      "id": "population_type_artisan",
+      "name": "Artisan",
+      "description": "Skilled workers who produce more but consume more food",
+      "foodConsumptionMultiplier": 1.2,
+      "extraYields": { "production": 1, "gold": 1 },
+      "priority": 3,
+      "growthRate": 0.03,
+      "declineRate": 0.06,
+      "resourceNeeds": [
+        {
+          "resourceType": "food",
+          "amountExponent": 1.08,
+          "diversityExponent": 1.08
+        },
+        {
+          "resourceType": "luxury",
+          "amountExponent": 1.03,
+          "diversityExponent": 1.03
+        }
+      ]
+    },
+    {
+      "id": "population_type_elite",
+      "name": "Elite",
+      "description": "Upper class citizens who consume the most food but contribute to culture and knowledge",
+      "foodConsumptionMultiplier": 1.5,
+      "extraYields": { "culture": 1, "knowledge": 1, "gold": 3 },
+      "priority": 4,
+      "growthRate": 0.02,
+      "declineRate": 0.04,
+      "resourceNeeds": [
+        {
+          "resourceType": "food",
+          "amountExponent": 1.15,
+          "diversityExponent": 1.15
+        },
+        {
+          "resourceType": "luxury",
+          "amountExponent": 1.1,
+          "diversityExponent": 1.1
+        }
+      ]
+    }
+  ]
+}

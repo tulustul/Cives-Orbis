@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "JsonTileImprovement": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/UnitAction"
+        },
+        "baseTurns": {
+          "type": "number"
+        },
+        "climates": {
+          "items": {
+            "enum": [
+              "arctic",
+              "desert",
+              "savanna",
+              "temperate",
+              "tropical",
+              "tundra"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "extraYields": {
+          "$ref": "#/definitions/Partial<Yields>"
+        },
+        "forest": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "landForms": {
+          "items": {
+            "enum": [
+              "hills",
+              "mountains",
+              "plains"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "requireResource": {
+          "type": "boolean"
+        },
+        "river": {
+          "type": "boolean"
+        },
+        "seaLevels": {
+          "items": {
+            "enum": [
+              "deep",
+              "none",
+              "shallow"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "spawnsResource": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "baseTurns",
+        "id",
+        "name"
+      ],
+      "type": "object"
+    },
+    "Partial<Yields>": {
+      "additionalProperties": false,
+      "properties": {
+        "culture": {
+          "type": "number"
+        },
+        "faith": {
+          "type": "number"
+        },
+        "food": {
+          "type": "number"
+        },
+        "gold": {
+          "type": "number"
+        },
+        "knowledge": {
+          "type": "number"
+        },
+        "production": {
+          "type": "number"
+        },
+        "publicWorks": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "UnitAction": {
+      "enum": [
+        "buildClayPit",
+        "buildCottage",
+        "buildFarm",
+        "buildFishery",
+        "buildHuntingGround",
+        "buildIrrigation",
+        "buildLumbermill",
+        "buildMine",
+        "buildPasture",
+        "buildPlantation",
+        "buildQuarry",
+        "buildRoad",
+        "foundCity"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/definitions/JsonTileImprovement"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}
