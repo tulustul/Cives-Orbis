@@ -1,9 +1,9 @@
-import { POPULATION_TYPES, PopulationType } from "@/data/populationTypes";
+import { dataManager } from "@/core/data/dataManager";
 import { CityCore } from "./city";
 
 export class CityPopulation {
-  population = new Map<PopulationType, number>();
-  workers = new Map<PopulationType, number>();
+  population = new Map<string, number>();
+  workers = new Map<string, number>();
   total = 1;
 
   totalFood = 0;
@@ -12,8 +12,8 @@ export class CityPopulation {
   changedSize = false;
 
   constructor(public city: CityCore) {
-    for (const populationType of Object.values(POPULATION_TYPES)) {
-      const amount = populationType.id === "peasant" ? 1 : 0;
+    for (const populationType of dataManager.populationTypes.all) {
+      const amount = populationType.id === "population_type_peasant" ? 1 : 0;
       this.population.set(populationType.id, amount);
       this.workers.set(populationType.id, amount);
     }
@@ -46,13 +46,13 @@ export class CityPopulation {
 
   private processSlaves() {
     // Slaves simply decline with time.
-    const slaves = this.population.get("slave")!;
-    this.population.set("slave", slaves * 0.99);
+    const slaves = this.population.get("population_type_slave")!;
+    this.population.set("population_type_slave", slaves * 0.99);
   }
 
   private processPeasants() {
     // Classic civ growth model based only on food.
-    let size = this.population.get("peasant")!;
+    let size = this.population.get("population_type_peasant")!;
     this.totalFood += this.city.yields.food - this.foodConsumed;
     const foodToGrow = this.getFoodToGrow();
     if (this.totalFood >= foodToGrow) {
@@ -68,7 +68,7 @@ export class CityPopulation {
         this.totalFood = 0;
       }
     }
-    this.population.set("peasant", size);
+    this.population.set("population_type_peasant", size);
   }
 
   computeTotal() {
@@ -76,8 +76,8 @@ export class CityPopulation {
       Array.from(this.population.values()).reduce((a, b) => a + b, 0),
     );
 
-    const availablePopulation = new Map<PopulationType, number>();
-    for (const populationType of Object.values(POPULATION_TYPES)) {
+    const availablePopulation = new Map<string, number>();
+    for (const populationType of dataManager.populationTypes.all) {
       this.workers.set(populationType.id, 0);
       availablePopulation.set(
         populationType.id,
@@ -86,7 +86,7 @@ export class CityPopulation {
     }
 
     for (let i = 0; i < this.total; i++) {
-      let topPopulationType: PopulationType | null = null;
+      let topPopulationType: string | null = null;
       let topAmount = 0;
       for (const [populationType, amount] of availablePopulation.entries()) {
         if (amount > topAmount) {

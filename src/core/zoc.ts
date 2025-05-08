@@ -1,6 +1,6 @@
 // Zone of control
 
-import { UnitTrait } from "./data.interface";
+import { UnitTrait } from "./data/types";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 

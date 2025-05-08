@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { EntityType } from "@/core/data.interface";
+import { EntityType } from "@/core/data/types";
 import {
   BuildingChanneled,
   CityDetailsChanneled,
@@ -117,4 +117,5 @@ const entityTypeRenderers: Record<
   resource: () => null,
   technology: () => null,
   nation: () => null,
+  populationType: () => null,
 };

@@ -1,5 +1,5 @@
 import { CityCore } from "./city";
-import { HaveRequirements } from "./data.interface";
+import { HaveRequirements } from "./data/types";
 import { PlayerCore } from "./player";
 
 export abstract class Requirement {

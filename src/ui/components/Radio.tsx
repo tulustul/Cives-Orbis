@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Option } from "./types";
+import { Option } from "../../shared/types";
 
 type Props<T> = {
   label: string;

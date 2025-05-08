@@ -1,6 +1,6 @@
-import { Bonuses } from "../bonus";
-import { UnitAction } from "../unit-actions";
-import { Yields } from "../yields";
+import { Bonuses } from "@/core/bonus";
+import { UnitAction } from "@/core/unit-actions";
+import { Yields } from "@/core/yields";
 import {
   climateNamesInverse,
   landFormNamesInverse,
@@ -69,19 +69,6 @@ export type BaseProductDefinition = JsonEntity &
 
 export type JsonProduct = BaseProductDefinition;
 
-export enum UnitType {
-  land,
-  naval,
-}
-
-export enum UnitTrait {
-  settler,
-  explorer,
-  worker,
-  military,
-  supply,
-}
-
 export type JsonUnit = JsonProduct & {
   actionPoints: number;
   strength: number;
@@ -104,7 +91,7 @@ export type JsonNation = JsonEntity & {
   colors: NationColors;
 };
 
-export type ResourceDistribution = {
+export type JsonResourceDistribution = {
   landForms?: LandFormName[];
   seaLevels?: SeaLevelName[];
   climates?: ClimateName[];
@@ -123,7 +110,7 @@ export type ResourceType = "food" | "material" | "commodity" | "luxury";
 export type BaseResourceDepositDefinition = {
   bonuses: Bonuses;
   bonusesWhenWorked: Bonuses;
-  distribution?: ResourceDistribution;
+  distribution?: JsonResourceDistribution;
 };
 
 export type RawResourceDepositDefinition = BaseResourceDepositDefinition & {
@@ -158,7 +145,7 @@ export type LinkMiddlePoint = {
   point: number;
 };
 
-export type TechLayout = {
+export type JsonTechLayout = {
   x: number;
   y: number;
   linksMiddlePoint: LinkMiddlePoint[];
@@ -172,29 +159,20 @@ export type TechUnlockType =
   | "resource"
   | "ability";
 
-export interface TechUnlock {
+export type TechUnlock = {
   type: TechUnlockType;
   id: string;
-}
+};
 
 export type JsonTechnology = JsonEntity & {
   requiredTechnologies: string[];
   cost: number;
   era: TechEra;
-  layout: TechLayout;
+  layout: JsonTechLayout;
   unlocks: string[];
 };
 
-export type Technology = JsonEntity & {
-  entityType: "technology";
-  requiredTechnologies: Technology[];
-  cost: number;
-  era: TechEra;
-  unlocks: JsonEntity[];
-  layout: TechLayout;
-};
-
-export type TileImprovementVariant = {
+export type JsonTileImprovement = JsonEntity & {
   baseTurns: number;
   climates?: ClimateName[];
   landForms?: LandFormName[];
@@ -202,18 +180,9 @@ export type TileImprovementVariant = {
   forest?: boolean;
   river?: boolean;
   extraYields?: Partial<Yields>;
-};
-
-export type JsonTileImprovement = JsonEntity &
-  TileImprovementVariant & {
-    spawnsResource?: string;
-    requireResource?: boolean;
-    action: UnitAction;
-  };
-
-export type JsonData<T> = {
-  $schema: string;
-  items: T[];
+  spawnsResource?: string;
+  requireResource?: boolean;
+  action: UnitAction;
 };
 
 export type ResourceNeed = {
@@ -241,6 +210,11 @@ export type JsonPopulationType = {
   declineRate: number; // Base decline rate per turn when needs are 0% met
   // Resources needed for growth
   resourceNeeds: ResourceNeed[];
+};
+
+export type JsonData<T> = {
+  $schema: string;
+  items: T[];
 };
 
 export type JsonTechs = JsonData<JsonTechnology>;

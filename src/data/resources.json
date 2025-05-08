@@ -2,7 +2,7 @@
   "$schema": "./schemas/Resources.schema.json",
   "items": [
     {
-      "id": "resource_stone",
+      "id": "resource-stone",
       "name": "Stone",
       "resourceType": "material",
       "depositDef": {
@@ -18,15 +18,15 @@
           }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_limestone",
+      "id": "resource-limestone",
       "name": "Limestone",
       "resourceType": "material",
       "depositDef": {
@@ -38,15 +38,15 @@
           "yieldValue": { "production": 2 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_marble",
+      "id": "resource-marble",
       "name": "Marble",
       "resourceType": "material",
       "depositDef": {
@@ -58,15 +58,15 @@
           "yieldValue": { "production": 2 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_clay",
+      "id": "resource-clay",
       "name": "Clay",
       "resourceType": "material",
       "depositDef": {
@@ -78,15 +78,15 @@
           "yieldValue": { "production": 2 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_wood",
+      "id": "resource-wood",
       "name": "Wood",
       "resourceType": "material",
       "depositDef": {
@@ -98,15 +98,15 @@
           "yieldValue": { "production": 2 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_copperOre",
+      "id": "resource-copperOre",
       "name": "Copper Ore",
       "resourceType": "material",
       "depositDef": {
@@ -118,15 +118,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_tinOre",
+      "id": "resource-tinOre",
       "name": "Tin Ore",
       "resourceType": "material",
       "depositDef": {
@@ -138,15 +138,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_pig",
+      "id": "resource-pig",
       "name": "Pig",
       "resourceType": "food",
       "depositDef": {
@@ -158,15 +158,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_ironOre",
+      "id": "resource-ironOre",
       "name": "Iron Ore",
       "resourceType": "material",
       "depositDef": {
@@ -178,15 +178,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_salt",
+      "id": "resource-salt",
       "name": "Salt",
       "resourceType": "material",
       "depositDef": {
@@ -198,15 +198,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_coal",
+      "id": "resource-coal",
       "name": "Coal",
       "resourceType": "material",
       "depositDef": {
@@ -218,15 +218,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_gem",
+      "id": "resource-gem",
       "name": "Gem",
       "resourceType": "luxury",
       "depositDef": {
@@ -238,15 +238,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_sapphire",
+      "id": "resource-sapphire",
       "name": "Sapphire",
       "resourceType": "luxury",
       "depositDef": {
@@ -258,15 +258,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_amber",
+      "id": "resource-amber",
       "name": "Amber",
       "resourceType": "luxury",
       "depositDef": {
@@ -278,15 +278,15 @@
           "yieldValue": { "production": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_wheat",
+      "id": "resource-wheat",
       "name": "Wheat",
       "resourceType": "food",
       "depositDef": {
@@ -298,16 +298,16 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
+          "seaLevels": ["none"],
           "climates": ["temperate", "savanna"],
-          "landForm": ["plains", "hills"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_tomato",
+      "id": "resource-tomato",
       "name": "Tomato",
       "resourceType": "food",
       "depositDef": {
@@ -319,16 +319,16 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
+          "seaLevels": ["none"],
           "climates": ["temperate", "savanna"],
-          "landForm": ["plains", "hills"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_sulphur",
+      "id": "resource-sulphur",
       "name": "Sulphur",
       "resourceType": "material",
       "depositDef": {
@@ -340,16 +340,16 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
+          "seaLevels": ["none"],
           "climates": ["temperate", "savanna"],
-          "landForm": ["plains", "hills"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_cinnamon",
+      "id": "resource-cinnamon",
       "name": "Cinnamon",
       "resourceType": "luxury",
       "depositDef": {
@@ -361,15 +361,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_maize",
+      "id": "resource-maize",
       "name": "Maize",
       "resourceType": "food",
       "depositDef": {
@@ -381,15 +381,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_rice",
+      "id": "resource-rice",
       "name": "Rice",
       "resourceType": "food",
       "depositDef": {
@@ -401,15 +401,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_fish",
+      "id": "resource-fish",
       "name": "Fish",
       "resourceType": "food",
       "depositDef": {
@@ -421,15 +421,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "shallow",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["shallow"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_whale",
+      "id": "resource-whale",
       "name": "Whale",
       "resourceType": "food",
       "depositDef": {
@@ -441,15 +441,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "shallow",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["shallow"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_camel",
+      "id": "resource-camel",
       "name": "Camel",
       "resourceType": "material",
       "depositDef": {
@@ -461,15 +461,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "shallow",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["shallow"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_pearl",
+      "id": "resource-pearl",
       "name": "Pearl",
       "resourceType": "food",
       "depositDef": {
@@ -481,15 +481,15 @@
           "yieldValue": { "food": 3 }
         },
         "distribution": {
-          "seaLevel": "shallow",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["shallow"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_goldOre",
+      "id": "resource-goldOre",
       "name": "Gold Ore",
       "resourceType": "material",
       "depositDef": {
@@ -501,20 +501,20 @@
           "yieldValue": { "gold": 5 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_gold",
+      "id": "resource-gold",
       "name": "Gold",
       "resourceType": "material"
     },
     {
-      "id": "resource_silverOre",
+      "id": "resource-silverOre",
       "name": "Silver Ore",
       "resourceType": "material",
       "depositDef": {
@@ -526,20 +526,20 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_silver",
+      "id": "resource-silver",
       "name": "Silver",
       "resourceType": "material"
     },
     {
-      "id": "resource_tobacco",
+      "id": "resource-tobacco",
       "name": "Tobacco",
       "resourceType": "luxury",
       "depositDef": {
@@ -551,15 +551,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_cattle",
+      "id": "resource-cattle",
       "name": "Cattle",
       "resourceType": "food",
       "depositDef": {
@@ -571,15 +571,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_coffe",
+      "id": "resource-coffe",
       "name": "Coffe",
       "resourceType": "food",
       "depositDef": {
@@ -591,15 +591,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_goat",
+      "id": "resource-goat",
       "name": "Goat",
       "resourceType": "food",
       "depositDef": {
@@ -611,15 +611,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_sheep",
+      "id": "resource-sheep",
       "name": "Sheep",
       "resourceType": "food",
       "depositDef": {
@@ -631,15 +631,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_elephant",
+      "id": "resource-elephant",
       "name": "Elephant",
       "resourceType": "luxury",
       "depositDef": {
@@ -651,15 +651,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_fur",
+      "id": "resource-fur",
       "name": "Fur",
       "resourceType": "food",
       "depositDef": {
@@ -671,15 +671,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_grape",
+      "id": "resource-grape",
       "name": "Grape",
       "resourceType": "food",
       "depositDef": {
@@ -691,15 +691,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_olive",
+      "id": "resource-olive",
       "name": "Olive",
       "resourceType": "food",
       "depositDef": {
@@ -711,15 +711,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_spice",
+      "id": "resource-spice",
       "name": "Spice",
       "resourceType": "luxury",
       "depositDef": {
@@ -731,15 +731,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_dye",
+      "id": "resource-dye",
       "name": "Dye",
       "resourceType": "luxury",
       "depositDef": {
@@ -751,15 +751,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_orange",
+      "id": "resource-orange",
       "name": "Orange",
       "resourceType": "food",
       "depositDef": {
@@ -771,15 +771,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_apple",
+      "id": "resource-apple",
       "name": "Apple",
       "resourceType": "food",
       "depositDef": {
@@ -791,15 +791,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_lemon",
+      "id": "resource-lemon",
       "name": "Lemon",
       "resourceType": "food",
       "depositDef": {
@@ -811,15 +811,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_diamond",
+      "id": "resource-diamond",
       "name": "Diamond",
       "resourceType": "luxury",
       "depositDef": {
@@ -831,20 +831,20 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_glassware",
+      "id": "resource-glassware",
       "name": "Glassware",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_horse",
+      "id": "resource-horse",
       "name": "Horse",
       "resourceType": "material",
       "depositDef": {
@@ -856,15 +856,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_game",
+      "id": "resource-game",
       "name": "Wild Game",
       "resourceType": "food",
       "depositDef": {
@@ -876,15 +876,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_ox",
+      "id": "resource-ox",
       "name": "Ox",
       "resourceType": "material",
       "depositDef": {
@@ -896,15 +896,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_llama",
+      "id": "resource-llama",
       "name": "Llama",
       "resourceType": "material",
       "depositDef": {
@@ -916,15 +916,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_chicken",
+      "id": "resource-chicken",
       "name": "Chicken",
       "resourceType": "food",
       "depositDef": {
@@ -936,15 +936,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_oil",
+      "id": "resource-oil",
       "name": "Oil",
       "resourceType": "food",
       "depositDef": {
@@ -956,15 +956,15 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_cotton",
+      "id": "resource-cotton",
       "name": "Cotton",
       "resourceType": "material",
       "depositDef": {
@@ -976,95 +976,95 @@
           "yieldValue": { "gold": 3 }
         },
         "distribution": {
-          "seaLevel": "none",
-          "landForm": ["plains", "hills"],
+          "seaLevels": ["none"],
+          "landForms": ["plains", "hills"],
           "quantityMedian": 3,
           "quantityStddev": 2
         }
       }
     },
     {
-      "id": "resource_wine",
+      "id": "resource-wine",
       "name": "Wine",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_beer",
+      "id": "resource-beer",
       "name": "Beer",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_oliveOil",
+      "id": "resource-oliveOil",
       "name": "Olive Oil",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_textile",
+      "id": "resource-textile",
       "name": "Textile",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_brick",
+      "id": "resource-brick",
       "name": "Brick",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_silk",
+      "id": "resource-silk",
       "name": "Silk",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_bread",
+      "id": "resource-bread",
       "name": "Bread",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_wool",
+      "id": "resource-wool",
       "name": "Wool",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_cheese",
+      "id": "resource-cheese",
       "name": "Cheese",
       "resourceType": "food"
     },
     {
-      "id": "resource_jewelry",
+      "id": "resource-jewelry",
       "name": "Jewelry",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_bronze",
+      "id": "resource-bronze",
       "name": "Bronze Ingot",
       "resourceType": "material"
     },
     {
-      "id": "resource_iron",
+      "id": "resource-iron",
       "name": "Iron Ingot",
       "resourceType": "material"
     },
     {
-      "id": "resource_pottery",
+      "id": "resource-pottery",
       "name": "Pottery",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_ivory",
+      "id": "resource-ivory",
       "name": "Ivory",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_perfume",
+      "id": "resource-perfume",
       "name": "Perfume",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_copper",
+      "id": "resource-copper",
       "name": "Copper",
       "resourceType": "luxury"
     },
     {
-      "id": "resource_steel",
+      "id": "resource-steel",
       "name": "Steel",
       "resourceType": "luxury"
     }

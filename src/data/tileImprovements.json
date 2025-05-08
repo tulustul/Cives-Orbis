@@ -61,7 +61,7 @@
       "id": "tile-impr-clayPit",
       "name": "Clay pit",
       "action": "buildClayPit",
-      "spawnsResource": "resource_clay",
+      "spawnsResource": "resource-clay",
       "forest": false,
       "river": true,
       "baseTurns": 8

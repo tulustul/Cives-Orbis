@@ -2,9 +2,9 @@ import { TileCore } from "@/core/tile";
 import {
   ResourceDefinition,
   TileImprovementDefinition,
-} from "../core/data.interface";
-import { TileRoad } from "../core/tile-improvements";
-import { Yields } from "../core/yields";
+} from "@/core/data/types";
+import { TileRoad } from "@/core/tile-improvements";
+import { Yields } from "@/core/yields";
 import { PlayerCore } from "@/core/player";
 
 export enum TileDirection {
@@ -140,7 +140,7 @@ export function isResourcePossible(
     return false;
   }
 
-  if (dis.seaLevels !== undefined && dis.seaLevels !== tile.seaLevel) {
+  if (dis.seaLevels !== undefined && !dis.seaLevels.includes(tile.seaLevel)) {
     return false;
   }
 

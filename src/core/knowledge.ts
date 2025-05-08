@@ -1,5 +1,4 @@
 import { collector } from "./collector";
-import { getEntityById, getTechById, TECHNOLOGIES } from "./data-manager";
 import {
   Building,
   IdleProduct,
@@ -7,7 +6,8 @@ import {
   Technology,
   TileImprovementDefinition,
   UnitDefinition,
-} from "./data.interface";
+} from "./data/types";
+import { dataManager } from "./data/dataManager";
 import { PlayerCore } from "./player";
 
 export type KnowledgeTechState =
@@ -39,7 +39,7 @@ export class Knowledge {
   overflow = 0;
 
   constructor(public player: PlayerCore) {
-    this.discoveredTechs.add(getTechById("tech_society"));
+    this.discoveredTechs.add(dataManager.technologies.get("tech_society"));
     this.update();
   }
 
@@ -136,7 +136,7 @@ export class Knowledge {
 
   private computeAvailableTechs() {
     this.availableTechs.clear();
-    for (const tech of TECHNOLOGIES) {
+    for (const tech of dataManager.technologies.all) {
       if (this.discoveredTechs.has(tech)) {
         continue;
       }
@@ -157,7 +157,7 @@ export class Knowledge {
     for (const tech of this.discoveredTechs) {
       for (const unlock of tech.unlocks) {
         const set = (this.discoveredEntities as any)[unlock.entityType]!;
-        set.add(getEntityById(unlock.id));
+        set.add(dataManager.get(unlock.id));
       }
     }
   }

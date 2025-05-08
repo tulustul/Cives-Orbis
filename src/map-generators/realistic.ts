@@ -1,4 +1,3 @@
-import { RESOURCES_MAP } from "@/core/data-manager";
 import { TilesMapCore } from "@/core/tiles-map";
 import alea from "alea";
 import { createNoise2D, NoiseFunction2D } from "simplex-noise";
@@ -21,6 +20,7 @@ import {
   placeRiverBetweenTiles,
   POSSIBLE_BORDER_PATHS,
 } from "./utils";
+import { dataManager } from "@/core/data/dataManager";
 
 interface TileMetadata {
   height: number;
@@ -827,7 +827,7 @@ export class RealisticMapGenerator implements MapGenerator {
   }
 
   placeResources() {
-    const resources = Array.from(RESOURCES_MAP.values());
+    const resources = dataManager.resources.all;
 
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {

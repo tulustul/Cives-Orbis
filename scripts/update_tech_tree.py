@@ -151,7 +151,7 @@ def update_techs_file(diagram_techs: list[dict], techs_file_path: str):
 
 if __name__ == "__main__":
     drawio_file = "diagrams/tech-tree.drawio"
-    techs_file = "src/data/techs.ts"
+    techs_file = "src/data/techs.json"
 
     print(f"Extracting tech tree from {drawio_file}...")
     techs = extract_tech_tree(drawio_file)

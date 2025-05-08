@@ -70,7 +70,7 @@ export class ResourcesDrawer {
   }
 
   private removeResource(resource: ResourceWithTileChanneled) {
-    let drawer = this.resourceDrawers.get(resource.tile.id);
+    const drawer = this.resourceDrawers.get(resource.tile.id);
     if (!drawer) {
       return;
     }

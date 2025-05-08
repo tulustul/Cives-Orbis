@@ -1,6 +1,5 @@
 import { CityCore } from "@/core/city";
-import { getUnitById } from "@/core/data-manager";
-import { TileImprovementDefinition, UnitTrait } from "@/core/data.interface";
+import { TileImprovementDefinition, UnitTrait } from "@/core/data/types";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
 import { PassableArea } from "@/core/tiles-map";
@@ -10,6 +9,7 @@ import { sumYields } from "@/core/yields";
 import { isImprovementPossible } from "@/shared";
 import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
+import { dataManager } from "@/core/data/dataManager";
 
 const CITIES_PER_WORKER = 0.5;
 const MIN_WORKERS = 2;
@@ -112,7 +112,7 @@ export class WorkerAI extends AISystem {
         this.ai.productionAi.request({
           focus: "economy",
           priority: 80,
-          product: getUnitById("unit_worker")!,
+          product: dataManager.units.get("unit_worker"),
           passableArea,
         });
       }

@@ -1,11 +1,11 @@
-import { UnitTrait, UnitType } from "@/core/data.interface";
+import { UnitTrait, UnitType } from "@/core/data/types";
 import { getMoveResult, MoveResult } from "@/core/movement";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { AISystem } from "./ai-system";
-import { getUnitById } from "@/core/data-manager";
 import { PassableArea } from "@/core/tiles-map";
+import { dataManager } from "@/core/data/dataManager";
 
 const TILES_PER_EXPLORER = 300;
 const MIN_EXPLORER_AREA = 10;
@@ -25,7 +25,7 @@ export class ExploringAI extends AISystem {
     // Track naval transport units (galleys)
     const navalTransports = this.ai.player.units.filter(
       (unit) =>
-        unit.definition.type === UnitType.naval && unit.definition.capacity > 0
+        unit.definition.type === UnitType.naval && unit.definition.capacity > 0,
     );
 
     // Map explorers to their current areas
@@ -50,14 +50,14 @@ export class ExploringAI extends AISystem {
         continue;
       }
       const explorersNeeded = Math.floor(
-        passableArea.area / TILES_PER_EXPLORER
+        passableArea.area / TILES_PER_EXPLORER,
       );
       const haveExplorers = explorels.get(passableArea.id)?.length ?? 0;
 
       // If we need more explorers in this area
       if (haveExplorers < explorersNeeded) {
-        const product = getUnitById(
-          passableArea.type === "land" ? "unit_scout" : "unit_galley"
+        const product = dataManager.units.get(
+          passableArea.type === "land" ? "unit_scout" : "unit_galley",
         )!;
 
         // Request a unit to be produced
@@ -77,7 +77,7 @@ export class ExploringAI extends AISystem {
 
     // Handle naval exploration for newly discovered land areas
     const inaccessibleAreas = this.findInaccessibleLandAreas(
-      landAreasNeedingExplorers
+      landAreasNeedingExplorers,
     );
 
     if (inaccessibleAreas.length > 0 && navalTransports.length > 0) {
@@ -112,7 +112,7 @@ export class ExploringAI extends AISystem {
 
   private findTargetTile(
     edgeOfUnknown: Set<TileCore>,
-    unit: UnitCore
+    unit: UnitCore,
   ): TileCore | null {
     let closestTile: TileCore | null = null;
     let closestDistance = Infinity;
@@ -182,7 +182,7 @@ export class ExploringAI extends AISystem {
    */
   private planNavalExploration(
     inaccessibleAreas: PassableArea[],
-    navalTransports: UnitCore[]
+    navalTransports: UnitCore[],
     // explorersByArea: Map<number, UnitCore[]>
   ) {
     // Get available land explorers (not already on a transport)
@@ -191,7 +191,7 @@ export class ExploringAI extends AISystem {
         unit.definition.trait === UnitTrait.explorer &&
         unit.definition.type === UnitType.land &&
         !unit.parent &&
-        unit.tile.passableArea?.type === "land"
+        unit.tile.passableArea?.type === "land",
     );
 
     if (availableExplorers.length === 0) {
@@ -199,7 +199,7 @@ export class ExploringAI extends AISystem {
       this.ai.productionAi.request({
         focus: "expansion",
         priority: 120, // Higher priority for explorers needed for naval exploration
-        product: getUnitById("unit_scout")!,
+        product: dataManager.units.get("unit_scout")!,
       });
       return;
     }
@@ -212,14 +212,14 @@ export class ExploringAI extends AISystem {
 
       // Sort transports by which are not already assigned tasks
       const availableTransports = navalTransports.filter(
-        (transport) => !this.hasActiveOperation(transport.id)
+        (transport) => !this.hasActiveOperation(transport.id),
       );
       if (availableTransports.length === 0) {
         // Request more transport ships to be built
         this.ai.productionAi.request({
           focus: "expansion",
           priority: MIN_NAVAL_EXPLORER_PRIORITY,
-          product: getUnitById("unit_galley")!,
+          product: dataManager.units.get("unit_galley")!,
         });
         continue;
       }
@@ -227,21 +227,21 @@ export class ExploringAI extends AISystem {
       // Find the explorer closest to any available transport
       const explorer = this.findClosestExplorer(
         availableExplorers,
-        availableTransports
+        availableTransports,
       );
       if (!explorer) continue;
 
       // Find the transport closest to the explorer
       const transport = this.findClosestTransport(
         explorer,
-        availableTransports
+        availableTransports,
       );
       if (!transport) continue;
 
       // Find the coastal tile closest to the transport
       const targetCoastalTile = this.findClosestCoastalTile(
         transport,
-        coastalTiles
+        coastalTiles,
       );
       if (!targetCoastalTile) continue;
 
@@ -255,7 +255,7 @@ export class ExploringAI extends AISystem {
         perform: () => {
           // Find a water tile adjacent to the explorer
           const adjacentWaterTiles = explorer.tile.neighbours.filter(
-            (tile) => tile.isWater
+            (tile) => tile.isWater,
           );
           if (adjacentWaterTiles.length > 0) {
             transport.path = findPath(transport, adjacentWaterTiles[0]);
@@ -288,7 +288,7 @@ export class ExploringAI extends AISystem {
           if (transport.children.includes(explorer)) {
             // Find water tile adjacent to target coastal tile
             const adjacentWaterTiles = targetCoastalTile.neighbours.filter(
-              (tile) => tile.isWater
+              (tile) => tile.isWater,
             );
             if (adjacentWaterTiles.length > 0) {
               transport.path = findPath(transport, adjacentWaterTiles[0]);
@@ -350,7 +350,7 @@ export class ExploringAI extends AISystem {
    */
   private findClosestExplorer(
     explorers: UnitCore[],
-    transports: UnitCore[]
+    transports: UnitCore[],
   ): UnitCore | null {
     if (explorers.length === 0 || transports.length === 0) return null;
 
@@ -375,7 +375,7 @@ export class ExploringAI extends AISystem {
    */
   private findClosestTransport(
     explorer: UnitCore,
-    transports: UnitCore[]
+    transports: UnitCore[],
   ): UnitCore | null {
     if (transports.length === 0) return null;
 
@@ -398,7 +398,7 @@ export class ExploringAI extends AISystem {
    */
   private findClosestCoastalTile(
     transport: UnitCore,
-    coastalTiles: TileCore[]
+    coastalTiles: TileCore[],
   ): TileCore | null {
     if (coastalTiles.length === 0) return null;
 

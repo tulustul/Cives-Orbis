@@ -598,7 +598,6 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     this.instanceCoast[index] = coast + (river << 6);
     this.instanceDecorTex[index] = this.getDecorTextureIndex(tile);
     this.instanceForest[index] = this.getForestData(tile);
-    console.log(this.instanceForest[index]);
     this.instanceRoad[index] = tile.roadData;
   }
 
@@ -638,7 +637,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
     tilesMap: Map<number, TileChanneled>,
   ): number {
     const textures = tile.fullNeighbours.map((n) => {
-      let neighbour = (n ? tilesMap.get(n) : null) ?? tile;
+      const neighbour = (n ? tilesMap.get(n) : null) ?? tile;
       return isLandWaterTransition(tile, neighbour)
         ? this.getTextureIndex(tile)
         : this.getTextureIndex(neighbour);
@@ -656,7 +655,7 @@ export class TerrainDrawer extends HexDrawer<TileChanneled> {
 
   getCoast(tile: TileChanneled, tilesMap: Map<number, TileChanneled>): number {
     const coast = tile.fullNeighbours.map((n) => {
-      let neighbour = (n ? tilesMap.get(n) : null) ?? tile;
+      const neighbour = (n ? tilesMap.get(n) : null) ?? tile;
       return isLandWaterTransition(tile, neighbour) ? 1 : 0;
     });
 

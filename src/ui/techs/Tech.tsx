@@ -20,7 +20,7 @@ type Props = {
 export function Tech({ tech, onClick, flexibleWidth }: Props) {
   const handleMouseEnter = () => {
     const currentTech = document.querySelector(
-      `[data-tech-id="${tech.def.id}"]`
+      `[data-tech-id="${tech.def.id}"]`,
     );
     currentTech?.classList.add(styles.techNodeHighlighted);
 
@@ -113,7 +113,7 @@ export function Tech({ tech, onClick, flexibleWidth }: Props) {
     <div
       className={clsx(
         "flex items-center rounded-l-[50px] rounded-xl border-2  text-amber-100 box-content cursor-pointer pointer-events-auto ",
-        stateStyles[tech.state]
+        stateStyles[tech.state],
       )}
       style={{
         width: flexibleWidth ? "auto" : techBlockWidth,

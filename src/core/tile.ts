@@ -10,12 +10,11 @@ import {
 import { UnitCore } from "./unit";
 import { CityCore } from "./city";
 import { collector } from "./collector";
-import { Nation, TileImprovementDefinition } from "./data.interface";
+import { Nation, TileImprovementDefinition } from "./data/types";
 import { ResourceDeposit } from "./resources";
 import { PlayerCore } from "./player";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
-import { PopulationType } from "../data/populationTypes";
 
 const BASE_CLIMATE_YIELDS: Record<Climate, Yields> = {
   [Climate.arctic]: { ...EMPTY_YIELDS },
@@ -79,7 +78,7 @@ export class TileCore implements BaseTile {
 
   // Worker slots
   workerSlots = 1; // Default is 1 slot for a basic tile
-  currentWorkers: { populationType: PopulationType; city: CityCore }[] = [];
+  currentWorkers: { populationType: string; city: CityCore }[] = [];
 
   yields: Yields = { ...EMPTY_YIELDS };
 

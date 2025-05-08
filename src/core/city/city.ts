@@ -1,5 +1,5 @@
 import { Bonuses } from "@/core/bonus";
-import { IdleProduct, ResourceDefinition } from "@/core/data.interface";
+import { IdleProduct, ResourceDefinition } from "@/core/data/types";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import {

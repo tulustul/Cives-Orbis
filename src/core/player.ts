@@ -12,11 +12,10 @@ import {
 } from "./yields";
 import { collector } from "./collector";
 import { PlayerYields } from "../shared";
-import { InternalPolitics } from "./internal-politics";
 import { PassableArea } from "./tiles-map";
 import { Knowledge } from "./knowledge";
 import { ResourceDeposit } from "./resources";
-import { Nation } from "./data.interface";
+import { Nation } from "./data/types";
 import { moveAlongPath } from "./movement";
 
 export type PlayerViewBoundingBox = {
@@ -51,8 +50,6 @@ export class PlayerCore {
   };
 
   ai: AIPlayer | null = null;
-
-  internalPolitics = new InternalPolitics();
 
   knowledge = new Knowledge(this);
 

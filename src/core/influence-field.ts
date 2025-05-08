@@ -1,6 +1,6 @@
 import { TilesMapCore } from "./tiles-map";
 import { TileCore } from "./tile";
-import { Entity } from "./data.interface";
+import { Entity } from "./data/types";
 
 /**
  * Each tile have two properties for each of the entities:

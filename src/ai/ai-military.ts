@@ -1,12 +1,12 @@
 import { CityCore } from "@/core/city";
-import { getUnitById } from "@/core/data-manager";
-import { UnitDefinition, UnitTrait, UnitType } from "@/core/data.interface";
+import { UnitDefinition, UnitTrait, UnitType } from "@/core/data/types";
 import { findPath } from "@/core/pathfinding";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { SeaLevel } from "@/shared";
 import { AISystem } from "./ai-system";
+import { dataManager } from "@/core/data/dataManager";
 
 type AttackTarget = {
   score: number;
@@ -250,7 +250,7 @@ export class MilitaryAI extends AISystem {
     unitType: UnitType,
   ): UnitDefinition | null {
     if (unitType === UnitType.land) {
-      const warrior = getUnitById("unit_warrior");
+      const warrior = dataManager.units.get("unit_warrior");
       if (city.production.canProduce(warrior)) {
         return warrior;
       }
@@ -260,7 +260,7 @@ export class MilitaryAI extends AISystem {
       if (!city.isCoastline) {
         return null;
       }
-      const navalUnit = getUnitById("unit_tireme");
+      const navalUnit = dataManager.units.get("unit_tireme");
       if (city.production.canProduce(navalUnit)) {
         return navalUnit;
       }

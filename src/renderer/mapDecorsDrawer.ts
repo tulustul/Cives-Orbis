@@ -168,7 +168,6 @@ class TileDrawer {
   private drawImprovement() {
     if (this.tile.improvement === null) {
       return;
-      7;
     }
 
     const sprite = this.nextSprite();

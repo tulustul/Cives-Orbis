@@ -1,4 +1,4 @@
-import { ResourceDefinition, ResourceType } from "../data.interface";
+import { ResourceDefinition, ResourceType } from "@/core/data/types";
 import { CityCore } from "./city";
 
 export class CityStorage {

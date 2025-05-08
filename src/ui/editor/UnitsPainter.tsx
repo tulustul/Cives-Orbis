@@ -1,33 +1,24 @@
 import { bridge } from "@/bridge";
-import { RawUnitDefinition } from "@/core/data.interface";
-import { UNITS_DEFINITIONS } from "@/data/products/units";
-import { Option, Radio } from "@/ui/components";
-import { useSubscription } from "@/utils";
+import { Radio } from "@/ui/components";
+import { useEntityOptions, useSubscription } from "@/utils";
 import { useStateRef } from "@/utils/useStateRef";
+import { useState } from "react";
 import { mapUi } from "../mapUi";
 import { PlayersList } from "./PlayersList";
 
-const definitionOptions = UNITS_DEFINITIONS.map((d) => {
-  return { label: d.name, value: d } as Option<RawUnitDefinition>;
-});
-
 export function UnitsPainter() {
+  const unitOptions = useEntityOptions({ entityType: "unit" });
   const [selectedPlayerId, setSelectedPlayerId, selectedPlayerIdRef] =
     useStateRef<number | null>(null);
-  const [unitDefinition, setUnitDefinition, unitDefinitionRef] =
-    useStateRef<RawUnitDefinition | null>(null);
+  const [unitId, setUnitId] = useState<string | null>(null);
 
   useSubscription(mapUi.clickedTile$, (tile) => {
-    if (
-      !tile ||
-      !unitDefinitionRef.current ||
-      selectedPlayerIdRef.current === null
-    ) {
+    if (!tile || !unitId || selectedPlayerIdRef.current === null) {
       return;
     }
 
     bridge.editor.units.spawn({
-      definitionId: unitDefinitionRef.current.id,
+      definitionId: unitId,
       tileId: tile.id,
       playerId: selectedPlayerIdRef.current,
     });
@@ -43,9 +34,9 @@ export function UnitsPainter() {
 
       <Radio
         label="Units"
-        options={definitionOptions}
-        value={unitDefinition}
-        onChange={setUnitDefinition}
+        options={unitOptions}
+        value={unitId}
+        onChange={setUnitId}
       />
     </div>
   );

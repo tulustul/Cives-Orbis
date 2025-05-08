@@ -1,7 +1,7 @@
 import { TilesFogOfWarChanneled } from "@/core.worker";
 import { PlayerYields } from "../shared";
 import { CityCore } from "./city";
-import { Technology } from "./data.interface";
+import { Technology } from "./data/types";
 import { Game } from "./game";
 import { PlayerCore } from "./player";
 import { ResourceDeposit } from "./resources";

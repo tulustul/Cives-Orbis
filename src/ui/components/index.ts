@@ -7,7 +7,7 @@ export * from "./CircularProgress";
 export * from "./Tabs";
 export * from "./Radio";
 export * from "./Multiselect";
-export * from "./types";
+export * from "../../shared/types";
 export * from "./Switch";
 export * from "./AtlasIcon";
 export * from "./Tooltip";

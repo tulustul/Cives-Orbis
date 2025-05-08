@@ -13,7 +13,7 @@ type Props = {
 
 export function ProductRequirements({ city, product }: Props) {
   const [failedRequirements, setFailedRequirements] = useState<[string, any][]>(
-    []
+    [],
   );
 
   useEffect(() => {

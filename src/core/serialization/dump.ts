@@ -1,6 +1,6 @@
 import { AIPlayer } from "@/ai/ai-player";
 import { CityCore } from "@/core/city";
-import { ProductDefinition, ProductType } from "@/core/data.interface";
+import { ProductDefinition, ProductType } from "@/core/data/types";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { TileRoad } from "@/core/tile-improvements";
@@ -8,19 +8,11 @@ import { TilesMapCore } from "@/core/tiles-map";
 import { UnitCore, UnitOrder } from "@/core/unit";
 import { Yields } from "@/core/yields";
 import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
-import {
-  getBuildingById,
-  getIdleProductById,
-  getNationById,
-  getResourceDefinitionById,
-  getTechById,
-  getTileImprDefinitionById,
-  getUnitById,
-} from "../data-manager";
 import { Game } from "../game";
 import { Knowledge } from "../knowledge";
 import { ResourceDeposit } from "../resources";
 import { Stats, StatsData } from "../stats";
+import { dataManager } from "../data/dataManager";
 
 export interface GameSerialized {
   turn: number;
@@ -248,13 +240,15 @@ function loadMap(mapData: MapSerialized) {
           : lastTile.landForm;
 
       if (tileData.improvement) {
-        tile.improvement = getTileImprDefinitionById(tileData.improvement);
+        tile.improvement = dataManager.tileImprovements.get(
+          tileData.improvement,
+        );
       }
 
       tile.road = tileData.road !== undefined ? tileData.road! : lastTile.road;
 
       if (tileData.resource) {
-        const resourceDef = getResourceDefinitionById(tileData.resource.id);
+        const resourceDef = dataManager.resources.get(tileData.resource.id);
         if (resourceDef) {
           tile.resource = ResourceDeposit.from({
             def: resourceDef,
@@ -292,7 +286,7 @@ function dumpPlayer(player: PlayerCore): PlayerSerialized {
 }
 
 function loadPlayer(game: Game, data: PlayerSerialized) {
-  const nation = getNationById(data.nation);
+  const nation = dataManager.nations.get(data.nation);
   const player = new PlayerCore(game, nation);
 
   if (data.ai) {
@@ -329,15 +323,17 @@ function loadKnowledge(player: PlayerCore, data: KnowledgeSerialized) {
   const knowledge = new Knowledge(player);
 
   knowledge.discoveredTechs = new Set(
-    data.knownTechs.map((id) => getTechById(id)),
+    data.knownTechs.map((id) => dataManager.technologies.get(id)),
   );
   knowledge.researchingTech = data.currentTech
-    ? getTechById(data.currentTech)
+    ? dataManager.technologies.get(data.currentTech)
     : null;
-  knowledge.techQueue = data.techQueue.map((id) => getTechById(id));
+  knowledge.techQueue = data.techQueue.map((id) =>
+    dataManager.technologies.get(id),
+  );
   knowledge.accumulated = new Map(
     Object.entries(data.accumulated).map(([id, value]) => [
-      getTechById(id),
+      dataManager.technologies.get(id),
       value,
     ]),
   );
@@ -379,24 +375,24 @@ function loadCity(game: Game, cityData: CitySerialized) {
     let productDefinition: ProductDefinition;
 
     if (cityData.product.type === "unit") {
-      productDefinition = getUnitById(cityData.product.id);
+      productDefinition = dataManager.units.get(cityData.product.id);
     } else if (cityData.product.type === "building") {
-      productDefinition = getBuildingById(cityData.product.id)!;
+      productDefinition = dataManager.buildings.get(cityData.product.id)!;
     } else {
-      productDefinition = getIdleProductById(cityData.product.id)!;
+      productDefinition = dataManager.idleProducts.get(cityData.product.id)!;
     }
 
     city.production.product = productDefinition;
   }
 
   city.production.buildings = cityData.buildings.map(
-    (b) => getBuildingById(b)!,
+    (b) => dataManager.buildings.get(b)!,
   );
   city.production.buildingsIds = new Set(
     city.production.buildings.map((b) => b.id),
   );
   for (const resource of cityData.storage) {
-    const resourceDef = getResourceDefinitionById(resource.id);
+    const resourceDef = dataManager.resources.get(resource.id);
     city.storage.resources.set(resourceDef, resource.amount);
   }
   city.updateYields();

@@ -1,11 +1,11 @@
-import { collector } from "../collector";
+import { collector } from "@/core/collector";
 import {
   Building,
   IdleProduct,
   ProductDefinition,
   UnitDefinition,
-} from "../data.interface";
-import { checkRequirements } from "../requirements";
+} from "@/core/data/types";
+import { checkRequirements } from "@/core/requirements";
 import { CityCore } from "./city";
 
 export class CityProduction {

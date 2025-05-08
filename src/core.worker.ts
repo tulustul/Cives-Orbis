@@ -5,22 +5,13 @@ import { CityCore } from "./core/city";
 import { collector } from "./core/collector";
 import { CombatSimulation, simulateCombat } from "./core/combat";
 import {
-  getBuildingById,
-  getEntityById,
-  getIdleProductById,
-  getResourceDefinitionById,
-  getTechById,
-  getTileImprDefinitionById,
-  getUnitById,
-  pickRandomNation,
-  TECHNOLOGIES,
-} from "./core/data-manager";
-import {
   Entity,
+  EntityType,
   HaveRequirements,
   Nation,
   ResourceDefinition,
-} from "./core/data.interface";
+} from "./core/data/types";
+import { dataManager } from "./core/data/dataManager";
 import { Game } from "./core/game";
 import { moveAlongPath } from "./core/movement";
 import { findPath } from "./core/pathfinding";
@@ -64,6 +55,7 @@ import { UnitAction } from "./core/unit-actions";
 import { RealisticMapGenerator } from "./map-generators/realistic";
 import { BaseTile, PlayerTask, PlayerYields } from "./shared";
 import { getTilesInRange } from "./shared/hex-math";
+import { Option } from "./shared/types";
 
 let game: Game;
 
@@ -74,6 +66,7 @@ const HANDLERS = {
   "game.nextPlayer": nextPlayerHandler,
   "game.getInfo": getGameInfo,
   "game.getAllPlayers": getAllPlayers,
+  "game.editor.getEntityOptions": gameGetEntityOptions,
 
   "trackedPlayer.revealWorld": revealWorld,
   "trackedPlayer.set": setTrackedPlayer,
@@ -126,7 +119,7 @@ const HANDLERS = {
   "tech.research": techResearch,
 };
 
-addEventListener("message", ({ data }) => {
+addEventListener("message", async ({ data }) => {
   console.debug("Core: received command", data.command);
 
   const handler = (HANDLERS as any)[data.command];
@@ -135,7 +128,11 @@ addEventListener("message", ({ data }) => {
     return;
   }
 
-  const result = handler(data.data);
+  let result = handler(data.data);
+
+  if (result instanceof Promise) {
+    result = await result;
+  }
 
   const changes = collector.flush(game);
 
@@ -186,14 +183,18 @@ export interface MapGeneratorOptions {
   seed?: string;
 }
 
-function newGameHandler(options: MapGeneratorOptions): GameStartInfo {
+async function newGameHandler(
+  options: MapGeneratorOptions,
+): Promise<GameStartInfo> {
+  await dataManager.ready;
+
   game = new Game();
 
-  const nations: Nation[] = [];
+  const nationsExcluded: Nation[] = [];
 
   for (let i = 0; i < options.humanPlayersCount + options.aiPlayersCount; i++) {
-    const nation = pickRandomNation(nations);
-    nations.push(nation);
+    const nation = dataManager.nations.pickRandom(nationsExcluded);
+    nationsExcluded.push(nation);
 
     const player = new PlayerCore(game, nation);
 
@@ -242,6 +243,19 @@ function getGameInfo() {
 
 function getAllPlayers() {
   return game.players.map(playerToChannel);
+}
+
+export type GameGetEntityOptions = {
+  entityType: EntityType;
+};
+function gameGetEntityOptions(options: GameGetEntityOptions): Option<string>[] {
+  const entities = dataManager.providers[options.entityType].all;
+  return entities.map((entity) => {
+    return {
+      label: entity.name,
+      value: entity.id,
+    };
+  });
 }
 
 function dumpHandler(): string {
@@ -560,7 +574,7 @@ export function tileUpdate(options: TileUpdateOptions) {
   const _tile = {
     ...options,
     improvement: options.improvement
-      ? getTileImprDefinitionById(options.improvement)
+      ? dataManager.tileImprovements.get(options.improvement)
       : null,
   };
 
@@ -587,7 +601,7 @@ export function resourceSpawn(options: ResourceSpawnOptions) {
 
   let resource: ResourceDefinition | null = null;
   if (options.resourceId) {
-    resource = getResourceDefinitionById(options.resourceId);
+    resource = dataManager.resources.get(options.resourceId);
   }
 
   if (tile.resource) {
@@ -649,11 +663,11 @@ export function cityProduce(options: CityProduceOptions) {
   }
 
   if (options.entityType === "building") {
-    city.production.produce(getBuildingById(options.productId)!);
+    city.production.produce(dataManager.buildings.get(options.productId)!);
   } else if (options.entityType === "unit") {
-    city.production.produce(getUnitById(options.productId)!);
+    city.production.produce(dataManager.units.get(options.productId)!);
   } else {
-    city.production.produce(getIdleProductById(options.productId)!);
+    city.production.produce(dataManager.idleProducts.get(options.productId)!);
   }
 
   return cityDetailsToChannel(city);
@@ -754,7 +768,7 @@ export function entityGetFailedWeakRequirements(
   const entityId: string = data.entityId;
   const cityId: number | null = data.cityId;
 
-  const entity = getEntityById(entityId);
+  const entity = dataManager.get(entityId);
 
   if (
     entity.entityType !== "unit" &&
@@ -777,7 +791,7 @@ export function entityGetFailedWeakRequirements(
 }
 
 export function entityGetDetails(entityId: string): EntityChanneled {
-  return entityToChannel(getEntityById(entityId));
+  return entityToChannel(dataManager.get(entityId));
 }
 
 export type StatsGetOptions = {
@@ -797,7 +811,7 @@ export function statsGet(options: StatsGetOptions): StatsGetChanneled[] {
 }
 
 function techGetAll() {
-  return TECHNOLOGIES.map((tech) =>
+  return dataManager.technologies.all.map((tech) =>
     knowledgeTechToChannel(game.trackedPlayer.knowledge, tech),
   );
 }
@@ -811,7 +825,7 @@ function techGetResearch() {
 }
 
 function techResearch(techId: string) {
-  const tech = getTechById(techId);
+  const tech = dataManager.technologies.get(techId);
   game.trackedPlayer.knowledge.research(tech);
 }
 
@@ -824,7 +838,7 @@ export type GrantRevokeTechOptions = {
 };
 
 function playerGrantRevokeTech(options: GrantRevokeTechOptions) {
-  const tech = getTechById(options.techId);
+  const tech = dataManager.technologies.get(options.techId);
   const player = game.players.find((p) => p.id === options.playerId);
   if (!player) {
     return;

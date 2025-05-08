@@ -249,8 +249,7 @@ export class TerrainDrawerSimple extends HexDrawer<TileChanneled> {
     tilesMap: Map<number, TileChanneled>,
   ): number {
     const neighbours = tile.fullNeighbours.map((n) => {
-      let neighbour = n ? tilesMap.get(n) : null;
-
+      const neighbour = n ? tilesMap.get(n) : null;
       return this.getHexType(neighbour ?? tile);
     });
 

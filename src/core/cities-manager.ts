@@ -1,7 +1,7 @@
 import { LandForm, SeaLevel } from "../shared";
 import { CityCore } from "./city";
 import { collector } from "./collector";
-import { getBuildingById } from "./data-manager";
+import { dataManager } from "./data/dataManager";
 import { Game } from "./game";
 import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
@@ -45,7 +45,7 @@ export class CitiesManager {
     }
 
     if (player.cities.length === 0) {
-      city.production.addBuilding(getBuildingById("building_palace"));
+      city.production.addBuilding(dataManager.buildings.get("building_palace"));
     }
     player.addCity(city);
 

@@ -1,5 +1,5 @@
 import { TileCore } from "./tile";
-import { UnitDefinition, UnitTrait } from "./data.interface";
+import { UnitDefinition, UnitTrait } from "./data/types";
 import { PlayerCore } from "./player";
 import { UnitAction, ACTIONS } from "./unit-actions";
 import { collector } from "./collector";

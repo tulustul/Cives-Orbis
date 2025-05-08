@@ -1,4 +1,4 @@
-import { TechEra } from "@/core/data.interface";
+import { TechEra } from "@/core/data/types";
 
 export const erasColors: Record<TechEra, string> = {
   "Copper Age": "#3d4e5980",

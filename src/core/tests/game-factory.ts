@@ -3,7 +3,7 @@ import { Game } from "@/core/game";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { TilesMapCore } from "@/core/tiles-map";
-import { pickRandomNation } from "../data-manager";
+import { dataManager } from "../data/dataManager";
 
 export type SymbolCallbacks = {
   [key: string]: (game: Game, tile: TileCore) => void;
@@ -85,7 +85,7 @@ export function makeGame(
   const game = new Game();
 
   for (let i = 0; i < options.playersCount; i++) {
-    game.addPlayer(new PlayerCore(game, pickRandomNation()));
+    game.addPlayer(new PlayerCore(game, dataManager.nations.pickRandom()));
   }
 
   makeMap(mapData, game, options.symbolCallbacks);

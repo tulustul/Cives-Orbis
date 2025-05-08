@@ -1,5 +1,5 @@
 import { CityCore } from "@/core/city";
-import { ProductDefinition } from "@/core/data.interface";
+import { ProductDefinition } from "@/core/data/types";
 import { AISystem } from "./ai-system";
 
 export class CityAI extends AISystem {

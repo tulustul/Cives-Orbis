@@ -1,15 +1,7 @@
-import { ResourceDefinition } from "./data.interface";
+import { ResourceDefinition } from "./data/types";
 import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
 import { EMPTY_YIELDS, Yields } from "./yields";
-import { PopulationType } from "../data/populationTypes";
-
-export const WORKER_PRODUCTIVITY: Record<PopulationType, number> = {
-  slave: 0.7,
-  peasant: 1.0,
-  artisan: 1.3,
-  elite: 0.5,
-};
 
 export class PlayerResources {
   resourcesDifficulty = new Map<ResourceDefinition, number>();

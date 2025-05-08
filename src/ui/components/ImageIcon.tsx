@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import frame from "@/assets/rich-icons/frame2.png";
 import unknown from "@/assets/rich-icons/unknown2.png";
-import { EntityType } from "@/core/data.interface";
+import { EntityType } from "@/core/data/types";
 
 type Size = "tiny" | "small" | "medium" | "large";
 
@@ -22,6 +22,7 @@ const tint: Record<EntityType, string> = {
   tileImprovement: "#ff00ff",
   resource: "#00ffff",
   nation: "#0000ff",
+  populationType: "#000000",
 };
 
 const images = import.meta.glob("@/assets/rich-icons/**/*.png");

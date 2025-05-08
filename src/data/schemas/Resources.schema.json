@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "additionalProperties": false,
   "definitions": {
-    "JsonResourceDefinition": {
+    "JsonResource": {
       "additionalProperties": false,
       "properties": {
         "depositDef": {
@@ -120,7 +120,7 @@
             "forest": {
               "type": "boolean"
             },
-            "landForm": {
+            "landForms": {
               "items": {
                 "enum": [
                   "hills",
@@ -137,13 +137,16 @@
             "quantityStddev": {
               "type": "number"
             },
-            "seaLevel": {
-              "enum": [
-                "deep",
-                "none",
-                "shallow"
-              ],
-              "type": "string"
+            "seaLevels": {
+              "items": {
+                "enum": [
+                  "deep",
+                  "none",
+                  "shallow"
+                ],
+                "type": "string"
+              },
+              "type": "array"
             }
           },
           "required": [
@@ -179,7 +182,7 @@
     },
     "items": {
       "items": {
-        "$ref": "#/definitions/JsonResourceDefinition"
+        "$ref": "#/definitions/JsonResource"
       },
       "type": "array"
     }

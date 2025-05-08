@@ -4,6 +4,7 @@ import {
   CityRange,
   CityWorkTileOptions,
   EntityGetFailedWeakRequirements,
+  GameGetEntityOptions,
   GrantRevokeTechOptions,
   MapGeneratorOptions,
   ResourceSpawnOptions,
@@ -43,6 +44,7 @@ import {
 import { PlayerTask, PlayerYields } from "@/shared";
 import { shareReplay } from "rxjs";
 import { makeCommand, makeObservable } from "./worker";
+import { Option } from "@/shared/types";
 
 export const bridge = {
   nextTask$: makeObservable<PlayerTask | null>("nextTask"),
@@ -153,6 +155,10 @@ export const bridge = {
     research: (techId: string) => makeCommand<void>("tech.research", techId),
   },
   editor: {
+    game: {
+      getEntityOptions: (options: GameGetEntityOptions) =>
+        makeCommand<Option<string>[]>("game.editor.getEntityOptions", options),
+    },
     units: {
       spawn: (options: UnitSpawnOptions) =>
         makeCommand<void>("unit.spawn", options),

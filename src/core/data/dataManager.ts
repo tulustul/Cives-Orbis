@@ -9,6 +9,7 @@ import techsUrl from "@/data/techs.json?url";
 import {
   Building,
   Entity,
+  EntityType,
   Nation,
   ResourceDefinition,
   ResourceDepositDefinition,
@@ -16,7 +17,7 @@ import {
   Technology,
   TileImprovementDefinition,
   UnitDefinition,
-} from "../data.interface";
+} from "@/core/data/types";
 import {
   JsonBuilding,
   JsonData,
@@ -43,10 +44,14 @@ import {
   UnitTraitNamesInverse,
   UnitTypeNamesInverse,
 } from "./const";
-import { PopulationTypeDefinition2 } from "@/data/populationTypes";
+import { PopulationTypeDefinition } from "./types";
 
 export class DataManager {
-  ready = false;
+  private markAsReady!: () => void;
+
+  ready = new Promise<void>((resolve) => {
+    this.markAsReady = resolve;
+  });
 
   nations = new NationProvider(this, nationsUrl);
   buildings = new BuildingProvider(this, buildingsUrl);
@@ -57,12 +62,25 @@ export class DataManager {
   populationTypes = new PopulationTypeProvider(this, populationTypesUrl);
   technologies = new TechProvider(this, techsUrl);
 
+  providers: Record<EntityType, EntityProvider<any, any>> = {
+    building: this.buildings,
+    idleProduct: this.idleProducts,
+    unit: this.units,
+    tileImprovement: this.tileImprovements,
+    resource: this.resources,
+    nation: this.nations,
+    populationType: this.populationTypes,
+    technology: this.technologies,
+  };
+
+  map = new Map<string, Entity>();
+
   constructor() {
     this.init();
   }
 
   async init() {
-    const providers = [
+    const providers: EntityProvider<any, any>[] = [
       this.nations,
       this.buildings,
       this.idleProducts,
@@ -74,15 +92,30 @@ export class DataManager {
     ];
     await Promise.all(providers.map((provider) => provider.fetch()));
 
+    const all: Entity[] = providers.reduce<Entity[]>((acc, provider) => {
+      return acc.concat(provider.all);
+    }, []);
+    for (const entity of all) {
+      this.map.set(entity.id, entity);
+    }
+
     for (const provider of providers) {
-      for (const item of provider.all) {
-        const json = provider.jsons.get(item.id);
-        provider.resolveReferences(item, json);
+      for (const entity of provider.all) {
+        const json = provider.jsons.get(entity.id);
+        provider.resolveReferences(entity, json);
       }
       provider.jsons.clear(); // no longer needed, release memory
     }
 
-    this.ready = true;
+    this.markAsReady();
+  }
+
+  get(id: string) {
+    const entity = this.map.get(id);
+    if (!entity) {
+      throw new Error(`Entity with id "${id}" not found`);
+    }
+    return entity;
   }
 }
 
@@ -95,7 +128,7 @@ abstract class EntityProvider<T extends Entity, K extends JsonEntity> {
 
   async fetch() {
     const response = await fetch(this.url);
-    const data = response.json() as unknown as JsonData<K>;
+    const data = (await response.json()) as JsonData<K>;
     for (const json of data.items) {
       const parsed = this.parse(json);
       this.map.set(parsed.id, parsed);
@@ -236,10 +269,10 @@ class ResourceProvider extends EntityProvider<
 }
 
 class PopulationTypeProvider extends EntityProvider<
-  PopulationTypeDefinition2,
+  PopulationTypeDefinition,
   JsonPopulationType
 > {
-  parse(json: JsonPopulationType): PopulationTypeDefinition2 {
+  parse(json: JsonPopulationType): PopulationTypeDefinition {
     return {
       ...json,
       entityType: "populationType",
@@ -251,6 +284,11 @@ class TechProvider extends EntityProvider<Technology, JsonTechnology> {
   unlocks = new Map<string, Technology>();
 
   parse(json: JsonTechnology): Technology {
+    const linksMiddlePoint: Record<string, number> = {};
+    for (const link of json.layout.linksMiddlePoint) {
+      linksMiddlePoint[link.tech] = link.point;
+    }
+
     const tech: Technology = {
       ...json,
       entityType: "technology",
@@ -259,10 +297,7 @@ class TechProvider extends EntityProvider<Technology, JsonTechnology> {
       layout: {
         x: json.layout.x,
         y: json.layout.y,
-        linksMiddlePoint: json.layout.linksMiddlePoint.map((link) => ({
-          tech: link.tech,
-          point: link.point,
-        })),
+        linksMiddlePoint,
       },
     };
 
@@ -298,3 +333,5 @@ function parseRequirement(r: JsonRequirement): Requirement {
   }
   throw new Error(`Unknown requirement type: ${(r as any).type}`);
 }
+
+export const dataManager = new DataManager();

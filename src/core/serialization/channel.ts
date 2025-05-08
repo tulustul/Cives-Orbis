@@ -17,6 +17,7 @@ import {
   NationColors,
   ProductDefinition,
   ProductType,
+  ResourceDefinition,
   TechEra,
   TechLayout,
   Technology,
@@ -24,7 +25,7 @@ import {
   UnitDefinition,
   UnitTrait,
   UnitType,
-} from "../data.interface";
+} from "@/core/data/types";
 import { Knowledge, KnowledgeTechState } from "../knowledge";
 import { UnitAction } from "../unit-actions";
 
@@ -252,6 +253,10 @@ export type ResourceChanneled = {
   id: string;
   name: string;
   quantity: number;
+};
+
+export type ResourceDefinitionChannel = EntityMinimalChanneled & {
+  entityType: "resource";
 };
 
 export type ResourceWithTileChanneled = ResourceChanneled & {
@@ -811,6 +816,12 @@ export function tileImprovementToChannel(
   };
 }
 
+export function resourceDefinitionToChannel(
+  entity: ResourceDefinition,
+): ResourceDefinitionChannel {
+  return entityToMinimalChannel(entity) as ResourceDefinitionChannel;
+}
+
 export function productToChannel(entity: Entity): ProductChanneled {
   if (entity.entityType === "unit") {
     return unitDefToChannel(entity as UnitDefinition);
@@ -836,6 +847,10 @@ export function entityToChannel(entity: Entity): EntityChanneled {
     return tileImprovementToChannel(entity as TileImprovementDefinition);
   }
 
+  if (entity.entityType === "resource") {
+    return resourceDefinitionToChannel(entity as ResourceDefinition);
+  }
+
   return productToChannel(entity);
 }
 
@@ -844,4 +859,5 @@ export type ProductChanneled = BuildingChanneled | UnitDefChanneled;
 export type EntityChanneled =
   | TechDefChanneled
   | ProductChanneled
-  | TileImprovementChanneled;
+  | TileImprovementChanneled
+  | ResourceDefinitionChannel;

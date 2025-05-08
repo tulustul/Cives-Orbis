@@ -1,4 +1,4 @@
-import { ProductDefinition } from "@/core/data.interface";
+import { ProductDefinition } from "@/core/data/types";
 import { AiOperation } from "./types";
 import { AISystem } from "./ai-system";
 import { PassableArea } from "@/core/tiles-map";

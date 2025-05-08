@@ -2,7 +2,7 @@ import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 import { attack } from "./combat";
 import { collector } from "./collector";
-import { UnitType, UnitTrait } from "./data.interface";
+import { UnitType, UnitTrait } from "./data/types";
 import { zocAddUnit, zocForgetUnit } from "./zoc";
 
 export enum MoveResult {

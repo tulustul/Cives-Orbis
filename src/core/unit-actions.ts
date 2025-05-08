@@ -1,7 +1,7 @@
 import { isImprovementPossible, isRoadPossible } from "../shared";
 import { collector } from "./collector";
-import { TILE_IMPR_MAP } from "./data-manager";
-import { TileImprovementDefinition } from "./data.interface";
+import { TileImprovementDefinition } from "./data/types";
+import { dataManager } from "./data/dataManager";
 import { Game } from "./game";
 import { cityToChannel } from "./serialization/channel";
 import { TileRoad } from "./tile-improvements";
@@ -103,7 +103,7 @@ function buildImprovementActions(): Partial<
 > {
   const actions: Partial<Record<UnitAction, ActionDefinition>> = {};
 
-  for (const impr of TILE_IMPR_MAP.values()) {
+  for (const impr of dataManager.tileImprovements.all) {
     actions[impr.action] = {
       action: impr.action,
       name: impr.name,
@@ -115,7 +115,7 @@ function buildImprovementActions(): Partial<
   return actions;
 }
 
-export const ACTIONS: Record<UnitAction, ActionDefinition> = {
+export let ACTIONS: Record<UnitAction, ActionDefinition> = {
   foundCity: {
     action: "foundCity",
     name: "Found a city",
@@ -128,5 +128,17 @@ export const ACTIONS: Record<UnitAction, ActionDefinition> = {
     fn: (_, unit) => buildRoad(unit),
     requirements: [new NoRoadRequirement(), new isRoadPossibleRequirement()],
   },
-  ...buildImprovementActions(),
-} as Record<UnitAction, ActionDefinition>;
+} as Partial<Record<UnitAction, ActionDefinition>> as Record<
+  UnitAction,
+  ActionDefinition
+>;
+
+extendActions();
+
+async function extendActions() {
+  await dataManager.ready;
+  ACTIONS = {
+    ...ACTIONS,
+    ...buildImprovementActions(),
+  };
+}

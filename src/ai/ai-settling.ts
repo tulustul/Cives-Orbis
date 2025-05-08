@@ -2,8 +2,8 @@ import { moveAlongPath } from "@/core/movement";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { findPath } from "@/core/pathfinding";
-import { getUnitById } from "@/core/data-manager";
 import { AISystem } from "./ai-system";
+import { dataManager } from "@/core/data/dataManager";
 
 export class SettlingAI extends AISystem {
   citySpots: TileCore[] = [];
@@ -16,7 +16,7 @@ export class SettlingAI extends AISystem {
   }
 
   private processCities() {
-    const settler = getUnitById("unit_settler")!;
+    const settler = dataManager.units.get("unit_settler")!;
     for (const city of this.player.citiesWithoutProduction) {
       if (Math.random() > 0.7 && city.production.canProduce(settler)) {
         const newCityLocation = this.findCityLocation(city.tile);

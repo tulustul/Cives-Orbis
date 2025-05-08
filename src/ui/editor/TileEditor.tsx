@@ -1,15 +1,13 @@
 import { Multiselect, Radio } from "@/ui/components";
 
 import { bridge } from "@/bridge";
-import { useObservable } from "@/utils";
+import { useEntityOptions, useObservable } from "@/utils";
 import { useEffect } from "react";
 import { mapUi } from "../mapUi";
 import {
   CLIMATE_OPTIONS,
   FOREST_OPTIONS,
-  IMPROVEMENT_OPTIONS,
   LAND_FORM_OPTIONS,
-  RESOURCE_OPTIONS,
   RIVER_OPTIONS,
   ROAD_OPTIONS,
   SEA_LEVEL_OPTIONS,
@@ -18,6 +16,17 @@ import {
 
 export function TileEditor() {
   const tile = useObservable(mapUi.selectedTile$);
+
+  const tileImprovementOptions = useEntityOptions({
+    entityType: "tileImprovement",
+    allowNull: true,
+    sort: true,
+  });
+  const resourceOptions = useEntityOptions({
+    entityType: "resource",
+    allowNull: true,
+    sort: true,
+  });
 
   useEffect(() => {
     mapUi.enableSelectingTile(true);
@@ -72,7 +81,7 @@ export function TileEditor() {
       />
       <Radio
         label="Improvements"
-        options={IMPROVEMENT_OPTIONS}
+        options={tileImprovementOptions}
         value={tile.improvement?.id ?? null}
         onChange={(improvement) =>
           bridge.editor.tiles.update({
@@ -100,7 +109,7 @@ export function TileEditor() {
       />
       <Radio
         label="Resource"
-        options={RESOURCE_OPTIONS}
+        options={resourceOptions}
         value={tile.resource?.id ?? null}
         onChange={(resourceId) =>
           bridge.editor.resources.spawn({

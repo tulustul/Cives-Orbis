@@ -1,5 +1,5 @@
 import { collector } from "./collector";
-import { getUnitById } from "./data-manager";
+import { dataManager } from "./data/dataManager";
 import { moveAlongPath } from "./movement";
 import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
@@ -14,7 +14,7 @@ export class UnitsManager {
   private lastId = 0;
 
   spawn(id: string, tile: TileCore, player: PlayerCore) {
-    const definition = getUnitById(id);
+    const definition = dataManager.units.get(id);
 
     const unit = new UnitCore(tile, definition, player, this);
     unit.id = this.lastId++;
