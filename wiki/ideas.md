@@ -1,3 +1,0 @@
-- Late game requires electricity which is produced in power plants.
-- Large projects like a power plant for instance takes a whole tile. It can have a negative impact for adjacent tiles e.g. -1 food.
-- Power plant have higher maintanance cost if it is far from the resource it requre.

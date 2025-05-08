@@ -16,13 +16,18 @@ Bugs:
   ✔ yields change received when using pathfinding @done(20-06-09 20:01)
   ✔ land units can access sea and vice versa under some cirmumstances @done(21-04-03 12:41)
   ☐ disembark + attack is broken
-  ☐ fix not existing workers showing up on the map
-  ☐ fix destroying units doesn't update the units occupying the same tile
+  ✔ fix destroying units doesn't update the units occupying the same tile @done(25-05-08 23:56)
   ☐ settler still in the UI after founding the city
   ✔ clear CityInfo whne changing tracked player @done(25-05-04 21:56)
   ☐ units drawer layout broken after some time
   ☐ units remnants on the map
+  ☐ data files are fetched twice
 
+Tooling:
+  ☐ put all toolings as npm scripts
+  ☐ update tech tree script to work with json data file
+  ☐ lint json data files and validate their schema
+  ☐ webworker and main thread should use separate bundles
 
 Performance:
   ✔ optimize workers AI @done(25-03-10 23:14)
@@ -38,14 +43,14 @@ Minor features:
   ✔ minimap autoscale to explored area @done(25-03-12 23:06)
   ☐ limit map panning/zoom to explored map area
   ☐ nicer rendering of out of map area
-  ☐ start game view
+  ✔ start game view @done(25-05-08 23:57)
   ☐ autosaving
   ☐ city production queue
   ☐ previous/next city button in the city view
   ✔ ai only matches with autoplay @done(20-06-14 19:50)
-  ☐ proper starting locations
   ☐ map generator: more realistic orogeny
   ☐ map generator: climate based on mountain ranges and sea currents
+  ☐ proper starting locations
   ☐ map generator: resources distribution
   ✔ unit move animations @done(25-02-25 23:32)
   ☐ combat animations
