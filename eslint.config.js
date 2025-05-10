@@ -34,7 +34,7 @@ export default tseslint.config(
         default: "disallow",
         rules: [
           { from: "main", allow: ["shared", "main"] },
-          { from: "core", allow: ["shared", "core"] },
+          { from: "worker", allow: ["shared", "worker"] },
         ]
       }],
       "boundaries/no-unknown-files": 'error',
@@ -53,9 +53,9 @@ export default tseslint.config(
       "boundaries/include": ["src/**"],
       "boundaries/elements": [
         { type: "shared", pattern: "src/shared/**" },
-        { type: "core", pattern: "src/ai/**" },
-        { type: "core", pattern: "src/map-generators/**" },
-        { type: "core", pattern: "src/core/**" },
+        { type: "worker", pattern: "src/ai/**" },
+        { type: "worker", pattern: "src/map-generators/**" },
+        { type: "worker", pattern: "src/core/**" },
         { type: "main", pattern: "src/bridge/**" },
         { type: "main", pattern: "src/renderer/**" },
         { type: "main", pattern: "src/ui/**" },

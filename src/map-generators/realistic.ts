@@ -18,6 +18,7 @@ import {
   isForestable,
   isResourcePossible,
 } from "@/core/tile-utils";
+import { generateStartingLocations } from "./startingLocations";
 
 interface TileMetadata {
   height: number;
@@ -99,7 +100,10 @@ export class RealisticMapGenerator implements MapGenerator {
 
     this.placeResources();
 
-    this.findStartingPositions();
+    this.startingLocations = generateStartingLocations(
+      this.map,
+      this.startingLocationsCount,
+    );
 
     return this.map;
   }
@@ -798,28 +802,6 @@ export class RealisticMapGenerator implements MapGenerator {
       if (value > 0 && areWetlandsPossible(tile)) {
         tile.wetlands = true;
       }
-    }
-  }
-
-  private findStartingPositions() {
-    const margin = 6;
-    const maxTries = 10000;
-    let tries = 0;
-    while (
-      tries < maxTries &&
-      this.startingLocations.length < this.startingLocationsCount
-    ) {
-      const x = margin + Math.floor(Math.random() * (this.width - margin * 2));
-      const y = margin + Math.floor(Math.random() * (this.height - margin * 2));
-      const tile = this.map.tiles[x][y];
-      if (
-        tile.seaLevel === SeaLevel.none &&
-        tile.landForm !== LandForm.mountains &&
-        !this.startingLocations.includes(tile)
-      ) {
-        this.startingLocations.push(tile);
-      }
-      tries++;
     }
   }
 

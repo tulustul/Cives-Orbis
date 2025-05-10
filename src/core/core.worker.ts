@@ -198,22 +198,9 @@ async function newGameHandler(
 
   game = new Game();
 
-  const nationsExcluded: Nation[] = [];
-
-  for (let i = 0; i < options.humanPlayersCount + options.aiPlayersCount; i++) {
-    const nation = dataManager.nations.pickRandom(nationsExcluded);
-    nationsExcluded.push(nation);
-
-    const player = new PlayerCore(game, nation);
-
-    if (i >= options.humanPlayersCount) {
-      player.ai = new AIPlayer(player);
-    }
-
-    game.addPlayer(player);
-  }
-
-  const generator = new RealisticMapGenerator(game.players.length);
+  const generator = new RealisticMapGenerator(
+    options.humanPlayersCount + options.aiPlayersCount,
+  );
   game.map = generator.generate(
     options.width,
     options.height,
@@ -224,11 +211,23 @@ async function newGameHandler(
   );
   game.map.precompute();
 
-  for (let i = 0; i < game.players.length; i++) {
-    const startTile = generator.getStartingLocations()[i];
-    game.unitsManager.spawn("unit_settler", startTile, game.players[i]);
-    game.unitsManager.spawn("unit_scout", startTile, game.players[i]);
-    game.unitsManager.spawn("unit_warrior", startTile, game.players[i]);
+  const nationsExcluded: Nation[] = [];
+  let i = 0;
+  for (const tile of generator.getStartingLocations()) {
+    const nation = dataManager.nations.pickRandom(nationsExcluded);
+    nationsExcluded.push(nation);
+
+    const player = new PlayerCore(game, nation);
+
+    if (i++ >= options.humanPlayersCount) {
+      player.ai = new AIPlayer(player);
+    }
+
+    game.addPlayer(player);
+
+    game.unitsManager.spawn("unit_settler", tile, player);
+    game.unitsManager.spawn("unit_scout", tile, player);
+    game.unitsManager.spawn("unit_warrior", tile, player);
   }
 
   game.start();

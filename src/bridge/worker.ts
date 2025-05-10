@@ -50,7 +50,7 @@ function onMessage(event: MessageEvent) {
   }
 
   for (const change of event.data.changes) {
-    console.debug(`change received: ${change.type}`);
+    // console.debug(`change received: ${change.type}`);
     const bridgeHandler = bridgeHandlers.get(change.type);
     if (!bridgeHandler) {
       console.error(`No handler for change with type "${change.type}"`);

@@ -49,6 +49,7 @@ export class TilesMapCore {
   }
 
   private precomputePassableAreas() {
+    this.passableAreas.clear();
     const visited = new Set<TileCore>();
     let areaId = 1;
     for (let x = 0; x < this.width; x++) {
