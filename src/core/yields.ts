@@ -1,12 +1,4 @@
-export interface Yields {
-  food: number;
-  production: number;
-  gold: number;
-  culture: number;
-  knowledge: number;
-  publicWorks: number;
-  faith: number;
-}
+import { Yields } from "@/shared";
 
 export const EMPTY_YIELDS: Yields = {
   food: 0,

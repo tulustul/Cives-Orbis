@@ -1,8 +1,7 @@
 import { BehaviorSubject, distinct, map } from "rxjs";
 
 import { bridge } from "@/bridge";
-import { PlayerViewBoundingBox } from "@/core/player";
-import { GameInfo, TileCoords } from "@/core/serialization/channel";
+import { GameInfo, TileCoords, PlayerViewBoundingBox } from "@/shared";
 import { Application } from "pixi.js";
 import { Animation, Animations } from "./animation";
 import { TILE_ROW_OFFSET, TILE_SIZE } from "./constants";

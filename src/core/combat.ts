@@ -1,37 +1,13 @@
+import {
+  LandForm,
+  BattleResult,
+  CombatModifier,
+  CombatModifierType,
+  CombatSimulation,
+} from "@/shared";
 import { UnitCore } from "./unit";
 import { collector } from "./collector";
-import { LandForm } from "../shared";
 import { TileCore } from "./tile";
-
-export enum CombatModifierType {
-  hills,
-  forest,
-  river,
-  health,
-  flanks,
-}
-
-export enum BattleResult {
-  victory,
-  undecided,
-  defeat,
-}
-
-export interface CombatModifier {
-  type: CombatModifierType;
-  value: number;
-}
-
-export interface CombatSimulationSide {
-  damage: number;
-  strength: number;
-  modifiers: CombatModifier[];
-}
-
-export interface CombatSimulation {
-  attacker: CombatSimulationSide;
-  defender: CombatSimulationSide;
-}
 
 // Returns true if the unit can move to the tile
 export function attack(unit: UnitCore, tile: TileCore): boolean {
@@ -94,7 +70,7 @@ function doCombat(attacker: UnitCore, defender: UnitCore): BattleResult {
 
 export function simulateCombat(
   attacker: UnitCore,
-  defender: UnitCore
+  defender: UnitCore,
 ): CombatSimulation {
   const attackerModifiers = [
     ...getUnitModifiers(attacker),
@@ -141,7 +117,7 @@ function getUnitModifiers(unit: UnitCore): CombatModifier[] {
 
 function getAttackerModifiers(
   attacker: UnitCore,
-  defender: UnitCore
+  defender: UnitCore,
 ): CombatModifier[] {
   const modifiers: CombatModifier[] = [];
 
@@ -158,7 +134,7 @@ function getAttackerModifiers(
 
 function getDefenderModifiers(
   attacker: UnitCore,
-  defender: UnitCore
+  defender: UnitCore,
 ): CombatModifier[] {
   const modifiers: CombatModifier[] = [];
 
@@ -197,8 +173,8 @@ function getFlanks(unit: UnitCore, enemy: UnitCore) {
     enemy.tile.neighbours.filter(
       (tile) =>
         !!tile.units.find(
-          (u) => u.player === unit.player && u.definition.strength
-        )
+          (u) => u.player === unit.player && u.definition.strength,
+        ),
     ).length - 1
   );
 }

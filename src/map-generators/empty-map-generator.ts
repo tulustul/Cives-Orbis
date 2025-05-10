@@ -1,4 +1,4 @@
-import { MapGenerator } from "./map-generator.interface";
+import { MapGenerator } from "./types";
 import { TilesMapCore } from "@/core/tiles-map";
 
 export class BaseMapGenerator implements MapGenerator {

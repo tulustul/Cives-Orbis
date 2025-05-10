@@ -1,6 +1,5 @@
 import { bridge } from "@/bridge";
-import { UnitOrder } from "@/core/unit";
-import { UnitAction } from "@/core/unit-actions";
+import { UnitOrder, UnitAction } from "@/shared";
 import { useMenu } from "./gameMenu";
 import { keybinding } from "./keybindings";
 import { mapUi } from "./mapUi";

@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { TileOwnershipChanneled } from "@/core/serialization/channel";
+import { TileOwnershipChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";

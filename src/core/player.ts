@@ -1,8 +1,9 @@
+import { PlayerViewBoundingBox, PlayerYields } from "@/shared";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 import { Game } from "./game";
 import { CityCore } from "./city";
-import { AIPlayer } from "../ai/ai-player";
+import { AIPlayer } from "@/ai/ai-player";
 import {
   EMPTY_YIELDS,
   zeroYields,
@@ -11,19 +12,11 @@ import {
   copyYields,
 } from "./yields";
 import { collector } from "./collector";
-import { PlayerYields } from "../shared";
 import { PassableArea } from "./tiles-map";
 import { Knowledge } from "./knowledge";
 import { ResourceDeposit } from "./resources";
 import { Nation } from "./data/types";
 import { moveAlongPath } from "./movement";
-
-export type PlayerViewBoundingBox = {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-};
 
 export class PlayerCore {
   id!: number;

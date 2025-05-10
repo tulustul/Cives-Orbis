@@ -1,15 +1,6 @@
+import { StatsData } from "@/shared";
 import { Game } from "./game";
 import { PlayerCore } from "./player";
-
-export type StatsData = {
-  cities: number[];
-  food: number[];
-  production: number[];
-  culture: number[];
-  military: number[];
-  knowledge: number[];
-  techs: number[];
-};
 
 export class Stats {
   data = new Map<PlayerCore, StatsData>();
@@ -50,7 +41,7 @@ export class Stats {
 
     const military = player.units.reduce(
       (acc, unit) => acc + unit.definition.strength,
-      0
+      0,
     );
     stats.military.push(military);
   }

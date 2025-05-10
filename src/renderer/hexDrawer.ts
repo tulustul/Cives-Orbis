@@ -1,4 +1,4 @@
-import { TileCoords } from "@/core/serialization/channel";
+import { TileCoords } from "@/shared";
 import { AttributeOptions, Container, Geometry, Mesh, Shader } from "pixi.js";
 import { TILE_ROW_OFFSET } from "./constants";
 import { HEX } from "./hexGeometry";

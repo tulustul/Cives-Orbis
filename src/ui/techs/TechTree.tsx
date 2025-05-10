@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { TechKnowledgeChanneled } from "@/core/serialization/channel";
+import { TechKnowledgeChanneled } from "@/shared";
 import { OrnateModal } from "@/ui/components";
 import { useUiState } from "@/ui/uiState";
 import { useEffect, useRef, useState } from "react";

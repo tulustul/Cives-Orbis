@@ -1,7 +1,7 @@
-import { TileCore } from "../core/tile";
-import { TilesMapCore } from "../core/tiles-map";
+import { TileDirection } from "@/shared";
+import { TileCore } from "./tile";
+import { TilesMapCore } from "./tiles-map";
 import { getTileNeighbours } from "./hex-math";
-import { TileDirection } from "./tile.interface";
 
 describe("hex-math:utils", () => {
   it("#getTileNeighbours", () => {

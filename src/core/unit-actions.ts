@@ -1,26 +1,11 @@
-import { isImprovementPossible, isRoadPossible } from "../shared";
+import { UnitAction, TileRoad } from "@/shared";
 import { collector } from "./collector";
 import { TileImprovementDefinition } from "./data/types";
 import { dataManager } from "./data/dataManager";
 import { Game } from "./game";
 import { cityToChannel } from "./serialization/channel";
-import { TileRoad } from "./tile-improvements";
 import { UnitCore } from "./unit";
-
-export type UnitAction =
-  | "foundCity"
-  | "buildRoad"
-  | "buildFarm"
-  | "buildMine"
-  | "buildLumbermill"
-  | "buildQuarry"
-  | "buildIrrigation"
-  | "buildClayPit"
-  | "buildPlantation"
-  | "buildPasture"
-  | "buildHuntingGround"
-  | "buildCottage"
-  | "buildFishery";
+import { isImprovementPossible, isRoadPossible } from "./tile-utils";
 
 export abstract class ActionRequirement {
   id = "";

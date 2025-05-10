@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 
 import { bridge } from "@/bridge";
-import { GameInfo, TileCoords } from "@/core/serialization/channel";
+import { GameInfo, TileCoords } from "@/shared";
 import { processKeybindings } from "@/ui/keybindings";
 import { mapUi } from "@/ui/mapUi";
 import { camera } from "./camera";

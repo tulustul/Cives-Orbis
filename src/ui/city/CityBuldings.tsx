@@ -1,4 +1,4 @@
-import { CityDetailsChanneled } from "@/core/serialization/channel";
+import { CityDetailsChanneled } from "@/shared";
 import { EntityTooltip } from "../entity";
 import { ImageIcon } from "../components";
 

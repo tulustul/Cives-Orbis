@@ -1,4 +1,4 @@
-import { LandForm, TileDirection } from "../shared";
+import { LandForm, TileDirection } from "@/shared";
 import { attack, getDamage, simulateCombat } from "./combat";
 import {
   alterGame,
@@ -58,7 +58,7 @@ describe("combat system", () => {
 
     // With equal units, damage should be roughly equal
     expect(
-      Math.abs(simulation.attacker.damage - simulation.defender.damage)
+      Math.abs(simulation.attacker.damage - simulation.defender.damage),
     ).toBeLessThan(5);
 
     // Now perform the actual attack
@@ -71,7 +71,7 @@ describe("combat system", () => {
 
     // Battle should have consumed action points
     expect(attacker.actionPointsLeft).toBeLessThan(
-      attacker.definition.actionPoints
+      attacker.definition.actionPoints,
     );
   });
 
@@ -116,12 +116,12 @@ describe("combat system", () => {
 
     // Defender on hills should have higher strength due to bonus
     expect(simulation.defender.strength).toBeGreaterThan(
-      simulation.attacker.strength
+      simulation.attacker.strength,
     );
 
     // Verify that hills modifier is present
     expect(simulation.defender.modifiers.some((mod) => mod.type === 0)).toBe(
-      true
+      true,
     );
 
     // Perform actual combat
@@ -172,12 +172,12 @@ describe("combat system", () => {
 
     // Defender in forest should have higher strength due to bonus
     expect(simulation.defender.strength).toBeGreaterThan(
-      simulation.attacker.strength
+      simulation.attacker.strength,
     );
 
     // Verify that forest modifier is present
     expect(simulation.defender.modifiers.some((mod) => mod.type === 1)).toBe(
-      true
+      true,
     );
 
     // Perform actual combat
@@ -213,12 +213,12 @@ describe("combat system", () => {
 
     // Defender behind river should have higher strength due to bonus
     expect(simulation.defender.strength).toBeGreaterThan(
-      simulation.attacker.strength
+      simulation.attacker.strength,
     );
 
     // Verify that river modifier is present
     expect(simulation.defender.modifiers.some((mod) => mod.type === 2)).toBe(
-      true
+      true,
     );
 
     // Perform actual combat
@@ -250,12 +250,12 @@ describe("combat system", () => {
 
     // Attacker should have lower strength due to health penalty
     expect(simulation.attacker.strength).toBeLessThan(
-      simulation.defender.strength
+      simulation.defender.strength,
     );
 
     // Verify that health modifier is present
     expect(simulation.attacker.modifiers.some((mod) => mod.type === 3)).toBe(
-      true
+      true,
     );
 
     // Perform actual combat
@@ -283,7 +283,7 @@ describe("combat system", () => {
 
     // Verify flanking setup - flanker is near defender
     expect(
-      flanker.tile.getDirectionTo(defender.tile) !== TileDirection.NONE
+      flanker.tile.getDirectionTo(defender.tile) !== TileDirection.NONE,
     ).toBe(true);
 
     // Simulate combat
@@ -291,12 +291,12 @@ describe("combat system", () => {
 
     // Verify that flanking modifier is present
     expect(simulation.attacker.modifiers.some((mod) => mod.type === 4)).toBe(
-      true
+      true,
     );
 
     // Attacker with flanking should have higher strength
     expect(simulation.attacker.strength).toBeGreaterThan(
-      simulation.defender.strength
+      simulation.defender.strength,
     );
 
     // Perform actual combat

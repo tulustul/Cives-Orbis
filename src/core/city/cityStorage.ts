@@ -1,5 +1,6 @@
-import { ResourceDefinition, ResourceType } from "@/core/data/types";
+import { ResourceDefinition } from "@/core/data/types";
 import { CityCore } from "./city";
+import { ResourceType } from "@/shared";
 
 export class CityStorage {
   resources = new Map<ResourceDefinition, number>();

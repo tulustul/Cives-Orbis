@@ -1,26 +1,23 @@
+import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
 import { TilesMapCore } from "@/core/tiles-map";
 import alea from "alea";
 import { createNoise2D, NoiseFunction2D } from "simplex-noise";
-import { randomNormal } from "../core/random";
-import { ResourceDeposit } from "../core/resources";
-import { TileCore } from "../core/tile";
-import {
-  areWetlandsPossible,
-  Climate,
-  isForestable,
-  isResourcePossible,
-  LandForm,
-  SeaLevel,
-  TileDirection,
-} from "../shared";
-import { getTileInDirection } from "../shared/hex-math";
-import { MapGenerator } from "./map-generator.interface";
+import { randomNormal } from "@/core/random";
+import { ResourceDeposit } from "@/core/resources";
+import { TileCore } from "@/core/tile";
+import { getTileInDirection } from "@/core/hex-math";
+import { MapGenerator } from "./types";
 import {
   findCoastline,
   placeRiverBetweenTiles,
   POSSIBLE_BORDER_PATHS,
 } from "./utils";
 import { dataManager } from "@/core/data/dataManager";
+import {
+  areWetlandsPossible,
+  isForestable,
+  isResourcePossible,
+} from "@/core/tile-utils";
 
 interface TileMetadata {
   height: number;

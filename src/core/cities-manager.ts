@@ -1,11 +1,10 @@
-import { LandForm, SeaLevel } from "../shared";
+import { TileRoad, LandForm, SeaLevel } from "@/shared";
 import { CityCore } from "./city";
 import { collector } from "./collector";
 import { dataManager } from "./data/dataManager";
 import { Game } from "./game";
 import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
-import { TileRoad } from "./tile-improvements";
 
 export class CitiesManager {
   cities: CityCore[] = [];

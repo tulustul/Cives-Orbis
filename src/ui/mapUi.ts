@@ -7,7 +7,7 @@ import {
   UnitChanneled,
   UnitDetailsChanneled,
   UnitPathChanneled,
-} from "@/core/serialization/channel";
+} from "@/shared";
 import { camera } from "@/renderer/camera";
 import { BehaviorSubject, Subject } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs/operators";

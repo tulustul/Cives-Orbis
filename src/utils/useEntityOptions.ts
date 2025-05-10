@@ -1,6 +1,5 @@
+import { EntityType, Option } from "@/shared";
 import { bridge } from "@/bridge";
-import { EntityType } from "@/core/data/types";
-import { Option } from "@/shared/types";
 import { useEffect, useState } from "react";
 
 export function useEntityOptions({

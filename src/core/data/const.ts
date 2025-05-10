@@ -1,5 +1,4 @@
-import { Climate, LandForm, SeaLevel } from "@/shared";
-import { UnitTrait, UnitType } from "@/core/data/types";
+import { Climate, LandForm, SeaLevel, UnitTrait, UnitType } from "@/shared";
 
 export const climateNames: Record<Climate, string> = {
   [Climate.temperate]: "temperate",

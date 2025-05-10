@@ -1,15 +1,15 @@
 import { CityCore } from "@/core/city";
-import { TileImprovementDefinition, UnitTrait } from "@/core/data/types";
+import { TileImprovementDefinition } from "@/core/data/types";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
 import { PassableArea } from "@/core/tiles-map";
 import { UnitCore } from "@/core/unit";
-import { UnitAction } from "@/core/unit-actions";
 import { sumYields } from "@/core/yields";
-import { isImprovementPossible } from "@/shared";
 import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
 import { dataManager } from "@/core/data/dataManager";
+import { UnitAction, UnitTrait } from "@/shared";
+import { isImprovementPossible } from "@/core/tile-utils";
 
 const CITIES_PER_WORKER = 0.5;
 const MIN_WORKERS = 2;

@@ -3,7 +3,7 @@ import { Game } from "@/core/game";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { TilesMapCore } from "@/core/tiles-map";
-import { dataManager } from "../data/dataManager";
+import { dataManager } from "@/core/data/dataManager";
 
 export type SymbolCallbacks = {
   [key: string]: (game: Game, tile: TileCore) => void;

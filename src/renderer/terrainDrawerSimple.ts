@@ -1,6 +1,5 @@
 import { bridge } from "@/bridge";
-import { TileChanneled } from "@/core/serialization/channel";
-import { SeaLevel } from "@/shared";
+import { SeaLevel, TileChanneled } from "@/shared";
 import { measureTime } from "@/utils";
 import { AttributeOptions, Container, Shader } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";

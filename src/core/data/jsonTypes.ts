@@ -1,6 +1,3 @@
-import { Bonuses } from "@/core/bonus";
-import { UnitAction } from "@/core/unit-actions";
-import { Yields } from "@/core/yields";
 import {
   climateNamesInverse,
   landFormNamesInverse,
@@ -8,6 +5,14 @@ import {
   UnitTraitNamesInverse,
   UnitTypeNamesInverse,
 } from "./const";
+import {
+  Bonuses,
+  NationColors,
+  ResourceType,
+  TechEra,
+  UnitAction,
+  Yields,
+} from "@/shared";
 
 export type ClimateName = keyof typeof climateNamesInverse;
 export type LandFormName = keyof typeof landFormNamesInverse;
@@ -56,8 +61,6 @@ export type HaveBonuses = {
   bonuses: Bonuses;
 };
 
-export type ProductType = "unit" | "building" | "idleProduct";
-
 export type BaseProductDefinition = JsonEntity &
   HaveRequirements &
   HaveBonuses & {
@@ -80,11 +83,6 @@ export type JsonUnit = JsonProduct & {
 
 export type JsonBuilding = JsonProduct;
 
-export type NationColors = {
-  primary: string;
-  secondary: string;
-};
-
 export type JsonNation = JsonEntity & {
   cityNames: string[];
   colors: NationColors;
@@ -103,8 +101,6 @@ export type JsonResourceDistribution = {
   quantityMedian: number;
   quantityStddev: number;
 };
-
-export type ResourceType = "food" | "material" | "commodity" | "luxury";
 
 export type BaseResourceDepositDefinition = {
   bonuses: Bonuses;
@@ -126,18 +122,6 @@ export type PolicyArea = JsonEntity & { options: PolicyArea[] };
 export type PolicyOption = JsonEntity & HaveBonuses & HaveRequirements;
 
 export type Law = JsonEntity & HaveBonuses & HaveRequirements;
-
-export type TechEra =
-  | "Copper Age"
-  | "Bronze Age"
-  | "Iron Age"
-  | "Steel Age"
-  | "Gunpowder Age"
-  | "Coal Age"
-  | "Industrial Age"
-  | "Electric Age"
-  | "Information Age"
-  | "AI Age";
 
 export type LinkMiddlePoint = {
   tech: string;

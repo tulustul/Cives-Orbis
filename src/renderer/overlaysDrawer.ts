@@ -1,8 +1,8 @@
+import { TileCoords } from "@/shared";
 import { Graphics, Container } from "pixi.js";
 
 import { drawClosedHex, drawHex, getTileCoords } from "./utils";
 import { mapUi } from "@/ui/mapUi";
-import { TileCoords } from "@/core/serialization/channel";
 
 export class OverlaysDrawer {
   hoveredTileGraphics = new Graphics();

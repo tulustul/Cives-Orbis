@@ -1,5 +1,8 @@
-import { CombatModifierType, CombatSimulationSide } from "@/core/combat";
-import { UnitDefChanneled } from "@/core/serialization/channel";
+import {
+  UnitDefChanneled,
+  CombatModifierType,
+  CombatSimulationSide,
+} from "@/shared";
 import { ImageIcon } from "@/ui/components";
 import clsx from "clsx";
 

@@ -1,9 +1,9 @@
+import { EntityType } from "@/shared";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
 import frame from "@/assets/rich-icons/frame2.png";
 import unknown from "@/assets/rich-icons/unknown2.png";
-import { EntityType } from "@/core/data/types";
 
 type Size = "tiny" | "small" | "medium" | "large";
 

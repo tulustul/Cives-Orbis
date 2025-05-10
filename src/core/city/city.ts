@@ -1,5 +1,4 @@
-import { Bonuses } from "@/core/bonus";
-import { IdleProduct, ResourceDefinition } from "@/core/data/types";
+import { Bonuses, Yields, CityVisibility } from "@/shared";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import {
@@ -7,7 +6,6 @@ import {
   copyYields,
   EMPTY_YIELDS,
   roundYields,
-  Yields,
   zeroYields,
 } from "@/core/yields";
 
@@ -21,8 +19,7 @@ import { CityExpansion } from "./cityExpansion";
 import { CityPopulation } from "./cityPopulation";
 import { CityProduction } from "./cityProduction";
 import { CityWorkers } from "./cityWorkers";
-
-export type CityVisibility = "all" | "basic" | "hidden";
+import { IdleProduct, ResourceDefinition } from "@/core/data/types";
 
 export class CityCore {
   id!: number;

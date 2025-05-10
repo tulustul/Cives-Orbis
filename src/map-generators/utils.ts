@@ -1,5 +1,5 @@
-import { TileCore } from "@/core/tile";
 import { SeaLevel, TileDirection } from "@/shared";
+import { TileCore } from "@/core/tile";
 
 export function findCoastline(tiles: TileCore[][]): TileCore[] {
   const coastline: TileCore[] = [];

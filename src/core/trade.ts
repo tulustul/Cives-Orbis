@@ -1,8 +1,8 @@
-// Proof of concept
+import { Yields } from "@/shared";
 
 import { CityCore } from "./city";
 import { TileCore } from "./tile";
-import { Yields, EMPTY_YIELDS } from "./yields";
+import { EMPTY_YIELDS } from "./yields";
 import { UnitCore } from "./unit";
 
 export class TradeManager {
@@ -55,10 +55,7 @@ export class TradeEdge {
   toAGoods: TradeGoods[] = [];
   toBGoods: TradeGoods[] = [];
 
-  constructor(
-    public nodeA: CityCore,
-    public nodeB: CityCore,
-  ) {
+  constructor(public nodeA: CityCore, public nodeB: CityCore) {
     this.path = this.buildPath();
   }
 

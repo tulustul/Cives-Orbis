@@ -1,4 +1,4 @@
-import { CityChanneled } from "@/core/serialization/channel";
+import { CityChanneled } from "@/shared";
 import { camera, Transform } from "@/renderer/camera";
 import { ProgressBar } from "@/ui/components";
 import { useEffect, useRef } from "react";

@@ -1,4 +1,4 @@
-import { CityDetailsChanneled } from "@/core/serialization/channel";
+import { CityDetailsChanneled } from "@/shared";
 import { CityBuildings } from "./CityBuldings";
 import { CityMainPanel } from "./CityMainPanel";
 import { CityName } from "./CityName";

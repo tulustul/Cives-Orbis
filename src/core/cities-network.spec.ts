@@ -1,4 +1,4 @@
-import { TileRoad } from "./tile-improvements";
+import { TileRoad } from "@/shared";
 import { CitiesNetworks } from "./cities-network";
 import {
   GameFactoryOptions,

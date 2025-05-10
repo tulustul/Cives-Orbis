@@ -1,4 +1,4 @@
-import { TechDefChanneled } from "@/core/serialization/channel";
+import { TechDefChanneled } from "@/shared";
 import { EntityTooltip } from "@/ui/entity";
 import { ImageIcon } from "@/ui/components";
 

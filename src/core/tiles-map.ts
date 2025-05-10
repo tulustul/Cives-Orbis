@@ -1,6 +1,6 @@
+import { LandForm, SeaLevel } from "@/shared";
 import { TileCore } from "./tile";
-import { getTileNeighbours, getTileFullNeighbours } from "../shared/hex-math";
-import { LandForm, SeaLevel } from "../shared";
+import { getTileNeighbours, getTileFullNeighbours } from "./hex-math";
 
 export type PassableArea = {
   id: number;

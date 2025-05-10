@@ -1,4 +1,4 @@
-import { LandForm, SeaLevel, TileDirection } from "../shared";
+import { LandForm, SeaLevel, TileDirection } from "@/shared";
 import { Game } from "./game";
 import { moveAlongPath } from "./movement";
 import {

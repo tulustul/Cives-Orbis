@@ -1,4 +1,4 @@
-import { UnitTrait, UnitType } from "@/core/data/types";
+import { UnitTrait, UnitType } from "@/shared";
 import { getMoveResult, MoveResult } from "@/core/movement";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";

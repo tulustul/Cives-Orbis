@@ -3,59 +3,78 @@
 import { AIPlayer } from "./ai/ai-player";
 import { CityCore } from "./core/city";
 import { collector } from "./core/collector";
-import { CombatSimulation, simulateCombat } from "./core/combat";
+import { simulateCombat } from "./core/combat";
+import { dataManager } from "./core/data/dataManager";
 import {
   Entity,
-  EntityType,
   HaveRequirements,
   Nation,
   ResourceDefinition,
 } from "./core/data/types";
-import { dataManager } from "./core/data/dataManager";
 import { Game } from "./core/game";
+import { getTilesInRange } from "./core/hex-math";
 import { moveAlongPath } from "./core/movement";
 import { findPath } from "./core/pathfinding";
-import { PlayerCore, PlayerViewBoundingBox } from "./core/player";
+import { PlayerCore } from "./core/player";
 import { getFailedWeakRequirements } from "./core/requirements";
 import { ResourceDeposit } from "./core/resources";
 import {
-  CityDetailsChanneled,
   cityDetailsToChannel,
   cityToChannel,
-  CombatSimulationChanneled,
-  EntityChanneled,
   entityToChannel,
-  GameStartInfo,
   gameToGameStartInfo,
   knowledgeTechToChannel,
-  PlayerChanneled,
   playerToChannel,
-  ResourceWithTileChanneled,
   resourceWithTileToChannel,
-  TileChanneled,
-  TileDetailsChanneled,
   tileDetailsToChannel,
-  TileFogOfWar,
-  TileHoverDetails,
-  TileOwnershipChanneled,
-  TilesCoordsWithNeighbours,
   tilesToTileCoordsWithNeighbours,
   tileToChannel,
   tileToFogOfWar,
   tileToTileOwnershipChannel,
   trackedPlayerToChannel,
-  UnitChanneled,
   unitDetailsToChannel,
   unitToChannel,
 } from "./core/serialization/channel";
 import { dumpGame, loadGame } from "./core/serialization/dump";
-import { StatsData } from "./core/stats";
-import { UnitOrder } from "./core/unit";
-import { UnitAction } from "./core/unit-actions";
 import { RealisticMapGenerator } from "./map-generators/realistic";
-import { BaseTile, PlayerTask, PlayerYields } from "./shared";
-import { getTilesInRange } from "./shared/hex-math";
-import { Option } from "./shared/types";
+import {
+  CityDetailsChanneled,
+  CityGetWorkTilesResult,
+  CityProduceOptions,
+  CityRange,
+  CityWorkTileOptions,
+  CombatSimulationChanneled,
+  EntityChanneled,
+  EntityGetFailedWeakRequirements,
+  GameGetEntityOptions,
+  GameStartInfo,
+  GrantRevokeTechOptions,
+  MapGeneratorOptions,
+  PlayerTask,
+  PlayerYields,
+  ResourceSpawnOptions,
+  ResourceWithTileChanneled,
+  StatsGetChanneled,
+  StatsGetOptions,
+  TileChanneled,
+  TileDetailsChanneled,
+  TileGetHoverDetailsOptions,
+  TileGetInRangeOptions,
+  TileHoverDetails,
+  TileOwnershipChanneled,
+  TilesCoordsWithNeighbours,
+  TilesFogOfWarChanneled,
+  TileUpdateOptions,
+  UnitChanneled,
+  UnitDoActionOptions,
+  UnitFindPathOptions,
+  UnitGetFailedActionRequirementsOptions,
+  UnitSetOrderOptions,
+  UnitSimulateCombatOptions,
+  UnitSpawnOptions,
+  CombatSimulation,
+  Option,
+} from "./shared";
 
 let game: Game;
 
@@ -172,17 +191,6 @@ function getNextTask(): PlayerTask | null {
   return null;
 }
 
-export interface MapGeneratorOptions {
-  width: number;
-  height: number;
-  uniformity: number;
-  seaLevel: number;
-  resources: number;
-  humanPlayersCount: number;
-  aiPlayersCount: number;
-  seed?: string;
-}
-
 async function newGameHandler(
   options: MapGeneratorOptions,
 ): Promise<GameStartInfo> {
@@ -245,9 +253,6 @@ function getAllPlayers() {
   return game.players.map(playerToChannel);
 }
 
-export type GameGetEntityOptions = {
-  entityType: EntityType;
-};
 function gameGetEntityOptions(options: GameGetEntityOptions): Option<string>[] {
   const entities = dataManager.providers[options.entityType].all;
   return entities.map((entity) => {
@@ -329,11 +334,6 @@ function getYields(): PlayerYields {
   return game.trackedPlayer.yields;
 }
 
-export type UnitSpawnOptions = {
-  tileId: number;
-  playerId: number;
-  definitionId: string;
-};
 function unitSpawn(options: UnitSpawnOptions): void {
   const tile = game.map.tilesMap.get(options.tileId);
   const player = game.playersMap.get(options.playerId);
@@ -354,10 +354,6 @@ function getUnitDetails(unitId: number) {
   return unitDetailsToChannel(unit);
 }
 
-export type UnitDoActionOptions = {
-  unitId: number;
-  action: UnitAction;
-};
 function unitDoAction(data: UnitDoActionOptions) {
   const unit = game.unitsManager.unitsMap.get(data.unitId);
   if (!unit) {
@@ -369,10 +365,6 @@ function unitDoAction(data: UnitDoActionOptions) {
   return unitDetailsToChannel(unit);
 }
 
-export type UnitSetOrderOptions = {
-  unitId: number;
-  order: UnitOrder | null;
-};
 function unitSetOrder(data: UnitSetOrderOptions) {
   const unit = game.unitsManager.unitsMap.get(data.unitId);
   if (!unit) {
@@ -384,10 +376,6 @@ function unitSetOrder(data: UnitSetOrderOptions) {
   return unitDetailsToChannel(unit);
 }
 
-export type UnitFindPathOptions = {
-  unitId: number;
-  destinationId: number;
-};
 function unitFindPath(data: UnitFindPathOptions) {
   const unit = game.unitsManager.unitsMap.get(data.unitId);
   const tile = game.map.tilesMap.get(data.destinationId);
@@ -431,10 +419,6 @@ function unitGetRange(unitId: number): TilesCoordsWithNeighbours[] {
   return Array.from(tiles).map(tilesToTileCoordsWithNeighbours);
 }
 
-export type UnitGetFailedActionRequirementsOptions = {
-  unitId: number;
-  action: UnitAction;
-};
 function unitGetFailedActionRequirements(
   data: UnitGetFailedActionRequirementsOptions,
 ): string[] {
@@ -446,10 +430,6 @@ function unitGetFailedActionRequirements(
   return unit.getFailedActionRequirements(data.action);
 }
 
-export type UnitSimulateCombatOptions = {
-  attackerId: number;
-  defenderId: number;
-};
 function unitSimulateCombat(
   data: UnitSimulateCombatOptions,
 ): CombatSimulation | null {
@@ -476,10 +456,6 @@ export function tileGetOwnership(): TileOwnershipChanneled[] {
   );
 }
 
-export type TilesFogOfWarChanneled = {
-  tiles: TileFogOfWar[];
-  viewBoundingBox: PlayerViewBoundingBox;
-};
 export function tileGetFogOfWar(): TilesFogOfWarChanneled {
   const tiles = Array.from(game.map.tilesMap.values()).map((t) =>
     tileToFogOfWar(t, game),
@@ -499,10 +475,6 @@ export function tileGetDetails(tileId: number): TileDetailsChanneled | null {
   return tileDetailsToChannel(tile, game.trackedPlayer);
 }
 
-export type TileGetHoverDetailsOptions = {
-  tileId: number;
-  selectedUnitId: number | null;
-};
 export function tileGetHoverDetails(
   options: TileGetHoverDetailsOptions,
 ): TileHoverDetails | null {
@@ -534,10 +506,6 @@ export function tileGetHoverDetails(
   };
 }
 
-export type TileGetInRangeOptions = {
-  tileId: number;
-  range: number;
-};
 export function tileGetInRange(
   options: TileGetInRangeOptions,
 ): TilesCoordsWithNeighbours[] {
@@ -550,21 +518,6 @@ export function tileGetInRange(
   );
 }
 
-export type TileUpdateOptions = {
-  id: number;
-  improvement?: string;
-} & Partial<
-  Pick<
-    BaseTile,
-    | "climate"
-    | "landForm"
-    | "seaLevel"
-    | "riverParts"
-    | "forest"
-    | "wetlands"
-    | "road"
-  >
->;
 export function tileUpdate(options: TileUpdateOptions) {
   const tile = game.map.tilesMap.get(options.id);
   if (!tile) {
@@ -588,11 +541,6 @@ export function tileBulkUpdate(tiles: TileUpdateOptions[]) {
   }
 }
 
-export type ResourceSpawnOptions = {
-  tileId: number;
-  resourceId: string | null;
-  quantity: number;
-};
 export function resourceSpawn(options: ResourceSpawnOptions) {
   const tile = game.map.tilesMap.get(options.tileId);
   if (!tile) {
@@ -650,11 +598,6 @@ export function cityGetCityDetails(
   return cityDetailsToChannel(city);
 }
 
-export type CityProduceOptions = {
-  cityId: number;
-  productId: string;
-  entityType: "building" | "unit" | "idleProduct";
-};
 export function cityProduce(options: CityProduceOptions) {
   const city = game.citiesManager.citiesMap.get(options.cityId);
 
@@ -673,10 +616,6 @@ export function cityProduce(options: CityProduceOptions) {
   return cityDetailsToChannel(city);
 }
 
-export type CityRange = {
-  tiles: TilesCoordsWithNeighbours[];
-  workedTiles: TilesCoordsWithNeighbours[];
-};
 export function cityGetRange(cityId: number): CityRange | null {
   const city = game.citiesManager.citiesMap.get(cityId);
 
@@ -693,10 +632,6 @@ export function cityGetRange(cityId: number): CityRange | null {
   };
 }
 
-export type CityGetWorkTilesResult = {
-  workedTiles: TilesCoordsWithNeighbours[];
-  notWorkedTiles: TilesCoordsWithNeighbours[];
-};
 export function cityGetWorkTiles(
   cityId: number,
 ): CityGetWorkTilesResult | null {
@@ -716,10 +651,6 @@ export function cityGetWorkTiles(
   };
 }
 
-export type CityWorkTileOptions = {
-  cityId: number;
-  tileId: number;
-};
 export function cityWorkTile(options: CityWorkTileOptions) {
   const city = game.citiesManager.citiesMap.get(options.cityId);
   const tile = game.map.tilesMap.get(options.tileId);
@@ -758,10 +689,6 @@ export function cityOptimizeYields(cityId: number) {
   return cityDetailsToChannel(city);
 }
 
-export type EntityGetFailedWeakRequirements = {
-  entityId: string;
-  cityId: number | null;
-};
 export function entityGetFailedWeakRequirements(
   data: EntityGetFailedWeakRequirements,
 ): [string, any][] {
@@ -794,13 +721,6 @@ export function entityGetDetails(entityId: string): EntityChanneled {
   return entityToChannel(dataManager.get(entityId));
 }
 
-export type StatsGetOptions = {
-  type: keyof StatsData;
-};
-export type StatsGetChanneled = {
-  player: PlayerChanneled;
-  data: number[];
-};
 export function statsGet(options: StatsGetOptions): StatsGetChanneled[] {
   return game.players.map((player) => {
     return {
@@ -828,14 +748,6 @@ function techResearch(techId: string) {
   const tech = dataManager.technologies.get(techId);
   game.trackedPlayer.knowledge.research(tech);
 }
-
-export type GrantOrRevoke = "grant" | "revoke";
-
-export type GrantRevokeTechOptions = {
-  playerId: number;
-  techId: string;
-  grantRevoke: GrantOrRevoke;
-};
 
 function playerGrantRevokeTech(options: GrantRevokeTechOptions) {
   const tech = dataManager.technologies.get(options.techId);

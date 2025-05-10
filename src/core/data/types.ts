@@ -1,34 +1,25 @@
-import { Bonuses } from "@/core/bonus";
 import { Requirement } from "@/core/requirements";
-import { Yields } from "@/core/yields";
-import { Climate, LandForm, SeaLevel } from "@/shared";
+import {
+  Bonuses,
+  Climate,
+  EntityType,
+  LandForm,
+  ProductType,
+  ResourceType,
+  SeaLevel,
+  TechEra,
+  TechLayout,
+  UnitTrait,
+  UnitType,
+  Yields,
+} from "@/shared";
 import {
   HaveBonuses,
   JsonNation,
   JsonResourceDistribution,
   JsonTileImprovement,
   JsonUnit,
-  ProductType,
-  ResourceType,
-  TechEra,
 } from "./jsonTypes";
-
-export type {
-  TechEra,
-  NationColors,
-  ProductType,
-  ResourceType,
-} from "./jsonTypes";
-
-export type EntityType =
-  | "unit"
-  | "building"
-  | "idleProduct"
-  | "resource"
-  | "technology"
-  | "tileImprovement"
-  | "nation"
-  | "populationType";
 
 export type ResourceNeed = {
   resourceType: ResourceType;
@@ -77,19 +68,6 @@ export type BaseProductDefinition = Entity &
 
 type _ProductDefinition = BaseProductDefinition & RequireTech;
 
-export enum UnitType {
-  land,
-  naval,
-}
-
-export enum UnitTrait {
-  settler,
-  explorer,
-  worker,
-  military,
-  supply,
-}
-
 export type UnitDefinition = _ProductDefinition &
   Omit<JsonUnit, "type" | "trait" | "strongRequirements" | "weakRequirements"> &
   RequireTech & {
@@ -132,12 +110,6 @@ export type ResourceDepositDefinition = BaseResourceDepositDefinition & {
 export type ResourceDefinition = Entity & {
   resourceType: ResourceType;
   depositDef?: ResourceDepositDefinition;
-};
-
-export type TechLayout = {
-  x: number;
-  y: number;
-  linksMiddlePoint: Record<string, number>;
 };
 
 export type Technology = Entity & {

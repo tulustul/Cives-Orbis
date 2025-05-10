@@ -1,7 +1,4 @@
-import {
-  TechDefChanneled,
-  TechKnowledgeChanneled,
-} from "@/core/serialization/channel";
+import { TechDefChanneled, TechKnowledgeChanneled } from "@/shared";
 import styles from "./TechTree.module.css";
 import { useRef } from "react";
 import { techBlockHeight, techBlockWidth } from "./const";
@@ -46,7 +43,7 @@ export function TechLinks({ techs }: Props) {
         },
         midPointX,
       } as Link;
-    })
+    }),
   );
 
   return (

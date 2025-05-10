@@ -5,7 +5,7 @@ import {
   ShaderFromResources,
 } from "pixi.js";
 
-import { TilesCoordsWithNeighbours } from "@/core/serialization/channel";
+import { TilesCoordsWithNeighbours } from "@/shared";
 import { HexDrawer } from "./hexDrawer";
 import { hexColorToArray } from "./utils";
 

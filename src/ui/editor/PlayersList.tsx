@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { PlayerChanneled } from "@/core/serialization/channel";
+import { PlayerChanneled } from "@/shared";
 import { bridge } from "@/bridge";
 import { useObservable } from "@/utils";
 

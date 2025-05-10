@@ -1,3 +1,5 @@
+import { EntityType } from "@/shared";
+
 import nationsUrl from "@/data/nations.json?url";
 import buildingsUrl from "@/data/buildings.json?url";
 import idleProductsUrl from "@/data/idleProducts.json?url";
@@ -9,8 +11,8 @@ import techsUrl from "@/data/techs.json?url";
 import {
   Building,
   Entity,
-  EntityType,
   Nation,
+  PopulationTypeDefinition,
   ResourceDefinition,
   ResourceDepositDefinition,
   ResourceDistribution,
@@ -44,7 +46,7 @@ import {
   UnitTraitNamesInverse,
   UnitTypeNamesInverse,
 } from "./const";
-import { PopulationTypeDefinition } from "./types";
+import path from "node:path";
 
 export class DataManager {
   private markAsReady!: () => void;
@@ -127,8 +129,8 @@ abstract class EntityProvider<T extends Entity, K extends JsonEntity> {
   constructor(protected manager: DataManager, private url: string) {}
 
   async fetch() {
-    const response = await fetch(this.url);
-    const data = (await response.json()) as JsonData<K>;
+    const data = await fetchJson<JsonData<K>>(this.url);
+
     for (const json of data.items) {
       const parsed = this.parse(json);
       this.map.set(parsed.id, parsed);
@@ -334,6 +336,15 @@ function parseRequirement(r: JsonRequirement): Requirement {
   throw new Error(`Unknown requirement type: ${(r as any).type}`);
 }
 
-export const dataManager = new DataManager();
+async function fetchJson<T>(url: string): Promise<T> {
+  if (import.meta.env.MODE === "test") {
+    url = path.join(process.cwd(), url);
+    const data = await import(url);
+    return data.default as T;
+  }
 
-console.log("Data manager initialized");
+  const response = await fetch(url);
+  return (await response.json()) as T;
+}
+
+export const dataManager = new DataManager();

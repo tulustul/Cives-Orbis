@@ -1,9 +1,5 @@
+import { TileCoords, TileCoordsWithUnits, UnitChanneled } from "@/shared";
 import { bridge } from "@/bridge";
-import {
-  TileCoords,
-  TileCoordsWithUnits,
-  UnitChanneled,
-} from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { OutlineFilter } from "pixi-filters";
 import { Container, Graphics, Sprite, Text } from "pixi.js";

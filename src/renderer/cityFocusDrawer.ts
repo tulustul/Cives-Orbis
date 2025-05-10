@@ -1,4 +1,4 @@
-import { TileCoords } from "@/core/serialization/channel";
+import { TileCoords } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";

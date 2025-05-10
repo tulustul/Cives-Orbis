@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { CityChanneled } from "@/core/serialization/channel";
+import { CityChanneled } from "@/shared";
 import { camera } from "@/renderer/camera";
 import { useObservable } from "@/utils";
 import { useEffect, useRef, useState } from "react";

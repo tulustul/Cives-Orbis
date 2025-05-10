@@ -1,11 +1,10 @@
 import { bridge } from "@/bridge";
-import { GrantOrRevoke } from "@/core.worker";
+import { GrantOrRevoke, Option } from "@/shared";
 import { useEffect, useState } from "react";
 import {
   Multiselect,
   MultiselectAddedOrRemoved,
   MultiselectOnChange,
-  Option,
 } from "../components";
 import { PlayersList } from "./PlayersList";
 

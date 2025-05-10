@@ -1,6 +1,11 @@
-import { TileRoad } from "@/core/tile-improvements";
-import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
-import { Option } from "@/ui/components";
+import {
+  Option,
+  Climate,
+  LandForm,
+  SeaLevel,
+  TileDirection,
+  TileRoad,
+} from "@/shared";
 
 export const SEA_LEVEL_OPTIONS: Option<SeaLevel>[] = [
   { label: "none", value: SeaLevel.none },

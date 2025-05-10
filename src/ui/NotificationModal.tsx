@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { TechDefChanneled } from "@/core/serialization/channel";
+import { TechDefChanneled } from "@/shared";
 import { useObservable } from "@/utils";
 import { useEffect, useState } from "react";
 import { ImageIcon, OrnateModal, PrimaryButton } from "./components";

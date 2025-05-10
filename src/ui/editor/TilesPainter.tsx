@@ -1,5 +1,12 @@
-import { Climate, LandForm, SeaLevel } from "@/shared";
-import { Button, Option, Radio } from "@/ui/components";
+import {
+  Climate,
+  LandForm,
+  SeaLevel,
+  TileCoords,
+  TilesCoordsWithNeighbours,
+  Option,
+} from "@/shared";
+import { Button, Radio } from "@/ui/components";
 import { useEffect, useRef } from "react";
 import {
   CLIMATE_OPTIONS,
@@ -10,10 +17,6 @@ import {
 } from "./constants";
 
 import { bridge } from "@/bridge";
-import {
-  TileCoords,
-  TilesCoordsWithNeighbours,
-} from "@/core/serialization/channel";
 import { controls } from "@/renderer/controls";
 import { renderer } from "@/renderer/renderer";
 import { useSubscription } from "@/utils";

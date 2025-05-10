@@ -1,4 +1,4 @@
-import { Option } from "../../shared/types";
+import { Option } from "@/shared";
 import clsx from "clsx";
 
 export type MultiselectAddedOrRemoved = "added" | "removed";

@@ -1,4 +1,24 @@
 import {
+  CityChanneled,
+  CityDetailsChanneled,
+  EntityChanneled,
+  GameInfo,
+  GameStartInfo,
+  PlayerChanneled,
+  ResourceWithTileChanneled,
+  TechDefChanneled,
+  TechKnowledgeChanneled,
+  TileChanneled,
+  TileDetailsChanneled,
+  TileHoverDetails,
+  TileOwnershipChanneled,
+  TilesCoordsWithNeighbours,
+  UnitChanneled,
+  UnitDetailsChanneled,
+  UnitMoveChanneled,
+  PlayerTask,
+  PlayerYields,
+  Option,
   CityGetWorkTilesResult,
   CityProduceOptions,
   CityRange,
@@ -20,31 +40,10 @@ import {
   UnitSetOrderOptions,
   UnitSimulateCombatOptions,
   UnitSpawnOptions,
-} from "@/core.worker";
-import { CombatSimulation } from "@/core/combat";
-import {
-  CityChanneled,
-  CityDetailsChanneled,
-  EntityChanneled,
-  GameInfo,
-  GameStartInfo,
-  PlayerChanneled,
-  ResourceWithTileChanneled,
-  TechDefChanneled,
-  TechKnowledgeChanneled,
-  TileChanneled,
-  TileDetailsChanneled,
-  TileHoverDetails,
-  TileOwnershipChanneled,
-  TilesCoordsWithNeighbours,
-  UnitChanneled,
-  UnitDetailsChanneled,
-  UnitMoveChanneled,
-} from "@/core/serialization/channel";
-import { PlayerTask, PlayerYields } from "@/shared";
+  CombatSimulation,
+} from "@/shared";
 import { shareReplay } from "rxjs";
 import { makeCommand, makeObservable } from "./worker";
-import { Option } from "@/shared/types";
 
 export const bridge = {
   nextTask$: makeObservable<PlayerTask | null>("nextTask"),

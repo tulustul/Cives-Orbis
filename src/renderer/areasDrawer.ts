@@ -1,8 +1,5 @@
 import { bridge } from "@/bridge";
-import {
-  CityDetailsChanneled,
-  UnitDetailsChanneled,
-} from "@/core/serialization/channel";
+import { CityDetailsChanneled, UnitDetailsChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container } from "pixi.js";
 import { Area } from "./area";

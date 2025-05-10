@@ -1,5 +1,6 @@
 import { bridge } from "@/bridge";
-import { Button, Option, Radio, Switch } from "@/ui/components";
+import { Option } from "@/shared";
+import { Button, Radio, Switch } from "@/ui/components";
 import { useEffect, useState } from "react";
 import { useUiState } from "../uiState";
 import { useMenu } from "./gameMenuStore";

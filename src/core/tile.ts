@@ -1,12 +1,12 @@
-import { Yields, EMPTY_YIELDS, addYields } from "./yields";
-import { TileRoad } from "./tile-improvements";
 import {
   Climate,
   LandForm,
   SeaLevel,
   TileDirection,
-  BaseTile,
-} from "../shared";
+  TileRoad,
+  Yields,
+} from "@/shared";
+import { EMPTY_YIELDS, addYields } from "./yields";
 import { UnitCore } from "./unit";
 import { CityCore } from "./city";
 import { collector } from "./collector";
@@ -15,6 +15,9 @@ import { ResourceDeposit } from "./resources";
 import { PlayerCore } from "./player";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
+import { renderer } from "src/renderer/renderer";
+
+console.log(renderer);
 
 const BASE_CLIMATE_YIELDS: Record<Climate, Yields> = {
   [Climate.arctic]: { ...EMPTY_YIELDS },
@@ -33,7 +36,7 @@ const BASE_LAND_FORM_YIELDS: Record<LandForm, Yields> = {
   [LandForm.mountains]: { ...EMPTY_YIELDS, food: -Infinity, production: -5 },
 };
 
-export class TileCore implements BaseTile {
+export class TileCore {
   climate = Climate.temperate;
   landForm = LandForm.plains;
   seaLevel = SeaLevel.deep;

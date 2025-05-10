@@ -1,73 +1,23 @@
-import { TileCore } from "@/core/tile";
 import {
   ResourceDefinition,
   TileImprovementDefinition,
 } from "@/core/data/types";
-import { TileRoad } from "@/core/tile-improvements";
-import { Yields } from "@/core/yields";
 import { PlayerCore } from "@/core/player";
+import { TileCore } from "@/core/tile";
+import { Climate, LandForm, SeaLevel } from "@/shared";
 
-export enum TileDirection {
-  NW,
-  NE,
-  E,
-  SE,
-  SW,
-  W,
-  NONE,
-}
-
-export enum Climate {
-  tropical,
-  savanna,
-  desert,
-  temperate,
-  tundra,
-  arctic,
-}
-
-export enum LandForm {
-  plains,
-  hills,
-  mountains,
-}
-
-export enum SeaLevel {
-  none,
-  shallow,
-  deep,
-}
-
-export interface BaseTile {
-  id: number;
-
-  x: number;
-  y: number;
-
-  climate: Climate;
-  landForm: LandForm;
-  seaLevel: SeaLevel;
-  riverParts: TileDirection[];
-  forest: boolean;
-  wetlands: boolean;
-  improvement: TileImprovementDefinition | null;
-  road: TileRoad | null;
-
-  yields: Yields;
-}
-
-export const FORESTABLE_CLIMATES = new Set<Climate>([
+const FORESTABLE_CLIMATES = new Set<Climate>([
   Climate.temperate,
   Climate.tropical,
   Climate.tundra,
 ]);
 
-export const WETLANDS_CLIMATES = new Set<Climate>([
+const WETLANDS_CLIMATES = new Set<Climate>([
   Climate.temperate,
   Climate.tropical,
 ]);
 
-export function isForestable(tile: BaseTile): boolean {
+export function isForestable(tile: TileCore): boolean {
   return (
     tile.seaLevel === SeaLevel.none &&
     tile.landForm !== LandForm.mountains &&
@@ -75,7 +25,7 @@ export function isForestable(tile: BaseTile): boolean {
   );
 }
 
-export function areWetlandsPossible(tile: BaseTile): boolean {
+export function areWetlandsPossible(tile: TileCore): boolean {
   return !!(
     tile.seaLevel === SeaLevel.none &&
     tile.landForm === LandForm.plains &&
@@ -121,14 +71,14 @@ export function isImprovementPossible(
   );
 }
 
-export function isRoadPossible(tile: BaseTile) {
+export function isRoadPossible(tile: TileCore) {
   return (
     tile.seaLevel === SeaLevel.none && tile.landForm !== LandForm.mountains
   );
 }
 
 export function isResourcePossible(
-  tile: BaseTile,
+  tile: TileCore,
   resourceDef: ResourceDefinition | null,
 ) {
   if (!resourceDef || tile.landForm === LandForm.mountains) {

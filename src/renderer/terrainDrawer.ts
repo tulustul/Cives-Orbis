@@ -1,7 +1,6 @@
 import * as terrainData from "@/assets/atlas-tiles.json";
 import { bridge } from "@/bridge";
-import { TileChanneled } from "@/core/serialization/channel";
-import { LandForm, SeaLevel } from "@/shared";
+import { LandForm, SeaLevel, TileChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { AttributeOptions, Container, Shader } from "pixi.js";

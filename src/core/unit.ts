@@ -1,13 +1,12 @@
+import { UnitAction, UnitOrder, UnitTrait } from "@/shared";
 import { TileCore } from "./tile";
-import { UnitDefinition, UnitTrait } from "./data/types";
 import { PlayerCore } from "./player";
-import { UnitAction, ACTIONS } from "./unit-actions";
+import { ACTIONS } from "./unit-actions";
 import { collector } from "./collector";
 import { UnitsManager } from "./unit-manager";
 import { getMoveCost, getMoveResult, MoveResult } from "./movement";
 import { SuppliesBlocker, SuppliesProducer } from "./supplies";
-
-export type UnitOrder = "go" | "skip" | "sleep";
+import { UnitDefinition } from "./data/types";
 
 export class UnitCore {
   id!: number;

@@ -1,6 +1,6 @@
 import { Container, Geometry, Graphics, Sprite, Texture } from "pixi.js";
 
-import { TileCoords } from "@/core/serialization/channel";
+import { TileCoords } from "@/shared";
 import { TILE_HEIGHT, TILE_ROW_OFFSET, TILE_SIZE } from "./constants";
 
 // prettier-ignore

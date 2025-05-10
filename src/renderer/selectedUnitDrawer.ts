@@ -1,4 +1,4 @@
-import { UnitDetailsChanneled } from "@/core/serialization/channel";
+import { UnitDetailsChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Graphics } from "pixi.js";
 import { getTileCenter } from "./utils";

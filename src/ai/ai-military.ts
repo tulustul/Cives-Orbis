@@ -1,5 +1,6 @@
+import { UnitTrait, UnitType } from "@/shared";
 import { CityCore } from "@/core/city";
-import { UnitDefinition, UnitTrait, UnitType } from "@/core/data/types";
+import { UnitDefinition } from "@/core/data/types";
 import { findPath } from "@/core/pathfinding";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";

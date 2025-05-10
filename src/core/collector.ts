@@ -1,16 +1,17 @@
-import { TilesFogOfWarChanneled } from "@/core.worker";
-import { PlayerYields } from "../shared";
+import {
+  TilesFogOfWarChanneled,
+  CityChanneled,
+  PlayerYields,
+  TechKnowledgeChanneled,
+} from "@/shared";
 import { CityCore } from "./city";
-import { Technology } from "./data/types";
 import { Game } from "./game";
 import { PlayerCore } from "./player";
 import { ResourceDeposit } from "./resources";
 import {
-  CityChanneled,
   cityToChannel,
   knowledgeTechToChannel,
   resourceWithTileToChannel,
-  TechKnowledgeChanneled,
   techToChannel,
   tileToChannel,
   tileToFogOfWar,
@@ -21,6 +22,7 @@ import {
 } from "./serialization/channel";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
+import { Technology } from "./data/types";
 
 export type CityRevealedResult = {
   city: CityChanneled;

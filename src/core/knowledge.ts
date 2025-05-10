@@ -9,13 +9,7 @@ import {
 } from "./data/types";
 import { dataManager } from "./data/dataManager";
 import { PlayerCore } from "./player";
-
-export type KnowledgeTechState =
-  | "discovered"
-  | "researching"
-  | "available"
-  | "queued"
-  | "unavailable";
+import { KnowledgeTechState } from "@/shared";
 
 export class Knowledge {
   discoveredTechs = new Set<Technology>();

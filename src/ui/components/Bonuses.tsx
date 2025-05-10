@@ -1,5 +1,4 @@
-import { Bonuses as BonusesType } from "@/core/bonus";
-import { Yields } from "@/core/yields";
+import { Bonuses as BonusesType, Yields } from "@/shared";
 import { Value } from "./Value";
 
 type Props = {

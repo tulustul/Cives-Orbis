@@ -1,6 +1,5 @@
 import { bridge } from "@/bridge";
-import { StatsGetChanneled } from "@/core.worker";
-import { StatsData } from "@/core/stats";
+import { StatsGetChanneled, StatsData } from "@/shared";
 import { Chart, ChartLine, OrnateModal } from "@/ui/components";
 import { useEffect, useState } from "react";
 import { useUiState } from "../uiState";

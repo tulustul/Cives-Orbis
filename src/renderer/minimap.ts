@@ -6,14 +6,17 @@ import {
   Sprite,
 } from "pixi.js";
 
-import { bridge } from "@/bridge";
-import { PlayerViewBoundingBox } from "@/core/player";
 import {
-  FogOfWarStatus,
   TileChanneled,
   TileFogOfWar,
-} from "@/core/serialization/channel";
-import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
+  PlayerViewBoundingBox,
+  Climate,
+  LandForm,
+  SeaLevel,
+  TileDirection,
+  FogOfWarStatus,
+} from "@/shared";
+import { bridge } from "@/bridge";
 import { mapUi } from "@/ui/mapUi";
 import { skip } from "rxjs";
 import { camera, Transform } from "./camera";

@@ -1,4 +1,4 @@
-import { UnitChanneled } from "@/core/serialization/channel";
+import { UnitChanneled } from "@/shared";
 import clsx from "clsx";
 import { AtlasIcon } from "./components/AtlasIcon";
 import { mapUi } from "./mapUi";

@@ -1,11 +1,11 @@
 import { bridge } from "@/bridge";
-import { EntityType } from "@/core/data/types";
 import {
   BuildingChanneled,
   CityDetailsChanneled,
   EntityChanneled,
   UnitDefChanneled,
-} from "@/core/serialization/channel";
+  EntityType,
+} from "@/shared";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import {
   Bonuses,
@@ -13,7 +13,7 @@ import {
   Tooltip,
   TooltipPlacement,
   Value,
-} from "../components";
+} from "@/ui/components";
 import { ProductRequirements } from "./ProductRequirements";
 
 type EntityContext = { city?: CityDetailsChanneled };

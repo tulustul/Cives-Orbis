@@ -1,7 +1,8 @@
+import { Yields } from "@/shared";
 import { ResourceDefinition } from "./data/types";
 import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
-import { EMPTY_YIELDS, Yields } from "./yields";
+import { EMPTY_YIELDS } from "./yields";
 
 export class PlayerResources {
   resourcesDifficulty = new Map<ResourceDefinition, number>();

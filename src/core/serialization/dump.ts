@@ -1,18 +1,26 @@
+import {
+  Climate,
+  LandForm,
+  ProductType,
+  SeaLevel,
+  TileDirection,
+  UnitOrder,
+  Yields,
+  TileRoad,
+  StatsData,
+} from "@/shared";
 import { AIPlayer } from "@/ai/ai-player";
 import { CityCore } from "@/core/city";
-import { ProductDefinition, ProductType } from "@/core/data/types";
+import { ProductDefinition } from "@/core/data/types";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
-import { TileRoad } from "@/core/tile-improvements";
 import { TilesMapCore } from "@/core/tiles-map";
-import { UnitCore, UnitOrder } from "@/core/unit";
-import { Yields } from "@/core/yields";
-import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
-import { Game } from "../game";
-import { Knowledge } from "../knowledge";
-import { ResourceDeposit } from "../resources";
-import { Stats, StatsData } from "../stats";
-import { dataManager } from "../data/dataManager";
+import { UnitCore } from "@/core/unit";
+import { Game } from "@/core/game";
+import { Knowledge } from "@/core/knowledge";
+import { ResourceDeposit } from "@/core/resources";
+import { Stats } from "@/core/stats";
+import { dataManager } from "@/core/data/dataManager";
 
 export interface GameSerialized {
   turn: number;

@@ -1,8 +1,5 @@
 import { bridge } from "@/bridge";
-import {
-  CityDetailsChanneled,
-  ProductChanneled,
-} from "@/core/serialization/channel";
+import { CityDetailsChanneled, ProductChanneled } from "@/shared";
 import { useEffect, useState } from "react";
 import { Value } from "@/ui/components";
 

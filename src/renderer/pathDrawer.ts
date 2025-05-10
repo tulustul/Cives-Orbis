@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { UnitPathChanneled } from "@/core/serialization/channel";
+import { UnitPathChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Graphics, Text, TextStyle } from "pixi.js";
 import { camera } from "./camera";

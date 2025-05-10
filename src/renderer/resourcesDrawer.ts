@@ -1,5 +1,5 @@
+import { ResourceWithTileChanneled } from "@/shared";
 import { bridge } from "@/bridge";
-import { ResourceWithTileChanneled } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Sprite } from "pixi.js";
 import { getAssets } from "./assets";

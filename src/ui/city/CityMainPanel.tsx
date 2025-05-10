@@ -1,7 +1,4 @@
-import {
-  CityDetailsChanneled,
-  CityProductChanneled,
-} from "@/core/serialization/channel";
+import { CityDetailsChanneled, CityProductChanneled } from "@/shared";
 import { Button, ImageIcon, ProgressBar, Tooltip } from "@/ui/components";
 import clsx from "clsx";
 

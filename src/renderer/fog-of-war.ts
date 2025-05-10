@@ -1,5 +1,5 @@
+import { TileFogOfWar } from "@/shared";
 import { bridge } from "@/bridge";
-import { TileFogOfWar } from "@/core/serialization/channel";
 import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
 import { HexDrawer } from "./hexDrawer";

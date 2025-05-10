@@ -2,8 +2,8 @@ import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 import { attack } from "./combat";
 import { collector } from "./collector";
-import { UnitType, UnitTrait } from "./data/types";
 import { zocAddUnit, zocForgetUnit } from "./zoc";
+import { UnitTrait, UnitType } from "@/shared";
 
 export enum MoveResult {
   none,

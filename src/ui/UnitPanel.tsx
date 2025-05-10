@@ -1,7 +1,5 @@
 import { bridge } from "@/bridge";
-import { UnitDetailsChanneled } from "@/core/serialization/channel";
-import { UnitOrder } from "@/core/unit";
-import { ACTIONS, UnitAction } from "@/core/unit-actions";
+import { UnitDetailsChanneled, UnitOrder, UnitAction } from "@/shared";
 import { useObservable } from "@/utils";
 import {
   IconArrowBigRightLine,
@@ -152,7 +150,8 @@ function UnitActions({ unit }: Props) {
   }
 
   function getActionName(action: UnitAction) {
-    return ACTIONS[action].name;
+    // return ACTIONS[action].name;
+    return action;
   }
 
   if (!unit.actions.length) {

@@ -1,280 +1,56 @@
-import { CityCore, CityVisibility } from "@/core/city";
+import { CityCore } from "@/core/city";
 import { Game } from "@/core/game";
 import { PlayerCore } from "@/core/player";
 import { ResourceDeposit } from "@/core/resources";
 import { TileCore } from "@/core/tile";
 import { TilesMapCore } from "@/core/tiles-map";
-import { UnitCore, UnitOrder } from "@/core/unit";
-import { Yields } from "@/core/yields";
-import { BaseTile, PlayerYields, SeaLevel } from "@/shared";
-import { Bonuses } from "../bonus";
-import { CombatSimulation } from "../combat";
+import { UnitCore } from "@/core/unit";
+import {
+  BuildingChanneled,
+  CityChanneled,
+  CityDetailsChanneled,
+  CityProductChanneled,
+  EntityChanneled,
+  EntityMinimalChanneled,
+  NationColors,
+  PlayerChanneled,
+  ProductChanneled,
+  ResourceDefinitionChannel,
+  SeaLevel,
+  TechDefChanneled,
+  TechKnowledgeChanneled,
+  TileCoords,
+  TileCoordsWithUnits,
+  TileDetailsChanneled,
+  TileImprovementChanneled,
+  TilesCoordsWithNeighbours,
+  TrackedPlayerChanneled,
+  UnitChanneled,
+  UnitDefChanneled,
+  UnitDetailsChanneled,
+  UnitMoveChanneled,
+  UnitPathChanneled,
+  FogOfWarStatus,
+  GameChanneled,
+  GameStartInfo,
+  MapChanneled,
+  ResourceChanneled,
+  ResourceWithTileChanneled,
+  TileChanneled,
+  TileOwnershipChanneled,
+  TileFogOfWar,
+} from "@/shared";
+import { Knowledge } from "@/core/knowledge";
 import {
   Building,
   Entity,
-  EntityType,
   IdleProduct,
-  NationColors,
   ProductDefinition,
-  ProductType,
   ResourceDefinition,
-  TechEra,
-  TechLayout,
   Technology,
   TileImprovementDefinition,
   UnitDefinition,
-  UnitTrait,
-  UnitType,
 } from "@/core/data/types";
-import { Knowledge, KnowledgeTechState } from "../knowledge";
-import { UnitAction } from "../unit-actions";
-
-export interface GameChanneled {
-  turn: number;
-  map: MapChanneled;
-  players: PlayerChanneled[];
-  trackedPlayer: TrackedPlayerChanneled;
-  units: UnitChanneled[];
-  cities: CityChanneled[];
-}
-
-export type GameInfo = {
-  mapWidth: number;
-  mapHeight: number;
-  aiOnly: boolean;
-  turn: number;
-};
-
-export type GameStartInfo = {
-  gameInfo: GameInfo;
-  tileToGo: TileCoords | null;
-  unitIdToSelect: number | null;
-  aiOnly: boolean;
-};
-
-export interface MapChanneled {
-  width: number;
-  height: number;
-  tiles: TileChanneled[][];
-}
-
-export interface TileChanneled extends BaseTile {
-  areaOf: number | null;
-  cityId: number | null;
-  unitsIds: number[];
-  resource: ResourceChanneled | null;
-  roads: string;
-  coasts: string;
-  playerColor: NationColors | null;
-  fullNeighbours: (number | null)[];
-  landFormNeighbours: number;
-  river: number;
-  forestData: number;
-  roadData: number;
-}
-
-export type TileOwnershipChanneled = TileCoords & {
-  colors: NationColors | null;
-  borders: number;
-};
-
-export interface TileDetailsChanneled extends Omit<TileChanneled, "unitsIds"> {
-  units: UnitChanneled[];
-  zocPlayerId: number | null;
-  zocNoMansLand: boolean;
-  isSupplied: boolean;
-  isExplored: boolean;
-}
-
-export type CombatSimulationChanneled = {
-  attacker: UnitDetailsChanneled;
-  defender: UnitDetailsChanneled;
-  simulation: CombatSimulation;
-};
-
-export type TileHoverDetails = {
-  tile: TileDetailsChanneled;
-  combatSimulation: CombatSimulationChanneled | null;
-};
-
-export interface CityChanneled {
-  id: number;
-  visibilityLevel: CityVisibility;
-  name: string;
-  size: number;
-  tile: TileCoords;
-  playerId: number;
-  colors: NationColors;
-
-  totalFood: number;
-  foodToGrow: number;
-  foodPerTurn: number;
-  turnsToGrow: number;
-
-  totalProduction: number;
-  productionPerTurn: number;
-  productionRequired: number | null;
-  turnsToProductionEnd: number | null;
-  productName: string | null;
-}
-
-export type CityStorage = {
-  resource: EntityMinimalChanneled;
-  amount: number;
-};
-
-export interface CityDetailsChanneled {
-  id: number;
-  visibilityLevel: CityVisibility;
-  name: string;
-  size: number;
-  tile: TileCoords;
-  playerId: number;
-  colors: NationColors;
-
-  totalFood: number;
-  foodToGrow: number;
-  turnsToGrow: number;
-
-  totalProduction: number;
-  turnsToProductionEnd: number | null;
-  foodConsumed: number;
-
-  totalCulture: number;
-  cultureToExpand: number;
-
-  tileYields: Yields;
-  yields: Yields;
-  perTurn: Yields;
-
-  buildings: BuildingChanneled[];
-
-  tiles: TileCoords[];
-  workedTiles: TilesCoordsWithNeighbours[];
-
-  turnsToExpand: number;
-
-  availableProducts: CityProductChanneled[];
-  product: CityProductChanneled | null;
-
-  storage: CityStorage[];
-}
-
-export type CityProductChanneled = {
-  enabled: boolean;
-  turnsToProduce: number;
-  definition: ProductChanneled;
-};
-
-export type ProductDefinitionChanneled = {
-  id: string;
-  entityType: ProductType;
-  name: string;
-  productionCost: number;
-  bonuses: Bonuses;
-};
-
-export interface PlayerChanneled {
-  id: number;
-  name: string;
-  colors: NationColors;
-  isAi: boolean;
-}
-
-export interface TrackedPlayerChanneled {
-  id: number;
-  colors: NationColors;
-  exploredTiles: TileCoords[];
-  visibleTiles: TileCoords[];
-  units: number[];
-  cities: number[];
-
-  yields: PlayerYields;
-  isAi: boolean;
-}
-
-export interface UnitChanneled {
-  id: number;
-  tile: TileCoordsWithUnits;
-  definitionId: string;
-  type: "military" | "civilian";
-  actions: "all" | "some" | "none";
-  colors: NationColors;
-  parentId: number | null;
-  childrenIds: number[];
-  actionPointsLeft: number;
-  health: number;
-  supplies: number;
-  playerId: number;
-  canControl: boolean;
-  order: UnitOrder | null;
-}
-
-export type UnitPathChanneled = {
-  turns: TileCoords[][];
-  startTurn: number;
-  endType: "move" | "attack";
-};
-
-export type UnitDetailsChanneled = {
-  id: number;
-  tile: TileCoords;
-  definition: UnitDefChanneled;
-  type: "military" | "civilian";
-  trait: UnitTrait;
-  colors: NationColors;
-  parentId: number | null;
-  childrenIds: number[];
-  actionPointsLeft: number;
-  health: number;
-  supplies: number;
-  order: UnitOrder | null;
-  path: UnitPathChanneled | null;
-  isSupplied: boolean;
-  playerId: number;
-  canControl: boolean;
-  actions: UnitAction[];
-};
-
-export type TileCoordsWithUnits = TileCoords & {
-  units: { id: number; parentId: number | null }[];
-};
-
-export type TilesCoordsWithNeighbours = TileCoords & {
-  fullNeighbours: (number | null)[];
-};
-
-export interface UnitMoveChanneled {
-  unitId: number;
-  tiles: TileCoordsWithUnits[];
-}
-
-export type ResourceChanneled = {
-  id: string;
-  name: string;
-  quantity: number;
-};
-
-export type ResourceDefinitionChannel = EntityMinimalChanneled & {
-  entityType: "resource";
-};
-
-export type ResourceWithTileChanneled = ResourceChanneled & {
-  tile: TileCoords;
-};
-
-export type AreaChanneled = {
-  id: number;
-  primaryColor: string;
-  secondaryColor: string;
-  tiles: TilesCoordsWithNeighbours[];
-};
-
-export type TileCoords = {
-  id: number;
-  x: number;
-  y: number;
-};
 
 export function gameToChannel(game: Game): GameChanneled {
   return {
@@ -610,18 +386,6 @@ export function tileToTileCoords(tile: TileCore): TileCoords {
   return { id: tile.id, x: tile.x, y: tile.y };
 }
 
-export enum FogOfWarStatus {
-  unexplored = 0,
-  explored = 1,
-  visible = 2,
-}
-
-export type TileFogOfWar = TileCoords & {
-  exploredBorder: number;
-  visibleBorder: number;
-  status: FogOfWarStatus;
-};
-
 export function tileToFogOfWar(tile: TileCore, game: Game): TileFogOfWar {
   let visibleBorder = 0;
   let exploredBorder = 0;
@@ -688,30 +452,6 @@ export function cityProductToChannel(
   };
 }
 
-export type EntityMinimalChanneled = {
-  id: string;
-  name: string;
-  entityType: EntityType;
-};
-
-export type TechDefChanneled = EntityMinimalChanneled & {
-  entityType: "technology";
-  cost: number;
-  requiredTechs: string[];
-  unlocks: EntityMinimalChanneled[];
-  era: TechEra;
-  layout: TechLayout;
-};
-
-export type TechKnowledgeChanneled = {
-  def: TechDefChanneled;
-  turns: number;
-  state: KnowledgeTechState;
-  queuePosition: number | null;
-  accumulated: number;
-  nextAccumulated: number;
-};
-
 export function entityToMinimalChannel(entity: Entity): EntityMinimalChanneled {
   return {
     id: entity.id,
@@ -748,17 +488,6 @@ export function knowledgeTechToChannel(
   };
 }
 
-export type UnitDefChanneled = EntityMinimalChanneled & {
-  entityType: "unit";
-  cost: number;
-  technology: EntityMinimalChanneled | null;
-  actionPoints: number;
-  strength: number;
-  type: UnitType;
-  trait: UnitTrait;
-  capacity: number;
-};
-
 export function unitDefToChannel(entity: UnitDefinition): UnitDefChanneled {
   return {
     id: entity.id,
@@ -775,18 +504,6 @@ export function unitDefToChannel(entity: UnitDefinition): UnitDefChanneled {
     capacity: entity.capacity,
   };
 }
-
-export type BuildingChanneled = EntityMinimalChanneled & {
-  entityType: "building" | "idleProduct";
-  cost: number;
-  technology: EntityMinimalChanneled | null;
-  bonuses: Bonuses;
-};
-
-export type TileImprovementChanneled = EntityMinimalChanneled & {
-  entityType: "tileImprovement";
-  technology: EntityMinimalChanneled | null;
-};
 
 export function buildingToChannel(
   entity: Building | IdleProduct,
@@ -853,11 +570,3 @@ export function entityToChannel(entity: Entity): EntityChanneled {
 
   return productToChannel(entity);
 }
-
-export type ProductChanneled = BuildingChanneled | UnitDefChanneled;
-
-export type EntityChanneled =
-  | TechDefChanneled
-  | ProductChanneled
-  | TileImprovementChanneled
-  | ResourceDefinitionChannel;

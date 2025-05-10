@@ -1,4 +1,4 @@
-// import { LandForm, SeaLevel, TileDirection } from "../shared";
+// import { LandForm, SeaLevel, TileDirection } from "@/shared";
 // import { Game } from "./game";
 // import { moveAlongPath } from "./movement";
 // import { PlayerCore } from "./player";
@@ -9,6 +9,8 @@
 //   SymbolCallbacks,
 // } from "./tests/game-factory";
 // import { dumpMap } from "./tests/map-utils";
+
+it("_", () => {});
 
 // const symbolCallbacks: SymbolCallbacks = {
 //   "0": (game, tile) =>

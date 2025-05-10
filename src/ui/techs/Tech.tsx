@@ -1,6 +1,6 @@
 import styles from "./TechTree.module.css";
 
-import { KnowledgeTechState } from "@/core/knowledge";
+import { KnowledgeTechState, TechKnowledgeChanneled } from "@/shared";
 import { CircularProgress, ImageIcon } from "@/ui/components";
 import { EntityTooltip } from "@/ui/entity";
 import { formatTurns } from "@/utils";
@@ -9,7 +9,6 @@ import { CSSProperties } from "react";
 
 import { techBlockHeight, techBlockWidth } from "./const";
 import { TechUnlocks } from "./TechUnlocs";
-import { TechKnowledgeChanneled } from "@/core/serialization/channel";
 
 type Props = {
   tech: TechKnowledgeChanneled;
