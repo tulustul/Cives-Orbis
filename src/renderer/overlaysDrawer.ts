@@ -1,6 +1,5 @@
-import { Graphics } from "pixi.js";
+import { Graphics, Container } from "pixi.js";
 
-import { Container } from "pixi.js";
 import { drawClosedHex, drawHex, getTileCoords } from "./utils";
 import { mapUi } from "@/ui/mapUi";
 import { TileCoords } from "@/core/serialization/channel";

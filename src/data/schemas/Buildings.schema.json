@@ -66,16 +66,12 @@
         {
           "additionalProperties": false,
           "properties": {
-            "technology": {
-              "type": "string"
-            },
             "type": {
               "const": "never",
               "type": "string"
             }
           },
           "required": [
-            "technology",
             "type"
           ],
           "type": "object"

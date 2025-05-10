@@ -13,7 +13,9 @@
     "build": "tsc -b && vite build",
     "build:atlas": "./scripts/build-atlas.cjs",
     "build:assets": "./scripts/build_assets.sh",
-    "build:schemas": "./scripts/build-schemas.cjs"
+    "build:schemas": "./scripts/build-schemas.cjs",
+    "build:techtree": "./scripts/update_tech_tree.py",
+    "analyze": "vite-bundle-visualizer -c vite.config.ts"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.31.0",
@@ -37,7 +39,9 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.19.0",
+    "eslint": "^9.26.0",
+    "eslint-plugin-json-schema-validator": "^5.4.0",
+    "eslint-plugin-jsonc": "^2.20.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
@@ -48,6 +52,7 @@
     "typescript-eslint": "^8.22.0",
     "typescript-json-schema": "^0.65.1",
     "vite": "^6.1.0",
+    "vite-bundle-visualizer": "^1.2.1",
     "vitest": "^3.0.7"
   }
 }

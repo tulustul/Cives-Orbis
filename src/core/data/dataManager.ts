@@ -335,3 +335,5 @@ function parseRequirement(r: JsonRequirement): Requirement {
 }
 
 export const dataManager = new DataManager();
+
+console.log("Data manager initialized");

@@ -61,7 +61,7 @@ def extract_tech_tree(file_path: str):
                         "layout": {
                             "x": x,
                             "y": y,
-                            "linksMiddlePoint": {},
+                            "linksMiddlePoint": [],
                         },
                     }
                 )
@@ -101,7 +101,12 @@ def extract_tech_tree(file_path: str):
                     mid_point = 0
 
                 layout = blocks_by_name[source_name]["layout"]
-                layout["linksMiddlePoint"][target_name] = mid_point * SCALE_X
+                layout["linksMiddlePoint"].append(
+                    {
+                        "tech": target_name,
+                        "point": mid_point * SCALE_X,
+                    }
+                )
 
     return blocks
 
@@ -110,11 +115,11 @@ def update_techs_file(diagram_techs: list[dict], techs_file_path: str):
     with open(techs_file_path, "r") as f:
         techs_content = f.read()
 
-    header, code = techs_content.split("=")
-    code_techs = json.loads(code.strip()[:-1])
+    techs_data = json.loads(techs_content)
+    techs = techs_data["items"]
 
     diagram_names = set([tech["name"] for tech in diagram_techs])
-    code_names = set([tech["name"] for tech in code_techs])
+    code_names = set([tech["name"] for tech in techs])
     mismatches = (diagram_names | code_names) - (diagram_names & code_names)
 
     if mismatches:
@@ -124,27 +129,27 @@ def update_techs_file(diagram_techs: list[dict], techs_file_path: str):
 
     diagram_tech_map = {tech["name"]: tech for tech in diagram_techs}
 
-    name_to_id = {tech["name"]: tech["id"] for tech in code_techs}
+    name_to_id = {tech["name"]: tech["id"] for tech in techs}
 
     required_techs = defaultdict(list)
     for tech in diagram_techs:
-        for required_tech in tech["layout"]["linksMiddlePoint"]:
-            required_techs[required_tech].append(name_to_id[tech["name"]])
+        for link in tech["layout"]["linksMiddlePoint"]:
+            required_techs[link["tech"]].append(name_to_id[tech["name"]])
 
-    for tech in code_techs:
+    for tech in techs:
         diagram_tech = diagram_tech_map[tech["name"]]
         tech["requiredTechnologies"] = required_techs[tech["name"]]
         tech["layout"] = {
             "x": (diagram_tech["layout"]["x"]) * SCALE_X + 50,
             "y": (diagram_tech["layout"]["y"]) * SCALE_X,
-            "linksMiddlePoint": {
-                name_to_id[name]: value * SCALE_X
-                for name, value in diagram_tech["layout"]["linksMiddlePoint"].items()
-            },
+            "linksMiddlePoint": [
+                {"tech": name_to_id[link["tech"]], "point": link["point"] * SCALE_X}
+                for link in diagram_tech["layout"]["linksMiddlePoint"]
+            ],
         }
 
     with open(techs_file_path, "w") as f:
-        f.write(f"{header} = {json.dumps(code_techs, indent=2)}")
+        f.write(json.dumps(techs_data, indent=2))
 
     print(f"Successfully updated the layout in {techs_file_path}")
 

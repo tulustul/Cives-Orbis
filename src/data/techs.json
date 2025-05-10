@@ -19,11 +19,26 @@
         "x": 50.0,
         "y": 473.00000000000006,
         "linksMiddlePoint": [
-          { "tech": "tech_agriculture", "point": 0.0 },
-          { "tech": "tech_animalHusbandry", "point": 0.0 },
-          { "tech": "tech_copperWorking", "point": 0.0 },
-          { "tech": "tech_hunting", "point": 0.0 },
-          { "tech": "tech_fishing", "point": 0.0 }
+          {
+            "tech": "tech_agriculture",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_animalHusbandry",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_copperWorking",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_hunting",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_fishing",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -43,8 +58,14 @@
         "x": 490.00000000000006,
         "y": 209.00000000000003,
         "linksMiddlePoint": [
-          { "tech": "tech_pottery", "point": 0.0 },
-          { "tech": "tech_irrigation", "point": -484.0000000000001 }
+          {
+            "tech": "tech_pottery",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_irrigation",
+            "point": -484.0000000000001
+          }
         ]
       }
     },
@@ -64,7 +85,12 @@
       "layout": {
         "x": 490.00000000000006,
         "y": 385.00000000000006,
-        "linksMiddlePoint": [{ "tech": "tech_wheel", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_wheel",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -83,8 +109,14 @@
         "x": 930.0000000000001,
         "y": 253.00000000000003,
         "linksMiddlePoint": [
-          { "tech": "tech_writing", "point": 0.0 },
-          { "tech": "tech_irrigation", "point": 0.0 }
+          {
+            "tech": "tech_writing",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_irrigation",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -98,7 +130,12 @@
       "layout": {
         "x": 930.0000000000001,
         "y": 385.00000000000006,
-        "linksMiddlePoint": [{ "tech": "tech_chariotry", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_chariotry",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -111,7 +148,12 @@
       "layout": {
         "x": 490.00000000000006,
         "y": 737.0000000000001,
-        "linksMiddlePoint": [{ "tech": "tech_sailing", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_sailing",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -125,8 +167,14 @@
         "x": 930.0000000000001,
         "y": 594.0,
         "linksMiddlePoint": [
-          { "tech": "tech_bronzeWorking", "point": 0.0 },
-          { "tech": "tech_construction", "point": 0.0 }
+          {
+            "tech": "tech_bronzeWorking",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_construction",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -140,7 +188,12 @@
       "layout": {
         "x": 930.0000000000001,
         "y": 770.0000000000001,
-        "linksMiddlePoint": [{ "tech": "tech_shipbuilding", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_shipbuilding",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -153,7 +206,12 @@
       "layout": {
         "x": 490.00000000000006,
         "y": 473.00000000000006,
-        "linksMiddlePoint": [{ "tech": "tech_archery", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_archery",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -166,7 +224,12 @@
       "layout": {
         "x": 930.0000000000001,
         "y": 473.00000000000006,
-        "linksMiddlePoint": [{ "tech": "tech_chariotry", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_chariotry",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -179,7 +242,12 @@
       "layout": {
         "x": 490.00000000000006,
         "y": 561.0,
-        "linksMiddlePoint": [{ "tech": "tech_masonry", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_masonry",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -193,9 +261,18 @@
         "x": 1370.0,
         "y": 253.00000000000003,
         "linksMiddlePoint": [
-          { "tech": "tech_calendar", "point": 0.0 },
-          { "tech": "tech_mathematics", "point": 0.0 },
-          { "tech": "tech_literature", "point": 0.0 }
+          {
+            "tech": "tech_calendar",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_mathematics",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_literature",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -209,7 +286,12 @@
       "layout": {
         "x": 1370.0,
         "y": 429.00000000000006,
-        "linksMiddlePoint": [{ "tech": "tech_horsebackRiding", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_horsebackRiding",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -227,7 +309,10 @@
         "x": 1370.0,
         "y": 550.0,
         "linksMiddlePoint": [
-          { "tech": "tech_metallurgy", "point": 48.400000000000006 }
+          {
+            "tech": "tech_metallurgy",
+            "point": 48.400000000000006
+          }
         ]
       }
     },
@@ -241,7 +326,12 @@
       "layout": {
         "x": 1810.0000000000002,
         "y": 165.0,
-        "linksMiddlePoint": [{ "tech": "tech_astrology", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_astrology",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -255,8 +345,14 @@
         "x": 1810.0000000000002,
         "y": 253.00000000000003,
         "linksMiddlePoint": [
-          { "tech": "tech_astrology", "point": 0.0 },
-          { "tech": "tech_currency", "point": 0.0 }
+          {
+            "tech": "tech_astrology",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_currency",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -270,7 +366,12 @@
       "layout": {
         "x": 2250.0,
         "y": 165.0,
-        "linksMiddlePoint": [{ "tech": "tech_astronomy", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_astronomy",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -283,7 +384,12 @@
       "layout": {
         "x": 1370.0,
         "y": 165.0,
-        "linksMiddlePoint": [{ "tech": "tech_calendar", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_calendar",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -297,7 +403,10 @@
         "x": 1370.0,
         "y": 638.0,
         "linksMiddlePoint": [
-          { "tech": "tech_shipbuilding", "point": -48.400000000000006 }
+          {
+            "tech": "tech_shipbuilding",
+            "point": -48.400000000000006
+          }
         ]
       }
     },
@@ -311,7 +420,12 @@
       "layout": {
         "x": 2250.0,
         "y": 572.0,
-        "linksMiddlePoint": [{ "tech": "tech_stirrup", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_stirrup",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -338,8 +452,14 @@
         "x": 3130.0000000000005,
         "y": 550.0,
         "linksMiddlePoint": [
-          { "tech": "tech_mechanics", "point": 0.0 },
-          { "tech": "tech_cropRotation", "point": 0.0 }
+          {
+            "tech": "tech_mechanics",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_cropRotation",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -380,9 +500,18 @@
         "x": 1810.0000000000002,
         "y": 363.00000000000006,
         "linksMiddlePoint": [
-          { "tech": "tech_cartography", "point": 0.0 },
-          { "tech": "tech_philosophy", "point": 0.0 },
-          { "tech": "tech_poetry", "point": 0.0 }
+          {
+            "tech": "tech_cartography",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_philosophy",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_poetry",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -397,8 +526,14 @@
         "x": 1810.0000000000002,
         "y": 638.0,
         "linksMiddlePoint": [
-          { "tech": "tech_jewelry", "point": 0.0 },
-          { "tech": "tech_ironWorking", "point": 0.0 }
+          {
+            "tech": "tech_jewelry",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_ironWorking",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -426,9 +561,18 @@
         "x": 2712.0,
         "y": 638.0,
         "linksMiddlePoint": [
-          { "tech": "tech_stirrup", "point": 0.0 },
-          { "tech": "tech_engineering", "point": 0.0 },
-          { "tech": "tech_metalArmor", "point": 0.0 }
+          {
+            "tech": "tech_stirrup",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_engineering",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_metalArmor",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -443,8 +587,14 @@
         "x": 2690.0,
         "y": 319.0,
         "linksMiddlePoint": [
-          { "tech": "tech_education", "point": 0.0 },
-          { "tech": "tech_anatomy", "point": 0.0 }
+          {
+            "tech": "tech_education",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_anatomy",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -497,7 +647,12 @@
       "layout": {
         "x": 2250.0,
         "y": 726.0000000000001,
-        "linksMiddlePoint": [{ "tech": "tech_glassBlowing", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_glassBlowing",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -511,8 +666,14 @@
         "x": 3130.0000000000005,
         "y": 275.0,
         "linksMiddlePoint": [
-          { "tech": "tech_alchemy", "point": 0.0 },
-          { "tech": "tech_medicine", "point": 0.0 }
+          {
+            "tech": "tech_alchemy",
+            "point": 0.0
+          },
+          {
+            "tech": "tech_medicine",
+            "point": 0.0
+          }
         ]
       }
     },
@@ -526,7 +687,12 @@
       "layout": {
         "x": 3130.0000000000005,
         "y": 187.00000000000003,
-        "linksMiddlePoint": [{ "tech": "tech_medicine", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_medicine",
+            "point": 0.0
+          }
+        ]
       }
     },
     {
@@ -552,7 +718,12 @@
       "layout": {
         "x": 2712.0,
         "y": 770.0000000000001,
-        "linksMiddlePoint": [{ "tech": "tech_optics", "point": 0.0 }]
+        "linksMiddlePoint": [
+          {
+            "tech": "tech_optics",
+            "point": 0.0
+          }
+        ]
       }
     },
     {

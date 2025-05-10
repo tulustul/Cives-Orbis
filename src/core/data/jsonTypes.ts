@@ -17,7 +17,6 @@ export type UnitTraitName = keyof typeof UnitTraitNamesInverse;
 
 export type JsonCityNeverRequirement = {
   type: "never";
-  technology: string;
 };
 
 export type JsonCityHaveBuildingRequirement = {

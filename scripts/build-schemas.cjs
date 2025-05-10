@@ -12,7 +12,8 @@ function generateSchema(type) {
   fs.writeFileSync(filepath, JSON.stringify(schema, null, 2));
 }
 
-const types = [
+
+const allTypes = [
   "JsonTechs",
   "JsonResources",
   "JsonNations",
@@ -22,7 +23,22 @@ const types = [
   "JsonUnits",
 ]
 
+const cliTypes = getCliTypes();
+const types = cliTypes ? cliTypes : allTypes;
+
 for (const type of types) {
   console.log(`Generating schema for ${type}...`);
   generateSchema(type);
+}
+
+
+function getCliTypes() {
+  const cliTypes = process.argv.slice(2);
+  for (const type of cliTypes) {
+    if (!allTypes.includes(type)) {
+      console.error(`Invalid type: ${type}. Must be one of: ${allTypes.join(', ')}`);
+      process.exit(1);
+    }
+  }
+  return cliTypes.length > 0 ? cliTypes : null;
 }
