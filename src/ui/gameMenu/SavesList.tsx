@@ -1,4 +1,4 @@
-import { deleteSaveGame, exportSave, listSaveGames } from "@/saving";
+import { deleteSaveGame, exportSave, listSaveGames } from "@/ui/saving";
 import { IconDownload, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Button, IconButton } from "../components";

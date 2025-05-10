@@ -108,7 +108,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     y: tile.y,
     climate: tile.climate,
     forest: tile.forest,
-    improvement: tile.improvement,
+    improvement: tile.improvement?.id ?? null,
     landForm: tile.landForm,
     riverParts: tile.riverParts,
     road: tile.road,

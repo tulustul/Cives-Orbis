@@ -172,7 +172,7 @@ class TileDrawer {
     const sprite = this.nextSprite();
     sprite.anchor.set(0.5, 0.5);
 
-    const textureName = `${this.tile.improvement.id}.png`;
+    const textureName = `${this.tile.improvement}.png`;
     sprite.texture = this.tilesTextures[textureName];
     putContainerAtTileCentered(sprite, this.tile, 0.6);
   }

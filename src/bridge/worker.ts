@@ -1,7 +1,8 @@
 import { Observable, share } from "rxjs";
-import CoreWorker from "@/core.worker?worker";
 
-export const worker = new CoreWorker();
+const worker = new Worker(new URL("@/core/core.worker.ts", import.meta.url), {
+  type: "module",
+});
 
 export const awaitingExecutors: ((value: any) => void)[] = [];
 

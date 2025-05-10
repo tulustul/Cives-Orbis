@@ -25,7 +25,7 @@ export class NextTurnService {
 
   async executeTask(
     task: PlayerTask | null,
-    options: { withAnimations?: boolean } = {}
+    options: { withAnimations?: boolean } = {},
   ) {
     if (this._waiting$.value) {
       return;

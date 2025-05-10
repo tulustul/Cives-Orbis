@@ -82,7 +82,7 @@ export function TileEditor() {
       <Radio
         label="Improvements"
         options={tileImprovementOptions}
-        value={tile.improvement?.id ?? null}
+        value={tile.improvement}
         onChange={(improvement) =>
           bridge.editor.tiles.update({
             id: tile!.id,

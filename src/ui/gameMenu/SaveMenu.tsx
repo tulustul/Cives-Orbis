@@ -1,4 +1,4 @@
-import { saveGameData } from "@/saving";
+import { saveGameData } from "@/ui/saving";
 import { useState } from "react";
 import { SavesList } from "./SavesList";
 import { useMenu } from "./gameMenuStore";

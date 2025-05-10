@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { loadAssets } from "./renderer/assets";
-import { GameCanvas } from "./ui/GameCanvas";
-import { MapMode } from "./ui/MapMode";
-import { useUiState } from "./ui/uiState";
-import { GameMenu, useMenu } from "./ui/gameMenu";
-import { CitiesLayer } from "./ui/mapElements/CitiesLayer";
-import { EditorMode } from "./ui/EditorMode";
+import { loadAssets } from "../renderer/assets";
+import { GameCanvas } from "./GameCanvas";
+import { MapMode } from "./MapMode";
+import { useUiState } from "./uiState";
+import { GameMenu, useMenu } from "./gameMenu";
+import { CitiesLayer } from "./mapElements/CitiesLayer";
+import { EditorMode } from "./EditorMode";
 
 import styles from "./App.module.css";
-import { Stats } from "./ui/stats";
-import { LoadingScreen } from "./ui/LoadingScreen";
-import { TechTree } from "./ui/techs";
-import { NotificationModal } from "./ui/NotificationModal";
+import { Stats } from "./stats";
+import { LoadingScreen } from "./LoadingScreen";
+import { TechTree } from "./techs";
+import { NotificationModal } from "./NotificationModal";
 
 function App() {
   const [loading, setLoading] = useState(true);

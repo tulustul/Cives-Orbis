@@ -6,18 +6,15 @@ import {
   TileRoad,
   Yields,
 } from "@/shared";
-import { EMPTY_YIELDS, addYields } from "./yields";
-import { UnitCore } from "./unit";
 import { CityCore } from "./city";
 import { collector } from "./collector";
 import { Nation, TileImprovementDefinition } from "./data/types";
-import { ResourceDeposit } from "./resources";
 import { PlayerCore } from "./player";
+import { ResourceDeposit } from "./resources";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
-import { renderer } from "src/renderer/renderer";
-
-console.log(renderer);
+import { UnitCore } from "./unit";
+import { EMPTY_YIELDS, addYields } from "./yields";
 
 const BASE_CLIMATE_YIELDS: Record<Climate, Yields> = {
   [Climate.arctic]: { ...EMPTY_YIELDS },

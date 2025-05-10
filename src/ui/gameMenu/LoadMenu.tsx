@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { importSave, loadGameData } from "@/saving";
+import { importSave, loadGameData } from "@/ui/saving";
 import { Button, Modal, Spinner } from "@/ui/components";
 import { useRef, useState } from "react";
 import { mapUi } from "../mapUi";

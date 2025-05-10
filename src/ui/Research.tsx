@@ -6,7 +6,7 @@ import { bridge } from "@/bridge";
 export function Research() {
   const tech = useObservable(
     bridge.technologies.researchUpdated$,
-    bridge.technologies.getResearch
+    bridge.technologies.getResearch,
   );
 
   const { setView } = useUiState();

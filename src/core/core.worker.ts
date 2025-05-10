@@ -1,23 +1,23 @@
 /// <reference lib="webworker" />
 
-import { AIPlayer } from "./ai/ai-player";
-import { CityCore } from "./core/city";
-import { collector } from "./core/collector";
-import { simulateCombat } from "./core/combat";
-import { dataManager } from "./core/data/dataManager";
+import { AIPlayer } from "@/ai/ai-player";
+import { CityCore } from "./city";
+import { collector } from "./collector";
+import { simulateCombat } from "./combat";
+import { dataManager } from "./data/dataManager";
 import {
   Entity,
   HaveRequirements,
   Nation,
   ResourceDefinition,
-} from "./core/data/types";
-import { Game } from "./core/game";
-import { getTilesInRange } from "./core/hex-math";
-import { moveAlongPath } from "./core/movement";
-import { findPath } from "./core/pathfinding";
-import { PlayerCore } from "./core/player";
-import { getFailedWeakRequirements } from "./core/requirements";
-import { ResourceDeposit } from "./core/resources";
+} from "./data/types";
+import { Game } from "./game";
+import { getTilesInRange } from "./hex-math";
+import { moveAlongPath } from "./movement";
+import { findPath } from "./pathfinding";
+import { PlayerCore } from "./player";
+import { getFailedWeakRequirements } from "./requirements";
+import { ResourceDeposit } from "./resources";
 import {
   cityDetailsToChannel,
   cityToChannel,
@@ -34,9 +34,9 @@ import {
   trackedPlayerToChannel,
   unitDetailsToChannel,
   unitToChannel,
-} from "./core/serialization/channel";
-import { dumpGame, loadGame } from "./core/serialization/dump";
-import { RealisticMapGenerator } from "./map-generators/realistic";
+} from "./serialization/channel";
+import { dumpGame, loadGame } from "./serialization/dump";
+import { RealisticMapGenerator } from "@/map-generators/realistic";
 import {
   CityDetailsChanneled,
   CityGetWorkTilesResult,
@@ -74,7 +74,7 @@ import {
   UnitSpawnOptions,
   CombatSimulation,
   Option,
-} from "./shared";
+} from "../shared";
 
 let game: Game;
 

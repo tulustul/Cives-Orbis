@@ -44,7 +44,7 @@ function Minimap_() {
         (event.clientX - canvasRect.x - minimap.transform.x) /
           minimap.transform.scale,
         (event.clientY - canvasRect.y - minimap.transform.y) /
-          minimap.transform.scale
+          minimap.transform.scale,
       );
     }
   }

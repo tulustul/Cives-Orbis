@@ -1,4 +1,3 @@
-import { TileImprovementDefinition } from "@/core/data/types";
 import { CombatSimulation } from "./combat";
 import {
   Bonuses,
@@ -90,7 +89,7 @@ export type TileChanneled = {
   riverParts: TileDirection[];
   forest: boolean;
   wetlands: boolean;
-  improvement: TileImprovementDefinition | null;
+  improvement: string | null;
   road: TileRoad | null;
 
   yields: Yields;

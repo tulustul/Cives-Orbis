@@ -339,7 +339,7 @@ function parseRequirement(r: JsonRequirement): Requirement {
 async function fetchJson<T>(url: string): Promise<T> {
   if (import.meta.env.MODE === "test") {
     url = path.join(process.cwd(), url);
-    const data = await import(url);
+    const data = await import(/* @vite-ignore */ url);
     return data.default as T;
   }
 
