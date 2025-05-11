@@ -162,7 +162,7 @@
     {
       "id": "resource-pig",
       "name": "Pig",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "common",
@@ -318,7 +318,7 @@
     {
       "id": "resource-wheat",
       "name": "Wheat",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "veryCommon",
@@ -348,7 +348,7 @@
     {
       "id": "resource-tomato",
       "name": "Tomato",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "common",
@@ -424,7 +424,7 @@
     {
       "id": "resource-maize",
       "name": "Maize",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "veryCommon",
@@ -461,7 +461,7 @@
     {
       "id": "resource-rice",
       "name": "Rice",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "veryCommon",
@@ -491,7 +491,7 @@
     {
       "id": "resource-fish",
       "name": "Fish",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         { "abundance": "veryCommon", "richness": "rich", "seaLevel": "shallow" }
       ],
@@ -641,7 +641,7 @@
     {
       "id": "resource-cattle",
       "name": "Cattle",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "common",
@@ -701,7 +701,7 @@
     {
       "id": "resource-goat",
       "name": "Goat",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "common",
@@ -723,7 +723,7 @@
     {
       "id": "resource-sheep",
       "name": "Sheep",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "common",
@@ -812,7 +812,7 @@
     {
       "id": "resource-grape",
       "name": "Grape",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "rare",
@@ -844,7 +844,7 @@
     {
       "id": "resource-olive",
       "name": "Olive",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "common",
@@ -920,7 +920,7 @@
     {
       "id": "resource-orange",
       "name": "Orange",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "common",
@@ -943,7 +943,7 @@
     {
       "id": "resource-apple",
       "name": "Apple",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "common",
@@ -966,7 +966,7 @@
     {
       "id": "resource-lemon",
       "name": "Lemon",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "crop"],
       "distribution": [
         {
           "abundance": "rare",
@@ -1053,7 +1053,7 @@
     {
       "id": "resource-game",
       "name": "Wild Game",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "common",
@@ -1089,7 +1089,7 @@
     {
       "id": "resource-llama",
       "name": "Llama",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "common",
@@ -1126,7 +1126,7 @@
     {
       "id": "resource-chicken",
       "name": "Chicken",
-      "categories": ["natural", "organic", "food"],
+      "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
           "abundance": "veryCommon",

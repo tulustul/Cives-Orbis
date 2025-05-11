@@ -7,6 +7,8 @@ export class CityStorage {
 
   storageLimits: Record<ResourceCategory, number> = {
     food: 100,
+    livestock: 100,
+    crop: 100,
     luxury: 100,
     material: 100,
     mineral: 100,

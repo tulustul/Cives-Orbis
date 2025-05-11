@@ -60,7 +60,11 @@
               "type": "string"
             }
           },
-          "required": ["bonuses", "bonusesWhenWorked", "requiredImprovement"],
+          "required": [
+            "bonuses",
+            "bonusesWhenWorked",
+            "requiredImprovement"
+          ],
           "type": "object"
         },
         "distribution": {
@@ -88,7 +92,11 @@
                 "type": "boolean"
               },
               "landForm": {
-                "enum": ["hills", "mountains", "plains"],
+                "enum": [
+                  "hills",
+                  "mountains",
+                  "plains"
+                ],
                 "type": "string"
               },
               "richness": {
@@ -98,11 +106,18 @@
                 "type": "boolean"
               },
               "seaLevel": {
-                "enum": ["deep", "none", "shallow"],
+                "enum": [
+                  "deep",
+                  "none",
+                  "shallow"
+                ],
                 "type": "string"
               }
             },
-            "required": ["abundance", "richness"],
+            "required": [
+              "abundance",
+              "richness"
+            ],
             "type": "object"
           },
           "type": "array"
@@ -114,7 +129,12 @@
           "type": "string"
         }
       },
-      "required": ["categories", "distribution", "id", "name"],
+      "required": [
+        "categories",
+        "distribution",
+        "id",
+        "name"
+      ],
       "type": "object"
     },
     "Partial<Yields>": {
@@ -145,12 +165,19 @@
       "type": "object"
     },
     "ResourceAbundance": {
-      "enum": ["common", "rare", "veryCommon", "veryRare"],
+      "enum": [
+        "common",
+        "rare",
+        "veryCommon",
+        "veryRare"
+      ],
       "type": "string"
     },
     "ResourceCategory": {
       "enum": [
+        "crop",
         "food",
+        "livestock",
         "luxury",
         "manmade",
         "material",
@@ -162,7 +189,12 @@
       "type": "string"
     },
     "ResourceRichness": {
-      "enum": ["poor", "rich", "veryPoor", "veryRich"],
+      "enum": [
+        "poor",
+        "rich",
+        "veryPoor",
+        "veryRich"
+      ],
       "type": "string"
     }
   },
@@ -177,6 +209,9 @@
       "type": "array"
     }
   },
-  "required": ["$schema", "items"],
+  "required": [
+    "$schema",
+    "items"
+  ],
   "type": "object"
 }

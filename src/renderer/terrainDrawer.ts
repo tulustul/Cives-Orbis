@@ -341,7 +341,7 @@ vec4 applyForest(vec4 color, float minY, float maxY) {
     return color;
   }
 
-  float gridSize = 30.0;
+  float gridSize = 20.0;
   float treeRadius = 0.09;
   float tileHeight =  2.0 / sqrt(3.0);float tileRowOffset = tileHeight * 0.75;
   float rowStep      = 0.75 * (2.0 / SQRT3);

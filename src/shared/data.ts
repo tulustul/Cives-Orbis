@@ -53,6 +53,8 @@ export type ResourceCategory =
   | "mineral"
   | "organic"
   | "food"
+  | "livestock"
+  | "crop"
   | "material"
   | "strategic"
   | "luxury";
