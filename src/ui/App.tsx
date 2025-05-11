@@ -59,7 +59,9 @@ function App() {
 
   return (
     <>
-      {menu.enabled && uiState.mode !== "loading" && <GameMenu />}
+      {menu.enabled && uiState.mode !== "loading" && (
+        <GameMenu showLogo={uiState.mode === "none"} />
+      )}
       <GameCanvas />
       {uiState.mode === "map" && <CitiesLayer />}
       {getContent()}

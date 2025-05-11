@@ -107,7 +107,7 @@ export class Controls {
 
   onWheel(event: WheelEvent) {
     camera.scaleByWithEasing(
-      1 + (event.deltaY > 0 ? -0.3 : 0.3),
+      1 + -event.deltaY * 0.003,
       event.clientX,
       event.clientY,
       300,
