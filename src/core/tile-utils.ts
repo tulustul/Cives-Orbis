@@ -5,6 +5,7 @@ import {
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { Climate, LandForm, SeaLevel } from "@/shared";
+import { ResourceRichness } from "./data/jsonTypes";
 
 const FORESTABLE_CLIMATES = new Set<Climate>([
   Climate.temperate,
@@ -77,34 +78,27 @@ export function isRoadPossible(tile: TileCore) {
   );
 }
 
-export function isResourcePossible(
+export function getResourceRichness(
   tile: TileCore,
   resourceDef: ResourceDefinition | null,
-) {
-  if (!resourceDef || tile.landForm === LandForm.mountains) {
-    return false;
+): ResourceRichness | null {
+  if (!resourceDef) {
+    return null;
   }
 
-  const dis = resourceDef.depositDef?.distribution;
-  if (!dis) {
-    return false;
+  for (const d of resourceDef.distribution) {
+    if (
+      (d.seaLevel === undefined || d.seaLevel === tile.seaLevel) &&
+      (d.landForm === undefined || d.landForm === tile.landForm) &&
+      (d.climate === undefined || d.climate === tile.climate) &&
+      (d.forest === undefined || d.forest === tile.forest) &&
+      (d.river === undefined || d.river === tile.riverParts.length > 0) &&
+      (d.coast === undefined || d.coast === tile.coast) &&
+      (d.wetlands === undefined || d.wetlands === tile.wetlands)
+    ) {
+      return d.richness;
+    }
   }
 
-  if (dis.seaLevels !== undefined && !dis.seaLevels.includes(tile.seaLevel)) {
-    return false;
-  }
-
-  if (dis.landForms !== undefined && !dis.landForms.includes(tile.landForm)) {
-    return false;
-  }
-
-  if (dis.climates !== undefined && !dis.climates.includes(tile.climate)) {
-    return false;
-  }
-
-  if (dis.forest !== undefined && dis.forest !== tile.forest) {
-    return false;
-  }
-
-  return true;
+  return null;
 }

@@ -72,5 +72,5 @@ function getCandidates(allCandidates: Set<TileCore>): TileCore[] {
 }
 
 function enhanceLocation(tile: TileCore) {
-  // TODO
+  tile.resource = null;
 }

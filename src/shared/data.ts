@@ -47,6 +47,16 @@ export type UnitAction =
   | "buildCottage"
   | "buildFishery";
 
+export type ResourceCategory =
+  | "natural"
+  | "manmade"
+  | "mineral"
+  | "organic"
+  | "food"
+  | "material"
+  | "strategic"
+  | "luxury";
+
 export type UnitOrder = "go" | "skip" | "sleep";
 
 export type TechLayout = {
@@ -95,8 +105,6 @@ export type Bonuses = {
 };
 
 export type ProductType = "unit" | "building" | "idleProduct";
-
-export type ResourceType = "food" | "material" | "commodity" | "luxury";
 
 export type PlayerViewBoundingBox = {
   minX: number;

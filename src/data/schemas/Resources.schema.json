@@ -5,24 +5,116 @@
     "JsonResource": {
       "additionalProperties": false,
       "properties": {
+        "categories": {
+          "items": {
+            "$ref": "#/definitions/ResourceCategory"
+          },
+          "type": "array"
+        },
         "depositDef": {
-          "$ref": "#/definitions/RawResourceDepositDefinition"
+          "additionalProperties": false,
+          "properties": {
+            "bonuses": {
+              "additionalProperties": false,
+              "properties": {
+                "transferProductionToCulture": {
+                  "type": "number"
+                },
+                "transferProductionToFood": {
+                  "type": "number"
+                },
+                "transferProductionToPublicWorks": {
+                  "type": "number"
+                },
+                "yieldFactor": {
+                  "$ref": "#/definitions/Partial<Yields>"
+                },
+                "yieldValue": {
+                  "$ref": "#/definitions/Partial<Yields>"
+                }
+              },
+              "type": "object"
+            },
+            "bonusesWhenWorked": {
+              "additionalProperties": false,
+              "properties": {
+                "transferProductionToCulture": {
+                  "type": "number"
+                },
+                "transferProductionToFood": {
+                  "type": "number"
+                },
+                "transferProductionToPublicWorks": {
+                  "type": "number"
+                },
+                "yieldFactor": {
+                  "$ref": "#/definitions/Partial<Yields>"
+                },
+                "yieldValue": {
+                  "$ref": "#/definitions/Partial<Yields>"
+                }
+              },
+              "type": "object"
+            },
+            "requiredImprovement": {
+              "type": "string"
+            }
+          },
+          "required": ["bonuses", "bonusesWhenWorked", "requiredImprovement"],
+          "type": "object"
+        },
+        "distribution": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "abundance": {
+                "$ref": "#/definitions/ResourceAbundance"
+              },
+              "climate": {
+                "enum": [
+                  "arctic",
+                  "desert",
+                  "savanna",
+                  "temperate",
+                  "tropical",
+                  "tundra"
+                ],
+                "type": "string"
+              },
+              "coast": {
+                "type": "boolean"
+              },
+              "forest": {
+                "type": "boolean"
+              },
+              "landForm": {
+                "enum": ["hills", "mountains", "plains"],
+                "type": "string"
+              },
+              "richness": {
+                "$ref": "#/definitions/ResourceRichness"
+              },
+              "river": {
+                "type": "boolean"
+              },
+              "seaLevel": {
+                "enum": ["deep", "none", "shallow"],
+                "type": "string"
+              }
+            },
+            "required": ["abundance", "richness"],
+            "type": "object"
+          },
+          "type": "array"
         },
         "id": {
           "type": "string"
         },
         "name": {
           "type": "string"
-        },
-        "resourceType": {
-          "$ref": "#/definitions/ResourceType"
         }
       },
-      "required": [
-        "id",
-        "name",
-        "resourceType"
-      ],
+      "required": ["categories", "distribution", "id", "name"],
       "type": "object"
     },
     "Partial<Yields>": {
@@ -52,127 +144,25 @@
       },
       "type": "object"
     },
-    "RawResourceDepositDefinition": {
-      "additionalProperties": false,
-      "properties": {
-        "bonuses": {
-          "additionalProperties": false,
-          "properties": {
-            "transferProductionToCulture": {
-              "type": "number"
-            },
-            "transferProductionToFood": {
-              "type": "number"
-            },
-            "transferProductionToPublicWorks": {
-              "type": "number"
-            },
-            "yieldFactor": {
-              "$ref": "#/definitions/Partial<Yields>"
-            },
-            "yieldValue": {
-              "$ref": "#/definitions/Partial<Yields>"
-            }
-          },
-          "type": "object"
-        },
-        "bonusesWhenWorked": {
-          "additionalProperties": false,
-          "properties": {
-            "transferProductionToCulture": {
-              "type": "number"
-            },
-            "transferProductionToFood": {
-              "type": "number"
-            },
-            "transferProductionToPublicWorks": {
-              "type": "number"
-            },
-            "yieldFactor": {
-              "$ref": "#/definitions/Partial<Yields>"
-            },
-            "yieldValue": {
-              "$ref": "#/definitions/Partial<Yields>"
-            }
-          },
-          "type": "object"
-        },
-        "distribution": {
-          "additionalProperties": false,
-          "properties": {
-            "clasterize": {
-              "type": "number"
-            },
-            "climates": {
-              "items": {
-                "enum": [
-                  "arctic",
-                  "desert",
-                  "savanna",
-                  "temperate",
-                  "tropical",
-                  "tundra"
-                ],
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "forest": {
-              "type": "boolean"
-            },
-            "landForms": {
-              "items": {
-                "enum": [
-                  "hills",
-                  "mountains",
-                  "plains"
-                ],
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "quantityMedian": {
-              "type": "number"
-            },
-            "quantityStddev": {
-              "type": "number"
-            },
-            "seaLevels": {
-              "items": {
-                "enum": [
-                  "deep",
-                  "none",
-                  "shallow"
-                ],
-                "type": "string"
-              },
-              "type": "array"
-            }
-          },
-          "required": [
-            "quantityMedian",
-            "quantityStddev"
-          ],
-          "type": "object"
-        },
-        "requiredImprovement": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "bonuses",
-        "bonusesWhenWorked",
-        "requiredImprovement"
-      ],
-      "type": "object"
+    "ResourceAbundance": {
+      "enum": ["common", "rare", "veryCommon", "veryRare"],
+      "type": "string"
     },
-    "ResourceType": {
+    "ResourceCategory": {
       "enum": [
-        "commodity",
         "food",
         "luxury",
-        "material"
+        "manmade",
+        "material",
+        "mineral",
+        "natural",
+        "organic",
+        "strategic"
       ],
+      "type": "string"
+    },
+    "ResourceRichness": {
+      "enum": ["poor", "rich", "veryPoor", "veryRich"],
       "type": "string"
     }
   },
@@ -187,9 +177,6 @@
       "type": "array"
     }
   },
-  "required": [
-    "$schema",
-    "items"
-  ],
+  "required": ["$schema", "items"],
   "type": "object"
 }

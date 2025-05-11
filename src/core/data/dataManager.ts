@@ -1,4 +1,4 @@
-import { EntityType } from "@/shared";
+import { EntityType, ResourceCategory } from "@/shared";
 
 import nationsUrl from "@/data/nations.json?url";
 import buildingsUrl from "@/data/buildings.json?url";
@@ -235,38 +235,56 @@ class ResourceProvider extends EntityProvider<
   ResourceDefinition,
   JsonResource
 > {
+  categories: Record<ResourceCategory, ResourceDefinition[]> = {
+    food: [],
+    luxury: [],
+    material: [],
+    mineral: [],
+    natural: [],
+    organic: [],
+    manmade: [],
+    strategic: [],
+  };
+
   parse(json: JsonResource): ResourceDefinition {
     let depositDef: ResourceDepositDefinition | undefined = undefined;
     if (json.depositDef) {
-      let distribution: ResourceDistribution | undefined = undefined;
-      if (json.depositDef.distribution) {
-        distribution = {
-          ...json.depositDef.distribution,
-          climates: json.depositDef.distribution.climates?.map(
-            (climate) => climateNamesInverse[climate],
-          ),
-          landForms: json.depositDef.distribution.landForms?.map(
-            (landForm) => landFormNamesInverse[landForm],
-          ),
-          seaLevels: json.depositDef.distribution.seaLevels?.map(
-            (seaLevel) => seaLevelNamesInverse[seaLevel],
-          ),
-        };
-      }
       depositDef = {
         ...json.depositDef,
         requiredImprovement: this.manager.tileImprovements.get(
           json.depositDef.requiredImprovement,
         ),
-        distribution,
       };
     }
 
-    return {
+    const distribution: ResourceDistribution[] = [];
+    for (const jsonDistribution of json.distribution) {
+      distribution.push({
+        ...jsonDistribution,
+        landForm: jsonDistribution.landForm
+          ? landFormNamesInverse[jsonDistribution.landForm]
+          : undefined,
+        climate: jsonDistribution.climate
+          ? climateNamesInverse[jsonDistribution.climate]
+          : undefined,
+        seaLevel: jsonDistribution.seaLevel
+          ? seaLevelNamesInverse[jsonDistribution.seaLevel]
+          : undefined,
+      });
+    }
+
+    const resourceDef: ResourceDefinition = {
       ...json,
       entityType: "resource",
       depositDef,
+      distribution,
     };
+
+    for (const category of json.categories) {
+      this.categories[category].push(resourceDef);
+    }
+
+    return resourceDef;
   }
 }
 

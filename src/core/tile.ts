@@ -68,6 +68,7 @@ export class TileCore {
 
   forest = false;
   wetlands = false;
+  coast = false; // TODO implement
   improvement: TileImprovementDefinition | null = null;
   road: TileRoad | null = null;
   resource: ResourceDeposit | null = null;

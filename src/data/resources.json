@@ -4,7 +4,27 @@
     {
       "id": "resource-stone",
       "name": "Stone",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "hills"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "climate": "desert",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-quarry",
         "bonuses": {
@@ -16,19 +36,27 @@
           "yieldValue": {
             "production": 2
           }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-limestone",
       "name": "Limestone",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "poor",
+          "seaLevel": "none",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "hills"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-quarry",
         "bonuses": {
@@ -36,19 +64,16 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 2 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-marble",
       "name": "Marble",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "rare", "richness": "poor", "landForm": "hills" }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-quarry",
         "bonuses": {
@@ -56,19 +81,21 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 2 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-clay",
       "name": "Clay",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "veryRich",
+          "river": true,
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-clayPit",
         "bonuses": {
@@ -76,19 +103,14 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 2 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-wood",
       "name": "Wood",
-      "resourceType": "material",
+      "categories": ["material"],
+      "distribution": [],
       "depositDef": {
         "requiredImprovement": "tile-impr-lumbermill",
         "bonuses": {
@@ -96,19 +118,18 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 2 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-copperOre",
       "name": "Copper Ore",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "rare", "richness": "poor", "seaLevel": "none" },
+        { "abundance": "common", "richness": "rich", "landForm": "hills" },
+        { "abundance": "common", "richness": "rich", "landForm": "mountains" }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
@@ -116,19 +137,18 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-tinOre",
       "name": "Tin Ore",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "veryRare", "richness": "rich", "seaLevel": "none" },
+        { "abundance": "rare", "richness": "veryRich", "landForm": "hills" },
+        { "abundance": "rare", "richness": "veryRich", "landForm": "mountains" }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
@@ -136,19 +156,29 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-pig",
       "name": "Pig",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
@@ -156,19 +186,22 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-ironOre",
       "name": "Iron Ore",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "rare", "richness": "rich", "seaLevel": "none" },
+        { "abundance": "common", "richness": "rich", "landForm": "hills" },
+        {
+          "abundance": "common",
+          "richness": "veryRich",
+          "landForm": "mountains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
@@ -176,897 +209,1116 @@
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-salt",
       "name": "Salt",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "luxury"],
+      "distribution": [
+        { "abundance": "rare", "richness": "rich", "climate": "desert" },
+        { "abundance": "common", "richness": "rich", "coast": true }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
-          "yieldValue": { "production": 1 }
+          "yieldValue": { "gold": 1, "food": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 2, "food": 1 }
         }
       }
     },
     {
       "id": "resource-coal",
       "name": "Coal",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "rare", "richness": "rich", "seaLevel": "none" },
+        { "abundance": "common", "richness": "rich", "landForm": "hills" },
+        {
+          "abundance": "common",
+          "richness": "veryRich",
+          "landForm": "mountains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
-          "yieldValue": { "production": 1 }
+          "yieldValue": { "production": 2 }
         },
         "bonusesWhenWorked": {
           "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
         }
       }
     },
     {
       "id": "resource-gem",
       "name": "Gem",
-      "resourceType": "luxury",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-sapphire",
-      "name": "Sapphire",
-      "resourceType": "luxury",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-amber",
-      "name": "Amber",
-      "resourceType": "luxury",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-wheat",
-      "name": "Wheat",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "climates": ["temperate", "savanna"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-tomato",
-      "name": "Tomato",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "climates": ["temperate", "savanna"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-sulphur",
-      "name": "Sulphur",
-      "resourceType": "material",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "climates": ["temperate", "savanna"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-cinnamon",
-      "name": "Cinnamon",
-      "resourceType": "luxury",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-maize",
-      "name": "Maize",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-rice",
-      "name": "Rice",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-fish",
-      "name": "Fish",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-fishery",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["shallow"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-whale",
-      "name": "Whale",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-fishery",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["shallow"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-camel",
-      "name": "Camel",
-      "resourceType": "material",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["shallow"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-pearl",
-      "name": "Pearl",
-      "resourceType": "food",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-fishery",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["shallow"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-goldOre",
-      "name": "Gold Ore",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "luxury"],
+      "distribution": [
+        { "abundance": "veryRare", "richness": "veryRich", "seaLevel": "none" },
+        { "abundance": "rare", "richness": "veryRich", "landForm": "mountains" }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
           "yieldValue": { "gold": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 5 }
+          "yieldValue": { "gold": 4 }
+        }
+      }
+    },
+    {
+      "id": "resource-sapphire",
+      "name": "Sapphire",
+      "categories": ["natural", "mineral", "luxury"],
+      "distribution": [
+        { "abundance": "veryRare", "richness": "veryRich", "seaLevel": "none" },
+        { "abundance": "rare", "richness": "veryRich", "landForm": "mountains" }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 3 }
         },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 5 }
+        }
+      }
+    },
+    {
+      "id": "resource-amber",
+      "name": "Amber",
+      "categories": ["natural", "mineral", "luxury"],
+      "distribution": [
+        {
+          "abundance": "veryRare",
+          "richness": "poor",
+          "forest": true
+        },
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "coast": true
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 4 }
+        }
+      }
+    },
+    {
+      "id": "resource-wheat",
+      "name": "Wheat",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "temperate"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "savanna"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-tomato",
+      "name": "Tomato",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "common",
+          "richness": "poor",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-sulphur",
+      "name": "Sulphur",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "mountains"
+        },
+        { "abundance": "rare", "richness": "rich", "climate": "desert" }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "production": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-cinnamon",
+      "name": "Cinnamon",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-plantation",
+        "bonuses": {
+          "yieldValue": { "gold": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 4 }
+        }
+      }
+    },
+    {
+      "id": "resource-maize",
+      "name": "Maize",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-rice",
+      "name": "Rice",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "river": true
+        },
+        {
+          "abundance": "common",
+          "richness": "poor",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "river": true
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 4 }
+        }
+      }
+    },
+    {
+      "id": "resource-fish",
+      "name": "Fish",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        { "abundance": "veryCommon", "richness": "rich", "seaLevel": "shallow" }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-fishery",
+        "bonuses": {
+          "yieldValue": { "food": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 4 }
+        }
+      }
+    },
+    {
+      "id": "resource-whale",
+      "name": "Whale",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        { "abundance": "rare", "richness": "veryRich", "seaLevel": "deep" }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-fishery",
+        "bonuses": {
+          "yieldValue": { "food": 1, "gold": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 2, "gold": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-camel",
+      "name": "Camel",
+      "categories": ["natural", "organic", "strategic"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "desert",
+          "river": true
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-pasture",
+        "bonuses": {
+          "yieldValue": { "food": 1, "production": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 2, "production": 1 }
+        }
+      }
+    },
+    {
+      "id": "resource-pearl",
+      "name": "Pearl",
+      "categories": ["natural", "mineral", "luxury"],
+      "distribution": [
+        { "abundance": "rare", "richness": "veryRich", "seaLevel": "shallow" }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-fishery",
+        "bonuses": {
+          "yieldValue": { "gold": 2 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 4 }
+        }
+      }
+    },
+    {
+      "id": "resource-goldOre",
+      "name": "Gold Ore",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "veryRare", "richness": "veryRich", "seaLevel": "none" },
+        { "abundance": "rare", "richness": "veryRich", "landForm": "mountains" }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-mine",
+        "bonuses": {
+          "yieldValue": { "gold": 3 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 5 }
         }
       }
     },
     {
       "id": "resource-gold",
       "name": "Gold",
-      "resourceType": "material"
+      "categories": ["manmade", "material", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-silverOre",
       "name": "Silver Ore",
-      "resourceType": "material",
+      "categories": ["natural", "mineral", "material"],
+      "distribution": [
+        { "abundance": "veryRare", "richness": "rich", "seaLevel": "none" },
+        { "abundance": "common", "richness": "rich", "landForm": "hills" },
+        {
+          "abundance": "common",
+          "richness": "veryRich",
+          "landForm": "mountains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "gold": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 4 }
         }
       }
     },
     {
       "id": "resource-silver",
       "name": "Silver",
-      "resourceType": "material"
+      "categories": ["manmade", "material", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-tobacco",
       "name": "Tobacco",
-      "resourceType": "luxury",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "hills"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "gold": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 4 }
         }
       }
     },
     {
       "id": "resource-cattle",
       "name": "Cattle",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "temperate"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "savanna"
+        },
+        {
+          "abundance": "rare",
+          "richness": "poor",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "tundra"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 3, "production": 1 }
         }
       }
     },
     {
       "id": "resource-coffe",
       "name": "Coffe",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "hills"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "gold": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 4 }
         }
       }
     },
     {
       "id": "resource-goat",
       "name": "Goat",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "hills"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 1, "production": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 2, "production": 1 }
         }
       }
     },
     {
       "id": "resource-sheep",
       "name": "Sheep",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "hills"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 1, "production": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 2, "production": 1 }
         }
       }
     },
     {
       "id": "resource-elephant",
       "name": "Elephant",
-      "resourceType": "luxury",
+      "categories": ["natural", "organic", "strategic"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "production": 2, "gold": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "production": 3, "gold": 2 }
         }
       }
     },
     {
       "id": "resource-fur",
       "name": "Fur",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "forest": true
+        },
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "forest": true
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-huntingGround",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "gold": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 4 }
         }
       }
     },
     {
       "id": "resource-grape",
       "name": "Grape",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "veryPoor",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains",
+          "forest": false
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "hills",
+          "forest": false
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 1, "gold": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 1, "gold": 3 }
         }
       }
     },
     {
       "id": "resource-olive",
       "name": "Olive",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "rare",
+          "richness": "poor",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 1, "gold": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 1, "gold": 3 }
         }
       }
     },
     {
       "id": "resource-spice",
       "name": "Spice",
-      "resourceType": "luxury",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "veryRich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
-        },
-        "bonusesWhenWorked": {
           "yieldValue": { "gold": 3 }
         },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+        "bonusesWhenWorked": {
+          "yieldValue": { "gold": 5 }
         }
       }
     },
     {
       "id": "resource-dye",
       "name": "Dye",
-      "resourceType": "luxury",
+      "categories": ["natural", "organic", "luxury"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "gold": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 4 }
         }
       }
     },
     {
       "id": "resource-orange",
       "name": "Orange",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 3, "gold": 1 }
         }
       }
     },
     {
       "id": "resource-apple",
       "name": "Apple",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 3, "gold": 1 }
         }
       }
     },
     {
       "id": "resource-lemon",
       "name": "Lemon",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 3, "gold": 1 }
         }
       }
     },
     {
       "id": "resource-diamond",
       "name": "Diamond",
-      "resourceType": "luxury",
+      "categories": ["natural", "mineral", "luxury"],
+      "distribution": [
+        {
+          "abundance": "veryRare",
+          "richness": "veryRich",
+          "landForm": "hills"
+        },
+        {
+          "abundance": "veryRare",
+          "richness": "veryRich",
+          "landForm": "mountains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "gold": 4 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "gold": 6 }
         }
       }
     },
     {
       "id": "resource-glassware",
       "name": "Glassware",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-horse",
       "name": "Horse",
-      "resourceType": "material",
+      "categories": ["natural", "organic", "strategic"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains",
+          "forest": false
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "plains",
+          "forest": false
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "production": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "production": 2 }
         }
       }
     },
     {
       "id": "resource-game",
       "name": "Wild Game",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "forest": true
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "forest": true
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-huntingGround",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
-        }
-      }
-    },
-    {
-      "id": "resource-ox",
-      "name": "Ox",
-      "resourceType": "material",
-      "depositDef": {
-        "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "gold": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 3, "production": 1 }
         }
       }
     },
     {
       "id": "resource-llama",
       "name": "Llama",
-      "resourceType": "material",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "hills",
+          "climate": "temperate"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "hills",
+          "climate": "tropical"
+        },
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "landForm": "hills",
+          "climate": "temperate"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 1, "production": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 2, "production": 2 }
         }
       }
     },
     {
       "id": "resource-chicken",
       "name": "Chicken",
-      "resourceType": "food",
+      "categories": ["natural", "organic", "food"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "poor",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "savanna"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "poor",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "temperate"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "poor",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "tropical"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "food": 2 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "food": 3 }
         }
       }
     },
     {
       "id": "resource-oil",
       "name": "Oil",
-      "resourceType": "food",
+      "categories": ["natural", "mineral", "material", "strategic"],
+      "distribution": [
+        {
+          "abundance": "rare",
+          "richness": "veryRich",
+          "seaLevel": "none",
+          "climate": "desert",
+          "landForm": "plains"
+        },
+        { "abundance": "rare", "richness": "veryRich", "seaLevel": "deep" },
+        {
+          "abundance": "rare",
+          "richness": "poor",
+          "seaLevel": "none",
+          "landForm": "plains"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "production": 3 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "production": 5 }
         }
       }
     },
     {
       "id": "resource-cotton",
       "name": "Cotton",
-      "resourceType": "material",
+      "categories": ["natural", "organic", "material"],
+      "distribution": [
+        {
+          "abundance": "common",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna"
+        },
+        {
+          "abundance": "rare",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical"
+        }
+      ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
         "bonuses": {
-          "yieldValue": { "gold": 1 }
+          "yieldValue": { "production": 1, "gold": 1 }
         },
         "bonusesWhenWorked": {
-          "yieldValue": { "gold": 3 }
-        },
-        "distribution": {
-          "seaLevels": ["none"],
-          "landForms": ["plains", "hills"],
-          "quantityMedian": 3,
-          "quantityStddev": 2
+          "yieldValue": { "production": 2, "gold": 2 }
         }
       }
     },
     {
       "id": "resource-wine",
       "name": "Wine",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-beer",
       "name": "Beer",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-oliveOil",
       "name": "Olive Oil",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-textile",
       "name": "Textile",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-brick",
       "name": "Brick",
-      "resourceType": "luxury"
+      "categories": ["manmade", "material"],
+      "distribution": []
     },
     {
       "id": "resource-silk",
       "name": "Silk",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-bread",
       "name": "Bread",
-      "resourceType": "luxury"
+      "categories": ["manmade", "food"],
+      "distribution": []
     },
     {
       "id": "resource-wool",
       "name": "Wool",
-      "resourceType": "luxury"
+      "categories": ["manmade", "material"],
+      "distribution": []
     },
     {
       "id": "resource-cheese",
       "name": "Cheese",
-      "resourceType": "food"
+      "categories": ["manmade", "food", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-jewelry",
       "name": "Jewelry",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-bronze",
       "name": "Bronze Ingot",
-      "resourceType": "material"
+      "categories": ["manmade", "material"],
+      "distribution": []
     },
     {
       "id": "resource-iron",
       "name": "Iron Ingot",
-      "resourceType": "material"
+      "categories": ["manmade", "material"],
+      "distribution": []
     },
     {
       "id": "resource-pottery",
       "name": "Pottery",
-      "resourceType": "luxury"
+      "categories": ["manmade", "material"],
+      "distribution": []
     },
     {
       "id": "resource-ivory",
       "name": "Ivory",
-      "resourceType": "luxury"
+      "categories": ["natural", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-perfume",
       "name": "Perfume",
-      "resourceType": "luxury"
+      "categories": ["manmade", "luxury"],
+      "distribution": []
     },
     {
       "id": "resource-copper",
       "name": "Copper",
-      "resourceType": "luxury"
+      "categories": ["manmade", "material"],
+      "distribution": []
     },
     {
       "id": "resource-steel",
       "name": "Steel",
-      "resourceType": "luxury"
+      "categories": ["manmade", "material", "strategic"],
+      "distribution": []
     }
   ]
 }

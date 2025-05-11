@@ -1,24 +1,18 @@
-import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
+import { getTileInDirection } from "@/core/hex-math";
+import { TileCore } from "@/core/tile";
+import { areWetlandsPossible, isForestable } from "@/core/tile-utils";
 import { TilesMapCore } from "@/core/tiles-map";
+import { Climate, LandForm, SeaLevel, TileDirection } from "@/shared";
 import alea from "alea";
 import { createNoise2D, NoiseFunction2D } from "simplex-noise";
-import { randomNormal } from "@/core/random";
-import { ResourceDeposit } from "@/core/resources";
-import { TileCore } from "@/core/tile";
-import { getTileInDirection } from "@/core/hex-math";
+import { placeResources } from "./resourcePlacement";
+import { generateStartingLocations } from "./startingLocations";
 import { MapGenerator } from "./types";
 import {
   findCoastline,
   placeRiverBetweenTiles,
   POSSIBLE_BORDER_PATHS,
 } from "./utils";
-import { dataManager } from "@/core/data/dataManager";
-import {
-  areWetlandsPossible,
-  isForestable,
-  isResourcePossible,
-} from "@/core/tile-utils";
-import { generateStartingLocations } from "./startingLocations";
 
 interface TileMetadata {
   height: number;
@@ -40,7 +34,9 @@ export class RealisticMapGenerator implements MapGenerator {
 
   private seaLevel!: number;
 
-  private resources!: number;
+  private resourceAbundance!: number;
+
+  private resourceRichness!: number;
 
   private startingLocations: TileCore[] = [];
 
@@ -58,7 +54,8 @@ export class RealisticMapGenerator implements MapGenerator {
     seed: string | undefined = undefined,
     uniformity: number = 0.5,
     seaLevel = 0,
-    resources = 0.2,
+    resourceAbundance = 0.8,
+    richness = 1.0,
   ) {
     this.map = new TilesMapCore(width, height);
     this.width = width;
@@ -66,7 +63,8 @@ export class RealisticMapGenerator implements MapGenerator {
     this.seed = seed;
     this.uniformity = uniformity;
     this.seaLevel = seaLevel;
-    this.resources = resources;
+    this.resourceAbundance = resourceAbundance;
+    this.resourceRichness = richness;
 
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
@@ -98,7 +96,7 @@ export class RealisticMapGenerator implements MapGenerator {
 
     this.placeWetlands();
 
-    this.placeResources();
+    placeResources(this.map, this.resourceAbundance, this.resourceRichness);
 
     this.startingLocations = generateStartingLocations(
       this.map,
@@ -801,34 +799,6 @@ export class RealisticMapGenerator implements MapGenerator {
     )) {
       if (value > 0 && areWetlandsPossible(tile)) {
         tile.wetlands = true;
-      }
-    }
-  }
-
-  placeResources() {
-    const resources = dataManager.resources.all;
-
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
-        if (Math.random() > this.resources) {
-          continue;
-        }
-
-        // TODO take more distributions settings into account
-        const resourceIndex = Math.floor(Math.random() * resources.length);
-        const resourceDef = resources[resourceIndex];
-        const tile = this.map.tiles[x][y];
-
-        if (isResourcePossible(tile, resourceDef)) {
-          const dis = resourceDef.depositDef!.distribution!;
-          const quantity = randomNormal(dis.quantityMedian, dis.quantityStddev);
-          tile.resource = ResourceDeposit.from({
-            def: resourceDef,
-            tile,
-            quantity,
-            difficulty: 0,
-          });
-        }
       }
     }
   }

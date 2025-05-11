@@ -5,7 +5,7 @@ import {
   EntityType,
   LandForm,
   ProductType,
-  ResourceType,
+  ResourceCategory,
   SeaLevel,
   TechEra,
   TechLayout,
@@ -16,16 +16,12 @@ import {
 import {
   HaveBonuses,
   JsonNation,
-  JsonResourceDistribution,
   JsonTileImprovement,
   JsonUnit,
+  ResourceAbundance,
+  ResourceNeed,
+  ResourceRichness,
 } from "./jsonTypes";
-
-export type ResourceNeed = {
-  resourceType: ResourceType;
-  diversityExponent: number;
-  amountExponent: number;
-};
 
 export type PopulationTypeDefinition = Entity & {
   entityType: "populationType";
@@ -88,27 +84,28 @@ export type ProductDefinition = UnitDefinition | Building | IdleProduct;
 
 export type Nation = Entity & JsonNation;
 
-export type ResourceDistribution = Omit<
-  JsonResourceDistribution,
-  "landForms" | "seaLevels" | "climates"
-> & {
-  landForms?: LandForm[];
-  seaLevels?: SeaLevel[];
-  climates?: Climate[];
+export type ResourceDistribution = {
+  abundance: ResourceAbundance;
+  richness: ResourceRichness;
+
+  landForm?: LandForm;
+  seaLevel?: SeaLevel;
+  climate?: Climate;
+  forest?: boolean;
+  river?: boolean;
+  coast?: boolean;
+  wetlands?: boolean;
 };
 
-export type BaseResourceDepositDefinition = {
+export type ResourceDepositDefinition = {
   bonuses: Bonuses;
   bonusesWhenWorked: Bonuses;
-  distribution?: ResourceDistribution;
-};
-
-export type ResourceDepositDefinition = BaseResourceDepositDefinition & {
   requiredImprovement: TileImprovementDefinition;
 };
 
 export type ResourceDefinition = Entity & {
-  resourceType: ResourceType;
+  categories: ResourceCategory[];
+  distribution: ResourceDistribution[];
   depositDef?: ResourceDepositDefinition;
 };
 

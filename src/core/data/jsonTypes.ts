@@ -8,7 +8,7 @@ import {
 import {
   Bonuses,
   NationColors,
-  ResourceType,
+  ResourceCategory,
   TechEra,
   UnitAction,
   Yields,
@@ -88,33 +88,31 @@ export type JsonNation = JsonEntity & {
   colors: NationColors;
 };
 
+export type ResourceAbundance = "veryRare" | "rare" | "common" | "veryCommon";
+export type ResourceRichness = "veryPoor" | "poor" | "rich" | "veryRich";
+
 export type JsonResourceDistribution = {
-  landForms?: LandFormName[];
-  seaLevels?: SeaLevelName[];
-  climates?: ClimateName[];
+  abundance: ResourceAbundance;
+  richness: ResourceRichness;
+
+  landForm?: LandFormName;
+  seaLevel?: SeaLevelName;
+  climate?: ClimateName;
   forest?: boolean;
-
-  // the higher the more close together the resource is placed.
-  clasterize?: number;
-
-  // quantity distribution
-  quantityMedian: number;
-  quantityStddev: number;
+  river?: boolean;
+  coast?: boolean;
 };
 
-export type BaseResourceDepositDefinition = {
+export type JsonResourceDepositDefinition = {
   bonuses: Bonuses;
   bonusesWhenWorked: Bonuses;
-  distribution?: JsonResourceDistribution;
-};
-
-export type RawResourceDepositDefinition = BaseResourceDepositDefinition & {
   requiredImprovement: string;
 };
 
 export type JsonResource = JsonEntity & {
-  resourceType: ResourceType;
-  depositDef?: RawResourceDepositDefinition;
+  categories: ResourceCategory[];
+  distribution: JsonResourceDistribution[];
+  depositDef?: JsonResourceDepositDefinition;
 };
 
 export type PolicyArea = JsonEntity & { options: PolicyArea[] };
@@ -162,6 +160,7 @@ export type JsonTileImprovement = JsonEntity & {
   seaLevels?: SeaLevelName[];
   forest?: boolean;
   river?: boolean;
+  wetlands?: boolean;
   extraYields?: Partial<Yields>;
   spawnsResource?: string;
   requireResource?: boolean;
@@ -169,18 +168,10 @@ export type JsonTileImprovement = JsonEntity & {
 };
 
 export type ResourceNeed = {
-  resourceType: ResourceType;
+  resourceCategory: ResourceCategory;
   diversityExponent: number;
   amountExponent: number;
 };
-
-// Categories of resources (for diversification bonuses)
-export enum ResourceCategory {
-  Food = "food",
-  BasicLuxury = "basicLuxury",
-  AdvancedLuxury = "advancedLuxury",
-  Materials = "materials",
-}
 
 export type JsonPopulationType = {
   id: string;
