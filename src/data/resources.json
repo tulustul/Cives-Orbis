@@ -4,7 +4,7 @@
     {
       "id": "resource-stone",
       "name": "Stone",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         {
           "abundance": "rare",
@@ -87,7 +87,7 @@
     {
       "id": "resource-clay",
       "name": "Clay",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         {
           "abundance": "veryCommon",
@@ -109,7 +109,7 @@
     {
       "id": "resource-wood",
       "name": "Wood",
-      "categories": ["material"],
+      "categories": ["material", "strategic"],
       "distribution": [],
       "depositDef": {
         "requiredImprovement": "tile-impr-lumbermill",
@@ -124,7 +124,7 @@
     {
       "id": "resource-copperOre",
       "name": "Copper Ore",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         { "abundance": "rare", "richness": "poor", "seaLevel": "none" },
         { "abundance": "common", "richness": "rich", "landForm": "hills" },
@@ -143,7 +143,7 @@
     {
       "id": "resource-tinOre",
       "name": "Tin Ore",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         { "abundance": "veryRare", "richness": "rich", "seaLevel": "none" },
         { "abundance": "rare", "richness": "veryRich", "landForm": "hills" },
@@ -192,7 +192,7 @@
     {
       "id": "resource-ironOre",
       "name": "Iron Ore",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         { "abundance": "rare", "richness": "rich", "seaLevel": "none" },
         { "abundance": "common", "richness": "rich", "landForm": "hills" },
@@ -233,7 +233,7 @@
     {
       "id": "resource-coal",
       "name": "Coal",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         { "abundance": "rare", "richness": "rich", "seaLevel": "none" },
         { "abundance": "common", "richness": "rich", "landForm": "hills" },
@@ -318,7 +318,7 @@
     {
       "id": "resource-wheat",
       "name": "Wheat",
-      "categories": ["natural", "organic", "food", "crop"],
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
       "distribution": [
         {
           "abundance": "veryCommon",
@@ -333,6 +333,14 @@
           "seaLevel": "none",
           "landForm": "plains",
           "climate": "savanna"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "veryRich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "desert",
+          "river": true
         }
       ],
       "depositDef": {
@@ -378,7 +386,7 @@
     {
       "id": "resource-sulphur",
       "name": "Sulphur",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         {
           "abundance": "rare",
@@ -424,7 +432,7 @@
     {
       "id": "resource-maize",
       "name": "Maize",
-      "categories": ["natural", "organic", "food", "crop"],
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
       "distribution": [
         {
           "abundance": "veryCommon",
@@ -459,23 +467,263 @@
       }
     },
     {
-      "id": "resource-rice",
-      "name": "Rice",
-      "categories": ["natural", "organic", "food", "crop"],
+      "id": "resource-barley",
+      "name": "Barley",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "veryRich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "desert",
+          "river": true
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-rye",
+      "name": "Rye",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "landForm": "plains"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-oats",
+      "name": "Oats",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "veryRich",
+          "seaLevel": "none",
+          "landForm": "plains",
+          "climate": "desert",
+          "river": true
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-quinoa",
+      "name": "Quinoa",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "hills"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "hills"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "hills"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "landForm": "hills"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-cassava",
+      "name": "Cassava",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
       "distribution": [
         {
           "abundance": "veryCommon",
           "richness": "rich",
           "seaLevel": "none",
           "climate": "tropical",
-          "river": true
+          "landForm": "plains"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-sorghum",
+      "name": "Sorghum",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "savanna",
+          "landForm": "plains"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-potato",
+      "name": "Potato",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "temperate",
+          "landForm": "hills"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "landForm": "plains"
+        },
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tundra",
+          "landForm": "hills"
+        }
+      ],
+      "depositDef": {
+        "requiredImprovement": "tile-impr-farm",
+        "bonuses": {
+          "yieldValue": { "food": 1 }
+        },
+        "bonusesWhenWorked": {
+          "yieldValue": { "food": 3 }
+        }
+      }
+    },
+    {
+      "id": "resource-rice",
+      "name": "Rice",
+      "categories": ["natural", "organic", "food", "primaryFood", "crop"],
+      "distribution": [
+        {
+          "abundance": "veryCommon",
+          "richness": "rich",
+          "seaLevel": "none",
+          "climate": "tropical",
+          "landForm": "plains"
         },
         {
           "abundance": "common",
           "richness": "poor",
           "seaLevel": "none",
           "climate": "temperate",
-          "river": true
+          "landForm": "plains"
         }
       ],
       "depositDef": {
@@ -491,7 +739,7 @@
     {
       "id": "resource-fish",
       "name": "Fish",
-      "categories": ["natural", "organic", "food", "livestock"],
+      "categories": ["natural", "mineral", "food", "livestock"],
       "distribution": [
         { "abundance": "veryCommon", "richness": "rich", "seaLevel": "shallow" }
       ],
@@ -508,9 +756,9 @@
     {
       "id": "resource-whale",
       "name": "Whale",
-      "categories": ["natural", "organic", "luxury"],
+      "categories": ["natural", "mineral", "luxury"],
       "distribution": [
-        { "abundance": "rare", "richness": "veryRich", "seaLevel": "deep" }
+        { "abundance": "veryRare", "richness": "rich", "seaLevel": "deep" }
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-fishery",
@@ -565,7 +813,7 @@
     {
       "id": "resource-goldOre",
       "name": "Gold Ore",
-      "categories": ["natural", "mineral", "material"],
+      "categories": ["natural", "mineral", "material", "strategic"],
       "distribution": [
         { "abundance": "veryRare", "richness": "veryRich", "seaLevel": "none" },
         { "abundance": "rare", "richness": "veryRich", "landForm": "mountains" }
@@ -618,7 +866,7 @@
     {
       "id": "resource-tobacco",
       "name": "Tobacco",
-      "categories": ["natural", "organic", "luxury"],
+      "categories": ["natural", "organic", "luxury", "crop"],
       "distribution": [
         {
           "abundance": "rare",
@@ -678,7 +926,7 @@
     {
       "id": "resource-coffe",
       "name": "Coffe",
-      "categories": ["natural", "organic", "luxury"],
+      "categories": ["natural", "organic", "luxury", "crop"],
       "distribution": [
         {
           "abundance": "rare",
@@ -755,14 +1003,14 @@
       "categories": ["natural", "organic", "strategic"],
       "distribution": [
         {
-          "abundance": "rare",
+          "abundance": "veryRare",
           "richness": "rich",
           "seaLevel": "none",
           "climate": "tropical",
           "landForm": "plains"
         },
         {
-          "abundance": "rare",
+          "abundance": "veryRare",
           "richness": "rich",
           "seaLevel": "none",
           "climate": "savanna",
@@ -782,7 +1030,7 @@
     {
       "id": "resource-fur",
       "name": "Fur",
-      "categories": ["natural", "organic", "luxury"],
+      "categories": ["natural", "organic", "luxury", "crop"],
       "distribution": [
         {
           "abundance": "common",
@@ -874,7 +1122,7 @@
     {
       "id": "resource-spice",
       "name": "Spice",
-      "categories": ["natural", "organic", "luxury"],
+      "categories": ["natural", "organic", "luxury", "crop"],
       "distribution": [
         {
           "abundance": "rare",
@@ -897,7 +1145,7 @@
     {
       "id": "resource-dye",
       "name": "Dye",
-      "categories": ["natural", "organic", "luxury"],
+      "categories": ["natural", "organic", "luxury", "crop"],
       "distribution": [
         {
           "abundance": "rare",
@@ -1129,21 +1377,21 @@
       "categories": ["natural", "organic", "food", "livestock"],
       "distribution": [
         {
-          "abundance": "veryCommon",
+          "abundance": "common",
           "richness": "poor",
           "seaLevel": "none",
           "landForm": "plains",
           "climate": "savanna"
         },
         {
-          "abundance": "veryCommon",
+          "abundance": "common",
           "richness": "poor",
           "seaLevel": "none",
           "landForm": "plains",
           "climate": "temperate"
         },
         {
-          "abundance": "veryCommon",
+          "abundance": "common",
           "richness": "poor",
           "seaLevel": "none",
           "landForm": "plains",
@@ -1193,19 +1441,21 @@
     {
       "id": "resource-cotton",
       "name": "Cotton",
-      "categories": ["natural", "organic", "material"],
+      "categories": ["natural", "organic", "material", "crop"],
       "distribution": [
         {
           "abundance": "common",
           "richness": "rich",
           "seaLevel": "none",
-          "climate": "savanna"
+          "climate": "savanna",
+          "landForm": "plains"
         },
         {
           "abundance": "rare",
           "richness": "rich",
           "seaLevel": "none",
-          "climate": "tropical"
+          "climate": "tropical",
+          "landForm": "plains"
         }
       ],
       "depositDef": {

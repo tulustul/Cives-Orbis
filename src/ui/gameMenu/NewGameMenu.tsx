@@ -15,10 +15,10 @@ type MapSize = {
 
 const MAP_SIZES_OPTIONS: Option<MapSize>[] = [
   { label: "Tiny", value: { width: 25, height: 20, players: 2 } },
-  { label: "Small", value: { width: 35, height: 25, players: 4 } },
-  { label: "Medium", value: { width: 50, height: 40, players: 6 } },
-  { label: "Large", value: { width: 70, height: 55, players: 8 } },
-  { label: "Huge", value: { width: 100, height: 70, players: 10 } },
+  { label: "Small", value: { width: 40, height: 30, players: 4 } },
+  { label: "Medium", value: { width: 65, height: 50, players: 6 } },
+  { label: "Large", value: { width: 100, height: 70, players: 10 } },
+  { label: "Huge", value: { width: 160, height: 120, players: 16 } },
 ];
 
 const SEA_LEVELS_OPTIONS: Option<number>[] = [
@@ -55,7 +55,6 @@ export function NewGameMenu() {
       height: mapSize.height,
       humanPlayersCount,
       seaLevel: seaLevel,
-      resources: 0.2,
       uniformity: 0.5,
     });
 

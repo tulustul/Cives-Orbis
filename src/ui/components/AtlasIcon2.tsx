@@ -35,7 +35,10 @@ export function AtlasIcon2({
     return (atlas.data.frames as any)[name + ".png"]?.frame;
   }
 
-  const frame = getFrame(name) || getFrame("unit_undefined");
+  const frame =
+    getFrame(name) ||
+    getFrame("unit_undefined") ||
+    getFrame("resource-unknown");
 
   const position = `-${frame.x * scale}px -${frame.y * scale}px`;
   const size = `${atlas.data.meta.size.w * scale}px ${

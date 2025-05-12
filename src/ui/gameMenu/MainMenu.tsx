@@ -19,7 +19,6 @@ export function MainMenu() {
       width: 30,
       height: 20,
       humanPlayersCount: aiOnly ? 0 : 1,
-      resources: 0.2,
       seaLevel: -0.1,
       uniformity: 0.5,
     });
