@@ -50,14 +50,13 @@ Minor features:
   ✔ ai only matches with autoplay @done(20-06-14 19:50)
   ☐ map generator: more realistic orogeny
   ☐ map generator: climate based on mountain ranges and sea currents
-  ☐ proper starting locations
+  ✔ proper starting locations @done(25-05-12 19:09)
   ☐ map generator: resources distribution
   ✔ unit move animations @done(25-02-25 23:32)
   ☐ combat animations
   ☐ fog of war animation
   ✔ spectator mode @done(25-03-11 23:35)
   ☐ cycling through tasks with tab / shift+tab
-
   ✔ simplify containers hierarchy @done(25-04-21 12:22)
   ✔ automatic buffer size @done(25-04-21 12:52)
   ✔ proper clear and rebuild @done(25-04-21 12:52)
@@ -70,6 +69,17 @@ Minor features:
   ☐ fix hex shape in mouse hover
   ✔ zoom - hide/show cities - remove transition @done(25-05-04 21:56)
   ✔ optimize fog of war - partial update @done(25-04-21 14:37)
+  ☐ remove plantation/mine etc. Instead just make "improve resource" action
+  ☐ cultivation mechanic - allow to cultivate organic resources on a tile
+
+Rendering:
+  ☐ different tree types
+  ☐ wetlands
+  ☐ better rivers
+  ☐ noise as filters, hills as sprites
+  ☐ decals for unimproved/improved resources
+  ☐ units/resources scaling with vertex shader
+  ☐ don't render units in fog of war
 
 Major features:
   ☐ City economy

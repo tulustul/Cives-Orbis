@@ -184,6 +184,8 @@
         "mineral",
         "natural",
         "organic",
+        "primaryFood",
+        "secondaryFood",
         "strategic"
       ],
       "type": "string"

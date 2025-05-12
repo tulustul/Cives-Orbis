@@ -54,7 +54,7 @@ export class RealisticMapGenerator implements MapGenerator {
     seed: string | undefined = undefined,
     uniformity: number = 0.5,
     seaLevel = 0,
-    resourceAbundance = 0.8,
+    resourceAbundance = 0.02,
     richness = 1.0,
   ) {
     this.map = new TilesMapCore(width, height);
@@ -134,17 +134,7 @@ export class RealisticMapGenerator implements MapGenerator {
     for (const [tile, value, _] of this.getNoisedTiles(coastlineNoise)) {
       let height = 0;
 
-      // Adjust horizontal map edges to be more likely sea.
-      // const distanceToEdge = Math.min(tile.x, this.width - tile.x);
-      // const edgeThrehold = this.width * 0.1;
-      // if (distanceToEdge < edgeThrehold) {
-      //   value -=
-      //     (maxValue / 2) *
-      //     Math.cos((Math.PI / 2 / edgeThrehold) * distanceToEdge);
-      // }
-
       if (value > seaLevel) {
-        // height = value;
         tile.seaLevel = SeaLevel.none;
         height = heightmapNoise.at(tile.x, tile.y) / 2;
       }

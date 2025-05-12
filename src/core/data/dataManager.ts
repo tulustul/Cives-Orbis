@@ -237,6 +237,8 @@ class ResourceProvider extends EntityProvider<
 > {
   categories: Record<ResourceCategory, ResourceDefinition[]> = {
     food: [],
+    primaryFood: [],
+    secondaryFood: [],
     livestock: [],
     crop: [],
     luxury: [],

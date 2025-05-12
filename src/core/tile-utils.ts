@@ -1,11 +1,11 @@
 import {
   ResourceDefinition,
+  ResourceDistribution,
   TileImprovementDefinition,
 } from "@/core/data/types";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { Climate, LandForm, SeaLevel } from "@/shared";
-import { ResourceRichness } from "./data/jsonTypes";
 
 const FORESTABLE_CLIMATES = new Set<Climate>([
   Climate.temperate,
@@ -78,10 +78,10 @@ export function isRoadPossible(tile: TileCore) {
   );
 }
 
-export function getResourceRichness(
+export function getResourceDistribution(
   tile: TileCore,
   resourceDef: ResourceDefinition | null,
-): ResourceRichness | null {
+): ResourceDistribution | null {
   if (!resourceDef) {
     return null;
   }
@@ -96,7 +96,7 @@ export function getResourceRichness(
       (d.coast === undefined || d.coast === tile.coast) &&
       (d.wetlands === undefined || d.wetlands === tile.wetlands)
     ) {
-      return d.richness;
+      return d;
     }
   }
 

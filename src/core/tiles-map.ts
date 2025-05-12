@@ -48,7 +48,7 @@ export class TilesMapCore {
     this.precomputePassableAreas();
   }
 
-  private precomputePassableAreas() {
+  precomputePassableAreas() {
     this.passableAreas.clear();
     const visited = new Set<TileCore>();
     let areaId = 1;
@@ -116,5 +116,12 @@ export class TilesMapCore {
       return null;
     }
     return this.tiles[x][y];
+  }
+
+  computeTotalLandArea() {
+    const lands = Array.from(this.passableAreas.values()).filter(
+      (area) => area.type === "land",
+    );
+    return lands.reduce((total, area) => total + area.area, 0);
   }
 }
