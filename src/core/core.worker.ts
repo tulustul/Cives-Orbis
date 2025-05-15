@@ -267,7 +267,9 @@ function dumpHandler(): string {
   return JSON.stringify(dumpGame(game));
 }
 
-function loadHandler(data: string) {
+async function loadHandler(data: string) {
+  await dataManager.ready;
+
   game = loadGame(JSON.parse(data));
 
   const startInfo = gameToGameStartInfo(game);
