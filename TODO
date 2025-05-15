@@ -72,6 +72,17 @@ Minor features:
   ☐ remove plantation/mine etc. Instead just make "improve resource" action
   ☐ cultivation mechanic - allow to cultivate organic resources on a tile
 
+Next version:
+  ☐ higher defence for cities
+  ☐ city walls and city healthbar
+  ☐ ai should defend cities
+  ☐ gold yield + buildings to increase it
+  ☐ units cost gold to maintain, they lose health if not enough gold
+  ☐ ai avoids creating units if it doesn't have enough gold
+  ☐ better units in tech tree, old units get obsolete
+  ☐ ai settles first city immediately and protects it
+  ☐ ai better at prioritizing early moves (settlers, workers, techs etc.), make it less random.
+
 Rendering:
   ☐ different tree types
   ☐ wetlands

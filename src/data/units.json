@@ -69,7 +69,7 @@
       "actionPoints": 2,
       "strength": 5,
       "actions": [],
-      "productionCost": 60,
+      "productionCost": 120,
       "capacity": 0,
       "supplyRange": 0,
       "strongRequirements": [],
