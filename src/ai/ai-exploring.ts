@@ -81,7 +81,7 @@ export class ExploringAI extends AISystem {
     );
 
     if (inaccessibleAreas.length > 0 && navalTransports.length > 0) {
-      this.planNavalExploration(inaccessibleAreas, navalTransports);
+      this.planNavalExploration(inaccessibleAreas);
     }
 
     // Standard exploration for units already in their target areas
@@ -177,14 +177,10 @@ export class ExploringAI extends AISystem {
   }
 
   /**
-   * Plan naval exploration by matching explorers with transport ships
-   * and setting up missions to reach inaccessible land areas
+   * Plan naval exploration by using the TransportAI to transport explorers
+   * to inaccessible land areas
    */
-  private planNavalExploration(
-    inaccessibleAreas: PassableArea[],
-    navalTransports: UnitCore[],
-    // explorersByArea: Map<number, UnitCore[]>
-  ) {
+  private planNavalExploration(inaccessibleAreas: PassableArea[]) {
     // Get available land explorers (not already on a transport)
     const availableExplorers = this.ai.player.units.filter(
       (unit) =>
@@ -210,119 +206,62 @@ export class ExploringAI extends AISystem {
       const coastalTiles = this.findCoastalTilesForArea(area);
       if (coastalTiles.length === 0) continue;
 
-      // Sort transports by which are not already assigned tasks
-      const availableTransports = navalTransports.filter(
-        (transport) => !this.hasActiveOperation(transport.id),
-      );
-      if (availableTransports.length === 0) {
-        // Request more transport ships to be built
-        this.ai.productionAi.request({
-          focus: "expansion",
-          priority: MIN_NAVAL_EXPLORER_PRIORITY,
-          product: dataManager.units.get("unit_galley")!,
-        });
-        continue;
-      }
+      // If no available explorers, break
+      if (availableExplorers.length === 0) break;
 
-      // Find the explorer closest to any available transport
-      const explorer = this.findClosestExplorer(
-        availableExplorers,
-        availableTransports,
-      );
-      if (!explorer) continue;
+      // Find the best coastal tile as a target
+      const bestCoastalTile = this.findBestCoastalTile(coastalTiles);
+      if (!bestCoastalTile) continue;
 
-      // Find the transport closest to the explorer
-      const transport = this.findClosestTransport(
+      // Take the closest available explorer
+      const explorer = availableExplorers[0];
+
+      // Request transport to the target coastal tile using the TransportAI
+      this.ai.transportAI.requestTransport(
         explorer,
-        availableTransports,
+        bestCoastalTile,
+        MIN_NAVAL_EXPLORER_PRIORITY + 20,
+        "expansion",
       );
-      if (!transport) continue;
 
-      // Find the coastal tile closest to the transport
-      const targetCoastalTile = this.findClosestCoastalTile(
-        transport,
-        coastalTiles,
-      );
-      if (!targetCoastalTile) continue;
-
-      // Create operations to:
-      // 1. Move transport to pick up explorer
-      this.operations.push({
-        group: "unit",
-        entityId: transport.id,
-        focus: "expansion",
-        priority: MIN_NAVAL_EXPLORER_PRIORITY + 5,
-        perform: () => {
-          // Find a water tile adjacent to the explorer
-          const adjacentWaterTiles = explorer.tile.neighbours.filter(
-            (tile) => tile.isWater,
-          );
-          if (adjacentWaterTiles.length > 0) {
-            transport.path = findPath(transport, adjacentWaterTiles[0]);
-          }
-        },
-      });
-
-      // 2. Move explorer to embark on transport
-      this.operations.push({
-        group: "unit",
-        entityId: explorer.id,
-        focus: "expansion",
-        priority: MIN_NAVAL_EXPLORER_PRIORITY + 5,
-        perform: () => {
-          // If transport is adjacent to explorer, embark
-          if (explorer.tile.neighbours.includes(transport.tile)) {
-            explorer.path = [[transport.tile]];
-          }
-        },
-      });
-
-      // 3. Move transport with explorer to target coastal tile
-      this.operations.push({
-        group: "unit",
-        entityId: transport.id,
-        focus: "expansion",
-        priority: MIN_NAVAL_EXPLORER_PRIORITY + 3,
-        perform: () => {
-          // Only execute if explorer is on board
-          if (transport.children.includes(explorer)) {
-            // Find water tile adjacent to target coastal tile
-            const adjacentWaterTiles = targetCoastalTile.neighbours.filter(
-              (tile) => tile.isWater,
-            );
-            if (adjacentWaterTiles.length > 0) {
-              transport.path = findPath(transport, adjacentWaterTiles[0]);
-            }
-          }
-        },
-      });
-
-      // 4. Disembark explorer onto the target land
-      this.operations.push({
-        group: "unit",
-        entityId: explorer.id,
-        focus: "expansion",
-        priority: MIN_NAVAL_EXPLORER_PRIORITY + 2,
-        perform: () => {
-          // Only execute if explorer is on board the transport
-          if (explorer.parent === transport) {
-            // Check if transport is adjacent to the target coastal tile
-            if (transport.tile.neighbours.includes(targetCoastalTile)) {
-              // Set path to disembark
-              explorer.path = [[targetCoastalTile]];
-            }
-          }
-        },
-      });
-
-      // Remove the used explorer and transport from consideration
-      availableExplorers.splice(availableExplorers.indexOf(explorer), 1);
-      availableTransports.splice(availableTransports.indexOf(transport), 1);
-
-      if (availableExplorers.length === 0 || availableTransports.length === 0) {
-        break;
-      }
+      // Remove the used explorer from consideration
+      availableExplorers.splice(0, 1);
     }
+  }
+
+  /**
+   * Find the best coastal tile among candidates, considering resource richness
+   * and exploration potential
+   */
+  private findBestCoastalTile(coastalTiles: TileCore[]): TileCore | null {
+    if (coastalTiles.length === 0) return null;
+
+    // Score each coastal tile based on its potential
+    const scoredTiles = coastalTiles.map((tile) => {
+      let score = 0;
+
+      // Check for resources in range
+      const tilesInRange = Array.from(tile.getTilesInRange(3));
+      const resourcesCount = tilesInRange.filter((t) => t.resource).length;
+      score += resourcesCount * 5;
+
+      // Bonus for unexplored tiles in range
+      const unexploredCount = tilesInRange.filter(
+        (t) => !this.player.exploredTiles.has(t),
+      ).length;
+      score += unexploredCount * 2;
+
+      // Bonus for good terrain
+      if (tile.yields.food > 1) score += 3;
+      if (tile.yields.production > 1) score += 3;
+
+      return { tile, score };
+    });
+
+    // Sort by score descending
+    scoredTiles.sort((a, b) => b.score - a.score);
+
+    return scoredTiles[0].tile;
   }
 
   /**
@@ -343,83 +282,5 @@ export class ExploringAI extends AISystem {
     }
 
     return coastalTiles;
-  }
-
-  /**
-   * Find the explorer closest to any of the available transports
-   */
-  private findClosestExplorer(
-    explorers: UnitCore[],
-    transports: UnitCore[],
-  ): UnitCore | null {
-    if (explorers.length === 0 || transports.length === 0) return null;
-
-    let closestExplorer: UnitCore | null = null;
-    let shortestDistance = Infinity;
-
-    for (const explorer of explorers) {
-      for (const transport of transports) {
-        const distance = explorer.tile.getDistanceTo(transport.tile);
-        if (distance < shortestDistance) {
-          shortestDistance = distance;
-          closestExplorer = explorer;
-        }
-      }
-    }
-
-    return closestExplorer;
-  }
-
-  /**
-   * Find the transport closest to the given explorer
-   */
-  private findClosestTransport(
-    explorer: UnitCore,
-    transports: UnitCore[],
-  ): UnitCore | null {
-    if (transports.length === 0) return null;
-
-    let closestTransport: UnitCore | null = null;
-    let shortestDistance = Infinity;
-
-    for (const transport of transports) {
-      const distance = explorer.tile.getDistanceTo(transport.tile);
-      if (distance < shortestDistance) {
-        shortestDistance = distance;
-        closestTransport = transport;
-      }
-    }
-
-    return closestTransport;
-  }
-
-  /**
-   * Find the coastal tile closest to the transport
-   */
-  private findClosestCoastalTile(
-    transport: UnitCore,
-    coastalTiles: TileCore[],
-  ): TileCore | null {
-    if (coastalTiles.length === 0) return null;
-
-    let closestTile: TileCore | null = null;
-    let shortestDistance = Infinity;
-
-    for (const tile of coastalTiles) {
-      const distance = transport.tile.getDistanceTo(tile);
-      if (distance < shortestDistance) {
-        shortestDistance = distance;
-        closestTile = tile;
-      }
-    }
-
-    return closestTile;
-  }
-
-  /**
-   * Check if there's already an active operation for this unit
-   */
-  private hasActiveOperation(unitId: number): boolean {
-    return this.operations.some((op) => op.entityId === unitId);
   }
 }

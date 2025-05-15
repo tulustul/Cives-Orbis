@@ -1,14 +1,6 @@
-/**
- * Utility functions for AI systems
- */
-
-import { UnitCore } from "@/core/unit";
+import { Building, ResourceDefinition } from "@/core/data/types";
 import { TileCore } from "@/core/tile";
-import {
-  Building,
-  ProductDefinition,
-  ResourceDefinition,
-} from "@/core/data/types";
+import { UnitCore } from "@/core/unit";
 import { LandForm } from "@/shared";
 
 /**

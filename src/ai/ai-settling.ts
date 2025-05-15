@@ -10,6 +10,7 @@ import { sumYields } from "@/core/yields";
 import { ResourceDefinition } from "@/core/data/types";
 import { CityCore } from "@/core/city";
 import { LandForm } from "@/shared";
+import { TransportAI } from "./ai-transport";
 
 /**
  * Resource evaluation types for city placement
@@ -57,6 +58,9 @@ export class SettlingAI extends AISystem {
   private strategicCityTargets: TileCore[] = []; // Locations we specifically want to target
   private defaultCitySpotCache = new Map<number, TileCore>(); // Cache for default search method
 
+  // Track transport requests for settlers
+  private settlerTransportRequests = new Map<number, number>(); // Map of settler ID -> transport request ID
+
   // Minimum distance between cities (to avoid overcrowding)
   private MIN_CITY_DISTANCE = 4;
 
@@ -89,6 +93,9 @@ export class SettlingAI extends AISystem {
     // Update strategic targets based on game state
     this.updateStrategicTargets();
 
+    // Clean up transport requests for settlers that no longer exist
+    this.cleanupTransportRequests();
+
     // Evaluate current situation
     const shouldSettleMoreCities = this.shouldSettleMoreCities();
 
@@ -101,6 +108,31 @@ export class SettlingAI extends AISystem {
     this.processSettlers(strategicFocus);
 
     return this.operations;
+  }
+
+  /**
+   * Clean up transport requests for settlers that no longer exist
+   */
+  private cleanupTransportRequests() {
+    // Get transport AI system
+    const transportAI = this.ai.systems.find(
+      (system) => system instanceof TransportAI,
+    ) as TransportAI | undefined;
+
+    if (!transportAI) return;
+
+    // Check each settler in our transport requests map
+    const settlerIds = Array.from(this.settlerTransportRequests.keys());
+    for (const settlerId of settlerIds) {
+      const settler = this.player.units.find((unit) => unit.id === settlerId);
+
+      // If settler no longer exists, cancel the transport request
+      if (!settler) {
+        const requestId = this.settlerTransportRequests.get(settlerId)!;
+        transportAI.cancelRequest(requestId);
+        this.settlerTransportRequests.delete(settlerId);
+      }
+    }
   }
 
   /**
@@ -272,6 +304,28 @@ export class SettlingAI extends AISystem {
       focus: "expansion",
       priority: 100,
       perform: () => {
+        // Check if this settler has an active transport request
+        const transportRequestId = this.settlerTransportRequests.get(unit.id);
+        if (transportRequestId) {
+          // Get the transport AI system
+          const transportAI = this.ai.systems.find(
+            (system) => system instanceof TransportAI,
+          ) as TransportAI | undefined;
+
+          if (transportAI) {
+            // Check transport request status
+            const status = transportAI.getRequestStatus(transportRequestId);
+
+            // If transport is completed or failed, clear the request
+            if (status === "completed" || status === "failed") {
+              this.settlerTransportRequests.delete(unit.id);
+            } else {
+              // Transport is in progress, don't override it
+              return;
+            }
+          }
+        }
+
         const destination = unit.getPathDestination();
 
         // If settler has no destination or destination is no longer valid
@@ -292,6 +346,28 @@ export class SettlingAI extends AISystem {
           if (unit.tile === bestCityLocation) {
             unit.doAction("foundCity");
           } else {
+            // Check if we need a transport (different landmass)
+            const needsTransport = this.needsTransport(
+              unit.tile,
+              bestCityLocation,
+            );
+
+            if (needsTransport) {
+              // Request transport with higher priority for settlers
+              const requestId = this.ai.transportAI.requestTransport(
+                unit,
+                bestCityLocation,
+                120, // Higher priority for settlers
+                "expansion",
+              );
+
+              // Store the request ID if successful
+              if (requestId > 0) {
+                this.settlerTransportRequests.set(unit.id, requestId);
+                return; // Transport AI will handle the movement
+              }
+            }
+
             // Otherwise, set path to best location
             unit.path = findPath(unit, bestCityLocation);
           }
@@ -303,6 +379,17 @@ export class SettlingAI extends AISystem {
         }
       },
     });
+  }
+
+  /**
+   * Check if a unit needs naval transport to reach a destination
+   */
+  private needsTransport(
+    startTile: TileCore,
+    destinationTile: TileCore,
+  ): boolean {
+    // Different passable areas indicates need for transport
+    return startTile.passableArea !== destinationTile.passableArea;
   }
 
   /**
@@ -326,19 +413,46 @@ export class SettlingAI extends AISystem {
    * Find the closest valid strategic target
    */
   private findClosestValidTarget(startTile: TileCore): TileCore | null {
-    // Filter targets that are in the same passable area
-    const accessibleTargets = this.strategicCityTargets.filter(
+    // First check targets in the same passable area (directly accessible)
+    const sameAreaTargets = this.strategicCityTargets.filter(
       (target) => target.passableArea === startTile.passableArea,
     );
 
-    if (accessibleTargets.length === 0) return null;
+    // If we have targets in the same area, find the closest one
+    if (sameAreaTargets.length > 0) {
+      return this.findClosestTargetInList(startTile, sameAreaTargets);
+    }
+
+    // If we don't have any targets in the same area, consider all strategic targets
+    // with the understanding that we'll need naval transport to reach them
+    if (this.strategicCityTargets.length > 0) {
+      // Find the best target considering transport needs
+      const bestTarget = this.findBestCrossWaterTarget(startTile);
+
+      // If a valid target is found, return it
+      if (bestTarget) {
+        return bestTarget;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Find the closest target from a list of candidates
+   */
+  private findClosestTargetInList(
+    startTile: TileCore,
+    targets: TileCore[],
+  ): TileCore | null {
+    if (targets.length === 0) return null;
 
     // Find closest target
-    let closestTarget = accessibleTargets[0];
+    let closestTarget = targets[0];
     let closestDistance = startTile.getDistanceTo(closestTarget);
 
-    for (let i = 1; i < accessibleTargets.length; i++) {
-      const target = accessibleTargets[i];
+    for (let i = 1; i < targets.length; i++) {
+      const target = targets[i];
       const distance = startTile.getDistanceTo(target);
 
       if (distance < closestDistance) {
@@ -360,6 +474,38 @@ export class SettlingAI extends AISystem {
   }
 
   /**
+   * Find the best target that requires crossing water
+   */
+  private findBestCrossWaterTarget(startTile: TileCore): TileCore | null {
+    // Filter out invalid targets
+    const validTargets = this.strategicCityTargets.filter(
+      (target) => !target.city && !target.areaOf,
+    );
+
+    if (validTargets.length === 0) return null;
+
+    // Find target with the highest score
+    let bestTarget: TileCore | null = null;
+    let bestScore = -Infinity;
+
+    for (const target of validTargets) {
+      // Get score for this target (based on its value and distance)
+      const evaluation = this.evaluateCitySpot(target, this.baseWeights);
+
+      // Simple scoring - adjust depending on what's important
+      const score =
+        evaluation.totalScore - startTile.getDistanceTo(target) * 0.5;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestTarget = target;
+      }
+    }
+
+    return bestTarget;
+  }
+
+  /**
    * Apply advanced logic to find the optimal city location
    */
   private findOptimalCityLocation(
@@ -369,12 +515,53 @@ export class SettlingAI extends AISystem {
     // Adapt weights based on strategic focus
     const weights = this.getWeightsForStrategy(strategicFocus);
 
+    // First, search explored tiles on the same landmass
+    let localCandidates = this.findLocalCandidates(startTile, weights);
+
+    // Also consider tiles on other landmasses if we have naval capabilities
+    let remoteCandidates = this.findRemoteCandidates(weights);
+
+    // Combine both sets of evaluations
+    let allEvaluations = [...localCandidates];
+
+    // Only include remote candidates if they're significantly better than local ones
+    if (remoteCandidates.length > 0) {
+      // Best local score
+      const bestLocalScore =
+        localCandidates.length > 0 ? localCandidates[0].totalScore : 0;
+
+      // Filter remote candidates that are significantly better than local ones
+      const betterRemoteCandidates = remoteCandidates.filter(
+        (eval_) => eval_.totalScore > bestLocalScore * 1.25, // At least 25% better
+      );
+
+      allEvaluations = [...localCandidates, ...betterRemoteCandidates];
+    }
+
+    // Sort all evaluations by score
+    allEvaluations.sort((a, b) => b.totalScore - a.totalScore);
+
+    // Cache evaluations for future reference
+    allEvaluations.forEach((eval_) => {
+      this.evaluatedCitySpots.set(eval_.tile.id, eval_);
+    });
+
+    return allEvaluations.length > 0 ? allEvaluations[0].tile : null;
+  }
+
+  /**
+   * Find candidate city locations on the same landmass
+   */
+  private findLocalCandidates(
+    startTile: TileCore,
+    weights: CityPlacementWeights,
+  ): CitySpotEvaluation[] {
     // Search all tiles in range
     const searchRadius = this.MAX_SEARCH_RADIUS;
     const candidates = startTile.getTilesInRange(searchRadius);
 
-    // Skip if no candidates or wrong passable area
-    if (candidates.size === 0) return null;
+    // Skip if no candidates
+    if (candidates.size === 0) return [];
 
     // Filter valid tiles (same passable area, not already claimed)
     const validCandidates = Array.from(candidates).filter((tile) => {
@@ -397,22 +584,87 @@ export class SettlingAI extends AISystem {
       return true;
     });
 
-    if (validCandidates.length === 0) return null;
+    if (validCandidates.length === 0) return [];
 
     // Calculate score for each candidate
     const evaluations: CitySpotEvaluation[] = validCandidates.map((tile) => {
       return this.evaluateCitySpot(tile, weights);
     });
 
-    // Sort by total score and return the best one
+    // Sort by total score
     evaluations.sort((a, b) => b.totalScore - a.totalScore);
 
-    // Cache evaluations for future reference
-    evaluations.forEach((eval_) => {
-      this.evaluatedCitySpots.set(eval_.tile.id, eval_);
+    return evaluations;
+  }
+
+  /**
+   * Find candidate city locations on other landmasses
+   */
+  private findRemoteCandidates(
+    weights: CityPlacementWeights,
+  ): CitySpotEvaluation[] {
+    // Get all explored tiles
+    const exploredTiles = Array.from(this.player.exploredTiles);
+
+    // Filter out water and tiles already evaluated by findLocalCandidates
+    const validCandidates = exploredTiles.filter((tile) => {
+      // Must be land
+      if (!tile.isLand) return false;
+
+      // Must not already have a city
+      if (tile.city) return false;
+
+      // Must not be in an area claimed by another city
+      if (tile.areaOf && tile.areaOf.player !== this.player) return false;
+
+      // Check minimum distance from existing cities
+      for (const city of this.player.cities) {
+        if (tile.getDistanceTo(city.tile) < this.MIN_CITY_DISTANCE) {
+          return false;
+        }
+      }
+
+      return true;
     });
 
-    return evaluations.length > 0 ? evaluations[0].tile : null;
+    // Limit evaluation to a reasonable number of tiles (up to 50)
+    // Prioritize tiles with resources
+    const tilesWithResources = validCandidates.filter((tile) => tile.resource);
+    const tilesWithoutResources = validCandidates.filter(
+      (tile) => !tile.resource,
+    );
+
+    // Combine and limit
+    const tilesToEvaluate = [
+      ...tilesWithResources,
+      ...tilesWithoutResources.slice(
+        0,
+        Math.max(0, 50 - tilesWithResources.length),
+      ),
+    ];
+
+    // Calculate score for each candidate
+    const evaluations: CitySpotEvaluation[] = tilesToEvaluate.map((tile) => {
+      const evaluation = this.evaluateCitySpot(tile, weights);
+
+      // Add a small bonus for cross-ocean colonies (strategic value)
+      if (
+        this.player.cities.length > 0 &&
+        !this.player.cities.some(
+          (city) => city.tile.passableArea === tile.passableArea,
+        )
+      ) {
+        evaluation.totalScore *= 1.1; // 10% bonus for a colony on a new continent
+      }
+
+      return evaluation;
+    });
+
+    // Sort by total score
+    evaluations.sort((a, b) => b.totalScore - a.totalScore);
+
+    // Only return the top candidates
+    return evaluations.slice(0, 5);
   }
 
   /**

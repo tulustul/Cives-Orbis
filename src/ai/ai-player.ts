@@ -11,6 +11,7 @@ import { TechAI } from "./ai-tech";
 import { PersonalityAI } from "./ai-personality";
 import { StrategicAI } from "./ai-strategic";
 import { TacticalAI } from "./ai-tactical";
+import { TransportAI } from "./ai-transport";
 
 export type AiPriorities = {
   expansion: number;
@@ -35,10 +36,11 @@ export class AIPlayer {
   personalityAI: PersonalityAI;
   strategicAI: StrategicAI;
   tacticalAI: TacticalAI;
-  
+  transportAI: TransportAI;
+
   // Collection of all AI systems
   systems: AISystem[] = [];
-  
+
   // AI priorities that affect operations weighting
   priorities: AiPriorities = {
     expansion: 1,
@@ -78,7 +80,10 @@ export class AIPlayer {
     
     // Initialize tactical AI for combat coordination
     this.tacticalAI = new TacticalAI(this);
-    
+
+    // Initialize transport AI for naval transport coordination
+    this.transportAI = new TransportAI(this);
+
     // Register all AI subsystems
     this.systems = [
       this.strategicAI,   // Strategic AI should run first to influence other systems
@@ -89,6 +94,7 @@ export class AIPlayer {
       new MilitaryAI(this),
       new WorkerAI(this),
       this.tacticalAI,    // Tactical AI should run after Military AI
+      this.transportAI,   // Transport AI for coordinating naval transport
       this.productionAi,  // Production AI should run last to collect requests
     ];
   }
