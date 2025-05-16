@@ -516,7 +516,7 @@ export function buildingToChannel(
     technology: entity.technology
       ? entityToMinimalChannel(entity.technology)
       : null,
-    bonuses: entity.bonuses,
+    effects: entity.effects.map((e) => e.options),
   };
 }
 

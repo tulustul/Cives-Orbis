@@ -8,7 +8,7 @@ import {
 } from "@/shared";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import {
-  Bonuses,
+  Effects,
   ImageIcon,
   Tooltip,
   TooltipPlacement,
@@ -86,7 +86,7 @@ const entityTypeRenderers: Record<
 > = {
   building: (entity: BuildingChanneled, context) => (
     <>
-      <Bonuses bonuses={entity.bonuses} />
+      <Effects effects={entity.effects} />
       {context?.city ? (
         <ProductRequirements city={context.city} product={entity} />
       ) : null}
@@ -109,7 +109,7 @@ const entityTypeRenderers: Record<
       {context?.city ? (
         <ProductRequirements city={context.city} product={entity} />
       ) : null}
-      <Bonuses bonuses={entity.bonuses} />
+      <Effects effects={entity.effects} />
       <Value>Cost: {entity.cost}</Value>
     </>
   ),

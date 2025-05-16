@@ -47,9 +47,9 @@ export class ResourceDeposit {
     let resourceYields: Partial<Yields> | undefined;
 
     if (this.tile.improvement === this.def.depositDef.requiredImprovement) {
-      resourceYields = this.def.depositDef.bonusesWhenWorked.yieldValue;
+      resourceYields = this.def.depositDef.yieldsWhenWorked;
     } else {
-      resourceYields = this.def.depositDef.bonuses.yieldValue;
+      resourceYields = this.def.depositDef.yields;
     }
 
     this.yields = { ...EMPTY_YIELDS, ...resourceYields };

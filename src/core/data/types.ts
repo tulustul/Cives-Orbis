@@ -1,6 +1,5 @@
 import { Requirement } from "@/core/requirements";
 import {
-  Bonuses,
   Climate,
   EntityType,
   LandForm,
@@ -14,7 +13,6 @@ import {
   Yields,
 } from "@/shared";
 import {
-  HaveBonuses,
   JsonNation,
   JsonTileImprovement,
   JsonUnit,
@@ -22,6 +20,7 @@ import {
   ResourceNeed,
   ResourceRichness,
 } from "./jsonTypes";
+import { ICityEffect } from "../effects";
 
 export type PopulationTypeDefinition = Entity & {
   entityType: "populationType";
@@ -54,8 +53,7 @@ export type RequireTech = {
 };
 
 export type BaseProductDefinition = Entity &
-  HaveRequirements &
-  HaveBonuses & {
+  HaveRequirements & {
     entityType: ProductType;
     productionCost: number;
     // Optional resources needed for production, mapping from resource ID to quantity
@@ -74,10 +72,12 @@ export type UnitDefinition = _ProductDefinition &
 
 export type Building = _ProductDefinition & {
   entityType: "building";
+  effects: ICityEffect<any>[];
 };
 
 export type IdleProduct = _ProductDefinition & {
   entityType: "idleProduct";
+  effects: ICityEffect<any>[];
 };
 
 export type ProductDefinition = UnitDefinition | Building | IdleProduct;
@@ -98,8 +98,8 @@ export type ResourceDistribution = {
 };
 
 export type ResourceDepositDefinition = {
-  bonuses: Bonuses;
-  bonusesWhenWorked: Bonuses;
+  yields: Partial<Yields>;
+  yieldsWhenWorked: Partial<Yields>;
   requiredImprovement: TileImprovementDefinition;
 };
 

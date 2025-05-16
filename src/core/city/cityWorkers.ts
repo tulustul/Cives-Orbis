@@ -19,7 +19,7 @@ export class CityWorkers {
         this.workedResources.add(tile.resource);
       }
       if (updateYields) {
-        this.city.updateYields();
+        this.city.update();
       }
     }
   }
@@ -31,7 +31,7 @@ export class CityWorkers {
       this.workedResources.delete(tile.resource);
     }
     if (updateYields) {
-      this.city.updateYields();
+      this.city.update();
     }
   }
 
@@ -45,7 +45,7 @@ export class CityWorkers {
       }
       this.workTile(tile, false);
     }
-    this.city.updateYields();
+    this.city.update();
   }
 
   get freeTileWorkers() {

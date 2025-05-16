@@ -16,7 +16,7 @@ export * from "./CommandButton";
 export * from "./IconCommandButton";
 export * from "./IconButton";
 export * from "./charts";
-export * from "./Bonuses";
+export * from "./Effects";
 export * from "./Background";
 export * from "./ImageIcon";
 export * from "./Value";

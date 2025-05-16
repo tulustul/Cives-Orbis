@@ -7,12 +7,15 @@
   --font-serif: "Cinzel Decorative", serif;
   --font-sans: "Montserrat", sans-serif;
 
+  --color-food: #65ea4b;
   --color-food-400: #65ea4b;
   --color-food-600: #37b31e;
 
+  --color-production: #ffb42c;
   --color-production-400: #ffb42c;
   --color-production-600: #bb7800;
 
+  --color-culture: #d883ff;
   --color-culture-400: #d883ff;
   --color-culture-600: #bc29ff;
 

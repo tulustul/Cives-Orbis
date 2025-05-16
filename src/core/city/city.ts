@@ -1,4 +1,3 @@
-import { Bonuses, Yields, CityVisibility } from "@/shared";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import {
@@ -8,6 +7,7 @@ import {
   roundYields,
   zeroYields,
 } from "@/core/yields";
+import { CityVisibility, Yields } from "@/shared";
 
 import { CitiesNetwork } from "@/core/cities-network";
 import { collector } from "@/core/collector";
@@ -15,11 +15,13 @@ import { SuppliesProducer } from "@/core/supplies";
 import { PassableArea } from "@/core/tiles-map";
 import { CityStorage } from "./cityStorage";
 
+import { IdleProduct, ResourceDefinition } from "@/core/data/types";
+import { ICityEffect } from "../effects";
+import { CityDefense } from "./cityDefense";
 import { CityExpansion } from "./cityExpansion";
 import { CityPopulation } from "./cityPopulation";
 import { CityProduction } from "./cityProduction";
 import { CityWorkers } from "./cityWorkers";
-import { IdleProduct, ResourceDefinition } from "@/core/data/types";
 
 export class CityCore {
   id!: number;
@@ -51,6 +53,8 @@ export class CityCore {
 
   storage = new CityStorage(this);
 
+  defense = new CityDefense(this);
+
   constructor(public tile: TileCore, public player: PlayerCore) {
     this.expansion.addTile(tile);
 
@@ -70,7 +74,9 @@ export class CityCore {
     this.production.progressProduction();
     this.population.progressGrowth();
     this.workers.updateWorkers();
-    this.updateYields();
+
+    this.reset();
+    this.update();
     this.perTurn.food -= this.population.foodConsumed;
 
     if (
@@ -81,9 +87,12 @@ export class CityCore {
     }
   }
 
-  updateYields() {
+  reset() {
     zeroYields(this.tileYields);
+    this.defense.reset();
+  }
 
+  update() {
     this.tileYields.food = 2;
     this.tileYields.production = 1;
 
@@ -96,12 +105,12 @@ export class CityCore {
     copyYields(this.yields, this.tileYields);
 
     for (const building of this.production.buildings) {
-      this.applyBonuses(building.bonuses);
+      this.applyEffects(building.effects);
     }
 
     if (this.production.product?.entityType === "idleProduct") {
       const idleProduct = this.production.product as IdleProduct;
-      this.applyBonuses(idleProduct.bonuses);
+      this.applyEffects(idleProduct.effects);
     }
 
     roundYields(this.yields);
@@ -113,46 +122,9 @@ export class CityCore {
     this.player.updateYields();
   }
 
-  applyBonuses(bonuses: Bonuses) {
-    this.yields.food += bonuses.yieldValue?.food || 0;
-    this.yields.production += bonuses.yieldValue?.production || 0;
-    this.yields.culture += bonuses.yieldValue?.culture || 0;
-    this.yields.knowledge += bonuses.yieldValue?.knowledge || 0;
-    this.yields.publicWorks += bonuses.yieldValue?.publicWorks || 0;
-
-    if (bonuses.yieldFactor?.food) {
-      this.yields.food += this.tileYields.food * bonuses.yieldFactor.food;
-    }
-    if (bonuses.yieldFactor?.production) {
-      this.yields.production +=
-        this.tileYields.production * bonuses.yieldFactor.production;
-    }
-    if (bonuses.yieldFactor?.culture) {
-      this.yields.culture +=
-        this.tileYields.culture * bonuses.yieldFactor.culture;
-    }
-    if (bonuses.yieldFactor?.knowledge) {
-      this.yields.knowledge +=
-        this.tileYields.knowledge * bonuses.yieldFactor.knowledge;
-    }
-    if (bonuses.yieldFactor?.publicWorks) {
-      this.yields.publicWorks +=
-        this.tileYields.publicWorks * bonuses.yieldFactor.publicWorks;
-    }
-
-    if (bonuses.transferProductionToFood) {
-      this.yields.food +=
-        this.yields.production * bonuses.transferProductionToFood;
-    }
-
-    if (bonuses.transferProductionToCulture) {
-      this.yields.culture +=
-        this.yields.production * bonuses.transferProductionToCulture;
-    }
-
-    if (bonuses.transferProductionToPublicWorks) {
-      this.yields.publicWorks +=
-        this.yields.production * bonuses.transferProductionToPublicWorks;
+  applyEffects(effects: ICityEffect<any>[]) {
+    for (const effect of effects) {
+      effect.apply(this);
     }
   }
 

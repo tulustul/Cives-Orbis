@@ -1,3 +1,4 @@
+import { CityEffect } from "../effects";
 import {
   climateNamesInverse,
   landFormNamesInverse,
@@ -6,7 +7,6 @@ import {
   UnitTypeNamesInverse,
 } from "./const";
 import {
-  Bonuses,
   NationColors,
   ResourceCategory,
   TechEra,
@@ -49,27 +49,18 @@ export type JsonRequirement =
   | JsonCitySizeRequirement
   | JsonCityIsCoastlineRequirement;
 
-export type HaveRequirements = {
+export type JsonProduct = JsonEntity & {
   // entity will be hidden from player
   strongRequirements: JsonRequirement[];
 
   // entity will be disabled for player
   weakRequirements: JsonRequirement[];
+
+  productionCost: number;
+
+  // Optional resources needed for production, mapping from resource ID to quantity
+  resourceRequirements?: Record<string, number>;
 };
-
-export type HaveBonuses = {
-  bonuses: Bonuses;
-};
-
-export type BaseProductDefinition = JsonEntity &
-  HaveRequirements &
-  HaveBonuses & {
-    productionCost: number;
-    // Optional resources needed for production, mapping from resource ID to quantity
-    resourceRequirements?: Record<string, number>;
-  };
-
-export type JsonProduct = BaseProductDefinition;
 
 export type JsonUnit = JsonProduct & {
   actionPoints: number;
@@ -81,7 +72,9 @@ export type JsonUnit = JsonProduct & {
   supplyRange: number;
 };
 
-export type JsonBuilding = JsonProduct;
+export type JsonBuilding = JsonProduct & {
+  effects: CityEffect[];
+};
 
 export type JsonNation = JsonEntity & {
   cityNames: string[];
@@ -104,8 +97,8 @@ export type JsonResourceDistribution = {
 };
 
 export type JsonResourceDepositDefinition = {
-  bonuses: Bonuses;
-  bonusesWhenWorked: Bonuses;
+  yields: Partial<Yields>;
+  yieldsWhenWorked: Partial<Yields>;
   requiredImprovement: string;
 };
 
@@ -116,10 +109,6 @@ export type JsonResource = JsonEntity & {
 };
 
 export type PolicyArea = JsonEntity & { options: PolicyArea[] };
-
-export type PolicyOption = JsonEntity & HaveBonuses & HaveRequirements;
-
-export type Law = JsonEntity & HaveBonuses & HaveRequirements;
 
 export type LinkMiddlePoint = {
   tech: string;

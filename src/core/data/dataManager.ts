@@ -47,6 +47,7 @@ import {
   UnitTypeNamesInverse,
 } from "./const";
 import path from "node:path";
+import { createCityEffect } from "../effects";
 
 export class DataManager {
   private markAsReady!: () => void;
@@ -174,6 +175,7 @@ class BuildingProvider extends EntityProvider<Building, JsonBuilding> {
       entityType: "building",
       weakRequirements: parseRequirements(json.weakRequirements),
       strongRequirements: parseRequirements(json.weakRequirements),
+      effects: json.effects.map(createCityEffect),
     };
   }
 

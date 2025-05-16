@@ -98,6 +98,8 @@ export type Yields = {
   faith: number;
 };
 
+export type YieldKey = keyof Yields;
+
 export type PlayerYields = {
   perTurn: Yields;
   income: Yields;
@@ -117,15 +119,6 @@ export enum UnitTrait {
   military,
   supply,
 }
-
-export type Bonuses = {
-  yieldValue?: Partial<Yields>;
-  yieldFactor?: Partial<Yields>;
-
-  transferProductionToFood?: number;
-  transferProductionToCulture?: number;
-  transferProductionToPublicWorks?: number;
-};
 
 export type ProductType = "unit" | "building" | "idleProduct";
 

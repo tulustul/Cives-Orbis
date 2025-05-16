@@ -5,7 +5,18 @@
       "id": "building_palace",
       "name": "Palace",
       "productionCost": 0,
-      "bonuses": { "yieldValue": { "culture": 1, "knowledge": 1 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "culture",
+          "value": 1
+        },
+        {
+          "effect": "city.addYields",
+          "yield": "knowledge",
+          "value": 1
+        }
+      ],
       "strongRequirements": [{ "type": "never" }],
       "weakRequirements": []
     },
@@ -13,7 +24,13 @@
       "id": "building_granary",
       "name": "Granary",
       "productionCost": 40,
-      "bonuses": { "yieldValue": { "food": 3 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "food",
+          "value": 3
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -21,7 +38,13 @@
       "id": "building_well",
       "name": "Well",
       "productionCost": 20,
-      "bonuses": { "yieldValue": { "food": 1 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "food",
+          "value": 1
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -29,7 +52,13 @@
       "id": "building_big_granary",
       "name": "Grand granary",
       "productionCost": 100,
-      "bonuses": { "yieldFactor": { "food": 0.2 } },
+      "effects": [
+        {
+          "effect": "city.multiplyYields",
+          "yield": "food",
+          "value": 0.2
+        }
+      ],
       "strongRequirements": [
         { "type": "cityHaveBuilding", "building": "building_granary" }
       ],
@@ -39,7 +68,13 @@
       "id": "building_workshop",
       "name": "Workshop",
       "productionCost": 80,
-      "bonuses": { "yieldValue": { "production": 5 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "production",
+          "value": 5
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -47,7 +82,13 @@
       "id": "building_big_workshop",
       "name": "Grand workshop",
       "productionCost": 200,
-      "bonuses": { "yieldFactor": { "production": 0.2 } },
+      "effects": [
+        {
+          "effect": "city.multiplyYields",
+          "yield": "production",
+          "value": 0.2
+        }
+      ],
       "strongRequirements": [
         { "type": "cityHaveBuilding", "building": "building_workshop" }
       ],
@@ -57,7 +98,13 @@
       "id": "building_slave_market",
       "name": "Slave market",
       "productionCost": 50,
-      "bonuses": { "yieldValue": { "publicWorks": 2 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "publicWorks",
+          "value": 2
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -65,7 +112,13 @@
       "id": "building_monument",
       "name": "Monument",
       "productionCost": 30,
-      "bonuses": { "yieldValue": { "culture": 1 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "culture",
+          "value": 1
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -73,7 +126,13 @@
       "id": "building_elderCouncil",
       "name": "Elder council",
       "productionCost": 30,
-      "bonuses": { "yieldValue": { "knowledge": 1 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "knowledge",
+          "value": 1
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -81,7 +140,13 @@
       "id": "building_library",
       "name": "Library",
       "productionCost": 80,
-      "bonuses": { "yieldValue": { "knowledge": 3 } },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "knowledge",
+          "value": 3
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -89,10 +154,28 @@
       "id": "building_all_doing_building",
       "name": "All doing building",
       "productionCost": 500,
-      "bonuses": {
-        "yieldValue": { "food": 1, "production": 1 },
-        "yieldFactor": { "food": 0.1, "production": 0.1 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "food",
+          "value": 1
+        },
+        {
+          "effect": "city.addYields",
+          "yield": "production",
+          "value": 1
+        },
+        {
+          "effect": "city.multiplyYields",
+          "yield": "food",
+          "value": 0.1
+        },
+        {
+          "effect": "city.multiplyYields",
+          "yield": "production",
+          "value": 0.1
+        }
+      ],
       "strongRequirements": [
         { "type": "cityHaveBuilding", "building": "building_big_granary" },
         { "type": "cityHaveBuilding", "building": "building_big_workshop" }
@@ -103,10 +186,18 @@
       "id": "building_bronze_smithy",
       "name": "Bronze Smithy",
       "productionCost": 60,
-      "bonuses": {
-        "yieldValue": { "production": 2 },
-        "yieldFactor": { "production": 0.1 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "production",
+          "value": 2
+        },
+        {
+          "effect": "city.multiplyYields",
+          "yield": "production",
+          "value": 0.1
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -114,10 +205,18 @@
       "id": "building_iron_smithy",
       "name": "Iron Smithy",
       "productionCost": 80,
-      "bonuses": {
-        "yieldValue": { "production": 2 },
-        "yieldFactor": { "production": 0.1 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "production",
+          "value": 2
+        },
+        {
+          "effect": "city.multiplyYields",
+          "yield": "production",
+          "value": 0.1
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -125,9 +224,18 @@
       "id": "building_pottery_workshop",
       "name": "Pottery Workshop",
       "productionCost": 50,
-      "bonuses": {
-        "yieldValue": { "production": 1, "culture": 1 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "production",
+          "value": 1
+        },
+        {
+          "effect": "city.addYields",
+          "yield": "culture",
+          "value": 1
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -135,9 +243,13 @@
       "id": "building_winery",
       "name": "Winery",
       "productionCost": 60,
-      "bonuses": {
-        "yieldValue": { "gold": 2 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "gold",
+          "value": 2
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -145,9 +257,13 @@
       "id": "building_brewery",
       "name": "Brewery",
       "productionCost": 60,
-      "bonuses": {
-        "yieldValue": { "gold": 2 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "gold",
+          "value": 2
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     },
@@ -155,9 +271,13 @@
       "id": "building_oil_press",
       "name": "Oil Press",
       "productionCost": 60,
-      "bonuses": {
-        "yieldValue": { "gold": 2 }
-      },
+      "effects": [
+        {
+          "effect": "city.addYields",
+          "yield": "gold",
+          "value": 2
+        }
+      ],
       "strongRequirements": [],
       "weakRequirements": []
     }

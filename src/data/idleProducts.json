@@ -7,7 +7,13 @@
       "productionCost": -1,
       "strongRequirements": [],
       "weakRequirements": [],
-      "bonuses": { "transferProductionToFood": 0.25 }
+      "effects": [
+        {
+          "effect": "city.transferProductionToYields",
+          "yield": "food",
+          "value": 0.25
+        }
+      ]
     },
     {
       "id": "idle_product_culture",
@@ -15,7 +21,13 @@
       "productionCost": -1,
       "strongRequirements": [],
       "weakRequirements": [],
-      "bonuses": { "transferProductionToCulture": 0.25 }
+      "effects": [
+        {
+          "effect": "city.transferProductionToYields",
+          "yield": "culture",
+          "value": 0.25
+        }
+      ]
     },
     {
       "id": "idle_product_public_works",
@@ -23,7 +35,13 @@
       "productionCost": -1,
       "strongRequirements": [],
       "weakRequirements": [],
-      "bonuses": { "transferProductionToPublicWorks": 0.25 }
+      "effects": [
+        {
+          "effect": "city.transferProductionToYields",
+          "yield": "publicWorks",
+          "value": 0.25
+        }
+      ]
     }
   ]
 }

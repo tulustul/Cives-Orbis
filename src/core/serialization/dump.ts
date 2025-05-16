@@ -405,7 +405,7 @@ function loadCity(game: Game, cityData: CitySerialized) {
     const resourceDef = dataManager.resources.get(resource.id);
     city.storage.resources.set(resourceDef, resource.amount);
   }
-  city.updateYields();
+  city.update();
 }
 
 function dumpCity(city: CityCore): CitySerialized {

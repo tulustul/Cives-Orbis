@@ -2,29 +2,124 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "additionalProperties": false,
   "definitions": {
-    "BaseProductDefinition": {
+    "CityAddYieldsEffect": {
       "additionalProperties": false,
       "properties": {
-        "bonuses": {
+        "effect": {
+          "const": "city.addYields",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "yield": {
+          "$ref": "#/definitions/YieldKey"
+        }
+      },
+      "required": [
+        "effect",
+        "value",
+        "yield"
+      ],
+      "type": "object"
+    },
+    "CityEffect": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CityAddYieldsEffect"
+        },
+        {
+          "$ref": "#/definitions/CityMultiplyYieldsEffect"
+        },
+        {
+          "$ref": "#/definitions/CityTransferProductionToYieldsEffect"
+        },
+        {
           "additionalProperties": false,
           "properties": {
-            "transferProductionToCulture": {
+            "defenseBonus": {
               "type": "number"
             },
-            "transferProductionToFood": {
-              "type": "number"
-            },
-            "transferProductionToPublicWorks": {
-              "type": "number"
-            },
-            "yieldFactor": {
-              "$ref": "#/definitions/Partial<Yields>"
-            },
-            "yieldValue": {
-              "$ref": "#/definitions/Partial<Yields>"
+            "effect": {
+              "const": "city.defenseBonus",
+              "type": "string"
             }
           },
+          "required": [
+            "defenseBonus",
+            "effect"
+          ],
           "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "effect": {
+              "const": "city.maxHealth",
+              "type": "string"
+            },
+            "maxHealth": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "effect",
+            "maxHealth"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "CityMultiplyYieldsEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "effect": {
+          "const": "city.multiplyYields",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "yield": {
+          "$ref": "#/definitions/YieldKey"
+        }
+      },
+      "required": [
+        "effect",
+        "value",
+        "yield"
+      ],
+      "type": "object"
+    },
+    "CityTransferProductionToYieldsEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "effect": {
+          "const": "city.transferProductionToYields",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "yield": {
+          "$ref": "#/definitions/YieldKey"
+        }
+      },
+      "required": [
+        "effect",
+        "value",
+        "yield"
+      ],
+      "type": "object"
+    },
+    "JsonBuilding": {
+      "additionalProperties": false,
+      "properties": {
+        "effects": {
+          "items": {
+            "$ref": "#/definitions/CityEffect"
+          },
+          "type": "array"
         },
         "id": {
           "type": "string"
@@ -52,7 +147,7 @@
         }
       },
       "required": [
-        "bonuses",
+        "effects",
         "id",
         "name",
         "productionCost",
@@ -125,36 +220,21 @@
         }
       ]
     },
-    "Partial<Yields>": {
-      "additionalProperties": false,
-      "properties": {
-        "culture": {
-          "type": "number"
-        },
-        "faith": {
-          "type": "number"
-        },
-        "food": {
-          "type": "number"
-        },
-        "gold": {
-          "type": "number"
-        },
-        "knowledge": {
-          "type": "number"
-        },
-        "production": {
-          "type": "number"
-        },
-        "publicWorks": {
-          "type": "number"
-        }
-      },
-      "type": "object"
-    },
     "Record<string,number>": {
       "additionalProperties": false,
       "type": "object"
+    },
+    "YieldKey": {
+      "enum": [
+        "culture",
+        "faith",
+        "food",
+        "gold",
+        "knowledge",
+        "production",
+        "publicWorks"
+      ],
+      "type": "string"
     }
   },
   "properties": {
@@ -163,7 +243,7 @@
     },
     "items": {
       "items": {
-        "$ref": "#/definitions/BaseProductDefinition"
+        "$ref": "#/definitions/JsonBuilding"
       },
       "type": "array"
     }

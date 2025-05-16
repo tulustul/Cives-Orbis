@@ -1,12 +1,11 @@
+import { CityEffect } from "@/core/effects";
 import { CombatSimulation } from "./combat";
 import {
-  Bonuses,
   CityVisibility,
   EntityType,
   KnowledgeTechState,
   NationColors,
   PlayerYields,
-  ProductType,
   TechEra,
   TechLayout,
   TileRoad,
@@ -146,7 +145,7 @@ export type BuildingChanneled = EntityMinimalChanneled & {
   entityType: "building" | "idleProduct";
   cost: number;
   technology: EntityMinimalChanneled | null;
-  bonuses: Bonuses;
+  effects: CityEffect[];
 };
 
 export type TileImprovementChanneled = EntityMinimalChanneled & {
@@ -221,14 +220,6 @@ export type CityProductChanneled = {
   enabled: boolean;
   turnsToProduce: number;
   definition: ProductChanneled;
-};
-
-export type ProductDefinitionChanneled = {
-  id: string;
-  entityType: ProductType;
-  name: string;
-  productionCost: number;
-  bonuses: Bonuses;
 };
 
 export type PlayerChanneled = {

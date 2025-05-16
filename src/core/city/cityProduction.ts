@@ -41,7 +41,7 @@ export class CityProduction {
 
   workOnIdleProduct(idleProduct: IdleProduct) {
     this.startProducing(idleProduct);
-    this.city.updateYields();
+    this.city.update();
     this.city.player.updateYields();
   }
 
@@ -60,7 +60,7 @@ export class CityProduction {
       const type = this.product.entityType;
       this.product = null;
       if (type === "idleProduct") {
-        this.city.updateYields();
+        this.city.update();
         this.city.player.updateYields();
       }
       this.city.player.citiesWithoutProduction.push(this.city);
