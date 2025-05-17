@@ -2,7 +2,6 @@ import { bridge } from "@/bridge";
 import { Radio } from "@/ui/components";
 import { useEntityOptions, useSubscription } from "@/utils";
 import { useStateRef } from "@/utils/useStateRef";
-import { useState } from "react";
 import { mapUi } from "../mapUi";
 import { PlayersList } from "./PlayersList";
 
@@ -10,16 +9,16 @@ export function UnitsPainter() {
   const unitOptions = useEntityOptions({ entityType: "unit" });
   const [selectedPlayerId, setSelectedPlayerId, selectedPlayerIdRef] =
     useStateRef<number | null>(null);
-  const [unitId, setUnitId] = useState<string | null>(null);
+  const [unitId, setUnitId, unitIdRef] = useStateRef<string | null>(null);
 
   useSubscription(mapUi.clickedTile$, (tile) => {
-    if (!tile || !unitId || selectedPlayerIdRef.current === null) {
+    if (!tile || !unitIdRef.current || selectedPlayerIdRef.current === null) {
       return;
     }
 
     bridge.editor.units.spawn({
-      definitionId: unitId,
       tileId: tile.id,
+      definitionId: unitIdRef.current,
       playerId: selectedPlayerIdRef.current,
     });
   });

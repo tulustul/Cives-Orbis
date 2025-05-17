@@ -29,6 +29,7 @@ import { ResourcesDrawer } from "./resourcesDrawer";
 import { SelectedUnitDrawer } from "./selectedUnitDrawer";
 import { TerrainDrawer } from "./terrainDrawer";
 import { UnitsDrawer } from "./unitsDrawer";
+import { CitiesDrawer } from "./citiesDrawer";
 
 function makeContainer(label: string, options: ContainerOptions = {}) {
   return new Container({
@@ -67,6 +68,7 @@ export class GameRenderer {
     this.terrainContainer,
     this.yieldsLayer,
   );
+  citiesDrawer = new CitiesDrawer(this.terrainContainer);
   unitsDrawer = new UnitsDrawer(this.unitsContainer);
   areaDrawer = new AreasDrawer(this.overlaysContainer);
   overlays = new OverlaysDrawer(this.overlaysContainer);

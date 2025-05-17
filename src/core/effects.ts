@@ -81,12 +81,25 @@ export class CityMaxHealthEffectImpl
   }
 }
 
+export type CityStrengthEffect = {
+  effect: "city.strength";
+  strength: number;
+};
+export class CityStrengthEffectImpl implements ICityEffect<CityStrengthEffect> {
+  constructor(public options: CityStrengthEffect) {}
+
+  apply(city: CityCore): void {
+    city.defense.strength += this.options.strength;
+  }
+}
+
 export type CityEffect =
   | CityAddYieldsEffect
   | CityMultiplyYieldsEffect
   | CityTransferProductionToYieldsEffect
   | CityDefenseBonusEffect
-  | CityMaxHealthEffect;
+  | CityMaxHealthEffect
+  | CityStrengthEffect;
 
 export type CityEffectType = CityEffect["effect"];
 
@@ -99,6 +112,7 @@ export const cityEffects: Record<
   "city.transferProductionToYields": CityTransferProductionToYieldsEffectImpl,
   "city.defenseBonus": CityDefenseBonusEffectImpl,
   "city.maxHealth": CityMaxHealthEffectImpl,
+  "city.strength": CityStrengthEffectImpl,
 };
 
 export function createCityEffect(effect: CityEffect): ICityEffect<any> {

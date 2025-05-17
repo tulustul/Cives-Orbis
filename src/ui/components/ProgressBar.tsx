@@ -4,7 +4,7 @@ import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren & {
   progress: number;
-  nextProgress: number;
+  nextProgress?: number;
   total: number;
   className?: string;
 };
@@ -17,6 +17,7 @@ export function ProgressBar({
   className,
 }: Props) {
   const percent = (progress / total) * 100;
+  nextProgress = nextProgress ?? progress;
   const nextPercent = nextProgress ? (nextProgress / total) * 100 : 0;
 
   if (!total) {

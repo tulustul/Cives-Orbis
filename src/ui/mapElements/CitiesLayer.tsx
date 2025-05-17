@@ -42,7 +42,7 @@ export function CitiesLayer() {
   }, [camera]);
 
   async function build() {
-    const cities = await bridge.cities.getAllRevealed();
+    const cities = await bridge.cities.getAll({ fogOfWarEnabled: true });
     setCities(cities);
     setTimeout(transform);
   }

@@ -7,6 +7,7 @@ import { getTileCoords } from "@/renderer/utils";
 import { controls } from "@/renderer/controls";
 import { mapUi } from "../mapUi";
 import { formatTurns } from "@/utils";
+import defenseIcon from "@/assets/ui/defense-icon.png";
 
 type Props = {
   city: CityChanneled;
@@ -56,14 +57,14 @@ export function CityInfo({ city }: Props) {
   function getBody() {
     if (city.visibilityLevel === "basic") {
       return (
-        <div className="flex items-center bg-black/70 text-xs font-bold px-2">
+        <div className="flex items-center bg-black/70 text-xs font-bold px-2 grow">
           {city.name}
         </div>
       );
     }
 
     return (
-      <div>
+      <div className="grow">
         <ProgressBar
           className={styles.growth}
           progress={city.totalFood}
@@ -101,9 +102,10 @@ export function CityInfo({ city }: Props) {
       onContextMenu={(e) => e.preventDefault()}
     >
       <div
-        className="rounded-full flex pointer-events-auto cursor-pointer text-white overflow-hidden border-2"
+        className="rounded-full flex pointer-events-auto cursor-pointer text-white overflow-hidden border-2 justify-center min-w-[120px]"
         style={{ borderColor: city.colors.primary }}
       >
+        <CityDefense city={city} />
         <div
           className="text-xl min-w-[30px] flex items-center justify-center font-semibold"
           style={{
@@ -115,6 +117,39 @@ export function CityInfo({ city }: Props) {
         </div>
         {getBody()}
       </div>
+    </div>
+  );
+}
+
+function CityDefense({ city }: { city: CityChanneled }) {
+  if (city.defense.strength === 0) {
+    return null;
+  }
+
+  function getHealthColor() {
+    if (city.defense.currentHealth < city.defense.maxHealth * 0.35) {
+      return "[--progress-bar-color:theme(colors.danger)]";
+    }
+    if (city.defense.currentHealth < city.defense.maxHealth * 0.7) {
+      return "[--progress-bar-color:theme(colors.warning)]";
+    }
+    return "[--progress-bar-color:theme(colors.success)]";
+  }
+
+  return (
+    <div
+      className="absolute bg-black/80 text-xs px-1 bottom-[100%] text-[10px] font-semibold border-1 border-b-0 rounded-t-sm flex gap-0.5 items-center"
+      style={{ borderColor: city.colors.primary }}
+    >
+      <img src={defenseIcon} className="w-[10px]" />
+      <span>{city.defense.strength}</span>
+      {city.defense.currentHealth < city.defense.maxHealth && (
+        <ProgressBar
+          className={`[--progress-bar-height:3px] ${getHealthColor()} [--progress-bar-total-color:theme(colors.gray-500)] w-[50px] ml-0.5`}
+          progress={city.defense.currentHealth}
+          total={city.defense.maxHealth}
+        />
+      )}
     </div>
   );
 }

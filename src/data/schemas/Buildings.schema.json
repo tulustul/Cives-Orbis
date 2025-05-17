@@ -67,6 +67,23 @@
             "maxHealth"
           ],
           "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "effect": {
+              "const": "city.strength",
+              "type": "string"
+            },
+            "strength": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "effect",
+            "strength"
+          ],
+          "type": "object"
         }
       ]
     },

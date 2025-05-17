@@ -41,6 +41,7 @@ import {
   UnitSimulateCombatOptions,
   UnitSpawnOptions,
   CombatSimulation,
+  CityGetAllOptions,
 } from "@/shared";
 import { shareReplay } from "rxjs";
 import { makeCommand, makeObservable } from "./worker";
@@ -128,7 +129,8 @@ export const bridge = {
     spawned$: makeObservable<CityChanneled>("city.spawned"),
     updated$: makeObservable<CityChanneled[]>("city.updated"),
     destroyed$: makeObservable<number>("city.destroyed"),
-    getAllRevealed: () => makeCommand<CityChanneled[]>("city.getAllRevealed"),
+    getAll: (options: CityGetAllOptions) =>
+      makeCommand<CityChanneled[]>("city.getAll", options),
     getDetails: (cityId: number) =>
       makeCommand<CityDetailsChanneled | null>("city.getDetails", cityId),
     produce: (options: CityProduceOptions) =>

@@ -74,6 +74,8 @@ import {
   UnitSpawnOptions,
   CombatSimulation,
   Option,
+  CityGetAllOptions,
+  CityChanneled,
 } from "../shared";
 
 let game: Game;
@@ -119,7 +121,7 @@ const HANDLERS = {
   "resource.getAll": resourceGetAll,
   "resource.editor.spawn": resourceSpawn,
 
-  "city.getAllRevealed": cityGetAllRevealed,
+  "city.getAll": cityGetAll,
   "city.getDetails": cityGetCityDetails,
   "city.produce": cityProduce,
   "city.getRange": cityGetRange,
@@ -489,7 +491,7 @@ export function tileGetHoverDetails(
   if (options.selectedUnitId && game.trackedPlayer.visibleTiles.has(tile)) {
     const selectedUnit = game.unitsManager.unitsMap.get(options.selectedUnitId);
     if (selectedUnit) {
-      const enemyUnit = tile.getFirstEnemyUnit(selectedUnit);
+      const enemyUnit = tile.getEnemyUnit(selectedUnit);
       if (enemyUnit) {
         const simulation = simulateCombat(selectedUnit, enemyUnit);
         combatSimulation = {
@@ -582,10 +584,16 @@ export function resourceGetAll(): ResourceWithTileChanneled[] {
   );
 }
 
-export function cityGetAllRevealed() {
-  return game.citiesManager.cities
-    .filter((city) => game.trackedPlayer.exploredTiles.has(city.tile))
-    .map(cityToChannel);
+export function cityGetAll(options: CityGetAllOptions): CityChanneled[] {
+  let cities = game.citiesManager.cities;
+
+  if (options.fogOfWarEnabled) {
+    cities = cities.filter((city) =>
+      game.trackedPlayer.exploredTiles.has(city.tile),
+    );
+  }
+
+  return cities.map(cityToChannel);
 }
 
 export function cityGetCityDetails(

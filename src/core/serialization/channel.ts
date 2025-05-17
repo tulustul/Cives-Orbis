@@ -39,6 +39,7 @@ import {
   TileChanneled,
   TileOwnershipChanneled,
   TileFogOfWar,
+  CityDefenseChanneled,
 } from "@/shared";
 import { Knowledge } from "@/core/knowledge";
 import {
@@ -51,6 +52,7 @@ import {
   TileImprovementDefinition,
   UnitDefinition,
 } from "@/core/data/types";
+import { CityDefense } from "../city/cityDefense";
 
 export function gameToChannel(game: Game): GameChanneled {
   return {
@@ -118,6 +120,7 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     areaOf: tile.areaOf ? tile.areaOf.id : null,
     unitsIds: tile.units.map((u) => u.id),
     cityId: tile.city ? tile.city.id : null,
+    cityType: tile.city ? tile.city.renderType : null,
     resource: tile.resource ? resourceToChannel(tile.resource) : null,
     roads: tile.fullNeighbours
       .map((n) => (!n || n.road === null ? "0" : "1"))
@@ -211,6 +214,17 @@ export function cityToChannel(city: CityCore): CityChanneled {
       : null,
     turnsToProductionEnd: city.production.turnsToProductionEnd,
     productName: city.production.product ? city.production.product.name : null,
+
+    defense: cityDefenseToChannel(city.defense),
+  };
+}
+
+function cityDefenseToChannel(cityDefense: CityDefense): CityDefenseChanneled {
+  return {
+    maxHealth: cityDefense.maxHealth,
+    currentHealth: cityDefense.currentHealth,
+    strength: cityDefense.strength,
+    defenseBonus: cityDefense.defenseBonus,
   };
 }
 
@@ -262,6 +276,7 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
         amount,
       }),
     ),
+    defense: cityDefenseToChannel(city.defense),
   };
 }
 
@@ -350,7 +365,7 @@ export function unitToUnitPathChannelled(
   return {
     turns: unit.path?.map((row) => row.map(tileToTileCoords)) || null,
     startTurn: unit.actionPointsLeft > 0 ? 0 : 1,
-    endType: lastTile.getFirstEnemyUnit(unit) ? "attack" : "move",
+    endType: lastTile.getEnemyUnit(unit) ? "attack" : "move",
   };
 }
 

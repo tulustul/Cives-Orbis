@@ -162,7 +162,7 @@
       "requiredTechnologies": ["tech_copperWorking"],
       "cost": 35,
       "era": "Copper Age",
-      "unlocks": ["tile-impr-quarry"],
+      "unlocks": ["tile-impr-quarry", "building_walls"],
       "layout": {
         "x": 930.0000000000001,
         "y": 594.0,

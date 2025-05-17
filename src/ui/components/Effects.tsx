@@ -6,6 +6,7 @@ import {
   CityEffectType,
   CityMaxHealthEffect,
   CityMultiplyYieldsEffect,
+  CityStrengthEffect,
   CityTransferProductionToYieldsEffect,
 } from "@/core/effects";
 
@@ -61,6 +62,11 @@ const renderers: Record<CityEffectType, (value: any) => React.ReactNode> = {
   "city.maxHealth": (effect: CityMaxHealthEffect) => (
     <Value className="text-defense">
       {formatValue(effect.maxHealth)} city health
+    </Value>
+  ),
+  "city.strength": (effect: CityStrengthEffect) => (
+    <Value className="text-defense">
+      {formatValue(effect.strength)} city strength
     </Value>
   ),
 };

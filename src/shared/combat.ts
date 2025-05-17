@@ -4,6 +4,7 @@ export enum CombatModifierType {
   river,
   health,
   flanks,
+  city,
 }
 
 export enum BattleResult {

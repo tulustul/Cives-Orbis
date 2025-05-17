@@ -22,6 +22,8 @@ Bugs:
   ☐ units drawer layout broken after some time
   ☐ units remnants on the map
   ✔ data files are fetched twice @done(25-05-10 16:36)
+  ☐ fix hot reloading slowing down the app
+  ☐ fix hex shape in mouse hover
 
 Tooling:
   ✔ put all toolings as npm scripts @done(25-05-10 13:05)
@@ -51,7 +53,7 @@ Minor features:
   ☐ map generator: more realistic orogeny
   ☐ map generator: climate based on mountain ranges and sea currents
   ✔ proper starting locations @done(25-05-12 19:09)
-  ☐ map generator: resources distribution
+  ✔ map generator: resources distribution @done(25-05-17 11:18)
   ✔ unit move animations @done(25-02-25 23:32)
   ☐ combat animations
   ☐ fog of war animation
@@ -65,20 +67,19 @@ Minor features:
   ✔ update tile / update terrain @done(25-05-04 21:56)
   ✔ cache commands @done(25-04-21 13:55)
   ☐ don't draw politics background on the water
-  ☐ fix hot reloading slowing down the app
-  ☐ fix hex shape in mouse hover
   ✔ zoom - hide/show cities - remove transition @done(25-05-04 21:56)
   ✔ optimize fog of war - partial update @done(25-04-21 14:37)
   ☐ remove plantation/mine etc. Instead just make "improve resource" action
   ☐ cultivation mechanic - allow to cultivate organic resources on a tile
 
 Next version:
-  ☐ higher defence for cities
+  ✔ higher defence for cities @done(25-05-17 11:17)
   ☐ city walls and city healthbar
   ☐ gold yield + buildings to increase it
   ☐ units cost gold to maintain, they lose health if not enough gold
   ☐ better units in tech tree, old units get obsolete
   ☐ resource discovering through techs
+  ☐ disabling fog of war shows all borders and tiles
   ☐ ai should defend cities
   ☐ ai avoids creating units if it doesn't have enough gold
   ☐ ai settles first city immediately and protects it

@@ -57,7 +57,7 @@ export function getMoveResult(
   }
 
   if (unit.player.visibleTiles.has(to)) {
-    const enemyUnit = to.getFirstEnemyUnit(unit);
+    const enemyUnit = to.getEnemyUnit(unit);
     const enemyCity = to.city && to.city.player !== unit.player;
     if (enemyUnit || enemyCity) {
       if (unit.definition.trait === UnitTrait.military) {

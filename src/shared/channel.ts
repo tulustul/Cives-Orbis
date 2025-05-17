@@ -16,6 +16,7 @@ import {
   Yields,
 } from "./data";
 import { Climate, LandForm, SeaLevel, TileDirection } from "./tile";
+import { CityDefense } from "@/core/city/cityDefense";
 
 export enum FogOfWarStatus {
   unexplored = 0,
@@ -76,6 +77,8 @@ export type MapChanneled = {
   tiles: TileChanneled[][];
 };
 
+export type CityRenderType = "normal" | "walled";
+
 export type TileChanneled = {
   id: number;
 
@@ -94,6 +97,7 @@ export type TileChanneled = {
   yields: Yields;
   areaOf: number | null;
   cityId: number | null;
+  cityType: CityRenderType | null;
   unitsIds: number[];
   resource: ResourceChanneled | null;
   roads: string;
@@ -153,6 +157,13 @@ export type TileImprovementChanneled = EntityMinimalChanneled & {
   technology: EntityMinimalChanneled | null;
 };
 
+export type CityDefenseChanneled = {
+  maxHealth: number;
+  currentHealth: number;
+  strength: number;
+  defenseBonus: number;
+};
+
 export type CityChanneled = {
   id: number;
   visibilityLevel: CityVisibility;
@@ -172,6 +183,8 @@ export type CityChanneled = {
   productionRequired: number | null;
   turnsToProductionEnd: number | null;
   productName: string | null;
+
+  defense: CityDefenseChanneled;
 };
 
 export type CityStorage = {
@@ -214,6 +227,7 @@ export type CityDetailsChanneled = {
   product: CityProductChanneled | null;
 
   storage: CityStorage[];
+  defense: CityDefenseChanneled;
 };
 
 export type CityProductChanneled = {

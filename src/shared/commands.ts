@@ -92,6 +92,10 @@ export type ResourceSpawnOptions = {
   quantity: number;
 };
 
+export type CityGetAllOptions = {
+  fogOfWarEnabled: boolean;
+};
+
 export type CityProduceOptions = {
   cityId: number;
   productId: string;

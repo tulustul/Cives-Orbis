@@ -11,7 +11,7 @@ import { TileCore } from "./tile";
 
 // Returns true if the unit can move to the tile
 export function attack(unit: UnitCore, tile: TileCore): boolean {
-  const enemyUnit = tile.getFirstEnemyUnit(unit);
+  const enemyUnit = tile.getEnemyUnit(unit);
 
   if (enemyUnit) {
     unit.actionPointsLeft = Math.max(unit.actionPointsLeft - 3, 0);
@@ -20,7 +20,7 @@ export function attack(unit: UnitCore, tile: TileCore): boolean {
       return false;
     }
 
-    const anotherEnemyUnit = tile.getFirstEnemyMilitaryUnit(unit);
+    const anotherEnemyUnit = tile.getBestEnemyMilitaryUnit(unit);
 
     if (anotherEnemyUnit) {
       return false;
@@ -156,6 +156,13 @@ function getDefenderModifiers(
     modifiers.push({
       type: CombatModifierType.flanks,
       value: flanks * 0.1,
+    });
+  }
+
+  if (defender.tile.city) {
+    modifiers.push({
+      type: CombatModifierType.city,
+      value: defender.tile.city.defense.defenseBonus,
     });
   }
 

@@ -7,7 +7,7 @@ import {
   roundYields,
   zeroYields,
 } from "@/core/yields";
-import { CityVisibility, Yields } from "@/shared";
+import { CityRenderType, CityVisibility, Yields } from "@/shared";
 
 import { CitiesNetwork } from "@/core/cities-network";
 import { collector } from "@/core/collector";
@@ -77,6 +77,7 @@ export class CityCore {
 
     this.reset();
     this.update();
+    this.defense.update();
     this.perTurn.food -= this.population.foodConsumed;
 
     if (
@@ -178,5 +179,12 @@ export class CityCore {
     }
 
     return "hidden";
+  }
+
+  get renderType(): CityRenderType {
+    if (this.defense.strength > 0) {
+      return "walled";
+    }
+    return "normal";
   }
 }

@@ -12,6 +12,7 @@ const MODIFIER_LABELS: Record<CombatModifierType, string> = {
   [CombatModifierType.health]: "from health penalty",
   [CombatModifierType.forest]: "from forest",
   [CombatModifierType.flanks]: "from flanks",
+  [CombatModifierType.city]: "from city",
 };
 
 type Props = {

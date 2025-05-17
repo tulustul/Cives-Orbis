@@ -40,7 +40,7 @@ export function zocAddUnit(unit: UnitCore) {
       continue;
     }
     tile.zocUnits.add(unit);
-    if (!tile.getFirstEnemyMilitaryUnit(unit)) {
+    if (!tile.getBestEnemyMilitaryUnit(unit)) {
       tile.zocPlayer = unit.player;
       unit.zoc.push(tile);
       updateNoMansLand(tile);

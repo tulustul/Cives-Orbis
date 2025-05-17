@@ -1,4 +1,4 @@
-import { TileChanneled, LandForm } from "@/shared";
+import { TileChanneled, LandForm, CityRenderType } from "@/shared";
 import * as terrainData from "@/assets/atlas-tiles.json";
 import { bridge } from "@/bridge";
 import { mapUi } from "@/ui/mapUi";
@@ -12,6 +12,11 @@ import { MOUNTAIN_BY_CLIMATE } from "./tileTextures";
 import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
 
 type TileTextureName = keyof typeof terrainData.frames;
+
+const CITY_TEXTURES: Record<CityRenderType, string> = {
+  normal: "city.png",
+  walled: "city-walls.png",
+};
 
 export class MapDecorsDrawer {
   tileDrawers = new Map<number, TileDrawer>();
@@ -103,7 +108,6 @@ class TileDrawer {
     this.tile = tile;
     this.drawDecors();
     this.drawImprovement();
-    this.drawCity();
     this.drawYields();
   }
 
@@ -175,17 +179,6 @@ class TileDrawer {
     const textureName = `${this.tile.improvement}.png`;
     sprite.texture = this.tilesTextures[textureName];
     putContainerAtTileCentered(sprite, this.tile, 0.6);
-  }
-
-  private drawCity() {
-    if (this.tile.cityId === null) {
-      return;
-    }
-
-    const sprite = this.nextSprite();
-    sprite.anchor.set(0, 0);
-    sprite.texture = this.tilesTextures["city.png"];
-    putContainerAtTile(sprite, this.tile);
   }
 
   private drawYields() {

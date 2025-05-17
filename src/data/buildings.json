@@ -280,6 +280,27 @@
       ],
       "strongRequirements": [],
       "weakRequirements": []
+    },
+    {
+      "id": "building_walls",
+      "name": "Walls",
+      "productionCost": 150,
+      "effects": [
+        {
+          "effect": "city.defenseBonus",
+          "defenseBonus": 0.15
+        },
+        {
+          "effect": "city.maxHealth",
+          "maxHealth": 200
+        },
+        {
+          "effect": "city.strength",
+          "strength": 15
+        }
+      ],
+      "strongRequirements": [],
+      "weakRequirements": []
     }
   ]
 }

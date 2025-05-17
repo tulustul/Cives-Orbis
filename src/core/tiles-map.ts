@@ -39,10 +39,7 @@ export class TilesMapCore {
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
         const tile = this.tiles[x][y];
-        tile.computeYields();
-        tile.computeMovementCosts();
-        tile.computeSweetSpotValue();
-        tile.computeRenderingData();
+        tile.precompute();
       }
     }
     this.precomputePassableAreas();

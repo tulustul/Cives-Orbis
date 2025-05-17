@@ -68,7 +68,7 @@ export class TileCore {
 
   forest = false;
   wetlands = false;
-  coast = false; // TODO implement
+  coast = false;
   improvement: TileImprovementDefinition | null = null;
   road: TileRoad | null = null;
   resource: ResourceDeposit | null = null;
@@ -267,12 +267,8 @@ export class TileCore {
       this.sweetSpotValue += tile.yields.production;
     }
 
-    for (const neighbour of this.neighbours) {
-      if (neighbour.seaLevel !== SeaLevel.none) {
-        // Coastal cities are randked better.
-        this.sweetSpotValue *= 1.5;
-        break;
-      }
+    if (this.coast) {
+      this.sweetSpotValue *= 1.5;
     }
   }
 
@@ -302,16 +298,28 @@ export class TileCore {
     return !this.isWater;
   }
 
-  getFirstEnemyMilitaryUnit(unit: UnitCore): UnitCore | undefined {
+  getBestEnemyMilitaryUnit(unit: UnitCore): UnitCore | null {
     // TODO implement war state between players
-    return this.units.find(
-      (u) => u.definition.strength && u.player !== unit.player,
-    );
+    let bestEnemy: UnitCore | null = null;
+    let bestScore = -Infinity;
+    for (const u of this.units) {
+      if (u.player === unit.player) {
+        continue;
+      }
+      if (u.definition.strength) {
+        const score = u.definition.strength * u.health;
+        if (score > bestScore) {
+          bestScore = score;
+          bestEnemy = u;
+        }
+      }
+    }
+    return bestEnemy;
   }
 
-  getFirstEnemyUnit(unit: UnitCore): UnitCore | undefined {
+  getEnemyUnit(unit: UnitCore): UnitCore | undefined {
     // TODO implement war state between players
-    const militaryEnemy = this.getFirstEnemyMilitaryUnit(unit);
+    const militaryEnemy = this.getBestEnemyMilitaryUnit(unit);
     if (militaryEnemy) {
       return militaryEnemy;
     }
@@ -339,6 +347,17 @@ export class TileCore {
     }
 
     return false;
+  }
+
+  precompute() {
+    this.coast =
+      this.seaLevel === SeaLevel.none &&
+      this.neighbours.some((n) => n.seaLevel !== SeaLevel.none);
+
+    this.computeYields();
+    this.computeMovementCosts();
+    this.computeSweetSpotValue();
+    this.computeRenderingData();
   }
 
   computeRenderingData() {
