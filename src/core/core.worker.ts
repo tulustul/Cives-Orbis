@@ -74,7 +74,7 @@ import {
   UnitSpawnOptions,
   CombatSimulation,
   Option,
-  CityGetAllOptions,
+  FogOfWarFilter,
   CityChanneled,
 } from "../shared";
 
@@ -453,9 +453,11 @@ export function tileGetAll(): TileChanneled[] {
   return Array.from(game.map.tilesMap.values()).map(tileToChannel);
 }
 
-export function tileGetOwnership(): TileOwnershipChanneled[] {
+export function tileGetOwnership(
+  options: FogOfWarFilter,
+): TileOwnershipChanneled[] {
   return Array.from(game.map.tilesMap.values()).map((t) =>
-    tileToTileOwnershipChannel(t, game),
+    tileToTileOwnershipChannel(t, game, options.fogOfWarEnabled),
   );
 }
 
@@ -578,13 +580,19 @@ export function resourceSpawn(options: ResourceSpawnOptions) {
   tile.update();
 }
 
-export function resourceGetAll(): ResourceWithTileChanneled[] {
-  return Array.from(game.trackedPlayer.discoveredResourceDeposits).map(
-    resourceWithTileToChannel,
-  );
+export function resourceGetAll(
+  options: FogOfWarFilter,
+): ResourceWithTileChanneled[] {
+  let resources: ResourceDeposit[];
+  if (options.fogOfWarEnabled) {
+    resources = Array.from(game.trackedPlayer.discoveredResourceDeposits);
+  } else {
+    resources = game.map.getAllResources();
+  }
+  return resources.map(resourceWithTileToChannel);
 }
 
-export function cityGetAll(options: CityGetAllOptions): CityChanneled[] {
+export function cityGetAll(options: FogOfWarFilter): CityChanneled[] {
   let cities = game.citiesManager.cities;
 
   if (options.fogOfWarEnabled) {

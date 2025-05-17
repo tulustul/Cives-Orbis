@@ -92,7 +92,7 @@ export type ResourceSpawnOptions = {
   quantity: number;
 };
 
-export type CityGetAllOptions = {
+export type FogOfWarFilter = {
   fogOfWarEnabled: boolean;
 };
 

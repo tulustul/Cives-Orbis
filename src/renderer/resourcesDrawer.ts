@@ -6,6 +6,7 @@ import { getAssets } from "./assets";
 import { camera } from "./camera";
 import { TILE_SIZE } from "./constants";
 import { putContainerAtTileCentered } from "./utils";
+import { skip } from "rxjs";
 
 export class ResourcesDrawer {
   resourceDrawers = new Map<number, ResourceDrawer>();
@@ -29,6 +30,10 @@ export class ResourcesDrawer {
       this.container.visible = enabled;
     });
 
+    mapUi.fogOfWarEnabled$
+      .pipe(skip(1))
+      .subscribe(() => this.bindToTrackedPlayer());
+
     camera.scale$.subscribe((scale) => {
       this.setScale(scale);
     });
@@ -51,7 +56,9 @@ export class ResourcesDrawer {
 
   private async bindToTrackedPlayer() {
     this.clear();
-    const resources = await bridge.resources.getAll();
+    const resources = await bridge.resources.getAll({
+      fogOfWarEnabled: mapUi.fogOfWarEnabled,
+    });
 
     for (const resource of resources) {
       this.addResource(resource);

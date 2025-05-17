@@ -5,6 +5,7 @@ import { useObservable } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import styles from "./CitiesLayer.module.css";
 import { CityInfo } from "./CityInfo";
+import { mapUi } from "../mapUi";
 
 export function CitiesLayer() {
   const elRef = useRef<HTMLDivElement>(null);
@@ -12,6 +13,8 @@ export function CitiesLayer() {
   const [cities, setCities] = useState<CityChanneled[]>([]);
 
   const gameInfo = useObservable(bridge.game.start$);
+
+  const fogOfWarEnabled = useObservable(mapUi.fogOfWarEnabled$);
 
   const trackedPlayer = useObservable(bridge.player.tracked$);
 
@@ -34,7 +37,7 @@ export function CitiesLayer() {
     if (gameInfo) {
       build();
     }
-  }, [gameInfo, trackedPlayer]);
+  }, [gameInfo, trackedPlayer, fogOfWarEnabled]);
 
   useEffect(() => {
     const subscription = camera.transform$.subscribe(transform);
@@ -42,7 +45,9 @@ export function CitiesLayer() {
   }, [camera]);
 
   async function build() {
-    const cities = await bridge.cities.getAll({ fogOfWarEnabled: true });
+    const cities = await bridge.cities.getAll({
+      fogOfWarEnabled: mapUi.fogOfWarEnabled,
+    });
     setCities(cities);
     setTimeout(transform);
   }

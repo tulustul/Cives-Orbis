@@ -138,10 +138,14 @@ export function tileToChannel(tile: TileCore): TileChanneled {
 export function tileToTileOwnershipChannel(
   tile: TileCore,
   game: Game | null = null,
+  fogOfWarEnabled: boolean = true,
 ): TileOwnershipChanneled {
   let borders = 0;
   let colors: NationColors | null = null;
-  if (tile.areaOf && (!game || game.trackedPlayer.exploredTiles.has(tile))) {
+  if (
+    tile.areaOf &&
+    (!game || !fogOfWarEnabled || game.trackedPlayer.exploredTiles.has(tile))
+  ) {
     const player = tile.areaOf.player;
     colors = player.nation.colors;
     borders = tile.fullNeighbours.reduce<number>((acc, n, i) => {

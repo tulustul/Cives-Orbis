@@ -1,6 +1,6 @@
-import { TileChanneled, LandForm, CityRenderType } from "@/shared";
 import * as terrainData from "@/assets/atlas-tiles.json";
 import { bridge } from "@/bridge";
+import { LandForm, TileChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
@@ -9,14 +9,9 @@ import { getAssets } from "./assets";
 import { camera } from "./camera";
 import { TILE_ROW_OFFSET } from "./constants";
 import { MOUNTAIN_BY_CLIMATE } from "./tileTextures";
-import { putContainerAtTile, putContainerAtTileCentered } from "./utils";
+import { putContainerAtTileCentered } from "./utils";
 
 type TileTextureName = keyof typeof terrainData.frames;
-
-const CITY_TEXTURES: Record<CityRenderType, string> = {
-  normal: "city.png",
-  walled: "city-walls.png",
-};
 
 export class MapDecorsDrawer {
   tileDrawers = new Map<number, TileDrawer>();

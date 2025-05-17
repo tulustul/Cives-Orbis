@@ -16,7 +16,6 @@ import {
   Yields,
 } from "./data";
 import { Climate, LandForm, SeaLevel, TileDirection } from "./tile";
-import { CityDefense } from "@/core/city/cityDefense";
 
 export enum FogOfWarStatus {
   unexplored = 0,

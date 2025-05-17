@@ -2,9 +2,10 @@ import { bridge } from "@/bridge";
 import { TileOwnershipChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { AttributeOptions, Container, Shader } from "pixi.js";
+import { skip } from "rxjs";
+import { camera } from "./camera";
 import { HexDrawer } from "./hexDrawer";
 import { hexColorToArray } from "./utils";
-import { camera } from "./camera";
 
 const VERTEX_PROGRAM = `#version 300 es
 
@@ -109,6 +110,8 @@ export class PoliticsDrawer extends HexDrawer<TileOwnershipChanneled> {
   constructor(container: Container) {
     super(container);
 
+    mapUi.fogOfWarEnabled$.pipe(skip(1)).subscribe(() => this.build());
+
     bridge.player.tracked$.subscribe(() => this.build());
 
     bridge.game.start$.subscribe(() => {
@@ -146,7 +149,9 @@ export class PoliticsDrawer extends HexDrawer<TileOwnershipChanneled> {
 
   private async build() {
     this.isBuilt = false;
-    const tiles = await bridge.tiles.getOwnership();
+    const tiles = await bridge.tiles.getOwnership({
+      fogOfWarEnabled: mapUi.fogOfWarEnabled,
+    });
     this.setTiles(tiles);
     this.isBuilt = true;
   }

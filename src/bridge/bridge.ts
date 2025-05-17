@@ -41,7 +41,7 @@ import {
   UnitSimulateCombatOptions,
   UnitSpawnOptions,
   CombatSimulation,
-  CityGetAllOptions,
+  FogOfWarFilter,
 } from "@/shared";
 import { shareReplay } from "rxjs";
 import { makeCommand, makeObservable } from "./worker";
@@ -78,8 +78,8 @@ export const bridge = {
     fogOfWar$: makeObservable<TilesFogOfWarChanneled>("trackedPlayer.fogOfWar"),
     ownership$: makeObservable<TileOwnershipChanneled[]>("tile.ownership"),
     getAll: () => makeCommand<TileChanneled[]>("tile.getAll"),
-    getOwnership: () =>
-      makeCommand<TileOwnershipChanneled[]>("tile.getOwnership"),
+    getOwnership: (options: FogOfWarFilter) =>
+      makeCommand<TileOwnershipChanneled[]>("tile.getOwnership", options),
     getFogOfWar: () => makeCommand<TilesFogOfWarChanneled>("tile.getFogOfWar"),
     getDetails: (tileId: number) =>
       makeCommand<TileDetailsChanneled>("tile.getDetails", tileId),
@@ -93,7 +93,8 @@ export const bridge = {
       "resource.discovered",
     ),
     depleted$: makeObservable<ResourceWithTileChanneled>("resource.depleted"),
-    getAll: () => makeCommand<ResourceWithTileChanneled[]>("resource.getAll"),
+    getAll: (options: FogOfWarFilter) =>
+      makeCommand<ResourceWithTileChanneled[]>("resource.getAll", options),
   },
   entities: {
     getFailedWeakRequirements: (options: EntityGetFailedWeakRequirements) =>
@@ -129,7 +130,7 @@ export const bridge = {
     spawned$: makeObservable<CityChanneled>("city.spawned"),
     updated$: makeObservable<CityChanneled[]>("city.updated"),
     destroyed$: makeObservable<number>("city.destroyed"),
-    getAll: (options: CityGetAllOptions) =>
+    getAll: (options: FogOfWarFilter) =>
       makeCommand<CityChanneled[]>("city.getAll", options),
     getDetails: (cityId: number) =>
       makeCommand<CityDetailsChanneled | null>("city.getDetails", cityId),

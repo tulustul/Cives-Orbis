@@ -1,6 +1,7 @@
 import { LandForm, SeaLevel } from "@/shared";
 import { TileCore } from "./tile";
 import { getTileNeighbours, getTileFullNeighbours } from "./hex-math";
+import { ResourceDeposit } from "./resources";
 
 export type PassableArea = {
   id: number;
@@ -120,5 +121,15 @@ export class TilesMapCore {
       (area) => area.type === "land",
     );
     return lands.reduce((total, area) => total + area.area, 0);
+  }
+
+  getAllResources() {
+    const resources: ResourceDeposit[] = [];
+    for (const tile of this.tilesMap.values()) {
+      if (tile.resource) {
+        resources.push(tile.resource);
+      }
+    }
+    return resources;
   }
 }
