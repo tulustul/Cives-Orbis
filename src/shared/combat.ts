@@ -1,3 +1,5 @@
+import { CityChanneled, UnitChanneled } from "./channel";
+
 export enum CombatModifierType {
   hills,
   forest,
@@ -18,13 +20,15 @@ export type CombatModifier = {
   value: number;
 };
 
-export type CombatSimulationSide = {
+export type CombatSimulationSideChanneled = {
   damage: number;
   strength: number;
   modifiers: CombatModifier[];
+  unit: UnitChanneled | null;
+  city: CityChanneled | null;
 };
 
-export type CombatSimulation = {
-  attacker: CombatSimulationSide;
-  defender: CombatSimulationSide;
+export type CombatSimulationChanneled = {
+  attacker: CombatSimulationSideChanneled;
+  defender: CombatSimulationSideChanneled;
 };

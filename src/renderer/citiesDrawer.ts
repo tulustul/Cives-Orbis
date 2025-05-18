@@ -4,7 +4,7 @@ import { CityChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
-import { putContainerAtTile } from "./utils";
+import { putContainerAtTile, putSpriteAtTileCentered } from "./utils";
 
 type TileTextureName = keyof typeof terrainData.frames;
 
@@ -65,7 +65,7 @@ class CityDrawer {
 
   constructor(city: CityChanneled) {
     this.sprite.zIndex = city.tile.y;
-    this.sprite.anchor.set(0, 0);
+    this.sprite.anchor.set(0.5, 0.5);
   }
 
   public destroy() {
@@ -79,6 +79,6 @@ class CityDrawer {
     }
 
     this.sprite.texture = this.tilesTextures[textureName];
-    putContainerAtTile(this.sprite, city.tile);
+    putSpriteAtTileCentered(this.sprite, city.tile);
   }
 }

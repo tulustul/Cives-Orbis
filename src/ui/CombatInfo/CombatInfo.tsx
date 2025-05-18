@@ -6,15 +6,13 @@ import { CombatInfoSide } from "./CombatInfoSide";
 import { OrnateBox } from "../components/OrnateBox";
 
 export function CombatInfo() {
-  const combatSimulation = useObservable(mapUi.combatSimulation$);
+  const sim = useObservable(mapUi.combatSimulation$);
 
-  if (!combatSimulation) {
+  if (!sim) {
     return null;
   }
 
-  const simulation = combatSimulation.simulation;
-
-  const ratio = simulation.attacker.strength / simulation.defender.strength;
+  const ratio = sim.attacker.strength / sim.defender.strength;
 
   function getResultClass(): string {
     if (ratio > 0.8 && ratio < 1.2) {
@@ -62,18 +60,9 @@ export function CombatInfo() {
       </div>
 
       <div className="flex justify-between gap-6">
-        <CombatInfoSide
-          label="Attacker"
-          unitDef={combatSimulation.attacker.definition}
-          simulationSide={simulation.attacker}
-        />
+        <CombatInfoSide label="Attacker" side={sim.attacker} />
 
-        <CombatInfoSide
-          label="Defender"
-          unitDef={combatSimulation.defender.definition}
-          simulationSide={simulation.defender}
-          invertedColors
-        />
+        <CombatInfoSide label="Defender" side={sim.defender} invertedColors />
       </div>
     </OrnateBox>
   );

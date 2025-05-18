@@ -77,17 +77,9 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
 			"sourceSize": {"w":256,"h":256}
 		},
-		"city.png":
-		{
-			"frame": {"x":796,"y":4,"w":245,"h":256},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":245,"h":256},
-			"sourceSize": {"w":245,"h":256}
-		},
 		"tile-impr-cottage.png":
 		{
-			"frame": {"x":796,"y":268,"w":233,"h":256},
+			"frame": {"x":796,"y":4,"w":233,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":233,"h":256},
@@ -95,7 +87,7 @@
 		},
 		"tile-impr-farm.png":
 		{
-			"frame": {"x":796,"y":532,"w":232,"h":256},
+			"frame": {"x":796,"y":268,"w":232,"h":256},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":232,"h":256},
@@ -127,7 +119,7 @@
 		},
 		"mountain.png":
 		{
-			"frame": {"x":1049,"y":4,"w":256,"h":195},
+			"frame": {"x":1037,"y":4,"w":256,"h":195},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":195},
@@ -135,7 +127,7 @@
 		},
 		"tile-resource-stone.png":
 		{
-			"frame": {"x":1049,"y":207,"w":256,"h":179},
+			"frame": {"x":1037,"y":207,"w":256,"h":179},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":179},
@@ -143,7 +135,7 @@
 		},
 		"tile-impr-lumbermill.png":
 		{
-			"frame": {"x":1049,"y":394,"w":256,"h":168},
+			"frame": {"x":1037,"y":394,"w":256,"h":168},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":168},
@@ -151,7 +143,7 @@
 		},
 		"tile-impr-plantation.png":
 		{
-			"frame": {"x":1049,"y":570,"w":256,"h":148},
+			"frame": {"x":1037,"y":570,"w":256,"h":148},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":148},
@@ -159,7 +151,7 @@
 		},
 		"hill-arctic.png":
 		{
-			"frame": {"x":1049,"y":726,"w":256,"h":145},
+			"frame": {"x":1037,"y":726,"w":256,"h":145},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":145},
@@ -167,7 +159,7 @@
 		},
 		"hill-desert.png":
 		{
-			"frame": {"x":1049,"y":879,"w":256,"h":138},
+			"frame": {"x":1037,"y":879,"w":256,"h":138},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
@@ -207,7 +199,7 @@
 		},
 		"tile-impr-pasture.png":
 		{
-			"frame": {"x":1313,"y":4,"w":256,"h":138},
+			"frame": {"x":1301,"y":4,"w":256,"h":138},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":138},
@@ -215,15 +207,23 @@
 		},
 		"tile-impr-irrigation.png":
 		{
-			"frame": {"x":1313,"y":150,"w":255,"h":205},
+			"frame": {"x":1301,"y":150,"w":255,"h":205},
 			"rotated": false,
 			"trimmed": true,
 			"spriteSourceSize": {"x":0,"y":0,"w":255,"h":205},
 			"sourceSize": {"w":256,"h":205}
 		},
+		"city.png":
+		{
+			"frame": {"x":1301,"y":363,"w":255,"h":185},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":1,"y":0,"w":255,"h":185},
+			"sourceSize": {"w":256,"h":185}
+		},
 		"tile-impr-cottage-1.png":
 		{
-			"frame": {"x":1313,"y":363,"w":251,"h":223},
+			"frame": {"x":1301,"y":556,"w":251,"h":223},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":251,"h":223},
@@ -231,7 +231,7 @@
 		},
 		"tile-impr-clayPit.png":
 		{
-			"frame": {"x":1313,"y":594,"w":238,"h":199},
+			"frame": {"x":1301,"y":787,"w":238,"h":199},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":238,"h":199},
@@ -239,7 +239,7 @@
 		},
 		"tree-temperate-1.png":
 		{
-			"frame": {"x":1313,"y":801,"w":226,"h":212},
+			"frame": {"x":796,"y":532,"w":226,"h":212},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":226,"h":212},

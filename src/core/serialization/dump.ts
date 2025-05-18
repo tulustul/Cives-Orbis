@@ -372,7 +372,7 @@ function loadCity(game: Game, cityData: CitySerialized) {
 
   city.expansion.totalCulture = cityData.totalCulture;
 
-  city.defense.currentHealth = cityData.health ?? 0;
+  city.defense.health = cityData.health ?? 0;
 
   for (const tileIndex of cityData.tiles) {
     city.expansion.addTile(game.map.tilesMap.get(tileIndex)!);
@@ -436,7 +436,7 @@ function dumpCity(city: CityCore): CitySerialized {
         amount,
       }),
     ),
-    health: city.defense.currentHealth,
+    health: city.defense.health,
   };
 }
 

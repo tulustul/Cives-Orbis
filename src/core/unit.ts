@@ -11,7 +11,8 @@ import { UnitDefinition } from "./data/types";
 export class UnitCore {
   id!: number;
   actionPointsLeft: number;
-  health = 100;
+  maxHealth = 100;
+  health = this.maxHealth;
   supplies = 100;
   path: TileCore[][] | null = null;
   parent: UnitCore | null = null;
@@ -191,5 +192,9 @@ export class UnitCore {
 
   get isPlayerTracked() {
     return this.player.game.trackedPlayer === this.player;
+  }
+
+  get strength() {
+    return this.definition.strength;
   }
 }

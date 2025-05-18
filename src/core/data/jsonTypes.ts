@@ -1,4 +1,3 @@
-import { CityEffect } from "../effects";
 import {
   climateNamesInverse,
   landFormNamesInverse,
@@ -7,6 +6,7 @@ import {
   UnitTypeNamesInverse,
 } from "./const";
 import {
+  CityEffect,
   NationColors,
   ResourceCategory,
   TechEra,

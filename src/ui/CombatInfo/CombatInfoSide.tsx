@@ -1,8 +1,4 @@
-import {
-  UnitDefChanneled,
-  CombatModifierType,
-  CombatSimulationSide,
-} from "@/shared";
+import { CombatModifierType, CombatSimulationSideChanneled } from "@/shared";
 import { ImageIcon } from "@/ui/components";
 import clsx from "clsx";
 
@@ -17,34 +13,32 @@ const MODIFIER_LABELS: Record<CombatModifierType, string> = {
 
 type Props = {
   label: string;
-  unitDef: UnitDefChanneled;
-  simulationSide: CombatSimulationSide;
+  side: CombatSimulationSideChanneled;
   className?: string;
   invertedColors?: boolean;
 };
 
 export function CombatInfoSide({
   label,
-  simulationSide,
-  unitDef,
+  side,
   className,
   invertedColors,
 }: Props) {
   return (
     <div className={clsx(className, "flex flex-col items-center")}>
       <div className="font-semibold">{label}</div>
-      <div>{unitDef.name}</div>
-      <ImageIcon name={unitDef.id} size="medium" />
+      <div>{side.unit?.name ?? side.city?.name}</div>
+      {side.unit && <ImageIcon name={side.unit.definitionId} size="medium" />}
       <div className="flex justify-between text-sm">
-        Approx. dmg.: <b>{simulationSide.damage}</b>
+        Approx. dmg.: <b>{side.damage}</b>
       </div>
       <div className="flex justify-between text-sm">
-        Strength: <b>{simulationSide.strength.toFixed(1)}</b>
+        Strength: <b>{side.strength.toFixed(1)}</b>
       </div>
 
       <div>
         <div className="text-sm text-center font-semibold mt-1">
-          {simulationSide.modifiers.map((modifier) => (
+          {side.modifiers.map((modifier) => (
             <div
               key={modifier.type}
               className={

@@ -69,6 +69,7 @@ export class CityCore {
 
   nextTurn() {
     this.population.changedSize = false;
+    this.defense.changed = false;
 
     this.expansion.progressExpansion();
     this.production.progressProduction();
@@ -82,7 +83,8 @@ export class CityCore {
 
     if (
       this.player === this.player.game.trackedPlayer ||
-      this.population.changedSize
+      this.population.changedSize ||
+      this.defense.changed
     ) {
       collector.cities.add(this);
     }

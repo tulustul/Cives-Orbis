@@ -1,47 +1,4 @@
 import { CityCore } from "@/core/city";
-import { Game } from "@/core/game";
-import { PlayerCore } from "@/core/player";
-import { ResourceDeposit } from "@/core/resources";
-import { TileCore } from "@/core/tile";
-import { TilesMapCore } from "@/core/tiles-map";
-import { UnitCore } from "@/core/unit";
-import {
-  BuildingChanneled,
-  CityChanneled,
-  CityDetailsChanneled,
-  CityProductChanneled,
-  EntityChanneled,
-  EntityMinimalChanneled,
-  NationColors,
-  PlayerChanneled,
-  ProductChanneled,
-  ResourceDefinitionChannel,
-  SeaLevel,
-  TechDefChanneled,
-  TechKnowledgeChanneled,
-  TileCoords,
-  TileCoordsWithUnits,
-  TileDetailsChanneled,
-  TileImprovementChanneled,
-  TilesCoordsWithNeighbours,
-  TrackedPlayerChanneled,
-  UnitChanneled,
-  UnitDefChanneled,
-  UnitDetailsChanneled,
-  UnitMoveChanneled,
-  UnitPathChanneled,
-  FogOfWarStatus,
-  GameChanneled,
-  GameStartInfo,
-  MapChanneled,
-  ResourceChanneled,
-  ResourceWithTileChanneled,
-  TileChanneled,
-  TileOwnershipChanneled,
-  TileFogOfWar,
-  CityDefenseChanneled,
-} from "@/shared";
-import { Knowledge } from "@/core/knowledge";
 import {
   Building,
   Entity,
@@ -52,7 +9,53 @@ import {
   TileImprovementDefinition,
   UnitDefinition,
 } from "@/core/data/types";
+import { Game } from "@/core/game";
+import { Knowledge } from "@/core/knowledge";
+import { PlayerCore } from "@/core/player";
+import { ResourceDeposit } from "@/core/resources";
+import { TileCore } from "@/core/tile";
+import { TilesMapCore } from "@/core/tiles-map";
+import { UnitCore } from "@/core/unit";
+import {
+  BuildingChanneled,
+  CityChanneled,
+  CityDefenseChanneled,
+  CityDetailsChanneled,
+  CityProductChanneled,
+  CombatSimulationChanneled,
+  CombatSimulationSideChanneled,
+  EntityChanneled,
+  EntityMinimalChanneled,
+  FogOfWarStatus,
+  GameChanneled,
+  GameStartInfo,
+  MapChanneled,
+  NationColors,
+  PlayerChanneled,
+  ProductChanneled,
+  ResourceChanneled,
+  ResourceDefinitionChannel,
+  ResourceWithTileChanneled,
+  SeaLevel,
+  TechDefChanneled,
+  TechKnowledgeChanneled,
+  TileChanneled,
+  TileCoords,
+  TileCoordsWithUnits,
+  TileDetailsChanneled,
+  TileFogOfWar,
+  TileImprovementChanneled,
+  TileOwnershipChanneled,
+  TilesCoordsWithNeighbours,
+  TrackedPlayerChanneled,
+  UnitChanneled,
+  UnitDefChanneled,
+  UnitDetailsChanneled,
+  UnitMoveChanneled,
+  UnitPathChanneled,
+} from "@/shared";
 import { CityDefense } from "../city/cityDefense";
+import { CombatSimulation, CombatSimulationSide } from "../combat";
 
 export function gameToChannel(game: Game): GameChanneled {
   return {
@@ -226,7 +229,7 @@ export function cityToChannel(city: CityCore): CityChanneled {
 function cityDefenseToChannel(cityDefense: CityDefense): CityDefenseChanneled {
   return {
     maxHealth: cityDefense.maxHealth,
-    currentHealth: cityDefense.currentHealth,
+    currentHealth: cityDefense.health,
     strength: cityDefense.strength,
     defenseBonus: cityDefense.defenseBonus,
   };
@@ -311,6 +314,7 @@ export function trackedPlayerToChannel(
 export function unitToChannel(unit: UnitCore): UnitChanneled {
   return {
     id: unit.id,
+    name: unit.definition.name,
     type: unit.definition.strength > 0 ? "military" : "civilian",
     tile: tileToTileCoordsWithUnits(unit.tile),
     definitionId: unit.definition.id,
@@ -588,4 +592,31 @@ export function entityToChannel(entity: Entity): EntityChanneled {
   }
 
   return productToChannel(entity);
+}
+
+export function combatSimulationToChannel(
+  simulation: CombatSimulation,
+): CombatSimulationChanneled {
+  return {
+    attacker: combatSimulationSideToChannel(simulation.attacker),
+    defender: combatSimulationSideToChannel(simulation.defender),
+  };
+}
+
+function combatSimulationSideToChannel(
+  side: CombatSimulationSide,
+): CombatSimulationSideChanneled {
+  const unit =
+    side.combatant instanceof UnitCore ? unitToChannel(side.combatant) : null;
+  const city =
+    side.combatant instanceof CityDefense
+      ? cityToChannel(side.combatant.city)
+      : null;
+  return {
+    strength: side.strength,
+    modifiers: side.modifiers,
+    damage: side.damage,
+    unit,
+    city,
+  };
 }

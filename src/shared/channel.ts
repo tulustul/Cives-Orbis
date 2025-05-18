@@ -1,5 +1,4 @@
-import { CityEffect } from "@/core/effects";
-import { CombatSimulation } from "./combat";
+import { CombatSimulationChanneled } from "./combat";
 import {
   CityVisibility,
   EntityType,
@@ -15,6 +14,7 @@ import {
   UnitType,
   Yields,
 } from "./data";
+import { CityEffect } from "./effects";
 import { Climate, LandForm, SeaLevel, TileDirection } from "./tile";
 
 export enum FogOfWarStatus {
@@ -120,12 +120,6 @@ export type TileDetailsChanneled = Omit<TileChanneled, "unitsIds"> & {
   zocNoMansLand: boolean;
   isSupplied: boolean;
   isExplored: boolean;
-};
-
-export type CombatSimulationChanneled = {
-  attacker: UnitDetailsChanneled;
-  defender: UnitDetailsChanneled;
-  simulation: CombatSimulation;
 };
 
 export type TileHoverDetails = {
@@ -256,6 +250,7 @@ export type TrackedPlayerChanneled = {
 
 export type UnitChanneled = {
   id: number;
+  name: string;
   tile: TileCoordsWithUnits;
   definitionId: string;
   type: "military" | "civilian";

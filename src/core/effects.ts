@@ -1,19 +1,20 @@
-import { YieldKey } from "@/shared";
 import { CityCore } from "./city";
+import {
+  CityAddYieldsEffect,
+  CityDefenseBonusEffect,
+  CityEffect,
+  CityEffectType,
+  CityMaxHealthEffect,
+  CityMultiplyYieldsEffect,
+  CityStrengthEffect,
+  CityTransferProductionToYieldsEffect,
+} from "@/shared";
 
 export interface ICityEffect<T> {
   options: T;
   apply(city: CityCore): void;
 }
 
-export type YieldsEffect = {
-  yield: YieldKey;
-  value: number;
-};
-
-export type CityAddYieldsEffect = {
-  effect: "city.addYields";
-} & YieldsEffect;
 export class CityAddYieldsEffectImpl
   implements ICityEffect<CityAddYieldsEffect>
 {
@@ -24,9 +25,6 @@ export class CityAddYieldsEffectImpl
   }
 }
 
-export type CityMultiplyYieldsEffect = {
-  effect: "city.multiplyYields";
-} & YieldsEffect;
 export class CityMultiplyYieldsEffectImpl
   implements ICityEffect<CityMultiplyYieldsEffect>
 {
@@ -37,11 +35,6 @@ export class CityMultiplyYieldsEffectImpl
   }
 }
 
-export type CityTransferProductionToYieldsEffect = {
-  effect: "city.transferProductionToYields";
-  yield: YieldKey;
-  value: number;
-} & YieldsEffect;
 export class CityTransferProductionToYieldsEffectImpl
   implements ICityEffect<CityTransferProductionToYieldsEffect>
 {
@@ -53,10 +46,6 @@ export class CityTransferProductionToYieldsEffectImpl
   }
 }
 
-export type CityDefenseBonusEffect = {
-  effect: "city.defenseBonus";
-  defenseBonus: number;
-};
 export class CityDefenseBonusEffectImpl
   implements ICityEffect<CityDefenseBonusEffect>
 {
@@ -67,10 +56,6 @@ export class CityDefenseBonusEffectImpl
   }
 }
 
-export type CityMaxHealthEffect = {
-  effect: "city.maxHealth";
-  maxHealth: number;
-};
 export class CityMaxHealthEffectImpl
   implements ICityEffect<CityMaxHealthEffect>
 {
@@ -81,10 +66,6 @@ export class CityMaxHealthEffectImpl
   }
 }
 
-export type CityStrengthEffect = {
-  effect: "city.strength";
-  strength: number;
-};
 export class CityStrengthEffectImpl implements ICityEffect<CityStrengthEffect> {
   constructor(public options: CityStrengthEffect) {}
 
@@ -92,16 +73,6 @@ export class CityStrengthEffectImpl implements ICityEffect<CityStrengthEffect> {
     city.defense.strength += this.options.strength;
   }
 }
-
-export type CityEffect =
-  | CityAddYieldsEffect
-  | CityMultiplyYieldsEffect
-  | CityTransferProductionToYieldsEffect
-  | CityDefenseBonusEffect
-  | CityMaxHealthEffect
-  | CityStrengthEffect;
-
-export type CityEffectType = CityEffect["effect"];
 
 export const cityEffects: Record<
   CityEffectType,

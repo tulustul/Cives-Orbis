@@ -1075,8 +1075,7 @@ export class MilitaryAI extends AISystem {
 
       // Adjust score based on combat odds
       if (target.tile.units.length > 0) {
-        const enemyUnit = target.tile.units[0];
-        const combatResult = simulateCombat(unit, enemyUnit);
+        const combatResult = simulateCombat(unit, target.tile);
         if (combatResult) {
           score *=
             combatResult.attacker.damage > combatResult.defender.damage

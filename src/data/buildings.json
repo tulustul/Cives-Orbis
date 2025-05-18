@@ -288,7 +288,7 @@
       "effects": [
         {
           "effect": "city.defenseBonus",
-          "defenseBonus": 0.15
+          "defenseBonus": 0.3
         },
         {
           "effect": "city.maxHealth",
@@ -296,7 +296,7 @@
         },
         {
           "effect": "city.strength",
-          "strength": 15
+          "strength": 3
         }
       ],
       "strongRequirements": [],

@@ -8,7 +8,7 @@ import {
   CityMultiplyYieldsEffect,
   CityStrengthEffect,
   CityTransferProductionToYieldsEffect,
-} from "@/core/effects";
+} from "@/shared";
 
 type Props = {
   effects: CityEffect[];

@@ -1,55 +1,22 @@
 /// <reference lib="webworker" />
 
 import { AIPlayer } from "@/ai/ai-player";
-import { CityCore } from "./city";
-import { collector } from "./collector";
-import { simulateCombat } from "./combat";
-import { dataManager } from "./data/dataManager";
-import {
-  Entity,
-  HaveRequirements,
-  Nation,
-  ResourceDefinition,
-} from "./data/types";
-import { Game } from "./game";
-import { getTilesInRange } from "./hex-math";
-import { moveAlongPath } from "./movement";
-import { findPath } from "./pathfinding";
-import { PlayerCore } from "./player";
-import { getFailedWeakRequirements } from "./requirements";
-import { ResourceDeposit } from "./resources";
-import {
-  cityDetailsToChannel,
-  cityToChannel,
-  entityToChannel,
-  gameToGameStartInfo,
-  knowledgeTechToChannel,
-  playerToChannel,
-  resourceWithTileToChannel,
-  tileDetailsToChannel,
-  tilesToTileCoordsWithNeighbours,
-  tileToChannel,
-  tileToFogOfWar,
-  tileToTileOwnershipChannel,
-  trackedPlayerToChannel,
-  unitDetailsToChannel,
-  unitToChannel,
-} from "./serialization/channel";
-import { dumpGame, loadGame } from "./serialization/dump";
 import { RealisticMapGenerator } from "@/map-generators/realistic";
 import {
+  CityChanneled,
   CityDetailsChanneled,
   CityGetWorkTilesResult,
   CityProduceOptions,
   CityRange,
   CityWorkTileOptions,
-  CombatSimulationChanneled,
   EntityChanneled,
   EntityGetFailedWeakRequirements,
+  FogOfWarFilter,
   GameGetEntityOptions,
   GameStartInfo,
   GrantRevokeTechOptions,
   MapGeneratorOptions,
+  Option,
   PlayerTask,
   PlayerYields,
   ResourceSpawnOptions,
@@ -70,13 +37,44 @@ import {
   UnitFindPathOptions,
   UnitGetFailedActionRequirementsOptions,
   UnitSetOrderOptions,
-  UnitSimulateCombatOptions,
   UnitSpawnOptions,
-  CombatSimulation,
-  Option,
-  FogOfWarFilter,
-  CityChanneled,
 } from "../shared";
+import { CityCore } from "./city";
+import { collector } from "./collector";
+import { CombatSimulation, simulateCombat } from "./combat";
+import { dataManager } from "./data/dataManager";
+import {
+  Entity,
+  HaveRequirements,
+  Nation,
+  ResourceDefinition,
+} from "./data/types";
+import { Game } from "./game";
+import { getTilesInRange } from "./hex-math";
+import { moveAlongPath } from "./movement";
+import { findPath } from "./pathfinding";
+import { PlayerCore } from "./player";
+import { getFailedWeakRequirements } from "./requirements";
+import { ResourceDeposit } from "./resources";
+import {
+  cityDetailsToChannel,
+  cityToChannel,
+  combatSimulationToChannel,
+  entityToChannel,
+  gameToGameStartInfo,
+  knowledgeTechToChannel,
+  playerToChannel,
+  resourceWithTileToChannel,
+  tileDetailsToChannel,
+  tilesToTileCoordsWithNeighbours,
+  tileToChannel,
+  tileToFogOfWar,
+  tileToTileOwnershipChannel,
+  trackedPlayerToChannel,
+  unitDetailsToChannel,
+  unitToChannel,
+} from "./serialization/channel";
+import { dumpGame, loadGame } from "./serialization/dump";
 
 let game: Game;
 
@@ -106,7 +104,6 @@ const HANDLERS = {
   "unit.moveAlongPath": unitMoveAlongPath,
   "unit.getRange": unitGetRange,
   "unit.getFailedActionRequirements": unitGetFailedActionRequirements,
-  "unit.simulateCombat": unitSimulateCombat,
   "unit.getAll": unitGetAll,
 
   "tile.getAll": tileGetAll,
@@ -433,18 +430,6 @@ function unitGetFailedActionRequirements(
   return unit.getFailedActionRequirements(data.action);
 }
 
-function unitSimulateCombat(
-  data: UnitSimulateCombatOptions,
-): CombatSimulation | null {
-  const attacker = game.unitsManager.unitsMap.get(data.attackerId);
-  const defender = game.unitsManager.unitsMap.get(data.defenderId);
-  if (!attacker || !defender) {
-    return null;
-  }
-
-  return simulateCombat(attacker, defender);
-}
-
 function unitGetAll(): UnitChanneled[] {
   return game.unitsManager.units.map((unit) => unitToChannel(unit));
 }
@@ -488,26 +473,18 @@ export function tileGetHoverDetails(
     return null;
   }
 
-  let combatSimulation: CombatSimulationChanneled | null = null;
+  let simulation: CombatSimulation | null = null;
 
   if (options.selectedUnitId && game.trackedPlayer.visibleTiles.has(tile)) {
     const selectedUnit = game.unitsManager.unitsMap.get(options.selectedUnitId);
     if (selectedUnit) {
-      const enemyUnit = tile.getEnemyUnit(selectedUnit);
-      if (enemyUnit) {
-        const simulation = simulateCombat(selectedUnit, enemyUnit);
-        combatSimulation = {
-          simulation,
-          attacker: unitDetailsToChannel(selectedUnit),
-          defender: unitDetailsToChannel(enemyUnit),
-        };
-      }
+      simulation = simulateCombat(selectedUnit, tile);
     }
   }
 
   return {
     tile: tileDetailsToChannel(tile, game.trackedPlayer),
-    combatSimulation,
+    combatSimulation: simulation ? combatSimulationToChannel(simulation) : null,
   };
 }
 
