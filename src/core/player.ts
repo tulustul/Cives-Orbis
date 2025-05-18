@@ -1,4 +1,4 @@
-import { PlayerViewBoundingBox, PlayerYields } from "@/shared";
+import { PlayerViewBoundingBox, PlayerYields, UnitTrait } from "@/shared";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 import { Game } from "./game";
@@ -18,6 +18,16 @@ import { ResourceDeposit } from "./resources";
 import { Nation } from "./data/types";
 import { moveAlongPath } from "./movement";
 
+function emptyUnitsByTraits(): Record<UnitTrait, UnitCore[]> {
+  return {
+    [UnitTrait.settler]: [],
+    [UnitTrait.worker]: [],
+    [UnitTrait.military]: [],
+    [UnitTrait.explorer]: [],
+    [UnitTrait.supply]: [],
+  };
+}
+
 export class PlayerCore {
   id!: number;
 
@@ -28,6 +38,8 @@ export class PlayerCore {
   knownPassableAreas = new Set<PassableArea>();
 
   units: UnitCore[] = [];
+
+  unitsByTraits: Record<UnitTrait, UnitCore[]> = emptyUnitsByTraits();
 
   cities: CityCore[] = [];
 
@@ -57,6 +69,8 @@ export class PlayerCore {
     maxX: -Infinity,
     maxY: -Infinity,
   };
+
+  empireCenter: TileCore | null = null;
 
   constructor(public game: Game, public nation: Nation) {}
 
@@ -143,6 +157,35 @@ export class PlayerCore {
     this.updateUnitsWithoutOrders();
     this.updateVisibleTiles();
     this.knowledge.nextTurn();
+
+    this.groupUnitsByTraits();
+    this.calculateEmpireCenter();
+  }
+
+  groupUnitsByTraits() {
+    this.unitsByTraits = emptyUnitsByTraits();
+    for (const unit of this.units) {
+      this.unitsByTraits[unit.definition.trait].push(unit);
+    }
+  }
+
+  calculateEmpireCenter() {
+    if (this.cities.length === 0) {
+      this.empireCenter = null;
+      return;
+    }
+
+    let x = 0;
+    let y = 0;
+    for (const city of this.cities) {
+      x += city.tile.x;
+      y += city.tile.y;
+    }
+
+    x = Math.floor(x / this.cities.length);
+    y = Math.floor(y / this.cities.length);
+
+    this.empireCenter = this.game.map.tiles[x][y];
   }
 
   updateVisibleTiles() {

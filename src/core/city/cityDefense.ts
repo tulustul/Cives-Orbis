@@ -3,7 +3,7 @@ import { CityCore } from "./city";
 const BASE_DEFENSE_BONUS = 0.1;
 
 export class CityDefense {
-  maxHealth = 0;
+  maxHealth = 1;
   health = 0;
   defenseBonus = 0;
   strength = 0;
@@ -15,7 +15,7 @@ export class CityDefense {
   }
 
   reset() {
-    this.maxHealth = 0;
+    this.maxHealth = 1;
     this.defenseBonus = 0;
     this.strength = 0;
   }

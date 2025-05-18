@@ -85,6 +85,6 @@ export class CoastlineCityRequirement extends Requirement {
     if (!city) {
       return false;
     }
-    return city.isCoastline;
+    return city.tile.coast;
   }
 }

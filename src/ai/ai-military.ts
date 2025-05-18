@@ -702,14 +702,10 @@ export class MilitaryAI extends AISystem {
     for (const city of this.player.citiesWithoutProduction) {
       const unitDef = this.chooseUnitDef(city, UnitType.land);
       if (unitDef) {
-        this.operations.push({
-          group: "city-produce",
-          entityId: city.id,
+        this.ai.productionAi.request({
           focus: "military",
           priority: landProductionPriority,
-          perform: () => {
-            city.production.produce(unitDef);
-          },
+          product: unitDef,
         });
       }
     }
@@ -724,14 +720,10 @@ export class MilitaryAI extends AISystem {
       }
       const unitDef = this.chooseUnitDef(city, UnitType.naval);
       if (unitDef) {
-        this.operations.push({
-          group: "city-produce",
-          entityId: city.id,
+        this.ai.productionAi.request({
           focus: "military",
           priority: navalProductionPriority,
-          perform: () => {
-            city.production.produce(unitDef);
-          },
+          product: unitDef,
         });
       }
     }

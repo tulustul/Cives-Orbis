@@ -22,3 +22,12 @@
 - Always use curly braces, even for single line expressions
 - Ignore backward compatibility completely
 - For core, try to extract game logic into separate classes and files
+- Avoid extensive comments in the code. Comment only non-trivial implementation.
+- Extract magic numbers to constants at the top of the file
+- Prefer early exit over wrapping code blocks in if statement.
+
+## Docs
+
+- some modules have a corresponding .md file with requirements. Make sure the implementation follows the requirements.
+- do not invent requirements that aren't explicitly stated
+- if asked for a requirement change, update also the documentation.

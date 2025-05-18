@@ -5,14 +5,15 @@ import { PlayerCore } from "@/core/player";
 import { VictoryType } from "./utils";
 import { UnitTrait } from "@/shared";
 
+export type StategicFocus = "conquest" | "economic" | "scientific" | "balanced";
+
 /**
  * Represents the high-level strategic AI that coordinates other AI subsystems
  * and manages long-term planning and victory condition assessment.
  */
 export class StrategicAI extends AISystem {
   // Track the current strategic focus for this AI player
-  private strategicFocus: "conquest" | "economic" | "scientific" | "balanced" =
-    "balanced";
+  strategicFocus: StategicFocus = "balanced";
 
   // Track potential threats from other players
   private threatAssessments = new Map<PlayerCore, number>();
@@ -221,13 +222,6 @@ export class StrategicAI extends AISystem {
    */
   getThreatLevel(player: PlayerCore): number {
     return this.threatAssessments.get(player) || 0;
-  }
-
-  /**
-   * Get the current strategic focus
-   */
-  getStrategicFocus(): string {
-    return this.strategicFocus;
   }
 
   /**

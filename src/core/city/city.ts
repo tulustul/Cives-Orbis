@@ -31,8 +31,6 @@ export class CityCore {
   yields: Yields = { ...EMPTY_YIELDS };
   perTurn: Yields = { ...EMPTY_YIELDS };
 
-  isCoastline = false;
-
   passableAreas = new Set<PassableArea>();
 
   resources: ResourceDefinition[] = [];
