@@ -73,6 +73,9 @@ export class UnitsManager {
     unit.suppliesProducer?.forget();
 
     unit.player.updateUnitsWithoutOrders();
+
+    unit.player.yields.costs.gold -= unit.wage;
+
     collector.unitsDestroyed.add(unit.id);
   }
 
@@ -81,11 +84,21 @@ export class UnitsManager {
       // Heal unit if on friendly territory
       if (
         unit.health < 100 &&
-        unit.tile.areaOf?.player === unit.player
+        unit.tile.areaOf?.player === unit.player &&
+        unit.hasWage
         // unit.supplies >= 100
       ) {
         unit.health = Math.min(100, unit.health + 10);
         collector.units.add(unit);
+      }
+
+      if (!unit.hasWage) {
+        unit.health = unit.health - 10;
+        if (unit.health <= 0) {
+          this.destroy(unit);
+        } else {
+          collector.units.add(unit);
+        }
       }
 
       if (unit.path) {

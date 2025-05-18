@@ -470,7 +470,10 @@ export function cityProductToChannel(
 ): CityProductChanneled {
   return {
     enabled: disabledProducts ? !disabledProducts.has(product) : true,
-    turnsToProduce: Math.ceil(product.productionCost / city.yields.production),
+    turnsToProduce:
+      product.entityType === "idleProduct"
+        ? Infinity
+        : Math.ceil(product.productionCost / city.yields.production),
     definition: productToChannel(product),
   };
 }

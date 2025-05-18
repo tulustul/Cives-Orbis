@@ -56,4 +56,7 @@ const renderers: Record<RequirementType, (value: any) => React.ReactNode> = {
       City size should be at least <b>{requirement.size}</b>
     </Value>
   ),
+  "city.needGoldInTreasury": (_: CitySizeRequirement) => (
+    <Value>No gold in treasury</Value>
+  ),
 };

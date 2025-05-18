@@ -155,15 +155,16 @@ class Collector {
       });
     }
 
-    for (const resource of this.discoveredResourceDeposits) {
-      changes.push({
-        type: "resource.discovered",
-        data: resourceWithTileToChannel(resource),
-      });
-    }
+    // Depleted must go before discovered
     for (const resource of this.depletedResourceDeposits) {
       changes.push({
         type: "resource.depleted",
+        data: resourceWithTileToChannel(resource),
+      });
+    }
+    for (const resource of this.discoveredResourceDeposits) {
+      changes.push({
+        type: "resource.discovered",
         data: resourceWithTileToChannel(resource),
       });
     }
@@ -206,6 +207,7 @@ class Collector {
 
     this.tilesFogOfWar.clear();
 
+    this.depletedResourceDeposits.clear();
     this.discoveredResourceDeposits.clear();
 
     this.tileOwnershipChanges.clear();

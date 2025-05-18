@@ -67,6 +67,11 @@ export function TileDetails() {
             {details.tile.yields.production} production
           </div>
         )}
+        {details.tile.yields.gold > 0 && (
+          <div className="text-gold font-semibold">
+            {details.tile.yields.gold} gold
+          </div>
+        )}
         {details.tile.yields.culture > 0 && (
           <div className="text-culture">
             {details.tile.yields.culture} culture

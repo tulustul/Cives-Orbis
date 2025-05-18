@@ -25,6 +25,8 @@ export class UnitCore {
   suppliesProducer: SuppliesProducer | null = null;
   suppliesBlocker: SuppliesBlocker | null = null;
 
+  hasWage = true;
+
   constructor(
     public tile: TileCore,
     public definition: UnitDefinition,
@@ -196,5 +198,9 @@ export class UnitCore {
 
   get strength() {
     return this.definition.strength;
+  }
+
+  get wage() {
+    return 0.5;
   }
 }

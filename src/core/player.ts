@@ -50,8 +50,11 @@ export class PlayerCore {
   yields: PlayerYields = {
     costs: { ...EMPTY_YIELDS },
     income: { ...EMPTY_YIELDS },
+    cities: { ...EMPTY_YIELDS },
     total: { ...EMPTY_YIELDS },
     perTurn: { ...EMPTY_YIELDS },
+    unitWages: { ...EMPTY_YIELDS },
+    trade: { ...EMPTY_YIELDS },
   };
 
   ai: AIPlayer | null = null;
@@ -125,6 +128,9 @@ export class PlayerCore {
     zeroYields(this.yields.income);
     zeroYields(this.yields.costs);
     zeroYields(this.yields.perTurn);
+    zeroYields(this.yields.unitWages);
+    zeroYields(this.yields.trade);
+    zeroYields(this.yields.cities);
 
     for (const city of this.cities) {
       for (const tile of city.expansion.tiles) {
@@ -137,9 +143,18 @@ export class PlayerCore {
           }
         }
       }
-      addYields(this.yields.income, city.yields);
+      addYields(this.yields.cities, city.perTurn);
+      addYields(this.yields.trade, city.tradeYields);
     }
 
+    this.yields.unitWages.gold = this.units.reduce(
+      (acc, unit) => acc + unit.wage,
+      0,
+    );
+
+    addYields(this.yields.income, this.yields.cities);
+    addYields(this.yields.income, this.yields.trade);
+    addYields(this.yields.costs, this.yields.unitWages);
     copyYields(this.yields.perTurn, this.yields.income);
     subtractYields(this.yields.perTurn, this.yields.costs);
 
@@ -160,6 +175,18 @@ export class PlayerCore {
 
     this.groupUnitsByTraits();
     this.calculateEmpireCenter();
+
+    this.updateUnitsWages();
+  }
+
+  updateUnitsWages() {
+    if (this.yields.total.gold < 0) {
+      let deficit = -this.yields.perTurn.gold;
+      for (const unit of this.units) {
+        unit.hasWage = deficit <= 0;
+        deficit -= unit.wage;
+      }
+    }
   }
 
   groupUnitsByTraits() {

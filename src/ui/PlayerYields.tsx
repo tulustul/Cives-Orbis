@@ -14,16 +14,21 @@ export function PlayerYields() {
       <Tooltip
         content={
           <>
-            <div>From cities: {yields.income.publicWorks}</div>
-            <div>Improvements maintainance: {yields.costs.publicWorks}</div>
-            <div>Netto per turn: {yields.perTurn.publicWorks}</div>
+            <div>From cities: {yields.cities.gold}</div>
+            <div>From trade: {yields.trade.gold}</div>
+            <div>Units wage: {yields.unitWages.gold}</div>
+            <div>Netto per turn: {yields.perTurn.gold}</div>
+            {yields.total.gold < 0 && (
+              <div className="text-red-500">
+                Not enough gold! Units without a wage will lose their health.
+              </div>
+            )}
           </>
         }
       >
-        <div className="text-publicWorks">
-          Public works: {yields.total.publicWorks} (
-          {yields.perTurn.publicWorks >= 0 ? "+" : ""}
-          {yields.perTurn.publicWorks})
+        <div className="text-gold">
+          Gold: {yields.total.gold} ({yields.perTurn.gold >= 0 ? "+" : ""}
+          {yields.perTurn.gold})
         </div>
       </Tooltip>
 

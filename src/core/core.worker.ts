@@ -228,6 +228,7 @@ async function newGameHandler(
     game.unitsManager.spawn("unit_settler", tile, player);
     game.unitsManager.spawn("unit_scout", tile, player);
     game.unitsManager.spawn("unit_warrior", tile, player);
+    player.yields.total.gold = 10;
   }
 
   game.start();

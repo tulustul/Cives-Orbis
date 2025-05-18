@@ -103,8 +103,11 @@ export type YieldKey = keyof Yields;
 export type PlayerYields = {
   perTurn: Yields;
   income: Yields;
+  cities: Yields;
   total: Yields;
   costs: Yields;
+  unitWages: Yields;
+  trade: Yields;
 };
 
 export enum UnitType {
@@ -137,6 +140,8 @@ export type StatsData = {
   military: number[];
   knowledge: number[];
   techs: number[];
+  goldNetto: number[];
+  totalGold: number[];
 };
 
 export type CityVisibility = "all" | "basic" | "hidden";

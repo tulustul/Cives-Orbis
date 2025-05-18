@@ -15,6 +15,11 @@
           "type": "city.addYields",
           "yield": "knowledge",
           "value": 1
+        },
+        {
+          "type": "city.addYields",
+          "yield": "gold",
+          "value": 2
         }
       ],
       "strongRequirements": [{ "type": "city.never" }],
@@ -101,8 +106,8 @@
       "effects": [
         {
           "type": "city.addYields",
-          "yield": "publicWorks",
-          "value": 2
+          "yield": "gold",
+          "value": 1
         }
       ],
       "strongRequirements": [],
@@ -148,38 +153,6 @@
         }
       ],
       "strongRequirements": [],
-      "weakRequirements": []
-    },
-    {
-      "id": "building_all_doing_building",
-      "name": "All doing building",
-      "productionCost": 500,
-      "effects": [
-        {
-          "type": "city.addYields",
-          "yield": "food",
-          "value": 1
-        },
-        {
-          "type": "city.addYields",
-          "yield": "production",
-          "value": 1
-        },
-        {
-          "type": "city.multiplyYields",
-          "yield": "food",
-          "value": 0.1
-        },
-        {
-          "type": "city.multiplyYields",
-          "yield": "production",
-          "value": 0.1
-        }
-      ],
-      "strongRequirements": [
-        { "type": "city.haveBuilding", "building": "building_big_granary" },
-        { "type": "city.haveBuilding", "building": "building_big_workshop" }
-      ],
       "weakRequirements": []
     },
     {
@@ -296,7 +269,40 @@
         },
         {
           "type": "city.strength",
-          "strength": 3
+          "strength": 5
+        }
+      ],
+      "strongRequirements": [],
+      "weakRequirements": []
+    },
+    {
+      "id": "building_market",
+      "name": "Market",
+      "productionCost": 100,
+      "effects": [
+        {
+          "type": "city.addYields",
+          "yield": "gold",
+          "value": 2
+        }
+      ],
+      "strongRequirements": [],
+      "weakRequirements": []
+    },
+    {
+      "id": "building_mint",
+      "name": "Mint",
+      "productionCost": 100,
+      "effects": [
+        {
+          "type": "city.addYields",
+          "yield": "gold",
+          "value": 2
+        },
+        {
+          "type": "city.multiplyYields",
+          "yield": "gold",
+          "value": 0.1
         }
       ],
       "strongRequirements": [],

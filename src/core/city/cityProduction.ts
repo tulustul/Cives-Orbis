@@ -83,6 +83,11 @@ export class CityProduction {
     if (!this.product) {
       return null;
     }
+
+    if (this.product.entityType === "idleProduct") {
+      return Infinity;
+    }
+
     const remainingProduction =
       this.product.productionCost - this.totalProduction;
 
@@ -90,7 +95,7 @@ export class CityProduction {
   }
 
   progressProduction() {
-    if (!this.product) {
+    if (!this.product || this.product.entityType === "idleProduct") {
       return;
     }
 

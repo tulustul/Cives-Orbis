@@ -434,7 +434,7 @@
       "requiredTechnologies": ["tech_mathematics"],
       "cost": 50,
       "era": "Bronze Age",
-      "unlocks": ["tile-impr-cottage"],
+      "unlocks": ["tile-impr-cottage", "building_market"],
       "layout": {
         "x": 2250.0,
         "y": 253.00000000000003,
@@ -447,7 +447,7 @@
       "requiredTechnologies": ["tech_ironWorking"],
       "cost": 60,
       "era": "Bronze Age",
-      "unlocks": ["building_all_doing_building", "idle_product_public_works"],
+      "unlocks": ["idle_product_public_works"],
       "layout": {
         "x": 3130.0000000000005,
         "y": 550.0,
@@ -521,7 +521,7 @@
       "requiredTechnologies": ["tech_bronzeWorking"],
       "cost": 80,
       "era": "Iron Age",
-      "unlocks": [],
+      "unlocks": ["building_mint", "idle_product_gold"],
       "layout": {
         "x": 1810.0000000000002,
         "y": 638.0,

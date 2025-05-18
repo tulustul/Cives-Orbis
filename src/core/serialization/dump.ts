@@ -397,9 +397,7 @@ function loadCity(game: Game, cityData: CitySerialized) {
   }
 
   city.production.buildings = cityData.buildings.map((b) =>
-    b.startsWith("idle_product")
-      ? dataManager.idleProducts.get(b)
-      : dataManager.buildings.get(b),
+    dataManager.buildings.get(b),
   );
   city.production.buildingsIds = new Set(
     city.production.buildings.map((b) => b.id),

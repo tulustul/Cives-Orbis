@@ -24,6 +24,7 @@ export class MapDecorsDrawer {
       for (const tile of tiles) {
         this.updateTile(tile);
       }
+      this.setYieldsVisible();
       const t1 = performance.now();
       console.log("Call to updateTile took " + (t1 - t0) + " milliseconds.");
     });
@@ -55,6 +56,10 @@ export class MapDecorsDrawer {
   }
 
   private async build() {
+    setTimeout(() => {
+      this.setYieldsVisible();
+    }, 100); // TODO no idea why the timeout is needed
+
     this.clear();
     const tiles = await bridge.tiles.getAll();
 
@@ -185,6 +190,7 @@ class TileDrawer {
 
     this.drawYield(0.55, this.tile.yields.food, 0x00ff00);
     this.drawYield(0.65, this.tile.yields.production, 0xffaa00);
+    this.drawYield(0.75, this.tile.yields.gold, 0xffe02e);
 
     this.container.addChild(this.yieldsGraphics);
     this.yieldsLayer.attach(this.yieldsGraphics);

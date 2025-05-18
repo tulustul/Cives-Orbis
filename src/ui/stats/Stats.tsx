@@ -12,6 +12,8 @@ const datasetNames: Record<keyof StatsData, string> = {
   military: "Military power",
   knowledge: "Knowledge",
   techs: "Discovered techs",
+  goldNetto: "Gold netto income",
+  totalGold: "Total gold",
 };
 
 export function Stats() {

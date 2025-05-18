@@ -170,6 +170,7 @@ export class TileCore {
   }
 
   computeYields() {
+    this.yields = { ...EMPTY_YIELDS };
     if (this.seaLevel === SeaLevel.deep) {
       this.yields.food = 0;
       this.yields.production = 0;
@@ -214,7 +215,7 @@ export class TileCore {
   }
 
   get totalYields(): number {
-    return this.yields.food + this.yields.production;
+    return this.yields.food + this.yields.production + this.yields.gold;
   }
 
   getTilesInRange(range: number): Set<TileCore> {
@@ -265,6 +266,7 @@ export class TileCore {
     for (const tile of tiles) {
       this.sweetSpotValue += tile.yields.food;
       this.sweetSpotValue += tile.yields.production;
+      this.sweetSpotValue += tile.yields.gold;
     }
 
     if (this.coast) {

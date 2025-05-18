@@ -24,6 +24,8 @@ export class Stats {
           military: [],
           knowledge: [],
           techs: [],
+          goldNetto: [],
+          totalGold: [],
         });
       }
     }
@@ -38,6 +40,8 @@ export class Stats {
     stats.culture.push(player.yields.income.culture);
     stats.knowledge.push(player.yields.income.knowledge);
     stats.techs.push(player.knowledge.discoveredTechs.size);
+    stats.goldNetto.push(player.yields.perTurn.gold);
+    stats.totalGold.push(player.yields.total.gold);
 
     const military = player.units.reduce(
       (acc, unit) => acc + unit.definition.strength,

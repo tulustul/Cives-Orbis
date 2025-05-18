@@ -3,6 +3,7 @@ import { EntityType, ResourceCategory } from "@/shared";
 import {
   Building,
   Entity,
+  IdleProduct,
   Nation,
   PopulationTypeDefinition,
   ResourceDefinition,
@@ -22,7 +23,10 @@ import tileImprovementsUrl from "@/data/tileImprovements.json?url";
 import unitsUrl from "@/data/units.json?url";
 import path from "node:path";
 import { createCityEffect } from "../effects";
-import { createRequirement } from "../requirements";
+import {
+  CityNeedGoldInTreasuryRequirementImpl,
+  createRequirement,
+} from "../requirements";
 import {
   climateNamesInverse,
   landFormNamesInverse,
@@ -51,7 +55,7 @@ export class DataManager {
 
   nations = new NationProvider(this, nationsUrl);
   buildings = new BuildingProvider(this, buildingsUrl);
-  idleProducts = new BuildingProvider(this, idleProductsUrl);
+  idleProducts = new IdleProductProvider(this, idleProductsUrl);
   units = new UnitProvider(this, unitsUrl);
   tileImprovements = new TileImprovementProvider(this, tileImprovementsUrl);
   resources = new ResourceProvider(this, resourcesUrl);
@@ -177,9 +181,25 @@ class BuildingProvider extends EntityProvider<Building, JsonBuilding> {
   }
 }
 
+class IdleProductProvider extends EntityProvider<IdleProduct, JsonBuilding> {
+  parse(json: JsonBuilding): IdleProduct {
+    return {
+      ...json,
+      entityType: "idleProduct",
+      weakRequirements: json.weakRequirements.map(createRequirement),
+      strongRequirements: json.strongRequirements.map(createRequirement),
+      effects: json.effects.map(createCityEffect),
+    };
+  }
+
+  resolveReferences(idleProduct: IdleProduct, json: JsonBuilding) {
+    idleProduct.technology = this.manager.technologies.unlocks.get(json.id);
+  }
+}
+
 class UnitProvider extends EntityProvider<UnitDefinition, JsonUnit> {
   parse(json: JsonUnit): UnitDefinition {
-    return {
+    const def: UnitDefinition = {
       ...json,
       entityType: "unit",
       type: UnitTypeNamesInverse[json.type],
@@ -187,6 +207,12 @@ class UnitProvider extends EntityProvider<UnitDefinition, JsonUnit> {
       weakRequirements: json.weakRequirements.map(createRequirement),
       strongRequirements: json.strongRequirements.map(createRequirement),
     };
+    def.weakRequirements.push(
+      new CityNeedGoldInTreasuryRequirementImpl({
+        type: "city.needGoldInTreasury",
+      }),
+    );
+    return def;
   }
 
   resolveReferences(unit: UnitDefinition, json: JsonUnit) {

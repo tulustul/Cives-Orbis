@@ -123,14 +123,14 @@ function CityYields({ city }: Props) {
         <Yield className="text-production-400" label="Production">
           {city.perTurn.production}
         </Yield>
+        <Yield className="text-gold" label="Gold">
+          {city.perTurn.gold}
+        </Yield>
         <Yield className="text-culture-400" label="Culture">
           {city.perTurn.culture}
         </Yield>
         <Yield className="text-knowledge" label="Knowledge">
           {city.perTurn.knowledge}
-        </Yield>
-        <Yield className="text-publicWorks" label="Public works">
-          {city.perTurn.publicWorks}
         </Yield>
       </div>
 

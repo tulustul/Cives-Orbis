@@ -16,10 +16,15 @@ export type CityIsCoastlineRequirement = {
   type: "city.isCoastline";
 };
 
+export type CityNeedGoldInTreasuryRequirement = {
+  type: "city.needGoldInTreasury";
+};
+
 export type Requirement =
   | CityNeverRequirement
   | CityHaveBuildingRequirement
   | CitySizeRequirement
-  | CityIsCoastlineRequirement;
+  | CityIsCoastlineRequirement
+  | CityNeedGoldInTreasuryRequirement;
 
 export type RequirementType = Requirement["type"];

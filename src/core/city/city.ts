@@ -30,6 +30,7 @@ export class CityCore {
   tileYields: Yields = { ...EMPTY_YIELDS };
   yields: Yields = { ...EMPTY_YIELDS };
   perTurn: Yields = { ...EMPTY_YIELDS };
+  tradeYields: Yields = { ...EMPTY_YIELDS };
 
   passableAreas = new Set<PassableArea>();
 
@@ -90,6 +91,7 @@ export class CityCore {
 
   reset() {
     zeroYields(this.tileYields);
+    zeroYields(this.tradeYields);
     this.defense.reset();
   }
 
@@ -117,6 +119,13 @@ export class CityCore {
     roundYields(this.yields);
 
     copyYields(this.perTurn, this.yields);
+
+    if (this.network) {
+      this.tradeYields.gold = Math.min(
+        5,
+        Math.floor((this.network.nodes.length - 1) ** 0.5),
+      );
+    }
 
     this.storage.gatherResources();
 
