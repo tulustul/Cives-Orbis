@@ -24,7 +24,7 @@ export function getMoveResult(
 
   if (unit.definition.type === UnitType.naval) {
     if (from.passableArea !== to.passableArea) {
-      if (to.isLand && to.city?.isCoastline) {
+      if (to.isLand && to.city?.tile.coast) {
         if (
           unit.definition.trait === UnitTrait.military ||
           to.city?.player !== unit.player
@@ -41,7 +41,7 @@ export function getMoveResult(
       }
       return MoveResult.none;
     }
-    if (to.isLand && !to.city?.isCoastline) {
+    if (to.isLand && !to.city?.tile.coast) {
       return MoveResult.none;
     }
   } else if (unit.definition.type === UnitType.land) {

@@ -67,6 +67,9 @@
         },
         "spawnsResource": {
           "type": "string"
+        },
+        "wetlands": {
+          "type": "boolean"
         }
       },
       "required": [

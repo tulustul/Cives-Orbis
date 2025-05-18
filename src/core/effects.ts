@@ -87,6 +87,6 @@ export const cityEffects: Record<
 };
 
 export function createCityEffect(effect: CityEffect): ICityEffect<any> {
-  const EffectClass = cityEffects[effect.effect];
+  const EffectClass = cityEffects[effect.type];
   return new EffectClass(effect);
 }

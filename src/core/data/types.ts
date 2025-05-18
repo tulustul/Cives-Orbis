@@ -1,4 +1,4 @@
-import { Requirement } from "@/core/requirements";
+import { IRequirement } from "@/core/requirements";
 import {
   Climate,
   EntityType,
@@ -42,10 +42,10 @@ export type Entity = {
 
 export type HaveRequirements = {
   // entity will be hidden from player
-  strongRequirements: Requirement[];
+  strongRequirements: IRequirement<any>[];
 
   // entity will be disabled for player
-  weakRequirements: Requirement[];
+  weakRequirements: IRequirement<any>[];
 };
 
 export type RequireTech = {

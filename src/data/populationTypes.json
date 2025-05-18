@@ -12,7 +12,7 @@
       "declineRate": 0.01,
       "resourceNeeds": [
         {
-          "resourceType": "food",
+          "resourceCategory": "food",
           "amountExponent": 1,
           "diversityExponent": 1
         }
@@ -29,7 +29,7 @@
       "declineRate": 0.08,
       "resourceNeeds": [
         {
-          "resourceType": "food",
+          "resourceCategory": "food",
           "amountExponent": 1.05,
           "diversityExponent": 1.05
         }
@@ -46,12 +46,12 @@
       "declineRate": 0.06,
       "resourceNeeds": [
         {
-          "resourceType": "food",
+          "resourceCategory": "food",
           "amountExponent": 1.08,
           "diversityExponent": 1.08
         },
         {
-          "resourceType": "luxury",
+          "resourceCategory": "luxury",
           "amountExponent": 1.03,
           "diversityExponent": 1.03
         }
@@ -68,12 +68,12 @@
       "declineRate": 0.04,
       "resourceNeeds": [
         {
-          "resourceType": "food",
+          "resourceCategory": "food",
           "amountExponent": 1.15,
           "diversityExponent": 1.15
         },
         {
-          "resourceType": "luxury",
+          "resourceCategory": "luxury",
           "amountExponent": 1.1,
           "diversityExponent": 1.1
         }

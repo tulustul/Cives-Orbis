@@ -29,12 +29,20 @@
       },
       "type": "object"
     },
-    "ResourceType": {
+    "ResourceCategory": {
       "enum": [
-        "commodity",
+        "crop",
         "food",
+        "livestock",
         "luxury",
-        "material"
+        "manmade",
+        "material",
+        "mineral",
+        "natural",
+        "organic",
+        "primaryFood",
+        "secondaryFood",
+        "strategic"
       ],
       "type": "string"
     }
@@ -81,14 +89,14 @@
                 "diversityExponent": {
                   "type": "number"
                 },
-                "resourceType": {
-                  "$ref": "#/definitions/ResourceType"
+                "resourceCategory": {
+                  "$ref": "#/definitions/ResourceCategory"
                 }
               },
               "required": [
                 "amountExponent",
                 "diversityExponent",
-                "resourceType"
+                "resourceCategory"
               ],
               "type": "object"
             },

@@ -5,7 +5,7 @@
     "CityAddYieldsEffect": {
       "additionalProperties": false,
       "properties": {
-        "effect": {
+        "type": {
           "const": "city.addYields",
           "type": "string"
         },
@@ -17,7 +17,7 @@
         }
       },
       "required": [
-        "effect",
+        "type",
         "value",
         "yield"
       ],
@@ -40,48 +40,48 @@
             "defenseBonus": {
               "type": "number"
             },
-            "effect": {
+            "type": {
               "const": "city.defenseBonus",
               "type": "string"
             }
           },
           "required": [
             "defenseBonus",
-            "effect"
+            "type"
           ],
           "type": "object"
         },
         {
           "additionalProperties": false,
           "properties": {
-            "effect": {
-              "const": "city.maxHealth",
-              "type": "string"
-            },
             "maxHealth": {
               "type": "number"
+            },
+            "type": {
+              "const": "city.maxHealth",
+              "type": "string"
             }
           },
           "required": [
-            "effect",
-            "maxHealth"
+            "maxHealth",
+            "type"
           ],
           "type": "object"
         },
         {
           "additionalProperties": false,
           "properties": {
-            "effect": {
-              "const": "city.strength",
-              "type": "string"
-            },
             "strength": {
               "type": "number"
+            },
+            "type": {
+              "const": "city.strength",
+              "type": "string"
             }
           },
           "required": [
-            "effect",
-            "strength"
+            "strength",
+            "type"
           ],
           "type": "object"
         }
@@ -90,7 +90,7 @@
     "CityMultiplyYieldsEffect": {
       "additionalProperties": false,
       "properties": {
-        "effect": {
+        "type": {
           "const": "city.multiplyYields",
           "type": "string"
         },
@@ -102,7 +102,7 @@
         }
       },
       "required": [
-        "effect",
+        "type",
         "value",
         "yield"
       ],
@@ -111,7 +111,7 @@
     "CityTransferProductionToYieldsEffect": {
       "additionalProperties": false,
       "properties": {
-        "effect": {
+        "type": {
           "const": "city.transferProductionToYields",
           "type": "string"
         },
@@ -123,7 +123,7 @@
         }
       },
       "required": [
-        "effect",
+        "type",
         "value",
         "yield"
       ],
@@ -152,13 +152,13 @@
         },
         "strongRequirements": {
           "items": {
-            "$ref": "#/definitions/JsonRequirement"
+            "$ref": "#/definitions/Requirement"
           },
           "type": "array"
         },
         "weakRequirements": {
           "items": {
-            "$ref": "#/definitions/JsonRequirement"
+            "$ref": "#/definitions/Requirement"
           },
           "type": "array"
         }
@@ -173,13 +173,17 @@
       ],
       "type": "object"
     },
-    "JsonRequirement": {
+    "Record<string,number>": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Requirement": {
       "anyOf": [
         {
           "additionalProperties": false,
           "properties": {
             "type": {
-              "const": "never",
+              "const": "city.never",
               "type": "string"
             }
           },
@@ -195,7 +199,7 @@
               "type": "string"
             },
             "type": {
-              "const": "cityHaveBuilding",
+              "const": "city.haveBuilding",
               "type": "string"
             }
           },
@@ -212,7 +216,7 @@
               "type": "number"
             },
             "type": {
-              "const": "citySize",
+              "const": "city.size",
               "type": "string"
             }
           },
@@ -226,7 +230,7 @@
           "additionalProperties": false,
           "properties": {
             "type": {
-              "const": "cityIsCoastline",
+              "const": "city.isCoastline",
               "type": "string"
             }
           },
@@ -236,10 +240,6 @@
           "type": "object"
         }
       ]
-    },
-    "Record<string,number>": {
-      "additionalProperties": false,
-      "type": "object"
     },
     "YieldKey": {
       "enum": [

@@ -4,7 +4,7 @@ import { CityChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Sprite } from "pixi.js";
 import { getAssets } from "./assets";
-import { putContainerAtTile, putSpriteAtTileCentered } from "./utils";
+import { putSpriteAtTileCentered } from "./utils";
 
 type TileTextureName = keyof typeof terrainData.frames;
 

@@ -1,7 +1,15 @@
 import { bridge } from "@/bridge";
-import { CityDetailsChanneled, ProductChanneled } from "@/shared";
-import { useEffect, useState } from "react";
+import {
+  CityDetailsChanneled,
+  CityHaveBuildingRequirement,
+  CityNeverRequirement,
+  CitySizeRequirement,
+  ProductChanneled,
+  Requirement,
+  RequirementType,
+} from "@/shared";
 import { Value } from "@/ui/components";
+import { useEffect, useState } from "react";
 
 type Props = {
   city: CityDetailsChanneled;
@@ -9,7 +17,7 @@ type Props = {
 };
 
 export function ProductRequirements({ city, product }: Props) {
-  const [failedRequirements, setFailedRequirements] = useState<[string, any][]>(
+  const [failedRequirements, setFailedRequirements] = useState<Requirement[]>(
     [],
   );
 
@@ -27,29 +35,25 @@ export function ProductRequirements({ city, product }: Props) {
 
   return (
     <div className="text-red-500">
-      {failedRequirements.map(([key, value], index) => (
-        <Requirement key={index} type={key} context={value} />
-      ))}
+      {failedRequirements.map((requirement, index) => {
+        const renderer = renderers[requirement.type];
+        return <div key={index}>{renderer(requirement)}</div>;
+      })}
     </div>
   );
 }
 
-function Requirement({ type, context }: { type: string; context: any }) {
-  if (type === "building") {
-    return (
-      <Value>
-        <b>{context.buildingId}</b> is required
-      </Value>
-    );
-  }
-
-  if (type === "size") {
-    return (
-      <Value>
-        City size should be at least <b>{context.size}</b>
-      </Value>
-    );
-  }
-
-  return null;
-}
+const renderers: Record<RequirementType, (value: any) => React.ReactNode> = {
+  "city.never": (_: CityNeverRequirement) => null,
+  "city.isCoastline": (_: CityNeverRequirement) => null,
+  "city.haveBuilding": (requirement: CityHaveBuildingRequirement) => (
+    <Value>
+      <b>{requirement.building}</b> is required
+    </Value>
+  ),
+  "city.size": (requirement: CitySizeRequirement) => (
+    <Value>
+      City size should be at least <b>{requirement.size}</b>
+    </Value>
+  ),
+};

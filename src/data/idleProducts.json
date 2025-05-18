@@ -9,7 +9,7 @@
       "weakRequirements": [],
       "effects": [
         {
-          "effect": "city.transferProductionToYields",
+          "type": "city.transferProductionToYields",
           "yield": "food",
           "value": 0.25
         }
@@ -23,7 +23,7 @@
       "weakRequirements": [],
       "effects": [
         {
-          "effect": "city.transferProductionToYields",
+          "type": "city.transferProductionToYields",
           "yield": "culture",
           "value": 0.25
         }
@@ -37,7 +37,7 @@
       "weakRequirements": [],
       "effects": [
         {
-          "effect": "city.transferProductionToYields",
+          "type": "city.transferProductionToYields",
           "yield": "publicWorks",
           "value": 0.25
         }

@@ -1,11 +1,18 @@
 import { CityCore } from "./city";
 import { HaveRequirements } from "./data/types";
 import { PlayerCore } from "./player";
+import {
+  CityHaveBuildingRequirement,
+  CityIsCoastlineRequirement,
+  CityNeverRequirement,
+  CitySizeRequirement,
+  Requirement,
+  RequirementType,
+} from "@/shared";
 
-export abstract class Requirement {
-  id = "";
-  context: any = {};
-  abstract check(player: PlayerCore, city: CityCore | null): boolean;
+export interface IRequirement<T> {
+  options: T;
+  check(player: PlayerCore, city: CityCore | null): boolean;
 }
 
 export function checkRequirements(
@@ -32,54 +39,52 @@ export function getFailedWeakRequirements(
   entity: HaveRequirements,
   player: PlayerCore,
   city: CityCore | null,
-): [string, any][] {
+): Requirement[] {
   return entity.weakRequirements
     .filter((r) => !r.check(player, city))
-    .map((r) => [r.id, r.context]);
+    .map((r) => r.options);
 }
 
-export class NeverRequirement extends Requirement {
-  override id = "never";
+export class CityNeverRequirementImpl
+  implements IRequirement<CityNeverRequirement>
+{
+  constructor(public options: CityNeverRequirement) {}
 
   check() {
     return false;
   }
 }
 
-export class CityHaveBuildingRequirement extends Requirement {
-  override id = "cityHaveBuilding";
-
-  constructor(buildingId: string) {
-    super();
-    this.context = { buildingId };
-  }
+export class CityHaveBuildingRequirementImpl
+  implements IRequirement<CityHaveBuildingRequirement>
+{
+  constructor(public options: CityHaveBuildingRequirement) {}
 
   check(_: PlayerCore, city: CityCore | null) {
     if (!city) {
       return false;
     }
-    return city.production.buildingsIds.has(this.context.buildingId);
+    return city.production.buildingsIds.has(this.options.building);
   }
 }
 
-export class CitySizeRequirement extends Requirement {
-  override id = "citySize";
-
-  constructor(size: number) {
-    super();
-    this.context = { size };
-  }
+export class CitySizeRequirementImpl
+  implements IRequirement<CitySizeRequirement>
+{
+  constructor(public options: CitySizeRequirement) {}
 
   check(_: PlayerCore, city: CityCore | null) {
     if (!city) {
       return false;
     }
-    return city.population.total >= this.context.size;
+    return city.population.total >= this.options.size;
   }
 }
 
-export class CoastlineCityRequirement extends Requirement {
-  override id = "cityIsCoastline";
+export class CityIsCoastlineRequirementImpl
+  implements IRequirement<CityIsCoastlineRequirement>
+{
+  constructor(public options: CityIsCoastlineRequirement) {}
 
   check(_: PlayerCore, city: CityCore | null) {
     if (!city) {
@@ -87,4 +92,19 @@ export class CoastlineCityRequirement extends Requirement {
     }
     return city.tile.coast;
   }
+}
+
+export const requirements: Record<
+  RequirementType,
+  new (...args: any[]) => IRequirement<any>
+> = {
+  "city.never": CityNeverRequirementImpl,
+  "city.haveBuilding": CityHaveBuildingRequirementImpl,
+  "city.size": CitySizeRequirementImpl,
+  "city.isCoastline": CityIsCoastlineRequirementImpl,
+};
+
+export function createRequirement(requirement: Requirement): IRequirement<any> {
+  const RequrementClass = requirements[requirement.type];
+  return new RequrementClass(requirement);
 }

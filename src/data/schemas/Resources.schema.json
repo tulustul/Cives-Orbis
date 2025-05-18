@@ -14,56 +14,20 @@
         "depositDef": {
           "additionalProperties": false,
           "properties": {
-            "bonuses": {
-              "additionalProperties": false,
-              "properties": {
-                "transferProductionToCulture": {
-                  "type": "number"
-                },
-                "transferProductionToFood": {
-                  "type": "number"
-                },
-                "transferProductionToPublicWorks": {
-                  "type": "number"
-                },
-                "yieldFactor": {
-                  "$ref": "#/definitions/Partial<Yields>"
-                },
-                "yieldValue": {
-                  "$ref": "#/definitions/Partial<Yields>"
-                }
-              },
-              "type": "object"
-            },
-            "bonusesWhenWorked": {
-              "additionalProperties": false,
-              "properties": {
-                "transferProductionToCulture": {
-                  "type": "number"
-                },
-                "transferProductionToFood": {
-                  "type": "number"
-                },
-                "transferProductionToPublicWorks": {
-                  "type": "number"
-                },
-                "yieldFactor": {
-                  "$ref": "#/definitions/Partial<Yields>"
-                },
-                "yieldValue": {
-                  "$ref": "#/definitions/Partial<Yields>"
-                }
-              },
-              "type": "object"
-            },
             "requiredImprovement": {
               "type": "string"
+            },
+            "yields": {
+              "$ref": "#/definitions/Partial<Yields>"
+            },
+            "yieldsWhenWorked": {
+              "$ref": "#/definitions/Partial<Yields>"
             }
           },
           "required": [
-            "bonuses",
-            "bonusesWhenWorked",
-            "requiredImprovement"
+            "requiredImprovement",
+            "yields",
+            "yieldsWhenWorked"
           ],
           "type": "object"
         },

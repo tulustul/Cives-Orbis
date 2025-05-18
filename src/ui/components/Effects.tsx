@@ -75,7 +75,7 @@ export function Effects({ effects }: Props) {
   return (
     <div className="flex flex-col w-full text-center">
       {effects.map((effect, index) => {
-        const renderer = renderers[effect.effect];
+        const renderer = renderers[effect.type];
         return <div key={index}>{renderer(effect)}</div>;
       })}
     </div>

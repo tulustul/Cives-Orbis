@@ -1,13 +1,5 @@
 import { EntityType, ResourceCategory } from "@/shared";
 
-import nationsUrl from "@/data/nations.json?url";
-import buildingsUrl from "@/data/buildings.json?url";
-import idleProductsUrl from "@/data/idleProducts.json?url";
-import unitsUrl from "@/data/units.json?url";
-import populationTypesUrl from "@/data/populationTypes.json?url";
-import resourcesUrl from "@/data/resources.json?url";
-import tileImprovementsUrl from "@/data/tileImprovements.json?url";
-import techsUrl from "@/data/techs.json?url";
 import {
   Building,
   Entity,
@@ -20,25 +12,17 @@ import {
   TileImprovementDefinition,
   UnitDefinition,
 } from "@/core/data/types";
-import {
-  JsonBuilding,
-  JsonData,
-  JsonEntity,
-  JsonNation,
-  JsonPopulationType,
-  JsonRequirement,
-  JsonResource,
-  JsonTechnology,
-  JsonTileImprovement,
-  JsonUnit,
-} from "./jsonTypes";
-import {
-  CityHaveBuildingRequirement,
-  CitySizeRequirement,
-  CoastlineCityRequirement,
-  NeverRequirement,
-  Requirement,
-} from "../requirements";
+import buildingsUrl from "@/data/buildings.json?url";
+import idleProductsUrl from "@/data/idleProducts.json?url";
+import nationsUrl from "@/data/nations.json?url";
+import populationTypesUrl from "@/data/populationTypes.json?url";
+import resourcesUrl from "@/data/resources.json?url";
+import techsUrl from "@/data/techs.json?url";
+import tileImprovementsUrl from "@/data/tileImprovements.json?url";
+import unitsUrl from "@/data/units.json?url";
+import path from "node:path";
+import { createCityEffect } from "../effects";
+import { createRequirement } from "../requirements";
 import {
   climateNamesInverse,
   landFormNamesInverse,
@@ -46,8 +30,17 @@ import {
   UnitTraitNamesInverse,
   UnitTypeNamesInverse,
 } from "./const";
-import path from "node:path";
-import { createCityEffect } from "../effects";
+import {
+  JsonBuilding,
+  JsonData,
+  JsonEntity,
+  JsonNation,
+  JsonPopulationType,
+  JsonResource,
+  JsonTechnology,
+  JsonTileImprovement,
+  JsonUnit,
+} from "./jsonTypes";
 
 export class DataManager {
   private markAsReady!: () => void;
@@ -173,8 +166,8 @@ class BuildingProvider extends EntityProvider<Building, JsonBuilding> {
     return {
       ...json,
       entityType: "building",
-      weakRequirements: parseRequirements(json.weakRequirements),
-      strongRequirements: parseRequirements(json.weakRequirements),
+      weakRequirements: json.weakRequirements.map(createRequirement),
+      strongRequirements: json.strongRequirements.map(createRequirement),
       effects: json.effects.map(createCityEffect),
     };
   }
@@ -191,8 +184,8 @@ class UnitProvider extends EntityProvider<UnitDefinition, JsonUnit> {
       entityType: "unit",
       type: UnitTypeNamesInverse[json.type],
       trait: UnitTraitNamesInverse[json.trait],
-      weakRequirements: parseRequirements(json.weakRequirements),
-      strongRequirements: parseRequirements(json.weakRequirements),
+      weakRequirements: json.weakRequirements.map(createRequirement),
+      strongRequirements: json.strongRequirements.map(createRequirement),
     };
   }
 
@@ -340,24 +333,6 @@ class TechProvider extends EntityProvider<Technology, JsonTechnology> {
     );
     tech.unlocks = json.unlocks.map((id) => this.manager.get(id));
   }
-}
-
-function parseRequirements(requirements: JsonRequirement[]): Requirement[] {
-  return requirements.map(parseRequirement);
-}
-
-function parseRequirement(r: JsonRequirement): Requirement {
-  switch (r.type) {
-    case "never":
-      return new NeverRequirement();
-    case "cityHaveBuilding":
-      return new CityHaveBuildingRequirement(r.building);
-    case "citySize":
-      return new CitySizeRequirement(r.size);
-    case "cityIsCoastline":
-      return new CoastlineCityRequirement();
-  }
-  throw new Error(`Unknown requirement type: ${(r as any).type}`);
 }
 
 async function fetchJson<T>(url: string): Promise<T> {

@@ -14,10 +14,9 @@
       "supplyRange": 0,
       "strongRequirements": [],
       "weakRequirements": [
-        { "type": "cityHaveBuilding", "building": "building_granary" },
-        { "type": "citySize", "size": 3 }
-      ],
-      "bonuses": {}
+        { "type": "city.haveBuilding", "building": "building_granary" },
+        { "type": "city.size", "size": 3 }
+      ]
     },
     {
       "id": "unit_worker",
@@ -43,8 +42,7 @@
       "capacity": 0,
       "supplyRange": 0,
       "strongRequirements": [],
-      "weakRequirements": [{ "type": "citySize", "size": 2 }],
-      "bonuses": {}
+      "weakRequirements": [{ "type": "city.size", "size": 2 }]
     },
     {
       "id": "unit_scout",
@@ -58,8 +56,7 @@
       "capacity": 0,
       "supplyRange": 0,
       "strongRequirements": [],
-      "weakRequirements": [],
-      "bonuses": {}
+      "weakRequirements": []
     },
     {
       "id": "unit_warrior",
@@ -73,8 +70,7 @@
       "capacity": 0,
       "supplyRange": 0,
       "strongRequirements": [],
-      "weakRequirements": [],
-      "bonuses": {}
+      "weakRequirements": []
     },
     {
       "id": "unit_uber_warrior",
@@ -88,8 +84,7 @@
       "capacity": 0,
       "supplyRange": 0,
       "strongRequirements": [],
-      "weakRequirements": [],
-      "bonuses": {}
+      "weakRequirements": []
     },
     {
       "id": "unit_tireme",
@@ -102,9 +97,8 @@
       "productionCost": 50,
       "capacity": 0,
       "supplyRange": 0,
-      "strongRequirements": [{ "type": "cityIsCoastline" }],
-      "weakRequirements": [],
-      "bonuses": {}
+      "strongRequirements": [{ "type": "city.isCoastline" }],
+      "weakRequirements": []
     },
     {
       "id": "unit_galley",
@@ -117,9 +111,8 @@
       "productionCost": 50,
       "capacity": 2,
       "supplyRange": 0,
-      "strongRequirements": [{ "type": "cityIsCoastline" }],
-      "weakRequirements": [],
-      "bonuses": {}
+      "strongRequirements": [{ "type": "city.isCoastline" }],
+      "weakRequirements": []
     }
   ]
 }

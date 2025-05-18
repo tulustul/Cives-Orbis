@@ -6,31 +6,31 @@ export type YieldsEffect = {
 };
 
 export type CityAddYieldsEffect = {
-  effect: "city.addYields";
+  type: "city.addYields";
 } & YieldsEffect;
 
 export type CityMultiplyYieldsEffect = {
-  effect: "city.multiplyYields";
+  type: "city.multiplyYields";
 } & YieldsEffect;
 
 export type CityTransferProductionToYieldsEffect = {
-  effect: "city.transferProductionToYields";
+  type: "city.transferProductionToYields";
   yield: YieldKey;
   value: number;
 } & YieldsEffect;
 
 export type CityDefenseBonusEffect = {
-  effect: "city.defenseBonus";
+  type: "city.defenseBonus";
   defenseBonus: number;
 };
 
 export type CityMaxHealthEffect = {
-  effect: "city.maxHealth";
+  type: "city.maxHealth";
   maxHealth: number;
 };
 
 export type CityStrengthEffect = {
-  effect: "city.strength";
+  type: "city.strength";
   strength: number;
 };
 
@@ -42,4 +42,4 @@ export type CityEffect =
   | CityMaxHealthEffect
   | CityStrengthEffect;
 
-export type CityEffectType = CityEffect["effect"];
+export type CityEffectType = CityEffect["type"];

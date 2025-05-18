@@ -741,7 +741,7 @@ export class MilitaryAI extends AISystem {
     }
 
     if (unitType === UnitType.naval) {
-      if (!city.isCoastline) {
+      if (!city.tile.coast) {
         return null;
       }
       const navalUnit = dataManager.units.get("unit_tireme");
@@ -781,7 +781,7 @@ export class MilitaryAI extends AISystem {
         tile: city.tile,
         forcesRequired: {
           land: 10 + Math.min(50, threatPower / 2),
-          naval: city.isCoastline ? 10 : 0,
+          naval: city.tile.coast ? 10 : 0,
         },
         forcesAssigned: {
           land: 0,

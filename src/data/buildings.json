@@ -7,17 +7,17 @@
       "productionCost": 0,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "culture",
           "value": 1
         },
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "knowledge",
           "value": 1
         }
       ],
-      "strongRequirements": [{ "type": "never" }],
+      "strongRequirements": [{ "type": "city.never" }],
       "weakRequirements": []
     },
     {
@@ -26,7 +26,7 @@
       "productionCost": 40,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "food",
           "value": 3
         }
@@ -40,7 +40,7 @@
       "productionCost": 20,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "food",
           "value": 1
         }
@@ -54,13 +54,13 @@
       "productionCost": 100,
       "effects": [
         {
-          "effect": "city.multiplyYields",
+          "type": "city.multiplyYields",
           "yield": "food",
           "value": 0.2
         }
       ],
       "strongRequirements": [
-        { "type": "cityHaveBuilding", "building": "building_granary" }
+        { "type": "city.haveBuilding", "building": "building_granary" }
       ],
       "weakRequirements": []
     },
@@ -70,7 +70,7 @@
       "productionCost": 80,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "production",
           "value": 5
         }
@@ -84,13 +84,13 @@
       "productionCost": 200,
       "effects": [
         {
-          "effect": "city.multiplyYields",
+          "type": "city.multiplyYields",
           "yield": "production",
           "value": 0.2
         }
       ],
       "strongRequirements": [
-        { "type": "cityHaveBuilding", "building": "building_workshop" }
+        { "type": "city.haveBuilding", "building": "building_workshop" }
       ],
       "weakRequirements": []
     },
@@ -100,7 +100,7 @@
       "productionCost": 50,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "publicWorks",
           "value": 2
         }
@@ -114,7 +114,7 @@
       "productionCost": 30,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "culture",
           "value": 1
         }
@@ -128,7 +128,7 @@
       "productionCost": 30,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "knowledge",
           "value": 1
         }
@@ -142,7 +142,7 @@
       "productionCost": 80,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "knowledge",
           "value": 3
         }
@@ -156,29 +156,29 @@
       "productionCost": 500,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "food",
           "value": 1
         },
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "production",
           "value": 1
         },
         {
-          "effect": "city.multiplyYields",
+          "type": "city.multiplyYields",
           "yield": "food",
           "value": 0.1
         },
         {
-          "effect": "city.multiplyYields",
+          "type": "city.multiplyYields",
           "yield": "production",
           "value": 0.1
         }
       ],
       "strongRequirements": [
-        { "type": "cityHaveBuilding", "building": "building_big_granary" },
-        { "type": "cityHaveBuilding", "building": "building_big_workshop" }
+        { "type": "city.haveBuilding", "building": "building_big_granary" },
+        { "type": "city.haveBuilding", "building": "building_big_workshop" }
       ],
       "weakRequirements": []
     },
@@ -188,12 +188,12 @@
       "productionCost": 60,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "production",
           "value": 2
         },
         {
-          "effect": "city.multiplyYields",
+          "type": "city.multiplyYields",
           "yield": "production",
           "value": 0.1
         }
@@ -207,12 +207,12 @@
       "productionCost": 80,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "production",
           "value": 2
         },
         {
-          "effect": "city.multiplyYields",
+          "type": "city.multiplyYields",
           "yield": "production",
           "value": 0.1
         }
@@ -226,12 +226,12 @@
       "productionCost": 50,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "production",
           "value": 1
         },
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "culture",
           "value": 1
         }
@@ -245,7 +245,7 @@
       "productionCost": 60,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "gold",
           "value": 2
         }
@@ -259,7 +259,7 @@
       "productionCost": 60,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "gold",
           "value": 2
         }
@@ -273,7 +273,7 @@
       "productionCost": 60,
       "effects": [
         {
-          "effect": "city.addYields",
+          "type": "city.addYields",
           "yield": "gold",
           "value": 2
         }
@@ -287,15 +287,15 @@
       "productionCost": 150,
       "effects": [
         {
-          "effect": "city.defenseBonus",
+          "type": "city.defenseBonus",
           "defenseBonus": 0.3
         },
         {
-          "effect": "city.maxHealth",
+          "type": "city.maxHealth",
           "maxHealth": 200
         },
         {
-          "effect": "city.strength",
+          "type": "city.strength",
           "strength": 3
         }
       ],

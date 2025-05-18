@@ -27,15 +27,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-quarry",
-        "bonuses": {
-          "yieldValue": {
-            "production": 1
-          }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": {
-            "production": 2
-          }
+        "yieldsWhenWorked": {
+          "production": 2
         }
       }
     },
@@ -59,11 +55,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-quarry",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 2 }
+        "yieldsWhenWorked": {
+          "production": 2
         }
       }
     },
@@ -76,11 +72,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-quarry",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 2 }
+        "yieldsWhenWorked": {
+          "production": 2
         }
       }
     },
@@ -98,11 +94,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-clayPit",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 2 }
+        "yieldsWhenWorked": {
+          "production": 2
         }
       }
     },
@@ -113,11 +109,11 @@
       "distribution": [],
       "depositDef": {
         "requiredImprovement": "tile-impr-lumbermill",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 2 }
+        "yieldsWhenWorked": {
+          "production": 2
         }
       }
     },
@@ -132,11 +128,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
+        "yieldsWhenWorked": {
+          "production": 3
         }
       }
     },
@@ -151,11 +147,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
+        "yieldsWhenWorked": {
+          "production": 3
         }
       }
     },
@@ -181,11 +177,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
+        "yieldsWhenWorked": {
+          "production": 3
         }
       }
     },
@@ -204,11 +200,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
+        "yieldsWhenWorked": {
+          "production": 3
         }
       }
     },
@@ -222,11 +218,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 1, "food": 1 }
+        "yields": {
+          "gold": 1,
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 2, "food": 1 }
+        "yieldsWhenWorked": {
+          "gold": 2,
+          "food": 1
         }
       }
     },
@@ -245,11 +243,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 2 }
+        "yields": {
+          "production": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
+        "yieldsWhenWorked": {
+          "production": 3
         }
       }
     },
@@ -263,11 +261,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -281,11 +279,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 3 }
+        "yields": {
+          "gold": 3
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 5 }
+        "yieldsWhenWorked": {
+          "gold": 5
         }
       }
     },
@@ -307,11 +305,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -345,11 +343,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -375,11 +373,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -398,11 +396,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3 }
+        "yieldsWhenWorked": {
+          "production": 3
         }
       }
     },
@@ -421,11 +419,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -458,11 +456,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -489,11 +487,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -519,11 +517,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -557,11 +555,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -601,11 +599,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -624,11 +622,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -654,11 +652,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -698,11 +696,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 1 }
+        "yields": {
+          "food": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -728,11 +726,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-farm",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 4 }
+        "yieldsWhenWorked": {
+          "food": 4
         }
       }
     },
@@ -745,11 +743,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-fishery",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 4 }
+        "yieldsWhenWorked": {
+          "food": 4
         }
       }
     },
@@ -762,11 +760,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-fishery",
-        "bonuses": {
-          "yieldValue": { "food": 1, "gold": 2 }
+        "yields": {
+          "food": 1,
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 2, "gold": 3 }
+        "yieldsWhenWorked": {
+          "food": 2,
+          "gold": 3
         }
       }
     },
@@ -785,12 +785,8 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 1, "production": 1 }
-        },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 2, "production": 1 }
-        }
+        "yields": { "food": 1, "production": 1 },
+        "yieldsWhenWorked": { "food": 2, "production": 1 }
       }
     },
     {
@@ -802,11 +798,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-fishery",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -820,11 +816,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 3 }
+        "yields": {
+          "gold": 3
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 5 }
+        "yieldsWhenWorked": {
+          "gold": 5
         }
       }
     },
@@ -849,11 +845,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -878,11 +874,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -915,11 +911,12 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3, "production": 1 }
+        "yieldsWhenWorked": {
+          "food": 3,
+          "production": 1
         }
       }
     },
@@ -938,11 +935,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -960,11 +957,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 1, "production": 1 }
+        "yields": {
+          "food": 1,
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 2, "production": 1 }
+        "yieldsWhenWorked": {
+          "food": 2,
+          "production": 1
         }
       }
     },
@@ -989,11 +988,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 1, "production": 1 }
+        "yields": {
+          "food": 1,
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 2, "production": 1 }
+        "yieldsWhenWorked": {
+          "food": 2,
+          "production": 1
         }
       }
     },
@@ -1019,11 +1020,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "production": 2, "gold": 1 }
+        "yields": {
+          "production": 2,
+          "gold": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 3, "gold": 2 }
+        "yieldsWhenWorked": {
+          "production": 3,
+          "gold": 2
         }
       }
     },
@@ -1049,11 +1052,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-huntingGround",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -1081,11 +1084,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 1, "gold": 1 }
+        "yields": {
+          "food": 1,
+          "gold": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 1, "gold": 3 }
+        "yieldsWhenWorked": {
+          "food": 1,
+          "gold": 3
         }
       }
     },
@@ -1111,11 +1116,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 1, "gold": 1 }
+        "yields": {
+          "food": 1,
+          "gold": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 1, "gold": 3 }
+        "yieldsWhenWorked": {
+          "food": 1,
+          "gold": 3
         }
       }
     },
@@ -1134,11 +1141,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "gold": 3 }
+        "yields": {
+          "gold": 3
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 5 }
+        "yieldsWhenWorked": {
+          "gold": 5
         }
       }
     },
@@ -1157,11 +1164,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "gold": 2 }
+        "yields": {
+          "gold": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 4 }
+        "yieldsWhenWorked": {
+          "gold": 4
         }
       }
     },
@@ -1180,11 +1187,12 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3, "gold": 1 }
+        "yieldsWhenWorked": {
+          "food": 3,
+          "gold": 1
         }
       }
     },
@@ -1203,11 +1211,12 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3, "gold": 1 }
+        "yieldsWhenWorked": {
+          "food": 3,
+          "gold": 1
         }
       }
     },
@@ -1226,11 +1235,12 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3, "gold": 1 }
+        "yieldsWhenWorked": {
+          "food": 3,
+          "gold": 1
         }
       }
     },
@@ -1252,11 +1262,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "gold": 4 }
+        "yields": {
+          "gold": 4
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "gold": 6 }
+        "yieldsWhenWorked": {
+          "gold": 6
         }
       }
     },
@@ -1290,11 +1300,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "production": 1 }
+        "yields": {
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 2 }
+        "yieldsWhenWorked": {
+          "production": 2
         }
       }
     },
@@ -1326,11 +1336,12 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-huntingGround",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3, "production": 1 }
+        "yieldsWhenWorked": {
+          "food": 3,
+          "production": 1
         }
       }
     },
@@ -1363,11 +1374,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 1, "production": 1 }
+        "yields": {
+          "food": 1,
+          "production": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 2, "production": 2 }
+        "yieldsWhenWorked": {
+          "food": 2,
+          "production": 2
         }
       }
     },
@@ -1400,11 +1413,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-pasture",
-        "bonuses": {
-          "yieldValue": { "food": 2 }
+        "yields": {
+          "food": 2
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "food": 3 }
+        "yieldsWhenWorked": {
+          "food": 3
         }
       }
     },
@@ -1430,11 +1443,11 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-mine",
-        "bonuses": {
-          "yieldValue": { "production": 3 }
+        "yields": {
+          "production": 3
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 5 }
+        "yieldsWhenWorked": {
+          "production": 5
         }
       }
     },
@@ -1460,11 +1473,13 @@
       ],
       "depositDef": {
         "requiredImprovement": "tile-impr-plantation",
-        "bonuses": {
-          "yieldValue": { "production": 1, "gold": 1 }
+        "yields": {
+          "production": 1,
+          "gold": 1
         },
-        "bonusesWhenWorked": {
-          "yieldValue": { "production": 2, "gold": 2 }
+        "yieldsWhenWorked": {
+          "production": 2,
+          "gold": 2
         }
       }
     },

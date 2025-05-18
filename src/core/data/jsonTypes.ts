@@ -8,6 +8,7 @@ import {
 import {
   CityEffect,
   NationColors,
+  Requirement,
   ResourceCategory,
   TechEra,
   UnitAction,
@@ -20,41 +21,17 @@ export type SeaLevelName = keyof typeof seaLevelNamesInverse;
 export type UnitTypeName = keyof typeof UnitTypeNamesInverse;
 export type UnitTraitName = keyof typeof UnitTraitNamesInverse;
 
-export type JsonCityNeverRequirement = {
-  type: "never";
-};
-
-export type JsonCityHaveBuildingRequirement = {
-  type: "cityHaveBuilding";
-  building: string;
-};
-
-export type JsonCitySizeRequirement = {
-  type: "citySize";
-  size: number;
-};
-
-export type JsonCityIsCoastlineRequirement = {
-  type: "cityIsCoastline";
-};
-
 export type JsonEntity = {
   id: string;
   name: string;
 };
 
-export type JsonRequirement =
-  | JsonCityNeverRequirement
-  | JsonCityHaveBuildingRequirement
-  | JsonCitySizeRequirement
-  | JsonCityIsCoastlineRequirement;
-
 export type JsonProduct = JsonEntity & {
   // entity will be hidden from player
-  strongRequirements: JsonRequirement[];
+  strongRequirements: Requirement[];
 
   // entity will be disabled for player
-  weakRequirements: JsonRequirement[];
+  weakRequirements: Requirement[];
 
   productionCost: number;
 

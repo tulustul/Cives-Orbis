@@ -19,6 +19,7 @@ import {
   Option,
   PlayerTask,
   PlayerYields,
+  Requirement,
   ResourceSpawnOptions,
   ResourceWithTileChanneled,
   StatsGetChanneled,
@@ -685,11 +686,8 @@ export function cityOptimizeYields(cityId: number) {
 
 export function entityGetFailedWeakRequirements(
   data: EntityGetFailedWeakRequirements,
-): [string, any][] {
-  const entityId: string = data.entityId;
-  const cityId: number | null = data.cityId;
-
-  const entity = dataManager.get(entityId);
+): Requirement[] {
+  const entity = dataManager.get(data.entityId);
 
   if (
     entity.entityType !== "unit" &&
@@ -700,8 +698,8 @@ export function entityGetFailedWeakRequirements(
   }
 
   let city: CityCore | null = null;
-  if (cityId) {
-    city = game.citiesManager.citiesMap.get(cityId)!;
+  if (data.cityId !== null) {
+    city = game.citiesManager.citiesMap.get(data.cityId)!;
   }
 
   return getFailedWeakRequirements(

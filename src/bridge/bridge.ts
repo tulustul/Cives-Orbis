@@ -17,6 +17,7 @@ import {
   PlayerChanneled,
   PlayerTask,
   PlayerYields,
+  Requirement,
   ResourceSpawnOptions,
   ResourceWithTileChanneled,
   StatsGetChanneled,
@@ -96,7 +97,7 @@ export const bridge = {
   },
   entities: {
     getFailedWeakRequirements: (options: EntityGetFailedWeakRequirements) =>
-      makeCommand<[string, any][]>("entity.getFailedWeakRequirements", options),
+      makeCommand<Requirement[]>("entity.getFailedWeakRequirements", options),
     getDetails: (entityId: string) =>
       makeCommand<EntityChanneled | null>("entity.getDetails", entityId),
   },

@@ -29,13 +29,9 @@ export class CitiesManager {
 
     const city = new CityCore(tile, player);
     city.id = this.lastId++;
-    city.population.population.set("peasant", 1);
     city.population.computeTotal();
     city.name = this.getNextCityName(player);
     city.tile = tile;
-    city.isCoastline = !!city.tile.neighbours.find(
-      (n) => n.seaLevel !== SeaLevel.none,
-    );
     this.cities.push(city);
     this.citiesMap.set(city.id, city);
 
