@@ -75,8 +75,8 @@ Minor features:
 Next version:
   ✔ higher defence for cities @done(25-05-17 11:17)
   ✔ city walls and city healthbar @done(25-05-18 14:56)
-  ☐ gold yield + buildings to increase it
-  ☐ units cost gold to maintain, they lose health if not enough gold
+  ✔ gold yield + buildings to increase it @done(25-05-18 22:19)
+  ✔ units cost gold to maintain, they lose health if not enough gold @done(25-05-18 22:19)
   ☐ better units in tech tree, old units get obsolete
   ☐ resource discovering through techs
   ☐ siege units and mechanic

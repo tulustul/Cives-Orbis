@@ -31,7 +31,7 @@ export class CityMultiplyYieldsEffectImpl
   constructor(public options: CityMultiplyYieldsEffect) {}
 
   apply(city: CityCore): void {
-    city.yields[this.options.yield] *= this.options.value;
+    city.yields[this.options.yield] *= 1 + this.options.value;
   }
 }
 
