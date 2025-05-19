@@ -17,6 +17,7 @@ import {
   GrantRevokeTechOptions,
   MapGeneratorOptions,
   Option,
+  PlayerEconomyChanneled,
   PlayerTask,
   PlayerYields,
   Requirement,
@@ -60,6 +61,7 @@ import { ResourceDeposit } from "./resources";
 import {
   cityDetailsToChannel,
   cityToChannel,
+  cityToOverviewChanneled,
   combatSimulationToChannel,
   entityToChannel,
   gameToGameStartInfo,
@@ -91,8 +93,9 @@ const HANDLERS = {
   "trackedPlayer.revealWorld": revealWorld,
   "trackedPlayer.set": setTrackedPlayer,
 
-  "player.getSuppliedTiles": getSuppliedTiles,
-  "player.getYields": getYields,
+  "player.getSuppliedTiles": playerGetSuppliedTiles,
+  "player.getYields": playertGetYields,
+  "player.getEconomyOverview": playerGetEconomyOverview,
   "player.editor.grantRevokeTech": playerGrantRevokeTech,
   "player.editor.revealMap": playerRevealMap,
 
@@ -323,7 +326,7 @@ function setTrackedPlayer(playerId: number) {
   return data;
 }
 
-function getSuppliedTiles(playerId: number): TilesCoordsWithNeighbours[] {
+function playerGetSuppliedTiles(playerId: number): TilesCoordsWithNeighbours[] {
   const player = game.playersMap.get(playerId);
   if (!player) {
     return [];
@@ -332,8 +335,14 @@ function getSuppliedTiles(playerId: number): TilesCoordsWithNeighbours[] {
   return Array.from(player.suppliedTiles).map(tilesToTileCoordsWithNeighbours);
 }
 
-function getYields(): PlayerYields {
+function playertGetYields(): PlayerYields {
   return game.trackedPlayer.yields;
+}
+
+function playerGetEconomyOverview(): PlayerEconomyChanneled {
+  return {
+    cities: game.trackedPlayer.cities.map(cityToOverviewChanneled),
+  };
 }
 
 function unitSpawn(options: UnitSpawnOptions): void {

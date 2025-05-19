@@ -58,6 +58,11 @@ export class Commands {
     Commands.showView("stats");
   }
 
+  @keybinding({ keybinding: "e", context: "map" })
+  static showEconomyOverview() {
+    Commands.showView("economyOverview");
+  }
+
   @keybinding({ keybinding: "t", context: "map" })
   static showTechTree() {
     Commands.showView("techTree");

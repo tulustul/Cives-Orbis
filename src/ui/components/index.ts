@@ -21,3 +21,4 @@ export * from "./Background";
 export * from "./ImageIcon";
 export * from "./Value";
 export * from "./typography";
+export * from "./dataTable";

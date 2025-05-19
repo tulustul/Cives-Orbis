@@ -15,6 +15,7 @@ import {
   MapGeneratorOptions,
   Option,
   PlayerChanneled,
+  PlayerEconomyChanneled,
   PlayerTask,
   PlayerYields,
   Requirement,
@@ -71,6 +72,8 @@ export const bridge = {
         "player.getSuppliedTiles",
         playerId,
       ),
+    getEconomyOverview: () =>
+      makeCommand<PlayerEconomyChanneled>("player.getEconomyOverview"),
   },
   tiles: {
     updated$: makeObservable<TileChanneled[]>("tiles.updated"),

@@ -21,6 +21,7 @@ import {
   CityChanneled,
   CityDefenseChanneled,
   CityDetailsChanneled,
+  CityOverviewChanneled,
   CityProductChanneled,
   CombatSimulationChanneled,
   CombatSimulationSideChanneled,
@@ -621,5 +622,14 @@ function combatSimulationSideToChannel(
     damage: side.damage,
     unit,
     city,
+  };
+}
+
+export function cityToOverviewChanneled(city: CityCore): CityOverviewChanneled {
+  return {
+    id: city.id,
+    name: city.name,
+    population: city.population.total,
+    yields: city.yields,
   };
 }

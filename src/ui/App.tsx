@@ -12,6 +12,7 @@ import { Stats } from "./stats";
 import { LoadingScreen } from "./LoadingScreen";
 import { TechTree } from "./techs";
 import { NotificationModal } from "./NotificationModal";
+import { EconomyOverview } from "./economyOverview";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ function App() {
         </div>
         {uiState.mode === "editor" && <EditorMode />}
         {uiState.view === "stats" && <Stats />}
+        {uiState.view === "economyOverview" && <EconomyOverview />}
         {uiState.view === "techTree" && <TechTree />}
         <NotificationModal />
       </div>

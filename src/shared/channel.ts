@@ -338,3 +338,14 @@ export type TileFogOfWar = TileCoords & {
   visibleBorder: number;
   status: FogOfWarStatus;
 };
+
+export type CityOverviewChanneled = {
+  id: number;
+  name: string;
+  population: number;
+  yields: Yields;
+};
+
+export type PlayerEconomyChanneled = {
+  cities: CityOverviewChanneled[];
+};

@@ -81,6 +81,7 @@ Next version:
   ☐ resource discovering through techs
   ☐ siege units and mechanic
   ✔ disabling fog of war shows all borders and tiles @done(25-05-18 14:56)
+  ☐ naval units should defend cities only against other naval units
   ☐ ai should defend cities
   ☐ ai avoids creating units if it doesn't have enough gold
   ☐ ai settles first city immediately and protects it
