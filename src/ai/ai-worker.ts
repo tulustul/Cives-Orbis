@@ -8,7 +8,7 @@ import { sumYields } from "@/core/yields";
 import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
 import { dataManager } from "@/core/data/dataManager";
-import { UnitAction, UnitTrait } from "@/shared";
+import { UnitAction } from "@/shared";
 import { isImprovementPossible } from "@/core/tile-utils";
 
 const CITIES_PER_WORKER = 0.5;
@@ -75,11 +75,8 @@ export class WorkerAI extends AISystem {
 
   private groupWorkersByArea() {
     this.workersByArea.clear();
-    for (const unit of this.ai.player.units) {
-      if (
-        unit.definition.trait === UnitTrait.worker &&
-        unit.tile.passableArea
-      ) {
+    for (const unit of this.ai.units.freeByTrait.worker) {
+      if (unit.tile.passableArea) {
         if (!this.workersByArea.has(unit.tile.passableArea)) {
           this.workersByArea.set(unit.tile.passableArea, []);
         }

@@ -343,7 +343,6 @@ export function unitDetailsToChannel(unit: UnitCore): UnitDetailsChanneled {
     type: unit.definition.strength > 0 ? "military" : "civilian",
     tile: tileToTileCoords(unit.tile),
     definition: unitDefToChannel(unit.definition),
-    trait: unit.definition.trait,
     colors: unit.player.nation.colors,
     parentId: unit.parent?.id || null,
     childrenIds: unit.children.map((c) => c.id),
@@ -524,8 +523,6 @@ export function unitDefToChannel(entity: UnitDefinition): UnitDefChanneled {
     technology: entity.technology
       ? entityToMinimalChannel(entity.technology)
       : null,
-    type: entity.type,
-    trait: entity.trait,
     actionPoints: entity.actionPoints,
     strength: entity.strength,
     capacity: entity.capacity,

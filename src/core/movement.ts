@@ -3,7 +3,6 @@ import { UnitCore } from "./unit";
 import { attack } from "./combat";
 import { collector } from "./collector";
 import { zocAddUnit, zocForgetUnit } from "./zoc";
-import { UnitTrait, UnitType } from "@/shared";
 
 export enum MoveResult {
   none,
@@ -22,13 +21,10 @@ export function getMoveResult(
     return MoveResult.move;
   }
 
-  if (unit.definition.type === UnitType.naval) {
+  if (unit.isNaval) {
     if (from.passableArea !== to.passableArea) {
       if (to.isLand && to.city?.tile.coast) {
-        if (
-          unit.definition.trait === UnitTrait.military ||
-          to.city?.player !== unit.player
-        ) {
+        if (unit.isMilitary || to.city?.player !== unit.player) {
           return MoveResult.attack;
         } else if (to.city?.player === unit.player) {
           return MoveResult.move;
@@ -44,7 +40,7 @@ export function getMoveResult(
     if (to.isLand && !to.city?.tile.coast) {
       return MoveResult.none;
     }
-  } else if (unit.definition.type === UnitType.land) {
+  } else if (unit.isLand) {
     if (to.isWater && to.getEmbarkmentTarget(unit)) {
       return MoveResult.embark;
     }
@@ -60,7 +56,7 @@ export function getMoveResult(
     const enemyUnit = to.getEnemyUnit(unit);
     const enemyCity = to.city && to.city.player !== unit.player;
     if (enemyUnit || enemyCity) {
-      if (unit.definition.trait === UnitTrait.military) {
+      if (unit.isMilitary) {
         return MoveResult.attack;
       } else {
         return MoveResult.none;

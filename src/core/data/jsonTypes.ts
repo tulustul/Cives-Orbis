@@ -2,8 +2,6 @@ import {
   climateNamesInverse,
   landFormNamesInverse,
   seaLevelNamesInverse,
-  UnitTraitNamesInverse,
-  UnitTypeNamesInverse,
 } from "./const";
 import {
   CityEffect,
@@ -12,14 +10,13 @@ import {
   ResourceCategory,
   TechEra,
   UnitAction,
+  UnitTrait,
   Yields,
 } from "@/shared";
 
 export type ClimateName = keyof typeof climateNamesInverse;
 export type LandFormName = keyof typeof landFormNamesInverse;
 export type SeaLevelName = keyof typeof seaLevelNamesInverse;
-export type UnitTypeName = keyof typeof UnitTypeNamesInverse;
-export type UnitTraitName = keyof typeof UnitTraitNamesInverse;
 
 export type JsonEntity = {
   id: string;
@@ -43,8 +40,7 @@ export type JsonUnit = JsonProduct & {
   actionPoints: number;
   strength: number;
   actions: UnitAction[];
-  type: UnitTypeName;
-  trait: UnitTraitName;
+  traits: UnitTrait[];
   capacity: number;
   supplyRange: number;
 };

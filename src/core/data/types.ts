@@ -8,8 +8,6 @@ import {
   SeaLevel,
   TechEra,
   TechLayout,
-  UnitTrait,
-  UnitType,
   Yields,
 } from "@/shared";
 import {
@@ -63,11 +61,9 @@ export type BaseProductDefinition = Entity &
 type _ProductDefinition = BaseProductDefinition & RequireTech;
 
 export type UnitDefinition = _ProductDefinition &
-  Omit<JsonUnit, "type" | "trait" | "strongRequirements" | "weakRequirements"> &
+  Omit<JsonUnit, "type" | "strongRequirements" | "weakRequirements"> &
   RequireTech & {
     entityType: "unit";
-    type: UnitType;
-    trait: UnitTrait;
   };
 
 export type Building = _ProductDefinition & {

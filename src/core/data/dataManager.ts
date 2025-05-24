@@ -31,8 +31,6 @@ import {
   climateNamesInverse,
   landFormNamesInverse,
   seaLevelNamesInverse,
-  UnitTraitNamesInverse,
-  UnitTypeNamesInverse,
 } from "./const";
 import {
   JsonBuilding,
@@ -202,8 +200,6 @@ class UnitProvider extends EntityProvider<UnitDefinition, JsonUnit> {
     const def: UnitDefinition = {
       ...json,
       entityType: "unit",
-      type: UnitTypeNamesInverse[json.type],
-      trait: UnitTraitNamesInverse[json.trait],
       weakRequirements: json.weakRequirements.map(createRequirement),
       strongRequirements: json.strongRequirements.map(createRequirement),
     };

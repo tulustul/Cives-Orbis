@@ -2,7 +2,6 @@ import { findPath } from "@/core/pathfinding";
 import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { UnitTrait, UnitType } from "@/shared";
 import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
 import { estimateCombatResult, getTileDefenseBonus, isCoastal } from "./utils";
@@ -35,7 +34,7 @@ interface CombatZone {
  * Represents a granular tactical AI that handles combat encounters
  * and coordinates unit positioning and target selection.
  */
-export class TacticalAI extends AISystem {
+export class MilitaryTacticalAI extends AISystem {
   private combatZones: CombatZone[] = [];
   private unitAssignments = new Map<number, CombatZone>();
 
@@ -47,8 +46,7 @@ export class TacticalAI extends AISystem {
 
     // Only process if we have military units
     const militaryUnits = this.player.units.filter(
-      (unit) =>
-        unit.definition.trait === UnitTrait.military && unit.parent === null,
+      (unit) => unit.isMilitary && unit.parent === null,
     );
 
     if (militaryUnits.length === 0) {
@@ -129,11 +127,7 @@ export class TacticalAI extends AISystem {
     // Gather friendly units in this zone
     const friendlyUnits = tilesInZone
       .flatMap((tile) => tile.units)
-      .filter(
-        (unit) =>
-          unit.player === this.player &&
-          unit.definition.trait === UnitTrait.military,
-      );
+      .filter((unit) => unit.player === this.player && unit.isMilitary);
 
     // Calculate priority based on strategic value
     const cityValue = centerTile.city
@@ -180,7 +174,7 @@ export class TacticalAI extends AISystem {
     }
 
     // Increase priority for certain unit types
-    if (unit.definition.trait === UnitTrait.settler) {
+    if (unit.isSettler) {
       priority += 100; // Settler units are the highest priority targets
     }
 
@@ -303,18 +297,10 @@ export class TacticalAI extends AISystem {
     // Filter targets that this unit can potentially attack
     const potentialTargets = zone.targets.filter((target) => {
       // Land units can't attack naval units in water and vice versa
-      if (
-        unit.definition.type === UnitType.land &&
-        target.tile.isWater &&
-        !isCoastal(target.tile)
-      ) {
+      if (unit.isLand && target.tile.isWater && !isCoastal(target.tile)) {
         return false;
       }
-      if (
-        unit.definition.type === UnitType.naval &&
-        !target.tile.isWater &&
-        !isCoastal(target.tile)
-      ) {
+      if (unit.isNaval && !target.tile.isWater && !isCoastal(target.tile)) {
         return false;
       }
       return true;
@@ -359,20 +345,14 @@ export class TacticalAI extends AISystem {
     // Filter to tiles the unit can move to
     const accessiblePositions = potentialPositions.filter((tile) => {
       // Check if the tile is passable for this unit
-      if (unit.definition.type === UnitType.land && tile.isWater) {
+      if (unit.isLand && tile.isWater) {
         return false;
       }
-      if (unit.definition.type === UnitType.naval && !tile.isWater) {
+      if (unit.isNaval && !tile.isWater) {
         return false;
       }
 
-      // Check if the tile already has too many units
-      const sameTypeUnits = tile.units.filter(
-        (u) =>
-          u.player === this.player &&
-          u.definition.type === unit.definition.type,
-      );
-      return sameTypeUnits.length < 2; // Limit stacking
+      return true;
     });
 
     if (accessiblePositions.length === 0) return null;

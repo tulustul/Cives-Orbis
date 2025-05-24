@@ -3,7 +3,6 @@ import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
 import { PlayerCore } from "@/core/player";
 import { VictoryType } from "./utils";
-import { UnitTrait } from "@/shared";
 
 export type StategicFocus = "conquest" | "economic" | "scientific" | "balanced";
 
@@ -67,11 +66,7 @@ export class StrategicAI extends AISystem {
 
       // Evaluate military threat
       const militaryPower = player.units.reduce(
-        (sum, unit) =>
-          sum +
-          (unit.definition.trait === UnitTrait.military
-            ? unit.definition.strength
-            : 0),
+        (sum, unit) => sum + (unit.isMilitary ? unit.definition.strength : 0),
         0,
       );
 

@@ -2,7 +2,6 @@ import { dataManager } from "@/core/data/dataManager";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { UnitType } from "@/shared";
 import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
 
@@ -39,7 +38,7 @@ interface TransportRequest {
 /**
  * Manages the transportation of land units over water
  */
-export class TransportAI extends AISystem {
+export class NavalTransportAI extends AISystem {
   // All active transport requests
   private transportRequests: TransportRequest[] = [];
 
@@ -97,23 +96,20 @@ export class TransportAI extends AISystem {
     destination: TileCore,
     priority: number = 100,
     focus: "expansion" | "military" | "economy" = "military",
-  ): number {
+  ): TransportRequest | null {
     // Check if unit can be transported (must be land unit)
-    if (unit.definition.type !== UnitType.land) {
-      return -1;
+    if (!unit.isLand) {
+      return null;
     }
 
     // Check if unit is already being transported
     if (this.isUnitInTransport(unit.id)) {
-      return -1;
+      return null;
     }
-
-    // Assign a new request ID
-    const requestId = ++this.lastRequestId;
 
     // Create the transport request
     const request: TransportRequest = {
-      id: requestId,
+      id: ++this.lastRequestId,
       priority,
       unitId: unit.id,
       startTile: unit.tile,
@@ -126,7 +122,7 @@ export class TransportAI extends AISystem {
     // Add to the list of active requests
     this.transportRequests.push(request);
 
-    return requestId;
+    return request;
   }
 
   /**
@@ -147,9 +143,8 @@ export class TransportAI extends AISystem {
   private updateTransportVessels() {
     this.transportVessels = this.player.units.filter(
       (unit) =>
-        unit.definition.type === UnitType.naval &&
-        unit.definition.capacity &&
-        unit.definition.capacity > 0 &&
+        unit.isNaval &&
+        unit.isTransport &&
         !this.assignedTransports.has(unit.id),
     );
   }

@@ -110,18 +110,16 @@ export type PlayerYields = {
   trade: Yields;
 };
 
-export enum UnitType {
-  land,
-  naval,
-}
-
-export enum UnitTrait {
-  settler,
-  explorer,
-  worker,
-  military,
-  supply,
-}
+export type UnitTrait =
+  | "settler"
+  | "explorer"
+  | "worker"
+  | "military"
+  | "supply"
+  | "land"
+  | "naval"
+  | "siege"
+  | "transport";
 
 export type ProductType = "unit" | "building" | "idleProduct";
 

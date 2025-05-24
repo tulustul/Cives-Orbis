@@ -10,8 +10,6 @@ import {
   TileRoad,
   UnitAction,
   UnitOrder,
-  UnitTrait,
-  UnitType,
   Yields,
 } from "./data";
 import { CityEffect } from "./effects";
@@ -133,8 +131,6 @@ export type UnitDefChanneled = EntityMinimalChanneled & {
   technology: EntityMinimalChanneled | null;
   actionPoints: number;
   strength: number;
-  type: UnitType;
-  trait: UnitTrait;
   capacity: number;
 };
 
@@ -277,7 +273,6 @@ export type UnitDetailsChanneled = {
   tile: TileCoords;
   definition: UnitDefChanneled;
   type: "military" | "civilian";
-  trait: UnitTrait;
   colors: NationColors;
   parentId: number | null;
   childrenIds: number[];

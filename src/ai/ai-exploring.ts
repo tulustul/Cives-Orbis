@@ -1,4 +1,3 @@
-import { UnitTrait, UnitType } from "@/shared";
 import { getMoveResult, MoveResult } from "@/core/movement";
 import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
@@ -7,8 +6,9 @@ import { AISystem } from "./ai-system";
 import { PassableArea } from "@/core/tiles-map";
 import { dataManager } from "@/core/data/dataManager";
 
-const TILES_PER_EXPLORER = 300;
-const MIN_EXPLORER_AREA = 10;
+const TILES_PER_EXPLORER = 500;
+const MAX_EXPLORERS_PER_AREA = 3;
+const MIN_EXPLORER_AREA = 2;
 const MIN_NAVAL_EXPLORER_PRIORITY = 90;
 
 export class ExploringAI extends AISystem {
@@ -20,24 +20,15 @@ export class ExploringAI extends AISystem {
 
     const edgeOfUnknown = this.getEdgeOfUnknown();
 
-    // Track explorers by their current passable area
-    const explorels = new Map<number, UnitCore[]>();
-    // Track naval transport units (galleys)
-    const navalTransports = this.ai.player.units.filter(
-      (unit) =>
-        unit.definition.type === UnitType.naval && unit.definition.capacity > 0,
-    );
+    const explorersByArea = new Map<PassableArea, UnitCore[]>();
 
     // Map explorers to their current areas
-    for (const unit of this.ai.player.units) {
-      if (
-        unit.definition.trait === UnitTrait.explorer &&
-        unit.tile.passableArea
-      ) {
-        if (!explorels.has(unit.tile.passableArea.id)) {
-          explorels.set(unit.tile.passableArea.id, []);
+    for (const unit of this.ai.units.freeByTrait.explorer) {
+      if (unit.tile.passableArea) {
+        if (!explorersByArea.has(unit.tile.passableArea)) {
+          explorersByArea.set(unit.tile.passableArea, []);
         }
-        explorels.get(unit.tile.passableArea.id)!.push(unit);
+        explorersByArea.get(unit.tile.passableArea)!.push(unit);
       }
     }
 
@@ -49,15 +40,16 @@ export class ExploringAI extends AISystem {
       if (passableArea.area < MIN_EXPLORER_AREA) {
         continue;
       }
-      const explorersNeeded = Math.floor(
-        passableArea.area / TILES_PER_EXPLORER,
+      const explorersNeeded = Math.min(
+        MAX_EXPLORERS_PER_AREA,
+        Math.ceil(passableArea.area / TILES_PER_EXPLORER),
       );
-      const haveExplorers = explorels.get(passableArea.id)?.length ?? 0;
+      const haveExplorers = explorersByArea.get(passableArea)?.length ?? 0;
 
       // If we need more explorers in this area
       if (haveExplorers < explorersNeeded) {
         const product = dataManager.units.get(
-          passableArea.type === "land" ? "unit_scout" : "unit_galley",
+          passableArea.type === "land" ? "unit_scout" : "unit_tireme",
         )!;
 
         // Request a unit to be produced
@@ -80,33 +72,36 @@ export class ExploringAI extends AISystem {
       landAreasNeedingExplorers,
     );
 
-    if (inaccessibleAreas.length > 0 && navalTransports.length > 0) {
+    const navalTransports = this.ai.units.freeByTrait.transport;
+    if (inaccessibleAreas.length > 0 && navalTransports.size > 0) {
       this.planNavalExploration(inaccessibleAreas);
     }
 
-    // Standard exploration for units already in their target areas
-    for (const explorers of explorels.values()) {
+    for (const explorers of explorersByArea.values()) {
       for (const explorer of explorers) {
-        // Skip units that are being transported
-        if (explorer.parent) {
-          continue;
-        }
-
-        const target = this.findTargetTile(edgeOfUnknown, explorer);
-        if (target) {
-          this.assignedTiles.add(target);
-          this.operations.push({
-            group: "unit",
-            entityId: explorer.id,
-            focus: "expansion",
-            priority: 100,
-            perform: () => {
-              explorer.path = findPath(explorer, target);
-            },
-          });
-        }
+        this.ai.units.assign(explorer, "exploration");
       }
     }
+
+    for (const explorer of this.ai.units.byAssignment.exploration) {
+      const target = this.findTargetTile(edgeOfUnknown, explorer);
+      if (target) {
+        this.assignedTiles.add(target);
+        this.operations.push({
+          group: "unit",
+          entityId: explorer.id,
+          focus: "expansion",
+          priority: 100,
+          perform: () => {
+            explorer.path = findPath(explorer, target);
+          },
+        });
+      } else {
+        this.ai.units.unassign(explorer);
+        explorer.destroy();
+      }
+    }
+
     return this.operations;
   }
 
@@ -182,13 +177,9 @@ export class ExploringAI extends AISystem {
    */
   private planNavalExploration(inaccessibleAreas: PassableArea[]) {
     // Get available land explorers (not already on a transport)
-    const availableExplorers = this.ai.player.units.filter(
-      (unit) =>
-        unit.definition.trait === UnitTrait.explorer &&
-        unit.definition.type === UnitType.land &&
-        !unit.parent &&
-        unit.tile.passableArea?.type === "land",
-    );
+    const availableExplorers = Array.from(
+      this.ai.units.freeByTrait.explorer,
+    ).filter((unit) => unit.isLand);
 
     if (availableExplorers.length === 0) {
       // Request more explorers to be built with high priority
@@ -204,14 +195,20 @@ export class ExploringAI extends AISystem {
     for (const area of inaccessibleAreas) {
       // Find a coastal tile in this area (a land tile adjacent to water)
       const coastalTiles = this.findCoastalTilesForArea(area);
-      if (coastalTiles.length === 0) continue;
+      if (coastalTiles.length === 0) {
+        continue;
+      }
 
       // If no available explorers, break
-      if (availableExplorers.length === 0) break;
+      if (availableExplorers.length === 0) {
+        break;
+      }
 
       // Find the best coastal tile as a target
       const bestCoastalTile = this.findBestCoastalTile(coastalTiles);
-      if (!bestCoastalTile) continue;
+      if (!bestCoastalTile) {
+        continue;
+      }
 
       // Take the closest available explorer
       const explorer = availableExplorers[0];

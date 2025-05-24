@@ -1,4 +1,4 @@
-import { UnitAction, UnitOrder, UnitTrait } from "@/shared";
+import { UnitAction, UnitOrder } from "@/shared";
 import { TileCore } from "./tile";
 import { PlayerCore } from "./player";
 import { ACTIONS } from "./unit-actions";
@@ -25,6 +25,13 @@ export class UnitCore {
   suppliesProducer: SuppliesProducer | null = null;
   suppliesBlocker: SuppliesBlocker | null = null;
 
+  isLand: boolean;
+  isNaval: boolean;
+  isMilitary: boolean;
+  isTransport: boolean;
+  isExplorer: boolean;
+  isSettler: boolean;
+
   hasWage = true;
 
   constructor(
@@ -34,6 +41,12 @@ export class UnitCore {
     private unitManager: UnitsManager,
   ) {
     this.actionPointsLeft = definition.actionPoints;
+    this.isLand = definition.traits.includes("land");
+    this.isNaval = definition.traits.includes("naval");
+    this.isMilitary = definition.traits.includes("military");
+    this.isTransport = definition.traits.includes("transport");
+    this.isExplorer = definition.traits.includes("explorer");
+    this.isSettler = definition.traits.includes("settler");
   }
 
   doAction(action: UnitAction) {
@@ -186,7 +199,7 @@ export class UnitCore {
   }
 
   get isSupplied() {
-    if (this.definition.trait !== UnitTrait.military) {
+    if (!this.isMilitary) {
       return true;
     }
     return this.tile.isSuppliedByPlayer(this.player);

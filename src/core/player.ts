@@ -1,32 +1,22 @@
-import { PlayerViewBoundingBox, PlayerYields, UnitTrait } from "@/shared";
-import { TileCore } from "./tile";
-import { UnitCore } from "./unit";
-import { Game } from "./game";
-import { CityCore } from "./city";
 import { AIPlayer } from "@/ai/ai-player";
-import {
-  EMPTY_YIELDS,
-  zeroYields,
-  addYields,
-  subtractYields,
-  copyYields,
-} from "./yields";
+import { PlayerViewBoundingBox, PlayerYields } from "@/shared";
+import { CityCore } from "./city";
 import { collector } from "./collector";
-import { PassableArea } from "./tiles-map";
-import { Knowledge } from "./knowledge";
-import { ResourceDeposit } from "./resources";
 import { Nation } from "./data/types";
+import { Game } from "./game";
+import { Knowledge } from "./knowledge";
 import { moveAlongPath } from "./movement";
-
-function emptyUnitsByTraits(): Record<UnitTrait, UnitCore[]> {
-  return {
-    [UnitTrait.settler]: [],
-    [UnitTrait.worker]: [],
-    [UnitTrait.military]: [],
-    [UnitTrait.explorer]: [],
-    [UnitTrait.supply]: [],
-  };
-}
+import { ResourceDeposit } from "./resources";
+import { TileCore } from "./tile";
+import { PassableArea } from "./tiles-map";
+import { UnitCore } from "./unit";
+import {
+  addYields,
+  copyYields,
+  EMPTY_YIELDS,
+  subtractYields,
+  zeroYields,
+} from "./yields";
 
 export class PlayerCore {
   id!: number;
@@ -38,8 +28,6 @@ export class PlayerCore {
   knownPassableAreas = new Set<PassableArea>();
 
   units: UnitCore[] = [];
-
-  unitsByTraits: Record<UnitTrait, UnitCore[]> = emptyUnitsByTraits();
 
   cities: CityCore[] = [];
 
@@ -173,7 +161,6 @@ export class PlayerCore {
     this.updateVisibleTiles();
     this.knowledge.nextTurn();
 
-    this.groupUnitsByTraits();
     this.calculateEmpireCenter();
 
     this.updateUnitsWages();
@@ -186,13 +173,6 @@ export class PlayerCore {
         unit.hasWage = deficit <= 0;
         deficit -= unit.wage;
       }
-    }
-  }
-
-  groupUnitsByTraits() {
-    this.unitsByTraits = emptyUnitsByTraits();
-    for (const unit of this.units) {
-      this.unitsByTraits[unit.definition.trait].push(unit);
     }
   }
 

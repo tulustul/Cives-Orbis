@@ -1,4 +1,4 @@
-import { LandForm, UnitTrait, UnitType } from "@/shared";
+import { LandForm, UnitTrait } from "@/shared";
 import { CityCore } from "@/core/city";
 import { UnitDefinition } from "@/core/data/types";
 import { findPath } from "@/core/pathfinding";
@@ -79,7 +79,7 @@ type Army = {
   readiness: number; // 0-100, indicates how ready the army is to attack
 };
 
-export class MilitaryAI extends AISystem {
+export class MilitaryStrategyAI extends AISystem {
   private MAX_UNITS_PER_CITY = 10;
   private MIN_ARMY_SIZE = 3;
   private ARMY_READINESS_THRESHOLD = 70;
@@ -385,7 +385,7 @@ export class MilitaryAI extends AISystem {
       const unit = this.unassignedMilitaryUnits[i];
 
       // Only assign land units to land armies
-      if (unit.definition.type !== UnitType.land) {
+      if (!unit.isLand) {
         continue;
       }
 
@@ -641,7 +641,7 @@ export class MilitaryAI extends AISystem {
         return false;
       }
 
-      if (task.unit.definition.type === UnitType.land) {
+      if (task.unit.isLand) {
         if (
           defense.forcesAssigned.land >=
           defense.forcesRequired.land - task.unit.definition.strength
@@ -649,7 +649,7 @@ export class MilitaryAI extends AISystem {
           task.unit.order = null;
           return false;
         }
-      } else if (task.unit.definition.type === UnitType.naval) {
+      } else if (task.unit.isNaval) {
         if (
           defense.forcesAssigned.naval >=
           defense.forcesRequired.naval - task.unit.definition.strength
@@ -678,15 +678,10 @@ export class MilitaryAI extends AISystem {
     }
 
     this.militaryUnits = this.player.units.filter(
-      (unit) =>
-        unit.definition.trait === UnitTrait.military && unit.parent === null,
+      (unit) => unit.isMilitary && unit.parent === null,
     );
-    this.landUnits = this.militaryUnits.filter(
-      (unit) => unit.definition.type === UnitType.land,
-    );
-    this.navalUnits = this.militaryUnits.filter(
-      (unit) => unit.definition.type === UnitType.naval,
-    );
+    this.landUnits = this.militaryUnits.filter((unit) => unit.isLand);
+    this.navalUnits = this.militaryUnits.filter((unit) => unit.isNaval);
 
     this.unassignedMilitaryUnits = this.militaryUnits.filter(
       (u) => !assignedUnits.has(u),
@@ -700,7 +695,7 @@ export class MilitaryAI extends AISystem {
 
     // Schedule production of new military units if needed
     for (const city of this.player.citiesWithoutProduction) {
-      const unitDef = this.chooseUnitDef(city, UnitType.land);
+      const unitDef = this.chooseUnitDef(city, "land");
       if (unitDef) {
         this.ai.productionAi.request({
           focus: "military",
@@ -718,7 +713,7 @@ export class MilitaryAI extends AISystem {
       if (city.tile.units.length >= this.MAX_UNITS_PER_CITY) {
         continue;
       }
-      const unitDef = this.chooseUnitDef(city, UnitType.naval);
+      const unitDef = this.chooseUnitDef(city, "naval");
       if (unitDef) {
         this.ai.productionAi.request({
           focus: "military",
@@ -731,16 +726,16 @@ export class MilitaryAI extends AISystem {
 
   private chooseUnitDef(
     city: CityCore,
-    unitType: UnitType,
+    unitTrait: UnitTrait,
   ): UnitDefinition | null {
-    if (unitType === UnitType.land) {
+    if (unitTrait === "land") {
       const warrior = dataManager.units.get("unit_warrior");
       if (city.production.canProduce(warrior)) {
         return warrior;
       }
     }
 
-    if (unitType === UnitType.naval) {
+    if (unitTrait === "naval") {
       if (!city.tile.coast) {
         return null;
       }
@@ -988,11 +983,11 @@ export class MilitaryAI extends AISystem {
     let bestScore = -Infinity;
 
     for (const defense of this.unfulfilledDefenses) {
-      if (unit.definition.type === UnitType.land) {
+      if (unit.isLand) {
         if (defense.forcesRequired.land <= defense.forcesAssigned.land) {
           continue;
         }
-      } else if (unit.definition.type === UnitType.naval) {
+      } else if (unit.isNaval) {
         if (defense.forcesRequired.naval <= defense.forcesAssigned.naval) {
           continue;
         }
@@ -1001,10 +996,9 @@ export class MilitaryAI extends AISystem {
       const distance = unit.tile.getDistanceTo(defense.tile);
 
       // Score based on threat level, distance, and how much more force is needed
-      const forceNeeded =
-        unit.definition.type === UnitType.land
-          ? defense.forcesRequired.land - defense.forcesAssigned.land
-          : defense.forcesRequired.naval - defense.forcesAssigned.naval;
+      const forceNeeded = unit.isLand
+        ? defense.forcesRequired.land - defense.forcesAssigned.land
+        : defense.forcesRequired.naval - defense.forcesAssigned.naval;
 
       const score =
         (defense.threatLevel * 2 + forceNeeded * 5) / (distance + 1);
@@ -1043,11 +1037,11 @@ export class MilitaryAI extends AISystem {
     let bestScore = -Infinity;
 
     for (const target of this.potentialTargets) {
-      if (unit.definition.type === UnitType.land) {
+      if (unit.isLand) {
         if (target.forcesRequired.land <= 0) {
           continue;
         }
-      } else if (unit.definition.type === UnitType.naval) {
+      } else if (unit.isNaval) {
         if (target.forcesRequired.naval <= 0) {
           continue;
         }
@@ -1140,15 +1134,11 @@ export class MilitaryAI extends AISystem {
     for (const defense of this.potentialDefenses) {
       const assignedUnits = assignedUnitsByTile.get(defense.tile) || [];
       defense.forcesAssigned.land = assignedUnits.reduce(
-        (acc, u) =>
-          acc +
-          (u.definition.type === UnitType.land ? u.definition.strength : 0),
+        (acc, u) => acc + (u.isLand ? u.definition.strength : 0),
         0,
       );
       defense.forcesAssigned.naval = assignedUnits.reduce(
-        (acc, u) =>
-          acc +
-          (u.definition.type === UnitType.naval ? u.definition.strength : 0),
+        (acc, u) => acc + (u.isNaval ? u.definition.strength : 0),
         0,
       );
     }

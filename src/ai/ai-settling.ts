@@ -4,7 +4,7 @@ import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { dataManager } from "@/core/data/dataManager";
 import { findPath } from "@/core/pathfinding";
-import { LandForm, SeaLevel, UnitTrait } from "@/shared";
+import { LandForm, SeaLevel } from "@/shared";
 
 interface SettlingTarget {
   tile: TileCore;
@@ -140,10 +140,10 @@ export class SettlingAI extends AISystem {
       return;
     }
 
-    const settlers = this.player.unitsByTraits[UnitTrait.settler];
+    const settlers = this.ai.units.freeByTrait.settler;
 
-    if (settlers.length > 0) {
-      const settler = settlers[0];
+    if (settlers.size > 0) {
+      const settler = Array.from(settlers)[0];
 
       this.operations.push({
         group: "unit",
@@ -160,7 +160,7 @@ export class SettlingAI extends AISystem {
   }
 
   private planSettlersMovement(): void {
-    const settlers = this.player.unitsByTraits[UnitTrait.settler];
+    const settlers = this.ai.units.freeByTrait.settler;
 
     for (const settler of settlers) {
       let hasTarget = false;

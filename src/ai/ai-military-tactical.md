@@ -1,4 +1,4 @@
-# Tactical AI Requirements
+# Military Tactical AI Requirements
 
 ## Functional Requirements
 

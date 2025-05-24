@@ -41,11 +41,11 @@
         "supplyRange": {
           "type": "number"
         },
-        "trait": {
-          "$ref": "#/definitions/UnitTraitName"
-        },
-        "type": {
-          "$ref": "#/definitions/UnitTypeName"
+        "traits": {
+          "items": {
+            "$ref": "#/definitions/UnitTrait"
+          },
+          "type": "array"
         },
         "weakRequirements": {
           "items": {
@@ -64,8 +64,7 @@
         "strength",
         "strongRequirements",
         "supplyRange",
-        "trait",
-        "type",
+        "traits",
         "weakRequirements"
       ],
       "type": "object"
@@ -135,6 +134,19 @@
             "type"
           ],
           "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "city.needGoldInTreasury",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
         }
       ]
     },
@@ -156,20 +168,17 @@
       ],
       "type": "string"
     },
-    "UnitTraitName": {
+    "UnitTrait": {
       "enum": [
         "explorer",
-        "military",
-        "settler",
-        "supply",
-        "worker"
-      ],
-      "type": "string"
-    },
-    "UnitTypeName": {
-      "enum": [
         "land",
-        "naval"
+        "military",
+        "naval",
+        "settler",
+        "siege",
+        "supply",
+        "transport",
+        "worker"
       ],
       "type": "string"
     }

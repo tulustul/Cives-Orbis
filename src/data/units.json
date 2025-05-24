@@ -4,8 +4,7 @@
     {
       "id": "unit_settler",
       "name": "Settler",
-      "type": "land",
-      "trait": "settler",
+      "traits": ["land", "settler"],
       "actionPoints": 2,
       "strength": 0,
       "actions": ["foundCity"],
@@ -21,8 +20,7 @@
     {
       "id": "unit_worker",
       "name": "Worker",
-      "type": "land",
-      "trait": "worker",
+      "traits": ["land", "worker"],
       "actionPoints": 2,
       "strength": 0,
       "actions": [
@@ -47,8 +45,7 @@
     {
       "id": "unit_scout",
       "name": "Scout",
-      "type": "land",
-      "trait": "explorer",
+      "traits": ["land", "explorer"],
       "actionPoints": 3,
       "strength": 2,
       "actions": [],
@@ -61,8 +58,7 @@
     {
       "id": "unit_warrior",
       "name": "Warrior",
-      "type": "land",
-      "trait": "military",
+      "traits": ["land", "military"],
       "actionPoints": 2,
       "strength": 5,
       "actions": [],
@@ -75,8 +71,7 @@
     {
       "id": "unit_uber_warrior",
       "name": "Uber Warrior",
-      "type": "land",
-      "trait": "military",
+      "traits": ["land", "military"],
       "actionPoints": 5,
       "strength": 50,
       "actions": [],
@@ -89,8 +84,7 @@
     {
       "id": "unit_tireme",
       "name": "Tireme",
-      "type": "naval",
-      "trait": "military",
+      "traits": ["naval", "military", "explorer"],
       "actionPoints": 3,
       "strength": 5,
       "actions": [],
@@ -103,8 +97,7 @@
     {
       "id": "unit_galley",
       "name": "Galley",
-      "type": "naval",
-      "trait": "military",
+      "traits": ["naval", "military", "transport"],
       "actionPoints": 3,
       "strength": 3,
       "actions": [],

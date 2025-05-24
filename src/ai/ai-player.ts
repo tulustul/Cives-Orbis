@@ -1,7 +1,7 @@
 import { PlayerCore } from "@/core/player";
 import { CityAI } from "./ai-city";
 import { ExploringAI } from "./ai-exploring";
-import { MilitaryAI } from "./ai-military";
+import { MilitaryStrategyAI } from "./ai-military-strategy";
 import { SettlingAI } from "./ai-settling";
 import { AISystem } from "./ai-system";
 import { AiOperation } from "./types";
@@ -10,8 +10,9 @@ import { WorkerAI } from "./ai-worker";
 import { TechAI } from "./ai-tech";
 import { PersonalityAI } from "./ai-personality";
 import { StrategicAI } from "./ai-strategic";
-import { TacticalAI } from "./ai-tactical";
-import { TransportAI } from "./ai-transport";
+import { MilitaryTacticalAI } from "./ai-military-tactical";
+import { NavalTransportAI } from "./ai-naval-transport";
+import { AiUnitsRegistry } from "./ai-units-registry";
 
 export type AiPriorities = {
   expansion: number;
@@ -31,12 +32,14 @@ export enum AIDifficulty {
 }
 
 export class AIPlayer {
+  units: AiUnitsRegistry;
+
   // AI subsystems
   productionAi = new ProductionAI(this);
   personalityAI: PersonalityAI;
   strategicAI: StrategicAI;
-  tacticalAI: TacticalAI;
-  transportAI: TransportAI;
+  tacticalAI: MilitaryTacticalAI;
+  transportAI: NavalTransportAI;
 
   // Collection of all AI systems
   systems: AISystem[] = [];
@@ -72,6 +75,8 @@ export class AIPlayer {
     this.difficulty = difficulty;
     this.applyDifficultySettings();
 
+    this.units = new AiUnitsRegistry(this.player);
+
     // Initialize personality first since it affects other systems
     this.personalityAI = new PersonalityAI(this, personalityName);
 
@@ -79,10 +84,10 @@ export class AIPlayer {
     this.strategicAI = new StrategicAI(this);
 
     // Initialize tactical AI for combat coordination
-    this.tacticalAI = new TacticalAI(this);
+    this.tacticalAI = new MilitaryTacticalAI(this);
 
     // Initialize transport AI for naval transport coordination
-    this.transportAI = new TransportAI(this);
+    this.transportAI = new NavalTransportAI(this);
 
     // Register all AI subsystems
     this.systems = [
@@ -91,7 +96,7 @@ export class AIPlayer {
       new CityAI(this),
       new SettlingAI(this),
       new ExploringAI(this),
-      new MilitaryAI(this),
+      new MilitaryStrategyAI(this),
       new WorkerAI(this),
       this.tacticalAI, // Tactical AI should run after Military AI
       this.transportAI, // Transport AI for coordinating naval transport
@@ -116,6 +121,8 @@ export class AIPlayer {
 
     // Move all units automatically first
     this.player.moveAllUnits();
+
+    this.units.update();
 
     // Prepare all operations from AI systems
     const operations = this.prepareOperations();

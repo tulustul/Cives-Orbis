@@ -1,6 +1,5 @@
 // Zone of control
 
-import { UnitTrait } from "@/shared";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 
@@ -20,7 +19,7 @@ export function zocForgetUnit(unit: UnitCore) {
 }
 
 export function zocAddUnit(unit: UnitCore) {
-  if (unit.definition.trait !== UnitTrait.military || unit.parent) {
+  if (!unit.isMilitary || unit.parent) {
     return;
   }
 
