@@ -214,6 +214,6 @@ export class UnitCore {
   }
 
   get wage() {
-    return 0.5;
+    return 1;
   }
 }

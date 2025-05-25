@@ -1,11 +1,11 @@
 import { ProductDefinition } from "@/core/data/types";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 import { AISystem } from "./ai-system";
 import { PassableArea } from "@/core/tiles-map";
 
 type CityProductionRequest = {
-  focus: AiOperation["focus"];
-  priority: AiOperation["priority"];
+  focus: AiOrder["focus"];
+  priority: AiOrder["priority"];
   product: ProductDefinition;
   passableArea?: PassableArea;
 };
@@ -13,23 +13,20 @@ type CityProductionRequest = {
 export class ProductionAI extends AISystem {
   requests: CityProductionRequest[] = [];
 
-  plan() {
-    this.operations = [];
+  *plan(): Generator<AiOrder> {
     const requests = this.requests;
     this.requests = [];
 
     for (const request of requests) {
-      this.planProduction(request);
+      yield* this.planProduction(request);
     }
-
-    return this.operations;
   }
 
   request(request: CityProductionRequest) {
     this.requests.push(request);
   }
 
-  private planProduction(request: CityProductionRequest) {
+  private *planProduction(request: CityProductionRequest): Generator<AiOrder> {
     const cityCandidates = this.player.citiesWithoutProduction.filter(
       (city) =>
         city.production.canProduce(request.product) &&
@@ -44,7 +41,7 @@ export class ProductionAI extends AISystem {
     const city =
       cityCandidates[Math.floor(Math.random() * cityCandidates.length)];
 
-    this.operations.push({
+    yield {
       group: "city-produce",
       entityId: city.id,
       focus: request.focus,
@@ -52,6 +49,6 @@ export class ProductionAI extends AISystem {
       perform: () => {
         city.production.produce(request.product);
       },
-    });
+    };
   }
 }

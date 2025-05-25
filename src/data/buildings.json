@@ -19,7 +19,15 @@
         {
           "type": "city.addYields",
           "yield": "gold",
-          "value": 2
+          "value": 5
+        },
+        {
+          "type": "city.maxHealth",
+          "maxHealth": 100
+        },
+        {
+          "type": "city.strength",
+          "strength": 5
         }
       ],
       "strongRequirements": [{ "type": "city.never" }],

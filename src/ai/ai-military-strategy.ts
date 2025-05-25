@@ -9,6 +9,7 @@ import { SeaLevel } from "@/shared";
 import { AISystem } from "./ai-system";
 import { dataManager } from "@/core/data/dataManager";
 import { simulateCombat } from "@/core/combat";
+import { AiOrder } from "./types";
 
 type AttackTarget = {
   score: number;
@@ -109,8 +110,10 @@ export class MilitaryStrategyAI extends AISystem {
   private armies: Army[] = [];
   private nextArmyId = 1;
 
-  plan() {
-    this.operations = [];
+  private orders: AiOrder[] = [];
+
+  *plan(): Generator<AiOrder> {
+    this.orders = [];
 
     this.enemyPlayers = this.player.game.players.filter((p) =>
       this.player.isEnemyWith(p),
@@ -141,7 +144,7 @@ export class MilitaryStrategyAI extends AISystem {
     // Process all tasks
     this.processTasks();
 
-    return this.operations;
+    yield* this.orders;
   }
 
   /* ARMY MANAGEMENT */
@@ -442,7 +445,7 @@ export class MilitaryStrategyAI extends AISystem {
       }
 
       // Move unit to gathering point
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: unit.id,
         focus: "military",
@@ -463,7 +466,7 @@ export class MilitaryStrategyAI extends AISystem {
       const position = armyUnit.position || army.target;
 
       // Move unit to its tactical position
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: unit.id,
         focus: "military",
@@ -502,7 +505,7 @@ export class MilitaryStrategyAI extends AISystem {
         // Attack highest priority enemy
         const target = attackableEnemies[0];
 
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: unit.id,
           focus: "military",
@@ -513,7 +516,7 @@ export class MilitaryStrategyAI extends AISystem {
         });
       } else if (position) {
         // Move to tactical position
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: unit.id,
           focus: "military",
@@ -601,7 +604,7 @@ export class MilitaryStrategyAI extends AISystem {
       const retreatCity = this.findClosestFriendlyCity(unit.tile);
 
       if (retreatCity) {
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: unit.id,
           focus: "military",
@@ -729,10 +732,22 @@ export class MilitaryStrategyAI extends AISystem {
     unitTrait: UnitTrait,
   ): UnitDefinition | null {
     if (unitTrait === "land") {
-      const warrior = dataManager.units.get("unit_warrior");
-      if (city.production.canProduce(warrior)) {
-        return warrior;
+      const unitDefs = this.ai.player.knowledge.discoveredEntities.unit;
+      let bestUnitDef: UnitDefinition | null = null;
+      let bestScore = -Infinity;
+      for (const unitDef of unitDefs) {
+        if (!unitDef.traits.includes("land")) {
+          continue;
+        }
+        if (!city.production.canProduce(unitDef)) {
+          continue;
+        }
+        if (unitDef.strength > bestScore) {
+          bestScore = unitDef.strength;
+          bestUnitDef = unitDef;
+        }
       }
+      return bestUnitDef;
     }
 
     if (unitTrait === "naval") {
@@ -1084,7 +1099,7 @@ export class MilitaryStrategyAI extends AISystem {
       ...this.assignedAttackTasks,
       ...this.assignedDefenseTasks,
     ]) {
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: task.unit.id,
         focus: "military",

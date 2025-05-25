@@ -1,8 +1,8 @@
 import { AISystem } from "./ai-system";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 
 export class TechAI extends AISystem {
-  plan(): AiOperation[] {
+  *plan(): Generator<AiOrder> {
     const knowledge = this.player.knowledge;
     if (!knowledge.researchingTech) {
       const techs = Array.from(knowledge.availableTechs);

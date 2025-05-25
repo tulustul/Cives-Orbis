@@ -5,6 +5,7 @@ import { UnitCore } from "@/core/unit";
 import { AISystem } from "./ai-system";
 import { PassableArea } from "@/core/tiles-map";
 import { dataManager } from "@/core/data/dataManager";
+import { AiOrder } from "./types";
 
 const TILES_PER_EXPLORER = 500;
 const MAX_EXPLORERS_PER_AREA = 3;
@@ -14,9 +15,8 @@ const MIN_NAVAL_EXPLORER_PRIORITY = 90;
 export class ExploringAI extends AISystem {
   assignedTiles = new Set<TileCore>();
 
-  plan() {
+  *plan(): Generator<AiOrder> {
     this.assignedTiles.clear();
-    this.operations = [];
 
     const edgeOfUnknown = this.getEdgeOfUnknown();
 
@@ -87,7 +87,7 @@ export class ExploringAI extends AISystem {
       const target = this.findTargetTile(edgeOfUnknown, explorer);
       if (target) {
         this.assignedTiles.add(target);
-        this.operations.push({
+        yield {
           group: "unit",
           entityId: explorer.id,
           focus: "expansion",
@@ -95,14 +95,12 @@ export class ExploringAI extends AISystem {
           perform: () => {
             explorer.path = findPath(explorer, target);
           },
-        });
+        };
       } else {
         this.ai.units.unassign(explorer);
         explorer.destroy();
       }
     }
-
-    return this.operations;
   }
 
   private findTargetTile(

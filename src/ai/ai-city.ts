@@ -2,6 +2,7 @@ import { CityCore } from "@/core/city";
 import { ProductDefinition } from "@/core/data/types";
 import { AISystem } from "./ai-system";
 import { BuildingDefinition } from "./utils";
+import { AiOrder } from "./types";
 
 /**
  * Enum for different city specializations
@@ -84,18 +85,14 @@ export class CityAI extends AISystem {
     [BuildingCategory.UTILITY]: ["monument", "temple", "palace", "wonder"],
   };
 
-  plan() {
-    this.operations = [];
-
+  *plan(): Generator<AiOrder> {
     // Update city specializations
     this.updateCitySpecializations();
 
     // Process each city without production
     for (const city of this.player.citiesWithoutProduction) {
-      this.processCityProduct(city);
+      yield* this.processCityProduct(city);
     }
-
-    return this.operations;
   }
 
   /**
@@ -362,9 +359,11 @@ export class CityAI extends AISystem {
   /**
    * Process production for a city
    */
-  private processCityProduct(city: CityCore) {
+  private *processCityProduct(city: CityCore): Generator<AiOrder> {
     const cityInfo = this.cityInfo.get(city.id);
-    if (!cityInfo) return;
+    if (!cityInfo) {
+      return;
+    }
 
     // Get available buildings
     const buildings = city.production.availableBuildings.filter(
@@ -401,13 +400,13 @@ export class CityAI extends AISystem {
       // Choose the highest scoring building
       const product = buildingScores[0].building;
 
-      this.operations.push({
+      yield {
         group: "city-produce",
         entityId: city.id,
         focus: "economy",
         priority: 100,
         perform: () => city.production.produce(product),
-      });
+      };
     }
     // Otherwise, choose an idle product
     else if (city.production.availableIdleProducts.length > 0) {
@@ -431,13 +430,13 @@ export class CityAI extends AISystem {
           idleProducts[Math.floor(Math.random() * idleProducts.length)];
       }
 
-      this.operations.push({
+      yield {
         group: "city-produce",
         entityId: city.id,
         focus: "economy",
         priority: 10,
         perform: () => city.production.produce(chosenProduct),
-      });
+      };
     }
   }
 

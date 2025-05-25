@@ -6,7 +6,7 @@ import { PassableArea } from "@/core/tiles-map";
 import { UnitCore } from "@/core/unit";
 import { sumYields } from "@/core/yields";
 import { AISystem } from "./ai-system";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 import { dataManager } from "@/core/data/dataManager";
 import { UnitAction } from "@/shared";
 import { isImprovementPossible } from "@/core/tile-utils";
@@ -33,8 +33,10 @@ export class WorkerAI extends AISystem {
 
   private workersByArea = new Map<PassableArea, UnitCore[]>();
 
-  plan(): AiOperation[] {
-    this.operations = [];
+  private orders: AiOrder[] = [];
+
+  *plan(): Generator<AiOrder> {
+    this.orders = [];
     this.possibleTasks = [];
 
     this.validateAssignedTasks();
@@ -49,7 +51,7 @@ export class WorkerAI extends AISystem {
 
     this.processWorkers();
 
-    return this.operations;
+    yield* this.orders;
   }
 
   private validateAssignedTasks() {
@@ -143,7 +145,7 @@ export class WorkerAI extends AISystem {
       this.possibleTasks.splice(this.possibleTasks.indexOf(unassignedTask), 1);
     }
 
-    this.operations.push({
+    this.orders.push({
       group: "unit",
       entityId: worker.id,
       focus: "economy",

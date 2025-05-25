@@ -3,7 +3,7 @@ import { PlayerCore } from "@/core/player";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { AISystem } from "./ai-system";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 import { estimateCombatResult, getTileDefenseBonus, isCoastal } from "./utils";
 
 /**
@@ -37,12 +37,13 @@ interface CombatZone {
 export class MilitaryTacticalAI extends AISystem {
   private combatZones: CombatZone[] = [];
   private unitAssignments = new Map<number, CombatZone>();
+  private orders: AiOrder[] = [];
 
   /**
    * Main planning method for tactical AI
    */
-  plan(): AiOperation[] {
-    this.operations = [];
+  *plan(): Generator<AiOrder> {
+    this.orders = [];
 
     // Only process if we have military units
     const militaryUnits = this.player.units.filter(
@@ -50,7 +51,7 @@ export class MilitaryTacticalAI extends AISystem {
     );
 
     if (militaryUnits.length === 0) {
-      return this.operations;
+      return this.orders;
     }
 
     // Identify combat zones
@@ -62,7 +63,7 @@ export class MilitaryTacticalAI extends AISystem {
     // Plan combat operations
     this.planCombatOperations();
 
-    return this.operations;
+    yield* this.orders;
   }
 
   /**
@@ -259,7 +260,7 @@ export class MilitaryTacticalAI extends AISystem {
 
       if (target) {
         // Plan attack operation
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: unit.id,
           focus: "military",
@@ -270,7 +271,7 @@ export class MilitaryTacticalAI extends AISystem {
         });
       } else {
         // Move toward zone center for defensive positioning
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: unit.id,
           focus: "military",

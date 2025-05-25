@@ -1,6 +1,6 @@
 import { AIPlayer } from "./ai-player";
 import { AISystem } from "./ai-system";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 import { PlayerCore } from "@/core/player";
 import { VictoryType } from "./utils";
 
@@ -39,9 +39,7 @@ export class StrategicAI extends AISystem {
   /**
    * Main planning method for the Strategic AI
    */
-  plan(): AiOperation[] {
-    this.operations = [];
-
+  *plan(): Generator<AiOrder> {
     // Analyze the current game state
     this.assessThreats();
     this.updateVictoryProgress();
@@ -49,8 +47,6 @@ export class StrategicAI extends AISystem {
 
     // Update AI priorities based on current focus
     this.updateAIPriorities();
-
-    return this.operations;
   }
 
   /**

@@ -208,6 +208,7 @@ export class PersonalityAI {
       economy: 1,
       military: 1,
       randomize: 0.2,
+      none: 1,
     };
 
     // Calculate priority modifiers from personality traits

@@ -3,7 +3,7 @@ import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { AISystem } from "./ai-system";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 
 /**
  * Transport request status
@@ -51,8 +51,10 @@ export class NavalTransportAI extends AISystem {
   // Cache of known transport vessels
   private transportVessels: UnitCore[] = [];
 
-  plan(): AiOperation[] {
-    this.operations = [];
+  private orders: AiOrder[] = [];
+
+  *plan(): Generator<AiOrder> {
+    this.orders = [];
 
     // Update transport vessel cache
     this.updateTransportVessels();
@@ -85,7 +87,7 @@ export class NavalTransportAI extends AISystem {
       }
     }
 
-    return this.operations;
+    yield* this.orders;
   }
 
   /**
@@ -228,7 +230,7 @@ export class NavalTransportAI extends AISystem {
 
       // Move transport to embarkation point if needed
       if (transport.tile !== embarkationPoint) {
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: transport.id,
           focus: request.focus,
@@ -245,7 +247,7 @@ export class NavalTransportAI extends AISystem {
     }
 
     // Start moving the unit to the embarkation point
-    this.operations.push({
+    this.orders.push({
       group: "unit",
       entityId: unit.id,
       focus: request.focus,
@@ -279,7 +281,7 @@ export class NavalTransportAI extends AISystem {
 
       // Move transport to embarkation point if needed
       if (transport.tile !== request.embarkationPoint) {
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: transport.id,
           focus: request.focus,
@@ -298,7 +300,7 @@ export class NavalTransportAI extends AISystem {
 
     // Continue moving the unit to the embarkation point
     if (unit.tile !== request.embarkationPoint) {
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: unit.id,
         focus: request.focus,
@@ -341,7 +343,7 @@ export class NavalTransportAI extends AISystem {
 
     if (unitAtEmbarkation && transportAtEmbarkation) {
       // Both are at the embarkation point, embark the unit on the transport
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: unit.id,
         focus: request.focus,
@@ -360,7 +362,7 @@ export class NavalTransportAI extends AISystem {
     } else {
       // Continue moving both to the embarkation point
       if (!unitAtEmbarkation) {
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: unit.id,
           focus: request.focus,
@@ -374,7 +376,7 @@ export class NavalTransportAI extends AISystem {
       }
 
       if (!transportAtEmbarkation) {
-        this.operations.push({
+        this.orders.push({
           group: "unit",
           entityId: transport.id,
           focus: request.focus,
@@ -418,7 +420,7 @@ export class NavalTransportAI extends AISystem {
       request.status = TransportRequestStatus.DISEMBARKING;
     } else {
       // Keep moving to disembarkation point
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: transport.id,
         focus: request.focus,
@@ -449,7 +451,7 @@ export class NavalTransportAI extends AISystem {
     // Check if unit is still on transport
     if (transport.children.includes(unit)) {
       // Order unit to disembark
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: unit.id,
         focus: request.focus,
@@ -460,7 +462,7 @@ export class NavalTransportAI extends AISystem {
       });
     } else {
       // Unit has disembarked, move to final destination
-      this.operations.push({
+      this.orders.push({
         group: "unit",
         entityId: unit.id,
         focus: request.focus,

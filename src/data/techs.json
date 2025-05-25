@@ -303,7 +303,8 @@
       "unlocks": [
         "building_workshop",
         "resource-bronze",
-        "tile-impr-lumbermill"
+        "tile-impr-lumbermill",
+        "unit_spearman"
       ],
       "layout": {
         "x": 1370.0,
@@ -556,7 +557,7 @@
       "requiredTechnologies": ["tech_metallurgy"],
       "cost": 60,
       "era": "Iron Age",
-      "unlocks": ["unit_uber_warrior", "resource-iron", "resource-ironOre"],
+      "unlocks": ["unit_swordsman", "resource-iron", "resource-ironOre"],
       "layout": {
         "x": 2712.0,
         "y": 638.0,

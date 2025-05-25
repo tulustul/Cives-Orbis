@@ -4,7 +4,7 @@ import { ExploringAI } from "./ai-exploring";
 import { MilitaryStrategyAI } from "./ai-military-strategy";
 import { SettlingAI } from "./ai-settling";
 import { AISystem } from "./ai-system";
-import { AiOperation } from "./types";
+import { AiOrder } from "./types";
 import { ProductionAI } from "./ai-production";
 import { WorkerAI } from "./ai-worker";
 import { TechAI } from "./ai-tech";
@@ -13,12 +13,14 @@ import { StrategicAI } from "./ai-strategic";
 import { MilitaryTacticalAI } from "./ai-military-tactical";
 import { NavalTransportAI } from "./ai-naval-transport";
 import { AiUnitsRegistry } from "./ai-units-registry";
+import { AiOperation, AiOperationState } from "./operations/baseOperation";
 
 export type AiPriorities = {
   expansion: number;
   economy: number;
   military: number;
   randomize: number;
+  none: number;
 };
 
 /**
@@ -44,12 +46,13 @@ export class AIPlayer {
   // Collection of all AI systems
   systems: AISystem[] = [];
 
-  // AI priorities that affect operations weighting
+  // AI priorities that affect orders weighting
   priorities: AiPriorities = {
     expansion: 1,
     economy: 1,
     military: 1,
     randomize: 0.2,
+    none: 1,
   };
 
   // AI difficulty level
@@ -65,6 +68,8 @@ export class AIPlayer {
     unitStrengthBonus: 0.0, // Combat bonus
     techDiscount: 0.0, // Technology cost reduction
   };
+
+  operations: AiOperation[] = [];
 
   constructor(
     public player: PlayerCore,
@@ -124,16 +129,33 @@ export class AIPlayer {
 
     this.units.update();
 
-    // Prepare all operations from AI systems
-    const operations = this.prepareOperations();
-
-    // Update priorities based on game state
-    this.updatePriorities();
-
-    // Execute all operations
-    for (const op of operations) {
-      op.perform();
+    let orders: AiOrder[] = [];
+    for (const system of this.systems) {
+      const systemOrdersAndOperations = system.plan();
+      for (const orderOrOperation of systemOrdersAndOperations) {
+        if (orderOrOperation instanceof AiOperation) {
+          this.operations.push(orderOrOperation);
+        } else {
+          orders.push(orderOrOperation);
+        }
+      }
     }
+
+    for (const operation of this.operations) {
+      if (operation.validateBranch()) {
+        for (const order of operation.exectuteBranch()) {
+          orders.push(order);
+        }
+      } else {
+        operation.state = AiOperationState.failed;
+      }
+    }
+
+    this.operations = this.operations.filter(
+      (op) => op.state === AiOperationState.active,
+    );
+
+    this.processOrders(orders);
   }
 
   /**
@@ -188,47 +210,48 @@ export class AIPlayer {
     // The personality system already applies its modifiers in its update method
   }
 
-  /**
-   * Prepare and weigh operations from all AI systems
-   */
-  private prepareOperations(): AiOperation[] {
-    const operationsMap = new Map<string, AiOperation[]>();
+  private processOrders(orders: AiOrder[]) {
+    orders = this.prioritizeOrders(orders);
 
-    // Gather operations from all systems
-    for (const system of this.systems) {
-      const systemOperations = system.plan();
+    // Update priorities based on game state
+    this.updatePriorities();
 
-      for (const op of systemOperations) {
-        const groupId = `${op.group}-${op.entityId}`;
+    for (const order of orders) {
+      order.perform();
+    }
+  }
 
-        // Apply priority modifiers based on AI priorities and randomization
-        op.priority *=
-          this.priorities[op.focus] + Math.random() * this.priorities.randomize;
+  private prioritizeOrders(orders: AiOrder[]): AiOrder[] {
+    const ordersMap = new Map<string, AiOrder[]>();
 
-        // Group operations by entity
-        if (!operationsMap.has(groupId)) {
-          operationsMap.set(groupId, [op]);
-        } else {
-          operationsMap.get(groupId)!.push(op);
-        }
+    for (const order of orders) {
+      const groupId = `${order.group}-${order.entityId}`;
+
+      // Apply priority modifiers based on AI priorities and randomization
+      order.priority *=
+        this.priorities[order.focus ?? "none"] +
+        Math.random() * this.priorities.randomize;
+
+      // Group orders by entity
+      if (!ordersMap.has(groupId)) {
+        ordersMap.set(groupId, [order]);
+      } else {
+        ordersMap.get(groupId)!.push(order);
       }
     }
 
-    // Select highest priority operation for each entity
-    const result: AiOperation[] = [];
+    // Select highest priority order for each entity
+    const result: AiOrder[] = [];
 
-    for (const operations of operationsMap.values()) {
+    for (const order of ordersMap.values()) {
       // Calculate total priority
-      const totalPriority = operations.reduce(
-        (acc, op) => acc + op.priority,
-        0,
-      );
+      const totalPriority = order.reduce((acc, op) => acc + op.priority, 0);
 
-      // Randomly select an operation weighted by priority
+      // Randomly select an order weighted by priority
       const value = Math.random() * totalPriority;
       let accPriority = 0;
 
-      for (const op of operations) {
+      for (const op of order) {
         accPriority += op.priority;
         if (accPriority >= value) {
           result.push(op);
