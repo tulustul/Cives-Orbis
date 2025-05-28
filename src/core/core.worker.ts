@@ -78,6 +78,7 @@ import {
   unitToChannel,
 } from "./serialization/channel";
 import { dumpGame, loadGame } from "./serialization/dump";
+import { AiDebug } from "@/shared/debug";
 
 let game: Game;
 
@@ -98,6 +99,7 @@ const HANDLERS = {
   "player.getEconomyOverview": playerGetEconomyOverview,
   "player.editor.grantRevokeTech": playerGrantRevokeTech,
   "player.editor.revealMap": playerRevealMap,
+  "player.editor.debugAi": playerDebugAi,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -768,4 +770,11 @@ function playerGrantRevokeTech(options: GrantRevokeTechOptions) {
 function playerRevealMap() {
   const tiles = game.map.tilesMap.values();
   game.trackedPlayer.exploreTiles(tiles);
+}
+
+function playerDebugAi(): AiDebug | null {
+  if (!game.trackedPlayer.ai) {
+    return null;
+  }
+  return game.trackedPlayer.ai.serialize();
 }

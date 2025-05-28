@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { loadAssets } from "../renderer/assets";
+import { EditorMode } from "./EditorMode";
 import { GameCanvas } from "./GameCanvas";
 import { MapMode } from "./MapMode";
-import { useUiState } from "./uiState";
 import { GameMenu, useMenu } from "./gameMenu";
 import { CitiesLayer } from "./mapElements/CitiesLayer";
-import { EditorMode } from "./EditorMode";
+import { useUiState } from "./uiState";
 
 import styles from "./App.module.css";
-import { Stats } from "./stats";
 import { LoadingScreen } from "./LoadingScreen";
-import { TechTree } from "./techs";
 import { NotificationModal } from "./NotificationModal";
 import { EconomyOverview } from "./economyOverview";
+import { Stats } from "./stats";
+import { TechTree } from "./techs";
 
 function App() {
   const [loading, setLoading] = useState(true);

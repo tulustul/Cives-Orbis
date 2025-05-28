@@ -1,11 +1,11 @@
 import { AIPlayer } from "./ai-player";
-import { AiOperation } from "./operations/baseOperation";
+import { AiTask } from "./tasks/task";
 import { AiOrder } from "./types";
 
 export abstract class AISystem {
   constructor(protected ai: AIPlayer) {}
 
-  abstract plan(): Generator<AiOrder | AiOperation>;
+  abstract plan(): Generator<AiOrder | AiTask<any>>;
 
   get player() {
     return this.ai.player;

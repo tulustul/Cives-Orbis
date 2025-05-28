@@ -1,15 +1,12 @@
 import { CitiesManager } from "./cities-manager";
 import { CitiesNetworks } from "./cities-network";
 import { collector } from "./collector";
-import { Debug } from "./debug";
 import { PlayerCore } from "./player";
 import { Stats } from "./stats";
 import { TilesMapCore } from "./tiles-map";
 import { UnitsManager } from "./unit-manager";
 
 export class Game {
-  debug = new Debug();
-
   map!: TilesMapCore;
 
   players: PlayerCore[] = [];

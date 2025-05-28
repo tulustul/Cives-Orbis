@@ -68,6 +68,11 @@ export class Commands {
     Commands.showView("techTree");
   }
 
+  @keybinding({ keybinding: "d", context: "map" })
+  static showDebug() {
+    Commands.showView("debug");
+  }
+
   private static showView(view: UiView) {
     const uiState = useUiState.getState();
     const menu = useMenu.getState();

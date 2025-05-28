@@ -22,7 +22,11 @@ export function getMoveResult(
   }
 
   if (unit.isNaval) {
-    if (from.passableArea !== to.passableArea) {
+    if (
+      to.passableArea &&
+      from.passableArea !== to.passableArea &&
+      !unit.isLand
+    ) {
       if (to.isLand && to.city?.tile.coast) {
         if (unit.isMilitary || to.city?.player !== unit.player) {
           return MoveResult.attack;
@@ -37,17 +41,22 @@ export function getMoveResult(
       }
       return MoveResult.none;
     }
-    if (to.isLand && !to.city?.tile.coast) {
+    if (to.isLand && !unit.isLand && !to.city?.tile.coast) {
       return MoveResult.none;
     }
-  } else if (unit.isLand) {
+  }
+
+  if (unit.isLand) {
     if (to.isWater && to.getEmbarkmentTarget(unit)) {
       return MoveResult.embark;
     }
     if (unit.parent && from.isWater && to.isLand) {
       return MoveResult.disembark;
     }
-    if (from.passableArea !== to.passableArea || to.isWater) {
+    if (
+      !to.passableArea ||
+      (from.passableArea !== to.passableArea && !unit.isNaval)
+    ) {
       return MoveResult.none;
     }
   }
@@ -90,7 +99,7 @@ export function getMoveCost(
   return Infinity;
 }
 
-function move(unit: UnitCore, tile: TileCore) {
+export function move(unit: UnitCore, tile: TileCore) {
   if (!unit.actionPointsLeft) {
     return;
   }

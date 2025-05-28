@@ -1,8 +1,8 @@
 import { TileCore } from "@/core/tile";
 import { LandForm, SeaLevel } from "@/shared";
 import { AISystem } from "./ai-system";
-import { AiOperation, AiOperationState } from "./operations/baseOperation";
-import { SettleOperation } from "./operations/settleOperation";
+import { SettleTask } from "./tasks/settleTask";
+import { AiTask } from "./tasks/task";
 
 type SettleCandidate = {
   tile: TileCore;
@@ -12,23 +12,22 @@ type SettleCandidate = {
 const MIN_CITY_DISTANCE = 6;
 const ANY_CITY_DISTANCE_PENALTY_FACTOR = 0.05;
 const EMPIRE_CENTER_DISTANCE_PENALTY_FACTOR = 0.01;
+const CONCURRENT_TASKS = 1;
 
 export class SettlingAI extends AISystem {
-  private operations: SettleOperation[] = [];
+  private tasks: SettleTask[] = [];
 
-  *plan(): Generator<AiOperation> {
-    this.operations = this.operations.filter(
-      (op) => op.state === AiOperationState.active,
-    );
+  *plan(): Generator<AiTask<any>> {
+    this.tasks = this.tasks.filter((op) => op.result === null);
 
-    if (this.operations.length < 3) {
+    if (this.tasks.length < CONCURRENT_TASKS) {
       yield* this.generateSettleOperations();
     }
 
     this.handleStartingSettler();
   }
 
-  private *generateSettleOperations(): Generator<SettleOperation> {
+  private *generateSettleOperations(): Generator<SettleTask> {
     const candidateTiles: SettleCandidate[] = [];
 
     if (this.player.cities.length === 0) {
@@ -57,18 +56,18 @@ export class SettlingAI extends AISystem {
 
     candidateTiles.sort((a, b) => b.score - a.score);
 
-    const availableSlots = 3 - this.operations.length;
+    const availableSlots = 3 - this.tasks.length;
     for (let i = 0; i < Math.min(availableSlots, candidateTiles.length); i++) {
-      const settleOperation = new SettleOperation(this.ai, {
+      const settleOperation = new SettleTask(this.ai, {
         tile: candidateTiles[i].tile,
       });
-      this.operations.push(settleOperation);
+      this.tasks.push(settleOperation);
       yield settleOperation;
     }
   }
 
   private isTooCloseToTargets(tile: TileCore): boolean {
-    for (const target of this.operations) {
+    for (const target of this.tasks) {
       const distance = tile.getDistanceTo(target.options.tile);
 
       if (distance < MIN_CITY_DISTANCE) {

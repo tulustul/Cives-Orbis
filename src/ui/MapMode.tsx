@@ -17,11 +17,15 @@ import { TileUnits } from "./TileUnits";
 import { Toolbar } from "./Toolbar";
 import { TurnsCounter } from "./TurnCounter";
 import { UnitPanel } from "./UnitPanel";
+import { Debug } from "./debug";
+import { useUiState } from "./uiState";
 
 export function MapMode() {
   const city = useObservable(mapUi.selectedCity$);
 
   const startInfo = useObservable(bridge.game.start$);
+
+  const uiState = useUiState();
 
   return (
     <>
@@ -50,6 +54,8 @@ export function MapMode() {
             <PlayerYields />
           </Panel>
           <Research />
+
+          {uiState.view === "debug" && <Debug />}
         </div>
 
         <div className={styles.toolbar}>

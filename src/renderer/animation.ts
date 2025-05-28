@@ -57,10 +57,12 @@ export class AnimationsManager {
   private animations: BaseAnimation[] = [];
 
   constructor() {
-    mapUi.destroyed$.subscribe(() => {
-      for (const animation of this.animations) {
-        this.cancel(animation);
-      }
+    setTimeout(() => {
+      mapUi.destroyed$.subscribe(() => {
+        for (const animation of this.animations) {
+          this.cancel(animation);
+        }
+      });
     });
   }
 

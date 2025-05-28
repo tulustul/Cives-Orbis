@@ -13,7 +13,7 @@ import { StrategicAI } from "./ai-strategic";
 import { MilitaryTacticalAI } from "./ai-military-tactical";
 import { NavalTransportAI } from "./ai-naval-transport";
 import { AiUnitsRegistry } from "./ai-units-registry";
-import { AiOperation, AiOperationState } from "./operations/baseOperation";
+import { AiTask, AiTaskResult } from "./tasks/task";
 
 export type AiPriorities = {
   expansion: number;
@@ -69,7 +69,8 @@ export class AIPlayer {
     techDiscount: 0.0, // Technology cost reduction
   };
 
-  operations: AiOperation[] = [];
+  tasks: AiTask<any>[] = [];
+  orders: AiOrder[] = [];
 
   constructor(
     public player: PlayerCore,
@@ -129,33 +130,25 @@ export class AIPlayer {
 
     this.units.update();
 
-    let orders: AiOrder[] = [];
+    this.orders = [];
     for (const system of this.systems) {
-      const systemOrdersAndOperations = system.plan();
-      for (const orderOrOperation of systemOrdersAndOperations) {
-        if (orderOrOperation instanceof AiOperation) {
-          this.operations.push(orderOrOperation);
+      const systemOrdersAndTasks = system.plan();
+      for (const orderOrTask of systemOrdersAndTasks) {
+        if (orderOrTask instanceof AiTask) {
+          this.tasks.push(orderOrTask);
         } else {
-          orders.push(orderOrOperation);
+          this.orders.push(orderOrTask);
         }
       }
     }
 
-    for (const operation of this.operations) {
-      if (operation.validateBranch()) {
-        for (const order of operation.exectuteBranch()) {
-          orders.push(order);
-        }
-      } else {
-        operation.state = AiOperationState.failed;
-      }
+    for (const task of this.tasks) {
+      task.tickBranch();
     }
 
-    this.operations = this.operations.filter(
-      (op) => op.state === AiOperationState.active,
-    );
+    this.tasks = this.tasks.filter((op) => op.result === null);
 
-    this.processOrders(orders);
+    this.processOrders(this.orders);
   }
 
   /**
@@ -275,5 +268,11 @@ export class AIPlayer {
    */
   getPersonalityTrait(): string {
     return this.personalityAI.getDominantTrait();
+  }
+
+  serialize() {
+    return {
+      tasks: this.tasks.map((task) => task.serializeBranch()),
+    };
   }
 }

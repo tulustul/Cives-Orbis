@@ -103,3 +103,21 @@ export interface BuildingDefinition extends Building {
   cost?: { value: number };
   enables?: any[];
 }
+
+export function findClosestUnit(
+  units: UnitCore[],
+  tile: TileCore,
+): UnitCore | null {
+  let closestSettler: UnitCore | null = null;
+  let shortestDistance = Infinity;
+
+  for (const unit of units) {
+    const distance = tile.getDistanceTo(unit.tile);
+    if (distance < shortestDistance) {
+      shortestDistance = distance;
+      closestSettler = unit;
+    }
+  }
+
+  return closestSettler;
+}

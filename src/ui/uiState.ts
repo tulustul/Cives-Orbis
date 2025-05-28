@@ -1,7 +1,12 @@
 import { create } from "zustand";
 
 export type UiMode = "none" | "loading" | "map" | "editor";
-export type UiView = "none" | "stats" | "techTree" | "economyOverview";
+export type UiView =
+  | "none"
+  | "stats"
+  | "techTree"
+  | "economyOverview"
+  | "debug";
 
 export type UiState = {
   mode: UiMode;
