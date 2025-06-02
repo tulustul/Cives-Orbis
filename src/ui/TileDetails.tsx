@@ -111,6 +111,9 @@ export function TileDetails() {
         )}
         {getYields()}
         {getResourceDescription()}
+        <div className="text-xs font-light">
+          x: {details.tile.x}; y: {details.tile.y}
+        </div>
       </div>
     </OrnateBox>
   );

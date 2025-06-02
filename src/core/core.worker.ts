@@ -18,6 +18,7 @@ import {
   MapGeneratorOptions,
   Option,
   PlayerEconomyChanneled,
+  PlayerEditorGiveGoldOptions,
   PlayerTask,
   PlayerYields,
   Requirement,
@@ -100,6 +101,7 @@ const HANDLERS = {
   "player.editor.grantRevokeTech": playerGrantRevokeTech,
   "player.editor.revealMap": playerRevealMap,
   "player.editor.debugAi": playerDebugAi,
+  "player.editor.giveGold": playerEditorGiveGold,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -777,4 +779,15 @@ function playerDebugAi(): AiDebug | null {
     return null;
   }
   return game.trackedPlayer.ai.serialize();
+}
+
+function playerEditorGiveGold(options: PlayerEditorGiveGoldOptions): void {
+  const player = game.playersMap.get(options.playerId);
+  if (!player) {
+    return;
+  }
+  player.yields.total.gold += options.amount;
+  if (game.trackedPlayer.id === player.id) {
+    collector.trackedPlayerYields = player.yields;
+  }
 }

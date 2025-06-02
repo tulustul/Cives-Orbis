@@ -40,4 +40,9 @@ export class MoveUnitOneTileTask extends AiTask<MoveUnitTaskSerialized> {
       unit: this.options.unit.id,
     };
   }
+
+  getProgressState(): string | null {
+    // Track unit position only - this task should complete in one turn
+    return `${this.options.unit.tile.id}`;
+  }
 }

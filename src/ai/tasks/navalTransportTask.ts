@@ -194,4 +194,11 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
       state: this.state,
     };
   }
+
+  getProgressState(): string | null {
+    // Track state, unit position, transport position, and child tasks
+    const unitPos = this.options.unit.tile.id;
+    const transportPos = this.transport?.tile.id ?? 'none';
+    return `${this.state}-${unitPos}-${transportPos}-${this.tasks.length}`;
+  }
 }

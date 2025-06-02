@@ -16,6 +16,7 @@ import {
   Option,
   PlayerChanneled,
   PlayerEconomyChanneled,
+  PlayerEditorGiveGoldOptions,
   PlayerTask,
   PlayerYields,
   Requirement,
@@ -183,6 +184,8 @@ export const bridge = {
         makeCommand<void>("player.editor.grantRevokeTech", options),
       revealMap: () => makeCommand<void>("player.editor.revealMap"),
       debugAi: () => makeCommand<AiDebug | null>("player.editor.debugAi"),
+      giveGold: (options: PlayerEditorGiveGoldOptions) =>
+        makeCommand<void>("player.editor.giveGold", options),
     },
   },
 };

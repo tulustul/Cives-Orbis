@@ -138,3 +138,8 @@ export type GrantRevokeTechOptions = {
   techId: string;
   grantRevoke: GrantOrRevoke;
 };
+
+export type PlayerEditorGiveGoldOptions = {
+  playerId: number;
+  amount: number;
+};

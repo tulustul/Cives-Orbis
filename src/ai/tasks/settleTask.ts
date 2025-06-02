@@ -139,4 +139,9 @@ export class SettleTask extends AiTask<SettleTaskSerialized> {
       settler: this.settler?.id,
     };
   }
+
+  getProgressState(): string | null {
+    // Track state, settler position, and child task count
+    return `${this.state}-${this.settler?.tile.id ?? 'none'}-${this.tasks.length}`;
+  }
 }

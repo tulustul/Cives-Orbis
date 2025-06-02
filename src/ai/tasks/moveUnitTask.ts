@@ -54,4 +54,10 @@ export class MoveUnitTask extends AiTask<MoveUnitTaskSerialized> {
       unit: this.options.unit.id,
     };
   }
+
+  getProgressState(): string | null {
+    const unit = this.options.unit;
+    // Track unit position, action points, and whether it has a path
+    return `${unit.tile.id}-${unit.actionPointsLeft}-${unit.path ? 'path' : 'nopath'}`;
+  }
 }

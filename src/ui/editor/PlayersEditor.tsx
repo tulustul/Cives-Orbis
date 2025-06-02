@@ -2,11 +2,14 @@ import { bridge } from "@/bridge";
 import { GrantOrRevoke, Option } from "@/shared";
 import { useEffect, useState } from "react";
 import {
+  Button,
   Multiselect,
   MultiselectAddedOrRemoved,
   MultiselectOnChange,
 } from "../components";
 import { PlayersList } from "./PlayersList";
+
+const GOLD_OPTIONS = [100, 1000, 10000, 100000];
 
 export function PlayersEditor() {
   const [trackedPlayerId, setTrackedPlayerId] = useState(0);
@@ -71,12 +74,28 @@ function TechEditor({ playerId }: TechEditorProps) {
     await buildOptions();
   }
 
+  function giveGold(amount: number) {
+    bridge.editor.player.giveGold({
+      playerId,
+      amount,
+    });
+  }
+
   return (
-    <Multiselect
-      label="Techs"
-      options={options}
-      value={discoveredTechs}
-      onChange={grantOrRevoke}
-    />
+    <div className="flex gap-4">
+      <Multiselect
+        label="Techs"
+        options={options}
+        value={discoveredTechs}
+        onChange={grantOrRevoke}
+      />
+      <div className="flex flex-col gap-2">
+        {GOLD_OPTIONS.map((gold) => (
+          <Button key={gold} onClick={() => giveGold(gold)}>
+            Give {gold} gold
+          </Button>
+        ))}
+      </div>
+    </div>
   );
 }

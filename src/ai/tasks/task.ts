@@ -11,6 +11,9 @@ export abstract class AiTask<T> {
 
   tasks: AiTask<any>[] = [];
   result: AiTaskResult | null = null;
+  private stateHistory: string[] = [];
+  private static readonly MAX_HISTORY_LENGTH = 10;
+  private static readonly CYCLE_DETECTION_LENGTH = 3;
 
   constructor(protected ai: AIPlayer) {}
 
@@ -18,7 +21,24 @@ export abstract class AiTask<T> {
   abstract serialize(): T;
   cleanup() {}
 
+  /**
+   * Override this method to enable cycle detection for the task.
+   * Return a string representing the current progress state.
+   * If the same state repeats in a cycle, the task will fail.
+   * Return null to disable cycle detection.
+   */
+  getProgressState(): string | null {
+    return null;
+  }
+
   tickBranch(): void {
+    // Check for stuck state before processing
+    if (this.isStuck()) {
+      console.warn(`Task ${this.type} is stuck in a cycle. Failing task.`);
+      this.fail();
+      return;
+    }
+
     while (this.tasks.length > 0) {
       const task = this.tasks[0];
       task.tickBranch();
@@ -30,7 +50,39 @@ export abstract class AiTask<T> {
 
     if (this.tasks.length == 0) {
       this.tick();
+      // Track state after tick
+      this.trackState();
     }
+  }
+
+  private trackState(): void {
+    const state = this.getProgressState();
+    if (state === null) {
+      return; // Cycle detection disabled for this task
+    }
+
+    this.stateHistory.push(state);
+    if (this.stateHistory.length > AiTask.MAX_HISTORY_LENGTH) {
+      this.stateHistory.shift();
+    }
+  }
+
+  private isStuck(): boolean {
+    if (this.stateHistory.length < AiTask.CYCLE_DETECTION_LENGTH * 2) {
+      return false;
+    }
+
+    // Check if the last N states form a repeating cycle
+    const cycleLength = AiTask.CYCLE_DETECTION_LENGTH;
+    const recent = this.stateHistory.slice(-cycleLength * 2);
+
+    for (let i = 0; i < cycleLength; i++) {
+      if (recent[i] !== recent[i + cycleLength]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   complete() {

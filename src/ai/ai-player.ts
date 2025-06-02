@@ -13,7 +13,7 @@ import { StrategicAI } from "./ai-strategic";
 import { MilitaryTacticalAI } from "./ai-military-tactical";
 import { NavalTransportAI } from "./ai-naval-transport";
 import { AiUnitsRegistry } from "./ai-units-registry";
-import { AiTask, AiTaskResult } from "./tasks/task";
+import { AiTask } from "./tasks/task";
 
 export type AiPriorities = {
   expansion: number;
