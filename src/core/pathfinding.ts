@@ -1,6 +1,8 @@
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 import { getMoveCost, getMoveResult, MoveResult } from "./movement";
+import { PriorityQueue } from "./priority-queue";
+import { getHexDistance } from "./hex-distance";
 
 export function findPath(
   unit: UnitCore,
@@ -21,27 +23,27 @@ export function findPath(
   }
 
   const visitedTiles = new Set<TileCore>();
-  const tilesToVisit = new Map<TileCore, number>();
+  const tilesToVisit = new PriorityQueue<TileCore>();
   const cameFrom = new Map<TileCore, [number, number, TileCore | null]>();
   const costsSoFar = new Map<TileCore, number>();
 
   const turnCost = 1 / unit.definition.actionPoints;
-  tilesToVisit.set(start, 0);
+  const startHeuristic = getHexDistance(start, end) * turnCost;
+  tilesToVisit.push(start, startHeuristic);
   costsSoFar.set(start, 0);
   cameFrom.set(start, [0, unit.actionPointsLeft, null]);
 
-  while (tilesToVisit.size) {
-    let nextTile!: TileCore;
-    let minEstimatedCost = Infinity;
+  // Main pathfinding loop - optimized for minimal allocations
+  while (!tilesToVisit.isEmpty) {
+    const nextTile = tilesToVisit.pop()!;
 
-    for (const [tile, estimatedCost] of tilesToVisit.entries()) {
-      if (estimatedCost < minEstimatedCost) {
-        minEstimatedCost = estimatedCost;
-        nextTile = tile;
-      }
+    if (visitedTiles.has(nextTile)) {
+      continue;
     }
 
-    let [turn, actionPointsLeft] = cameFrom.get(nextTile)!;
+    const cameFromData = cameFrom.get(nextTile)!;
+    let turn = cameFromData[0];
+    let actionPointsLeft = cameFromData[1];
 
     if (!actionPointsLeft) {
       actionPointsLeft = unit.definition.actionPoints;
@@ -49,59 +51,57 @@ export function findPath(
     }
 
     visitedTiles.add(nextTile);
-    tilesToVisit.delete(nextTile);
 
     if (nextTile === end) {
       return reconstructPath(cameFrom, end);
     }
 
-    for (const neighbour of nextTile.neighbours) {
-      if (!visitedTiles.has(neighbour)) {
-        const moveResult = getMoveResult(unit, nextTile, neighbour);
+    // Critical hot path optimizations
+    const neighbours = nextTile.neighbours;
+    const neighboursLength = neighbours.length;
+    const nextTileCost = costsSoFar.get(nextTile)!;
 
-        if (moveResult === MoveResult.none) {
-          continue;
-        }
+    // Use for loop instead of for...of for better performance
+    for (let i = 0; i < neighboursLength; i++) {
+      const neighbour = neighbours[i];
+      
+      if (visitedTiles.has(neighbour)) {
+        continue;
+      }
 
-        if (moveResult === MoveResult.attack && neighbour !== end) {
-          continue;
-        }
+      const moveResult = getMoveResult(unit, nextTile, neighbour);
 
-        let moveCost = getMoveCost(unit, moveResult, nextTile, neighbour);
+      if (moveResult === MoveResult.none) {
+        continue;
+      }
 
-        const newActionPointsLeft = Math.max(0, actionPointsLeft - moveCost);
+      if (moveResult === MoveResult.attack && neighbour !== end) {
+        continue;
+      }
 
-        moveCost *= turnCost;
+      let moveCost = getMoveCost(unit, moveResult, nextTile, neighbour);
+      const newActionPointsLeft = Math.max(0, actionPointsLeft - moveCost);
 
-        if (!newActionPointsLeft) {
-          moveCost = 1; // ??
-        }
+      moveCost *= turnCost;
 
-        const costSoFar = costsSoFar.get(nextTile)! + moveCost;
+      if (!newActionPointsLeft) {
+        moveCost = 1;
+      }
 
-        if (
-          !costsSoFar.has(neighbour) ||
-          costSoFar < costsSoFar.get(neighbour)!
-        ) {
-          costsSoFar.set(neighbour, costSoFar);
-          tilesToVisit.set(
-            neighbour,
-            costSoFar + getEuclideanDistance(neighbour, end) * turnCost,
-          );
-          cameFrom.set(neighbour, [turn, newActionPointsLeft, nextTile]);
-        }
+      const costSoFar = nextTileCost + moveCost;
+      const neighbourCost = costsSoFar.get(neighbour);
+
+      if (neighbourCost === undefined || costSoFar < neighbourCost) {
+        costsSoFar.set(neighbour, costSoFar);
+        const heuristic = getHexDistance(neighbour, end) * turnCost;
+        const fCost = costSoFar + heuristic;
+        tilesToVisit.push(neighbour, fCost);
+        cameFrom.set(neighbour, [turn, newActionPointsLeft, nextTile]);
       }
     }
   }
 
   return null;
-}
-
-function getEuclideanDistance(start: TileCore, end: TileCore) {
-  return Math.sqrt(
-    (start.x - end.x) * (start.x - end.x) +
-      (start.y - end.y) * (start.y - end.y),
-  );
 }
 
 function reconstructPath(

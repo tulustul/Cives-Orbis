@@ -2,6 +2,7 @@
 
 import { AIPlayer } from "@/ai/ai-player";
 import { RealisticMapGenerator } from "@/map-generators/realistic";
+import { AiDebug } from "@/shared/debug";
 import {
   CityChanneled,
   CityDetailsChanneled,
@@ -79,7 +80,6 @@ import {
   unitToChannel,
 } from "./serialization/channel";
 import { dumpGame, loadGame } from "./serialization/dump";
-import { AiDebug } from "@/shared/debug";
 
 let game: Game;
 
@@ -398,7 +398,10 @@ function unitFindPath(data: UnitFindPathOptions) {
     return null;
   }
 
+  // const startTime = performance.now();
   unit.path = findPath(unit, tile);
+  // const endTime = performance.now();
+  // console.log(`findPath took ${(endTime - startTime).toFixed(2)} milliseconds`);
 
   return unitDetailsToChannel(unit);
 }
