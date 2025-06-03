@@ -44,6 +44,8 @@ export class MoveUnitTask extends AiTask<MoveUnitTaskSerialized> {
       if (this.options.onCompleted) {
         this.options.onCompleted();
       }
+      // Movement complete - unit is now free for other tasks
+      unit.setOrder(null);
       this.complete();
     }
   }

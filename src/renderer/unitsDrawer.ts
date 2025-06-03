@@ -9,6 +9,8 @@ import { camera } from "./camera";
 import { TILE_ROW_OFFSET, TILE_SIZE } from "./constants";
 import { hexColorToNumber } from "./utils";
 
+const UNITS_SCALE_VISIBILITY = 15;
+
 export class UnitsDrawer {
   units = new Map<number, UnitDrawer>();
   unitsPerTile = new Map<number, number[]>();
@@ -216,7 +218,7 @@ export class UnitsDrawer {
     this.units.set(unit.id, drawer);
 
     const unitScale = getAlphaAndScale(camera.transform.scale);
-    this.container.visible = camera.transform.scale > 30;
+    this.container.visible = camera.transform.scale > UNITS_SCALE_VISIBILITY;
     drawer.container.scale.set(unitScale);
 
     this.addUnitToTile(unit.id, unit.tile.id);
@@ -226,7 +228,7 @@ export class UnitsDrawer {
 
   public setScale(scale: number) {
     const unitScale = getAlphaAndScale(scale);
-    this.container.visible = scale > 30;
+    this.container.visible = scale > UNITS_SCALE_VISIBILITY;
     for (const drawer of this.units.values()) {
       drawer.container.scale.set(unitScale);
     }

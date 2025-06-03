@@ -55,7 +55,7 @@ export function MapMode() {
           </Panel>
           <Research />
 
-          {uiState.view === "debug" && <Debug />}
+          {uiState.debug && <Debug />}
         </div>
 
         <div className={styles.toolbar}>

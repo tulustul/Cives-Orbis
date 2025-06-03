@@ -8,6 +8,8 @@ import { MoveUnitOneTileTask } from "./moveUnitOneTileTask";
 import { MoveUnitTask } from "./moveUnitTask";
 import { ParallelTask } from "./parallelTask";
 import { AiTask, AiTaskResult } from "./task";
+import { tileToTileCoords } from "@/core/serialization/channel";
+import { TileCoords } from "@/shared";
 
 export type NavalTransportTaskOptions = {
   unit: UnitCore;
@@ -17,7 +19,7 @@ export type NavalTransportTaskOptions = {
 export type NavalTransportTaskSerialized = {
   options: {
     unit: number;
-    to: number;
+    to: TileCoords;
   };
   transport?: number;
   state: NavalTransportState;
@@ -188,7 +190,7 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
     return {
       options: {
         unit: this.options.unit.id,
-        to: this.options.to.id,
+        to: tileToTileCoords(this.options.to),
       },
       transport: this.transport ? this.transport.id : undefined,
       state: this.state,
@@ -198,7 +200,7 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
   getProgressState(): string | null {
     // Track state, unit position, transport position, and child tasks
     const unitPos = this.options.unit.tile.id;
-    const transportPos = this.transport?.tile.id ?? 'none';
+    const transportPos = this.transport?.tile.id ?? "none";
     return `${this.state}-${unitPos}-${transportPos}-${this.tasks.length}`;
   }
 }

@@ -402,6 +402,7 @@ export function tileDetailsToChannel(
     isSupplied: tile.isSuppliedByPlayer(forPlayer),
     units,
     isExplored: forPlayer.exploredTiles.has(tile),
+    passableArea: tile.passableArea?.id ?? null,
   };
 }
 

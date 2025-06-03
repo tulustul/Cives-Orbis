@@ -29,7 +29,11 @@ export function OrnateModal({
           <h2 className="font-serif grow text-3xl text-white-outline">
             {title}
           </h2>
-          {showCloseButton && <Button onClick={onClose}>Close</Button>}
+          {showCloseButton && (
+            <Button className="mr-10" onClick={onClose}>
+              Close
+            </Button>
+          )}
         </div>
 
         <div

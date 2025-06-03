@@ -13,6 +13,7 @@ export * from "./Tooltip";
 export * from "./Button";
 export * from "./PrimaryButton";
 export * from "./CommandButton";
+export * from "./CommandSwitch";
 export * from "./IconCommandButton";
 export * from "./IconButton";
 export * from "./charts";

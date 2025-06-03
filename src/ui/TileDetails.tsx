@@ -3,6 +3,7 @@ import { useObservable } from "@/utils";
 import { AtlasIcon2 } from "./components/AtlasIcon2";
 import { OrnateBox } from "./components/OrnateBox";
 import { mapUi } from "./mapUi";
+import { useUiState } from "./uiState";
 
 const CLIMATES: Record<Climate, string> = {
   [Climate.arctic]: "Arctic",
@@ -27,6 +28,8 @@ const SEA_LEVELS: Record<SeaLevel, string> = {
 
 export function TileDetails() {
   const details = useObservable(mapUi.tileHoverDetails$);
+
+  const { debug } = useUiState();
 
   if (!details) {
     return null;
@@ -96,6 +99,23 @@ export function TileDetails() {
     );
   }
 
+  function getDebugInfo() {
+    if (!debug || !details) {
+      return null;
+    }
+
+    return (
+      <div className="text-xs font-light">
+        <div>
+          x: {details.tile.x}; y: {details.tile.y}
+        </div>
+        {details.tile.passableArea !== null && (
+          <div>passable area: {details.tile.passableArea}</div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <OrnateBox borderType="small">
       <div className="p-2 flex flex-col gap-1 items-center">
@@ -111,9 +131,7 @@ export function TileDetails() {
         )}
         {getYields()}
         {getResourceDescription()}
-        <div className="text-xs font-light">
-          x: {details.tile.x}; y: {details.tile.y}
-        </div>
+        {getDebugInfo()}
       </div>
     </OrnateBox>
   );

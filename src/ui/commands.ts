@@ -69,8 +69,9 @@ export class Commands {
   }
 
   @keybinding({ keybinding: "d", context: "map" })
-  static showDebug() {
-    Commands.showView("debug");
+  static toggleDebug() {
+    const uiState = useUiState.getState();
+    uiState.setDebug(!uiState.debug);
   }
 
   private static showView(view: UiView) {

@@ -1,14 +1,22 @@
 import { bridge } from "@/bridge";
 import { useObservable } from "@/utils";
 import { Commands } from "./commands";
-import { CommandButton } from "./components";
+import { CommandButton, CommandSwitch } from "./components";
+import { useUiState } from "./uiState";
 
 export function Toolbar() {
   const turn = useObservable(bridge.game.turn$);
 
+  const uiState = useUiState();
+
   return (
     <div className="px-2 flex gap-2 items-center py-1">
-      <span>Turn {turn ?? 1} </span>
+      <span className="text-xs font-semibold">Turn {turn ?? 1} </span>
+      <CommandSwitch
+        command={Commands.toggleDebug}
+        checked={uiState.debug}
+        label="Debug"
+      />
       <CommandButton
         command={Commands.showEconomyOverview}
         tooltip="Economy overview"
@@ -22,7 +30,6 @@ export function Toolbar() {
         Techs
       </CommandButton>
       <CommandButton command={Commands.toggleEditor}>Editor</CommandButton>
-      <CommandButton command={Commands.showDebug}>Debug</CommandButton>
       <CommandButton command={Commands.openMenu}>Menu</CommandButton>
     </div>
   );

@@ -12,6 +12,7 @@ import { PersonalityAI } from "./ai-personality";
 import { StrategicAI } from "./ai-strategic";
 import { MilitaryTacticalAI } from "./ai-military-tactical";
 import { NavalTransportAI } from "./ai-naval-transport";
+import { IdleUnitsAI } from "./ai-idle-units";
 import { AiUnitsRegistry } from "./ai-units-registry";
 import { AiTask } from "./tasks/task";
 
@@ -107,6 +108,7 @@ export class AIPlayer {
       this.tacticalAI, // Tactical AI should run after Military AI
       this.transportAI, // Transport AI for coordinating naval transport
       this.productionAi, // Production AI should run last to collect requests
+      new IdleUnitsAI(this), // Idle units AI runs last to clean up any unassigned units
     ];
   }
 

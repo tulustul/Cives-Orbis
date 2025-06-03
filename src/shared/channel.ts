@@ -118,6 +118,7 @@ export type TileDetailsChanneled = Omit<TileChanneled, "unitsIds"> & {
   zocNoMansLand: boolean;
   isSupplied: boolean;
   isExplored: boolean;
+  passableArea: number | null;
 };
 
 export type TileHoverDetails = {

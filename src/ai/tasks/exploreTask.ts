@@ -147,7 +147,8 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
     if (!this.targetTile || this.explorer.tile === this.targetTile) {
       this.targetTile = this.findUnexploredTile();
       if (!this.targetTile) {
-        // Area fully explored
+        // Area fully explored - unassign unit so IdleUnitsAI can handle it
+        this.ai.units.unassign(this.explorer);
         this.complete();
         return;
       }
