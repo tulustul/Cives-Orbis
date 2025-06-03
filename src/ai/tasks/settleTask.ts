@@ -103,7 +103,7 @@ export class SettleTask extends AiTask<SettleTaskSerialized> {
     }
 
     this.state = "settling";
-    this.settle();
+    // this.settle();
   }
 
   settle() {
@@ -142,6 +142,8 @@ export class SettleTask extends AiTask<SettleTaskSerialized> {
 
   getProgressState(): string | null {
     // Track state, settler position, and child task count
-    return `${this.state}-${this.settler?.tile.id ?? 'none'}-${this.tasks.length}`;
+    return `${this.state}-${this.settler?.tile.id ?? "none"}-${
+      this.tasks.length
+    }`;
   }
 }

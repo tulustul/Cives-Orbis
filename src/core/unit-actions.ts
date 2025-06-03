@@ -61,6 +61,7 @@ interface ActionDefinition {
 function foundCity(game: Game, unit: UnitCore) {
   const city = game.citiesManager.spawn(unit.tile, unit.player);
   if (city) {
+    unit.destroy();
     game.unitsManager.destroy(unit);
     collector.changes.push({ type: "city.spawned", data: cityToChannel(city) });
   }

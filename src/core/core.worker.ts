@@ -409,7 +409,7 @@ function unitDisband(unitId: number): void {
     return;
   }
 
-  game.unitsManager.destroy(unit);
+  unit.destroy();
 }
 
 function unitMoveAlongPath(unitId: number) {

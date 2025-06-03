@@ -59,8 +59,8 @@ export function attack(unit: UnitCore, tile: TileCore): boolean {
 }
 
 function executeSimulation(sim: CombatSimulation): BattleResult {
-  sim.attacker.combatant.health -= sim.attacker.damage;
-  sim.defender.combatant.health -= sim.defender.damage;
+  sim.attacker.combatant.changeHealth(-sim.attacker.damage);
+  sim.defender.combatant.changeHealth(-sim.defender.damage);
 
   if (sim.attacker.combatant.health > 0) {
     if (sim.attacker.combatant instanceof UnitCore) {

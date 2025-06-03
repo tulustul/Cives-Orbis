@@ -49,6 +49,13 @@ export class UnitCore {
     this.isSettler = definition.traits.includes("settler");
   }
 
+  changeHealth(amount: number) {
+    this.health = Math.min(this.health + amount, this.maxHealth);
+    if (this.health <= 0) {
+      this.destroy();
+    }
+  }
+
   doAction(action: UnitAction) {
     if (!this.canDoAction(action)) {
       return;
@@ -191,6 +198,8 @@ export class UnitCore {
   }
 
   destroy() {
+    this.health = 0;
+    this.actionPointsLeft = 0;
     this.unitManager.destroy(this);
   }
 
@@ -215,5 +224,9 @@ export class UnitCore {
 
   get wage() {
     return 1;
+  }
+
+  get isAlive() {
+    return this.health > 0;
   }
 }

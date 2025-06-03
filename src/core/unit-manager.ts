@@ -49,7 +49,6 @@ export class UnitsManager {
   }
 
   destroy(unit: UnitCore) {
-    // TODO rewrite to sets for better performance?
     this.unitsMap.delete(unit.id);
 
     let index = this.units.indexOf(unit);
@@ -88,12 +87,12 @@ export class UnitsManager {
         unit.hasWage
         // unit.supplies >= 100
       ) {
-        unit.health = Math.min(100, unit.health + 10);
+        unit.changeHealth(10);
         collector.units.add(unit);
       }
 
       if (!unit.hasWage) {
-        unit.health = unit.health - 10;
+        unit.changeHealth(-10);
         if (unit.health <= 0) {
           this.destroy(unit);
         } else {

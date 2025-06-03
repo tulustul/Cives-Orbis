@@ -28,6 +28,10 @@ export class CityDefense {
     }
   }
 
+  changeHealth(amount: number) {
+    this.health = Math.max(0, Math.min(this.health + amount, this.maxHealth));
+  }
+
   get unitsDefenseBonus() {
     return (
       BASE_DEFENSE_BONUS + this.defenseBonus * (this.health / this.maxHealth)

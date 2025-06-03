@@ -75,7 +75,6 @@ export class CityCore {
     this.population.progressGrowth();
     this.workers.updateWorkers();
 
-    this.reset();
     this.update();
     this.defense.update();
     this.perTurn.food -= this.population.foodConsumed;
@@ -96,6 +95,8 @@ export class CityCore {
   }
 
   update() {
+    this.reset();
+
     this.tileYields.food = 2;
     this.tileYields.production = 1;
 

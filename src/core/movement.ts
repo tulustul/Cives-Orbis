@@ -159,7 +159,7 @@ function _move(unit: UnitCore, tile: TileCore, cost: number) {
 }
 
 export function moveAlongPath(unit: UnitCore) {
-  if (!unit.path) {
+  if (!unit.path || !unit.isAlive) {
     unit.setOrder(null);
     return;
   }
@@ -167,7 +167,10 @@ export function moveAlongPath(unit: UnitCore) {
   unit.setOrder(unit.path.length ? "go" : null);
 
   const tiles: TileCore[] = [unit.tile];
-  collector.addMove(unit, tiles);
+
+  if (unit.actionPointsLeft && unit.path.length) {
+    collector.addMove(unit, tiles);
+  }
 
   while (unit.actionPointsLeft && unit.path.length) {
     const targetTile = unit.path[0][0];

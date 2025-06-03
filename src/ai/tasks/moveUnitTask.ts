@@ -28,7 +28,7 @@ export class MoveUnitTask extends AiTask<MoveUnitTaskSerialized> {
 
   tick(): void {
     const unit = this.options.unit;
-    if (!unit) {
+    if (!unit || !unit.isAlive) {
       return this.fail();
     }
     if (unit.order !== "go" || !unit.path) {
@@ -60,6 +60,8 @@ export class MoveUnitTask extends AiTask<MoveUnitTaskSerialized> {
   getProgressState(): string | null {
     const unit = this.options.unit;
     // Track unit position, action points, and whether it has a path
-    return `${unit.tile.id}-${unit.actionPointsLeft}-${unit.path ? 'path' : 'nopath'}`;
+    return `${unit.tile.id}-${unit.actionPointsLeft}-${
+      unit.path ? "path" : "nopath"
+    }`;
   }
 }

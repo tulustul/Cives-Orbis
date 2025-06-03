@@ -49,9 +49,9 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
 
   private init(): void {
     // First, try to find an explorer already in this area
-    const localExplorers = Array.from(this.ai.units.freeByTrait.explorer).filter(
-      (unit) => unit.tile.passableArea === this.options.passableArea
-    );
+    const localExplorers = Array.from(
+      this.ai.units.freeByTrait.explorer,
+    ).filter((unit) => unit.tile.passableArea === this.options.passableArea);
 
     if (localExplorers.length > 0) {
       this.explorer = localExplorers[0];
@@ -62,24 +62,24 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
 
     // Check if this area has any cities - if not, try to transport an explorer from elsewhere
     const hasCity = this.ai.player.cities.some(
-      (city) => city.tile.passableArea === this.options.passableArea
+      (city) => city.tile.passableArea === this.options.passableArea,
     );
 
     if (!hasCity) {
       // Try to find an explorer from another area to transport
-      const availableExplorers = Array.from(this.ai.units.freeByTrait.explorer).filter(
-        (unit) => unit.tile.passableArea !== this.options.passableArea
-      );
+      const availableExplorers = Array.from(
+        this.ai.units.freeByTrait.explorer,
+      ).filter((unit) => unit.tile.passableArea !== this.options.passableArea);
 
       if (availableExplorers.length > 0) {
         // Prefer land explorers over naval ones for overseas exploration
-        const landExplorers = availableExplorers.filter(unit => unit.isLand);
-        
+        const landExplorers = availableExplorers.filter((unit) => unit.isLand);
+
         if (landExplorers.length > 0) {
           // Find the explorer closest to a coast
           let bestExplorer = landExplorers[0];
           let minDistanceToCoast = Infinity;
-          
+
           for (const explorer of landExplorers) {
             const distanceToCoast = this.getDistanceToNearestCoast(explorer);
             if (distanceToCoast < minDistanceToCoast) {
@@ -87,13 +87,13 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
               bestExplorer = explorer;
             }
           }
-          
+
           this.explorer = bestExplorer;
         } else {
           // Use a naval explorer if no land explorers available
           this.explorer = availableExplorers[0];
         }
-        
+
         this.ai.units.assign(this.explorer, "exploration");
         this.state = "exploring";
         return;
@@ -115,14 +115,14 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
           this.explorer = unit;
           this.ai.units.assign(unit, "exploration");
         },
-      })
+      }),
     );
 
     this.state = "exploring";
   }
 
   private explore(): void {
-    if (!this.explorer) {
+    if (!this.explorer || !this.explorer.isAlive) {
       return this.fail();
     }
 
@@ -138,7 +138,7 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
         new NavalTransportTask(this.ai, {
           unit: this.explorer,
           to: coastalTile,
-        })
+        }),
       );
       return;
     }
@@ -170,19 +170,19 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
       new MoveUnitTask(this.ai, {
         unit: this.explorer,
         tile: this.targetTile,
-      })
+      }),
     );
   }
 
   private findUnexploredTile(): TileCore | null {
     const edgeOfUnknown = new Set<TileCore>();
-    
+
     // Find tiles at the edge of explored territory in this area
     for (const tile of this.ai.player.exploredTiles) {
       if (tile.passableArea !== this.options.passableArea) {
         continue;
       }
-      
+
       for (const neighbour of tile.neighbours) {
         if (
           !neighbour.isMapEdge &&
@@ -235,7 +235,7 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
 
   private getDistanceToNearestCoast(unit: UnitCore): number {
     let minDistance = Infinity;
-    
+
     // Find all coastal tiles in the unit's area
     for (const tile of this.ai.player.exploredTiles) {
       if (tile.passableArea === unit.tile.passableArea && tile.isLand) {
@@ -248,7 +248,7 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
         }
       }
     }
-    
+
     return minDistance;
   }
 
@@ -272,9 +272,9 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
 
   getProgressState(): string | null {
     // Track explorer position, target, and whether we have an explorer
-    const explorerPos = this.explorer?.tile.id ?? 'none';
-    const targetPos = this.targetTile?.id ?? 'none';
-    const hasExplorer = this.explorer ? 'yes' : 'no';
+    const explorerPos = this.explorer?.tile.id ?? "none";
+    const targetPos = this.targetTile?.id ?? "none";
+    const hasExplorer = this.explorer ? "yes" : "no";
     return `${this.state}-${explorerPos}-${targetPos}-${hasExplorer}`;
   }
 }

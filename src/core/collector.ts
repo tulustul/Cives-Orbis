@@ -67,7 +67,9 @@ class Collector {
     const changes = this.changes;
 
     for (const unit of this.units) {
-      changes.push({ type: "unit.updated", data: unitToChannel(unit) });
+      if (unit.isAlive) {
+        changes.push({ type: "unit.updated", data: unitToChannel(unit) });
+      }
     }
     for (const id of this.unitsDestroyed) {
       changes.push({ type: "unit.destroyed", data: id });
@@ -148,11 +150,19 @@ class Collector {
     }
     this.newTechs = [];
 
+    // const movedUnits = new Set(Array.from(this.moves.keys()));
+    // if (movedUnits.size !== this.moves.size) {
+    //   console.error("asdasdasd");
+    //   debugger;
+    // }
+
     for (const [unit, tiles] of this.moves.entries()) {
-      changes.push({
-        type: "unit.moved",
-        data: unitMoveToChannel(unit, tiles),
-      });
+      if (unit.isAlive) {
+        changes.push({
+          type: "unit.moved",
+          data: unitMoveToChannel(unit, tiles),
+        });
+      }
     }
 
     // Depleted must go before discovered

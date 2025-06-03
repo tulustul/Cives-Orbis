@@ -41,6 +41,14 @@ export class UnitsDrawer {
     bridge.units.destroyed$.subscribe((unitId) => {
       const drawer = this.units.get(unitId);
       if (drawer) {
+        // Cancel any ongoing animations first
+        drawer.cancelAnimation();
+        
+        // Explicitly remove from parent containers
+        if (drawer.container.parent) {
+          drawer.container.parent.removeChild(drawer.container);
+        }
+        
         this.units.delete(unitId);
         this.removeUnitFromTile(unitId, drawer.unit.tile.id);
         const unitIndex = drawer.unit.tile.units.findIndex(
@@ -161,10 +169,12 @@ export class UnitsDrawer {
     let i = 0;
     for (const unit of tile.units) {
       const drawer = this.units.get(unit.id);
-      if (drawer) {
+      if (drawer && !drawer.container.destroyed) {
         drawer.container.zIndex = i++;
+        // Always update the tile reference to match real position
+        drawer.unit.tile = tile;
+        // Only correct position if not animating (animation handles position)
         if (!drawer.animation) {
-          drawer.unit.tile = tile;
           drawer.correctPosition();
         }
       }
@@ -200,7 +210,7 @@ export class UnitsDrawer {
     let i = 0;
     for (const unitId of unitIds) {
       const drawer = this.units.get(unitId);
-      if (drawer) {
+      if (drawer && !drawer.container.destroyed) {
         container.addChild(drawer.container);
         drawer.dehighlight();
         drawer.container.zIndex = i++;
@@ -389,8 +399,10 @@ export class UnitDrawer {
       to: this.tileToUnitPosition(this.unit.tile),
       duration: 100,
       fn: (pos) => {
-        this.container.x = pos[0];
-        this.container.y = pos[1];
+        if (this.container && !this.container.destroyed) {
+          this.container.x = pos[0];
+          this.container.y = pos[1];
+        }
       },
       onComplete: () => (this.animation = null),
     });
@@ -419,11 +431,9 @@ export class UnitDrawer {
           to: pos,
           duration: 150,
           fn: (pos) => {
-            if (this.container) {
+            if (this.container && !this.container.destroyed) {
               this.container.x = pos[0];
               this.container.y = pos[1];
-            } else {
-              console.warn("not found container");
             }
           },
         });
@@ -432,7 +442,7 @@ export class UnitDrawer {
     });
   }
 
-  private cancelAnimation() {
+  public cancelAnimation() {
     if (this.animation) {
       Animations.cancel(this.animation);
       if (this.targetPosition) {
