@@ -6,20 +6,20 @@ import { TileCoords } from "@/shared";
 import { AIPlayer } from "../ai-player";
 import { AiTask } from "./task";
 
-export type MoveUnitTaskOptions = {
+export type MoveUnitOneTileTaskOptions = {
   tile: TileCore;
   unit: UnitCore;
 };
 
-export type MoveUnitTaskSerialized = {
+export type MoveUnitOneTileTaskSerialized = {
   tile: TileCoords;
   unit: number;
 };
 
-export class MoveUnitOneTileTask extends AiTask<MoveUnitTaskSerialized> {
-  readonly type = "moveUnit";
+export class MoveUnitOneTileTask extends AiTask<MoveUnitOneTileTaskSerialized> {
+  readonly type = "moveUnitOneTile";
 
-  constructor(ai: AIPlayer, private options: MoveUnitTaskOptions) {
+  constructor(ai: AIPlayer, private options: MoveUnitOneTileTaskOptions) {
     super(ai);
     this.tick();
   }
@@ -34,7 +34,7 @@ export class MoveUnitOneTileTask extends AiTask<MoveUnitTaskSerialized> {
     }
   }
 
-  serialize(): MoveUnitTaskSerialized {
+  serialize(): MoveUnitOneTileTaskSerialized {
     return {
       tile: tileToTileCoords(this.options.tile),
       unit: this.options.unit.id,

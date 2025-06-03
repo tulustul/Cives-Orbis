@@ -1,281 +1,121 @@
-import { getMoveResult, MoveResult } from "@/core/movement";
-import { findPath } from "@/core/pathfinding";
-import { TileCore } from "@/core/tile";
-import { UnitCore } from "@/core/unit";
-import { AISystem } from "./ai-system";
 import { PassableArea } from "@/core/tiles-map";
-import { dataManager } from "@/core/data/dataManager";
-import { AiOrder } from "./types";
+import { AISystem } from "./ai-system";
+import { ExploreTask } from "./tasks/exploreTask";
+import { AiTask } from "./tasks/task";
 
 const TILES_PER_EXPLORER = 500;
 const MAX_EXPLORERS_PER_AREA = 3;
 const MIN_EXPLORER_AREA = 2;
-const MIN_NAVAL_EXPLORER_PRIORITY = 90;
 
 export class ExploringAI extends AISystem {
-  assignedTiles = new Set<TileCore>();
+  private tasks: ExploreTask[] = [];
 
-  *plan(): Generator<AiOrder> {
-    this.assignedTiles.clear();
+  *plan(): Generator<AiTask<any>> {
+    // Clean up completed tasks
+    this.tasks = this.tasks.filter((task) => task.result === null);
 
-    const edgeOfUnknown = this.getEdgeOfUnknown();
-
-    const explorersByArea = new Map<PassableArea, UnitCore[]>();
-
-    // Map explorers to their current areas
-    for (const unit of this.ai.units.freeByTrait.explorer) {
-      if (unit.tile.passableArea) {
-        if (!explorersByArea.has(unit.tile.passableArea)) {
-          explorersByArea.set(unit.tile.passableArea, []);
-        }
-        explorersByArea.get(unit.tile.passableArea)!.push(unit);
-      }
+    // Track which areas already have exploration tasks
+    const areasWithTasks = new Set<PassableArea>();
+    for (const task of this.tasks) {
+      areasWithTasks.add(task.options.passableArea);
     }
-
-    // Track land areas that are unexplored or under-explored
-    const landAreasNeedingExplorers: PassableArea[] = [];
 
     // Check for areas that need explorers
     for (const passableArea of this.ai.player.knownPassableAreas.values()) {
       if (passableArea.area < MIN_EXPLORER_AREA) {
         continue;
       }
+
+      // Skip if we already have a task for this area
+      if (areasWithTasks.has(passableArea)) {
+        continue;
+      }
+
+      // Calculate how many explorers we need for this area
       const explorersNeeded = Math.min(
         MAX_EXPLORERS_PER_AREA,
         Math.ceil(passableArea.area / TILES_PER_EXPLORER),
       );
-      const haveExplorers = explorersByArea.get(passableArea)?.length ?? 0;
 
-      // If we need more explorers in this area
-      if (haveExplorers < explorersNeeded) {
-        const product = dataManager.units.get(
-          passableArea.type === "land" ? "unit_scout" : "unit_tireme",
-        )!;
-
-        // Request a unit to be produced
-        this.ai.productionAi.request({
-          focus: "expansion",
-          priority: 100,
-          product,
-          passableArea,
-        });
-
-        // Track land areas needing explorers for possible naval transport
-        if (passableArea.type === "land" && haveExplorers === 0) {
-          landAreasNeedingExplorers.push(passableArea);
-        }
-      }
-    }
-
-    // Handle naval exploration for newly discovered land areas
-    const inaccessibleAreas = this.findInaccessibleLandAreas(
-      landAreasNeedingExplorers,
-    );
-
-    const navalTransports = this.ai.units.freeByTrait.transport;
-    if (inaccessibleAreas.length > 0 && navalTransports.size > 0) {
-      this.planNavalExploration(inaccessibleAreas);
-    }
-
-    for (const explorers of explorersByArea.values()) {
-      for (const explorer of explorers) {
-        this.ai.units.assign(explorer, "exploration");
-      }
-    }
-
-    for (const explorer of this.ai.units.byAssignment.exploration) {
-      const target = this.findTargetTile(edgeOfUnknown, explorer);
-      if (target) {
-        this.assignedTiles.add(target);
-        yield {
-          group: "unit",
-          entityId: explorer.id,
-          focus: "expansion",
-          priority: 100,
-          perform: () => {
-            explorer.path = findPath(explorer, target);
-          },
-        };
-      } else {
-        this.ai.units.unassign(explorer);
-        explorer.destroy();
-      }
-    }
-  }
-
-  private findTargetTile(
-    edgeOfUnknown: Set<TileCore>,
-    unit: UnitCore,
-  ): TileCore | null {
-    let closestTile: TileCore | null = null;
-    let closestDistance = Infinity;
-
-    for (const tile of edgeOfUnknown) {
-      if (this.assignedTiles.has(tile)) {
-        continue;
-      }
-      const distance = unit.tile.getDistanceTo(tile);
-      if (
-        distance < closestDistance &&
-        getMoveResult(unit, unit.tile, tile) === MoveResult.move
-      ) {
-        closestDistance = distance;
-        closestTile = tile;
-      }
-    }
-
-    return closestTile;
-  }
-
-  private getEdgeOfUnknown() {
-    const edge = new Set<TileCore>();
-    for (const exploredTile of this.ai.player.exploredTiles) {
-      for (const neighbour of exploredTile.neighbours) {
-        if (
-          !neighbour.isMapEdge &&
-          !this.ai.player.exploredTiles.has(neighbour)
-        ) {
-          edge.add(exploredTile);
-        }
-      }
-    }
-    return edge;
-  }
-
-  /**
-   * Find land areas that are not accessible from the current land areas
-   * where the player has units. These require naval transportation.
-   */
-  private findInaccessibleLandAreas(landAreas: PassableArea[]): PassableArea[] {
-    if (landAreas.length === 0) return [];
-
-    // Get all land areas where we currently have units
-    const occupiedLandAreaIds = new Set<number>();
-    for (const unit of this.ai.player.units) {
-      if (
-        unit.tile.passableArea?.type === "land" &&
-        !unit.parent // Not being transported
-      ) {
-        occupiedLandAreaIds.add(unit.tile.passableArea.id);
-      }
-    }
-
-    // If we don't have any land areas yet, all land areas are inaccessible
-    if (occupiedLandAreaIds.size === 0) {
-      return landAreas;
-    }
-
-    // Return areas that aren't in our occupied set
-    return landAreas.filter((area) => !occupiedLandAreaIds.has(area.id));
-  }
-
-  /**
-   * Plan naval exploration by using the TransportAI to transport explorers
-   * to inaccessible land areas
-   */
-  private planNavalExploration(inaccessibleAreas: PassableArea[]) {
-    // Get available land explorers (not already on a transport)
-    const availableExplorers = Array.from(
-      this.ai.units.freeByTrait.explorer,
-    ).filter((unit) => unit.isLand);
-
-    if (availableExplorers.length === 0) {
-      // Request more explorers to be built with high priority
-      this.ai.productionAi.request({
-        focus: "expansion",
-        priority: 120, // Higher priority for explorers needed for naval exploration
-        product: dataManager.units.get("unit_scout")!,
-      });
-      return;
-    }
-
-    // For each inaccessible area, find a coastal tile
-    for (const area of inaccessibleAreas) {
-      // Find a coastal tile in this area (a land tile adjacent to water)
-      const coastalTiles = this.findCoastalTilesForArea(area);
-      if (coastalTiles.length === 0) {
-        continue;
-      }
-
-      // If no available explorers, break
-      if (availableExplorers.length === 0) {
-        break;
-      }
-
-      // Find the best coastal tile as a target
-      const bestCoastalTile = this.findBestCoastalTile(coastalTiles);
-      if (!bestCoastalTile) {
-        continue;
-      }
-
-      // Take the closest available explorer
-      const explorer = availableExplorers[0];
-
-      // Request transport to the target coastal tile using the TransportAI
-      this.ai.transportAI.requestTransport(
-        explorer,
-        bestCoastalTile,
-        MIN_NAVAL_EXPLORER_PRIORITY + 20,
-        "expansion",
-      );
-
-      // Remove the used explorer from consideration
-      availableExplorers.splice(0, 1);
-    }
-  }
-
-  /**
-   * Find the best coastal tile among candidates, considering resource richness
-   * and exploration potential
-   */
-  private findBestCoastalTile(coastalTiles: TileCore[]): TileCore | null {
-    if (coastalTiles.length === 0) return null;
-
-    // Score each coastal tile based on its potential
-    const scoredTiles = coastalTiles.map((tile) => {
-      let score = 0;
-
-      // Check for resources in range
-      const tilesInRange = Array.from(tile.getTilesInRange(3));
-      const resourcesCount = tilesInRange.filter((t) => t.resource).length;
-      score += resourcesCount * 5;
-
-      // Bonus for unexplored tiles in range
-      const unexploredCount = tilesInRange.filter(
-        (t) => !this.player.exploredTiles.has(t),
+      // Count current explorers in this area
+      const currentExplorers = Array.from(this.ai.units.byAssignment.exploration).filter(
+        (unit) => unit.tile.passableArea === passableArea
       ).length;
-      score += unexploredCount * 2;
 
-      // Bonus for good terrain
-      if (tile.yields.food > 1) score += 3;
-      if (tile.yields.production > 1) score += 3;
-
-      return { tile, score };
-    });
-
-    // Sort by score descending
-    scoredTiles.sort((a, b) => b.score - a.score);
-
-    return scoredTiles[0].tile;
-  }
-
-  /**
-   * Find coastal tiles (land tiles adjacent to water) for a given area
-   */
-  private findCoastalTilesForArea(area: PassableArea): TileCore[] {
-    const coastalTiles: TileCore[] = [];
-
-    // Iterate through all tiles to find ones in this area
-    for (const tile of this.ai.player.exploredTiles) {
-      if (tile.passableArea?.id === area.id && tile.isLand) {
-        // Check if any neighbor is water
-        const hasWaterNeighbor = tile.neighbours.some((n) => n.isWater);
-        if (hasWaterNeighbor) {
-          coastalTiles.push(tile);
-        }
+      // Create tasks for needed explorers
+      const tasksToCreate = explorersNeeded - currentExplorers;
+      for (let i = 0; i < tasksToCreate; i++) {
+        const priority = this.calculatePriority(passableArea);
+        const task = new ExploreTask(this.ai, {
+          passableArea,
+          priority,
+        });
+        this.tasks.push(task);
+        yield task;
       }
     }
 
-    return coastalTiles;
+    // Handle explorers that aren't assigned to any task
+    for (const explorer of this.ai.units.freeByTrait.explorer) {
+      // Check if this explorer's area needs exploration
+      const passableArea = explorer.tile.passableArea;
+      if (!passableArea || passableArea.area < MIN_EXPLORER_AREA) {
+        // Destroy explorer if in tiny area
+        explorer.destroy();
+        continue;
+      }
+
+      // Create a new exploration task for this free explorer
+      const task = new ExploreTask(this.ai, {
+        passableArea,
+        priority: 100,
+      });
+      this.tasks.push(task);
+      yield task;
+    }
+  }
+
+  private calculatePriority(passableArea: PassableArea): number {
+    let priority = 100;
+
+    // Higher priority for larger areas
+    if (passableArea.area > 1000) {
+      priority += 20;
+    }
+
+    // Higher priority for land areas (more likely to have good settling spots)
+    if (passableArea.type === "land") {
+      priority += 10;
+    }
+
+    // Lower priority for areas we've already partially explored
+    const exploredTilesInArea = Array.from(this.ai.player.exploredTiles).filter(
+      (tile) => tile.passableArea === passableArea
+    ).length;
+    
+    const explorationRatio = exploredTilesInArea / passableArea.area;
+    if (explorationRatio > 0.5) {
+      priority -= 20;
+    }
+
+    // Check if area has cities
+    const hasCities = this.ai.player.cities.some(
+      (city) => city.tile.passableArea === passableArea
+    );
+    
+    if (hasCities) {
+      // Lower priority for areas with cities (we can produce explorers there)
+      priority += 5;
+    } else {
+      // Higher priority for areas without cities (need to transport explorers)
+      priority += 25;
+      
+      // Even higher if it's unexplored land
+      if (passableArea.type === "land" && explorationRatio < 0.1) {
+        priority += 20;
+      }
+    }
+
+    return priority;
   }
 }

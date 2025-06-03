@@ -7,7 +7,7 @@ import { AiOrder } from "../types";
 import { CityProduceTask } from "./cityProduceTask";
 import { AiTask } from "./task";
 
-export type CityProduceTaskOptions = {
+export type CityProduceUnitTaskOptions = {
   focus?: AiOrder["focus"];
   priority: AiOrder["priority"];
   unitTrait: UnitTrait;
@@ -31,7 +31,7 @@ export class CityProduceUnitTask extends AiTask<CityProduceUnitTaskSerialized> {
 
   state: State = "init";
 
-  constructor(ai: AIPlayer, private options: CityProduceTaskOptions) {
+  constructor(ai: AIPlayer, private options: CityProduceUnitTaskOptions) {
     super(ai);
     this.tick();
   }
