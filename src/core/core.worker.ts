@@ -2,7 +2,11 @@
 
 import { AIPlayer } from "@/ai/ai-player";
 import { RealisticMapGenerator } from "@/map-generators/realistic";
-import { AiDebug } from "@/shared/debug";
+import {
+  AiDebugTasks,
+  AiDebugUnitsRegistry,
+  AiDebugUnitsRegistryUnit,
+} from "@/shared/debug";
 import {
   CityChanneled,
   CityDetailsChanneled,
@@ -100,8 +104,9 @@ const HANDLERS = {
   "player.getEconomyOverview": playerGetEconomyOverview,
   "player.editor.grantRevokeTech": playerGrantRevokeTech,
   "player.editor.revealMap": playerRevealMap,
-  "player.editor.debugAi": playerDebugAi,
   "player.editor.giveGold": playerEditorGiveGold,
+  "player.debug.getAiTasks": playerDebugGetAiTasks,
+  "player.debug.getAiUnitsRegistry": playerDebugGetAiUnitsRegistry,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -777,11 +782,29 @@ function playerRevealMap() {
   game.trackedPlayer.exploreTiles(tiles);
 }
 
-function playerDebugAi(): AiDebug | null {
+function playerDebugGetAiTasks(): AiDebugTasks | null {
   if (!game.trackedPlayer.ai) {
     return null;
   }
   return game.trackedPlayer.ai.serialize();
+}
+
+function playerDebugGetAiUnitsRegistry(): AiDebugUnitsRegistry | null {
+  if (!game.trackedPlayer.ai) {
+    return null;
+  }
+
+  const units: AiDebugUnitsRegistryUnit[] = game.trackedPlayer.units.map(
+    (unit) => {
+      return {
+        id: unit.id,
+        name: unit.definition.name,
+        assignment:
+          game.trackedPlayer.ai!.units.assignments.get(unit)?.type ?? null,
+      };
+    },
+  );
+  return { units };
 }
 
 function playerEditorGiveGold(options: PlayerEditorGiveGoldOptions): void {

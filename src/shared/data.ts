@@ -162,3 +162,10 @@ export type PlayerTask =
 
 export type AiTaskResult = "completed" | "failed";
 export type AiTaskStatus = "pending" | "active";
+
+export type UnitAssignmentType =
+  | "garrison"
+  | "exploration"
+  | "transport"
+  | "settling"
+  | "escort";

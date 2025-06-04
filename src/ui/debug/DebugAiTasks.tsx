@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { AiDebug, AiTaskSerialized } from "@/shared/debug";
+import { AiDebugTasks, AiTaskSerialized } from "@/shared/debug";
 import { AiTaskResult, AiTaskStatus } from "@/shared/data";
 import { useObservable } from "@/utils";
 import { useEffect, useState } from "react";
@@ -20,17 +20,18 @@ function getStatusColor(status: AiTaskResult | AiTaskStatus): string {
   }
 }
 
-export function DebugAi() {
-  const [debugInfo, setDebugInfo] = useState<AiDebug | null>(null);
+export function DebugAiTasks() {
+  const [debugInfo, setDebugInfo] = useState<AiDebugTasks | null>(null);
   const [allExpanded, setAllExpanded] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
   const turn = useObservable(bridge.game.turn$);
+  const trackedPlayer = useObservable(bridge.player.tracked$);
 
   useEffect(() => {
-    bridge.editor.player.debugAi().then(setDebugInfo);
-  }, [turn]);
+    bridge.debug.player.getAiTasks().then(setDebugInfo);
+  }, [turn, trackedPlayer]);
 
   const handleToggleAll = () => {
     setAllExpanded(!allExpanded);
@@ -45,12 +46,12 @@ export function DebugAi() {
   return (
     <div>
       <div className="mb-4 flex  gap-2">
-        <div className="mb-2">AI tasks ({debugInfo.tasks.length})</div>
         <Button
           onClick={handleToggleAll}
           className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
         >
-          {allExpanded ? "Collapse All" : "Expand All"}
+          {allExpanded ? "Collapse All" : "Expand All"} (
+          {debugInfo.tasks.length})
         </Button>
         <Switch
           label="Show details"

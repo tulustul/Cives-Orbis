@@ -26,6 +26,7 @@ export abstract class AiTask<O extends AiTaskOptions, S> {
   abstract tick(): void;
   abstract serialize(): S;
   cleanup() {}
+  init() {}
 
   /**
    * Override this method to enable cycle detection for the task.
@@ -57,9 +58,7 @@ export abstract class AiTask<O extends AiTaskOptions, S> {
         break;
       }
 
-      // Handle child task failure
-      if (task.result === "failed" && !this.options.onFail) {
-        this.fail(`${task.type}: ${task.reason}`);
+      if (this.checkChildFailure(task)) {
         return;
       }
     }
@@ -102,7 +101,7 @@ export abstract class AiTask<O extends AiTaskOptions, S> {
     return true;
   }
 
-  complete() {
+  protected complete() {
     this.result = "completed";
     this.cleanupBranch();
     if (this.options.onComplete) {
@@ -110,28 +109,29 @@ export abstract class AiTask<O extends AiTaskOptions, S> {
     }
   }
 
-  fail(reason = "") {
+  protected fail(reason = "") {
     this.result = "failed";
     this.reason = reason;
+    this.cleanupBranch();
 
-    for (const task of this.tasks) {
-      task.failSimple();
-    }
+    // for (const task of this.tasks) {
+    //   task.failSimple();
+    // }
     if (this.options.onFail) {
       this.options.onFail();
     }
   }
 
-  private failSimple() {
-    if (this.result === "failed") {
-      return;
-    }
-    this.cleanup();
-    this.result = "failed";
-    for (const task of this.tasks) {
-      task.failSimple();
-    }
-  }
+  // private failSimple() {
+  //   if (this.result === "failed") {
+  //     return;
+  //   }
+  //   this.cleanup();
+  //   this.result = "failed";
+  //   for (const task of this.tasks) {
+  //     task.failSimple();
+  //   }
+  // }
 
   serializeBranch(): AiTaskSerialized<S> {
     return {
@@ -144,11 +144,29 @@ export abstract class AiTask<O extends AiTaskOptions, S> {
     };
   }
 
-  cleanupBranch() {
+  private cleanupBranch() {
     this.cleanup();
     for (const task of this.tasks) {
       task.cleanupBranch();
     }
+  }
+
+  protected addTask(...tasks: AiTask<any, any>[]) {
+    this.tasks.push(...tasks);
+    for (const task of tasks) {
+      task.init();
+      if (this.checkChildFailure(task)) {
+        return;
+      }
+    }
+  }
+
+  protected checkChildFailure(task: AiTask<any, any>): boolean {
+    if (task.result === "failed" && !task.options.onFail) {
+      this.fail(`${task.type}: ${task.reason}`);
+      return true;
+    }
+    return false;
   }
 
   // static deserializeBranch(data: AiOperationSerialized<void>): AiOperation<void> {

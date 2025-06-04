@@ -141,6 +141,7 @@ export class AIPlayer {
       const systemOrdersAndTasks = system.plan();
       for (const orderOrTask of systemOrdersAndTasks) {
         if (orderOrTask instanceof AiTask) {
+          orderOrTask.init();
           this.tasks.push(orderOrTask);
         } else {
           this.orders.push(orderOrTask);

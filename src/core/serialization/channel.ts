@@ -52,6 +52,7 @@ import {
   UnitChanneled,
   UnitDefChanneled,
   UnitDetailsChanneled,
+  UnitIdAndName,
   UnitMoveChanneled,
   UnitPathChanneled,
 } from "@/shared";
@@ -629,5 +630,15 @@ export function cityToOverviewChanneled(city: CityCore): CityOverviewChanneled {
     name: city.name,
     population: city.population.total,
     yields: city.yields,
+  };
+}
+
+export function unitToIdAndName(unit: UnitCore | null): UnitIdAndName | null {
+  if (!unit) {
+    return null;
+  }
+  return {
+    id: unit.id,
+    name: unit.definition.name,
   };
 }

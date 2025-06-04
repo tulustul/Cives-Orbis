@@ -1,5 +1,7 @@
+import { Tab, Tabs } from "../components";
 import { OrnateBox } from "../components/OrnateBox";
-import { DebugAi } from "./DebugAi";
+import { DebugAiTasks } from "./DebugAiTasks";
+import { DebugAiUnits } from "./DebugAiUnits";
 
 export function Debug() {
   return (
@@ -9,7 +11,14 @@ export function Debug() {
           <div className="font-semibold text-lg text-center mb-2">
             Debug Box
           </div>
-          <DebugAi />
+          <Tabs>
+            <Tab title="AI Tasks">
+              <DebugAiTasks />
+            </Tab>
+            <Tab title="AI Units">
+              <DebugAiUnits />
+            </Tab>
+          </Tabs>
         </div>
       </OrnateBox>
     </div>

@@ -4,7 +4,6 @@ import { PassableArea } from "@/core/tiles-map";
 import { UnitTrait } from "@/shared";
 import { AiOrder } from "../types";
 import { AiTask, AiTaskOptions } from "./task";
-import { AIPlayer } from "../ai-player";
 
 export type CityProduceTaskOptions = AiTaskOptions & {
   focus?: AiOrder["focus"];
@@ -40,11 +39,6 @@ export class CityProduceTask extends AiTask<
   readonly type = "cityProduce";
 
   requestedProduction: RequestedProduction | null = null;
-
-  constructor(ai: AIPlayer, options: CityProduceTaskOptions) {
-    super(ai, options);
-    this.tick();
-  }
 
   tick(): void {
     if (!this.requestedProduction) {

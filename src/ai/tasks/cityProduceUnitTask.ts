@@ -5,7 +5,6 @@ import { UnitTrait } from "@/shared";
 import { AiOrder } from "../types";
 import { CityProduceTask } from "./cityProduceTask";
 import { AiTask, AiTaskOptions } from "./task";
-import { AIPlayer } from "../ai-player";
 
 export type CityProduceUnitTaskOptions = AiTaskOptions & {
   focus?: AiOrder["focus"];
@@ -22,8 +21,6 @@ export type CityProduceUnitTaskSerialized = {
   passableArea?: number;
 };
 
-type State = "init" | "producing";
-
 export class CityProduceUnitTask extends AiTask<
   CityProduceUnitTaskOptions,
   CityProduceUnitTaskSerialized
@@ -32,23 +29,7 @@ export class CityProduceUnitTask extends AiTask<
 
   produceTask: CityProduceTask | null = null;
 
-  state: State = "init";
-
-  constructor(ai: AIPlayer, options: CityProduceUnitTaskOptions) {
-    super(ai, options);
-    this.tick();
-  }
-
-  tick(): void {
-    switch (this.state) {
-      case "init":
-        return this.init();
-      case "producing":
-        return this.produce();
-    }
-  }
-
-  private init(): void {
+  init() {
     let unitDefs = Array.from(this.ai.player.knowledge.discoveredEntities.unit);
     unitDefs = unitDefs.filter((u) => {
       for (const trait of this.options.unitTrait) {
@@ -69,13 +50,10 @@ export class CityProduceUnitTask extends AiTask<
       product,
       passableArea: this.options.passableArea,
     });
-    this.tasks.push(this.produceTask);
-
-    this.state = "producing";
-    this.produce();
+    this.addTask(this.produceTask);
   }
 
-  private produce(): void {
+  tick(): void {
     if (!this.produceTask?.requestedProduction) {
       return;
     }

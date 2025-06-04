@@ -10,15 +10,30 @@ export class ParallelTask extends AiTask<AiTaskOptions, void> {
     public options: AiTaskOptions = {},
   ) {
     super(ai, options);
+  }
+
+  tickBranch(): void {
     this.tick();
   }
 
   tick(): void {
-    for (const task of this.tasks) {
-      task.tick();
+    if (this.result) {
+      return;
     }
-    this.tasks = this.tasks.filter((task) => task.result === null);
-    if (this.tasks.length === 0) {
+
+    this.status = "active";
+    this.tasks = this.tasks.filter((task) => !task.result);
+
+    for (const task of this.tasks) {
+      task.tickBranch();
+      if (this.checkChildFailure(task)) {
+        return;
+      }
+    }
+
+    const notCompletedTasks = this.tasks.filter((task) => task.result === null);
+
+    if (notCompletedTasks.length === 0) {
       this.complete();
     }
   }

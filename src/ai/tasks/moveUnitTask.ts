@@ -1,11 +1,13 @@
 import { moveAlongPath } from "@/core/movement";
 import { findPath } from "@/core/pathfinding";
-import { tileToTileCoords } from "@/core/serialization/channel";
+import {
+  tileToTileCoords,
+  unitToIdAndName,
+} from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { TileCoords } from "@/shared";
+import { TileCoords, UnitIdAndName } from "@/shared";
 import { AiTask, AiTaskOptions } from "./task";
-import { AIPlayer } from "../ai-player";
 
 export type MoveUnitTaskOptions = AiTaskOptions & {
   tile: TileCore;
@@ -15,7 +17,7 @@ export type MoveUnitTaskOptions = AiTaskOptions & {
 
 export type MoveUnitTaskSerialized = {
   tile: TileCoords;
-  unit: number;
+  unit: UnitIdAndName | null;
 };
 
 export class MoveUnitTask extends AiTask<
@@ -23,11 +25,6 @@ export class MoveUnitTask extends AiTask<
   MoveUnitTaskSerialized
 > {
   readonly type = "moveUnit";
-
-  constructor(ai: AIPlayer, options: MoveUnitTaskOptions) {
-    super(ai, options);
-    this.tick();
-  }
 
   tick(): void {
     const unit = this.options.unit;
@@ -71,7 +68,7 @@ export class MoveUnitTask extends AiTask<
   serialize(): MoveUnitTaskSerialized {
     return {
       tile: tileToTileCoords(this.options.tile),
-      unit: this.options.unit.id,
+      unit: unitToIdAndName(this.options.unit),
     };
   }
 

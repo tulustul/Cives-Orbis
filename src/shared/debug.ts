@@ -1,4 +1,4 @@
-import { AiTaskResult, AiTaskStatus } from "./data";
+import { AiTaskResult, AiTaskStatus, UnitAssignmentType } from "./data";
 
 export type AiTaskSerialized<T> = {
   type: string;
@@ -9,6 +9,16 @@ export type AiTaskSerialized<T> = {
   reason: string;
 };
 
-export type AiDebug = {
+export type AiDebugTasks = {
   tasks: AiTaskSerialized<any>[];
+};
+
+export type AiDebugUnitsRegistryUnit = {
+  id: number;
+  name: string;
+  assignment: UnitAssignmentType | null;
+};
+
+export type AiDebugUnitsRegistry = {
+  units: AiDebugUnitsRegistryUnit[];
 };

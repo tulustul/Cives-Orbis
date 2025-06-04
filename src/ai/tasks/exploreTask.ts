@@ -5,8 +5,8 @@ import { CityProduceUnitTask } from "./cityProduceUnitTask";
 import { MoveUnitTask } from "./moveUnitTask";
 import { NavalTransportTask } from "./navalTransportTask";
 import { AiTask, AiTaskOptions } from "./task";
-import { UnitTrait } from "@/shared";
-import { AIPlayer } from "../ai-player";
+import { UnitIdAndName, UnitTrait } from "@/shared";
+import { unitToIdAndName } from "@/core/serialization/channel";
 
 export type ExploreTaskOptions = AiTaskOptions & {
   passableArea: PassableArea;
@@ -18,12 +18,10 @@ export type ExploreTaskSerialized = {
     passableArea: number;
     priority?: number;
   };
-  explorer?: number;
+  explorer: UnitIdAndName | null;
   targetTile?: number;
   lastExplorerPosition?: number;
 };
-
-type ExploreState = "init" | "exploring";
 
 export class ExploreTask extends AiTask<
   ExploreTaskOptions,
@@ -33,23 +31,8 @@ export class ExploreTask extends AiTask<
 
   explorer: UnitCore | null = null;
   targetTile: TileCore | null = null;
-  state: ExploreState = "init";
 
-  constructor(ai: AIPlayer, options: ExploreTaskOptions) {
-    super(ai, options);
-    this.tick();
-  }
-
-  tick(): void {
-    switch (this.state) {
-      case "init":
-        return this.init();
-      case "exploring":
-        return this.explore();
-    }
-  }
-
-  private init(): void {
+  init() {
     const trait: UnitTrait =
       this.options.passableArea.type === "land" ? "land" : "naval";
 
@@ -75,11 +58,10 @@ export class ExploreTask extends AiTask<
       this.explorer.path = null;
       this.explorer.setOrder(null);
       this.ai.units.assign(this.explorer, "exploration");
-      this.state = "exploring";
       return;
     }
 
-    this.tasks.push(
+    this.addTask(
       new CityProduceUnitTask(this.ai, {
         focus: "expansion",
         priority: this.options.priority || 100,
@@ -94,11 +76,9 @@ export class ExploreTask extends AiTask<
         },
       }),
     );
-
-    this.state = "exploring";
   }
 
-  private explore(): void {
+  tick(): void {
     if (!this.explorer) {
       return this.fail("Explorer is not available");
     }
@@ -118,7 +98,7 @@ export class ExploreTask extends AiTask<
           return this.fail("No coastal access to target area");
         }
 
-        this.tasks.push(
+        this.addTask(
           new NavalTransportTask(this.ai, {
             unit: this.explorer,
             to: coastalTile,
@@ -143,7 +123,7 @@ export class ExploreTask extends AiTask<
       }
     }
 
-    this.tasks.push(
+    this.addTask(
       new MoveUnitTask(this.ai, {
         unit: this.explorer,
         tile: this.targetTile,
@@ -220,7 +200,7 @@ export class ExploreTask extends AiTask<
         passableArea: this.options.passableArea.id,
         priority: this.options.priority,
       },
-      explorer: this.explorer?.id,
+      explorer: unitToIdAndName(this.explorer),
       targetTile: this.targetTile?.id,
     };
   }
@@ -230,6 +210,6 @@ export class ExploreTask extends AiTask<
     const explorerPos = this.explorer?.tile.id ?? "none";
     const targetPos = this.targetTile?.id ?? "none";
     const hasExplorer = this.explorer ? "yes" : "no";
-    return `${this.state}-${explorerPos}-${targetPos}-${hasExplorer}`;
+    return `${explorerPos}-${targetPos}-${hasExplorer}`;
   }
 }

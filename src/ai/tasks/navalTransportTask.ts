@@ -1,15 +1,17 @@
 import { findPath } from "@/core/pathfinding";
-import { tileToTileCoords } from "@/core/serialization/channel";
+import {
+  tileToTileCoords,
+  unitToIdAndName,
+} from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { TileCoords } from "@/shared";
+import { TileCoords, UnitIdAndName } from "@/shared";
 import { findClosestUnit } from "../utils";
 import { CityProduceUnitTask } from "./cityProduceUnitTask";
 import { MoveUnitOneTileTask } from "./moveUnitOneTileTask";
 import { MoveUnitTask } from "./moveUnitTask";
 import { ParallelTask } from "./parallelTask";
 import { AiTask, AiTaskOptions } from "./task";
-import { AIPlayer } from "../ai-player";
 
 export type NavalTransportTaskOptions = AiTaskOptions & {
   unit: UnitCore;
@@ -18,10 +20,10 @@ export type NavalTransportTaskOptions = AiTaskOptions & {
 
 export type NavalTransportTaskSerialized = {
   options: {
-    unit: number;
+    unit: UnitIdAndName | null;
     to: TileCoords;
   };
-  transport?: number;
+  transport: UnitIdAndName | null;
   state: NavalTransportState;
 };
 
@@ -41,25 +43,7 @@ export class NavalTransportTask extends AiTask<
 
   state: NavalTransportState = "init";
 
-  constructor(ai: AIPlayer, options: NavalTransportTaskOptions) {
-    super(ai, options);
-    this.tick();
-  }
-
-  tick(): void {
-    switch (this.state) {
-      case "init":
-        return this.init();
-
-      case "moveToGatheringPoint":
-        return this.moveToGatheringPoint();
-
-      case "travelingToDestination":
-        return this.travelToDestination();
-    }
-  }
-
-  private init() {
+  init() {
     this.transport = findClosestUnit(
       Array.from(this.ai.units.freeByTrait.transport),
       this.options.to,
@@ -68,7 +52,7 @@ export class NavalTransportTask extends AiTask<
     if (this.transport) {
       this.ai.units.assign(this.transport, "transport");
     } else {
-      this.tasks.push(
+      this.addTask(
         new CityProduceUnitTask(this.ai, {
           focus: "expansion",
           priority: 70,
@@ -82,7 +66,19 @@ export class NavalTransportTask extends AiTask<
     }
 
     this.state = "moveToGatheringPoint";
-    this.moveToGatheringPoint();
+    if (!this.tasks.length) {
+      this.moveToGatheringPoint();
+    }
+  }
+
+  tick(): void {
+    switch (this.state) {
+      case "moveToGatheringPoint":
+        return this.moveToGatheringPoint();
+
+      case "travelingToDestination":
+        return this.travelToDestination();
+    }
   }
 
   private moveToGatheringPoint() {
@@ -96,7 +92,7 @@ export class NavalTransportTask extends AiTask<
       return this.fail("No valid gathering points found");
     }
 
-    this.tasks.push(
+    this.addTask(
       new ParallelTask(this.ai, [
         new MoveUnitTask(this.ai, {
           unit: this.options.unit,
@@ -109,7 +105,7 @@ export class NavalTransportTask extends AiTask<
       ]),
       new MoveUnitOneTileTask(this.ai, {
         unit: this.options.unit,
-        tile: this.transport.tile,
+        tile: gatheringSea,
       }),
       new MoveUnitTask(this.ai, {
         unit: this.transport,
@@ -128,7 +124,6 @@ export class NavalTransportTask extends AiTask<
     );
 
     this.state = "travelingToDestination";
-    this.travelToDestination();
   }
 
   private travelToDestination() {
@@ -159,12 +154,14 @@ export class NavalTransportTask extends AiTask<
     for (const tiles of path) {
       for (const tile of tiles) {
         if (gatheringSea) {
-          if (tile.isLand) {
+          if (
+            tile.isLand &&
+            lastTile.passableArea === gatheringSea.passableArea
+          ) {
             targetSea = lastTile;
-            break;
           }
         }
-        if (tile.isWater) {
+        if (!gatheringLand && tile.isWater) {
           gatheringLand = lastTile;
           gatheringSea = tile;
         }
@@ -191,10 +188,10 @@ export class NavalTransportTask extends AiTask<
   serialize(): NavalTransportTaskSerialized {
     return {
       options: {
-        unit: this.options.unit.id,
+        unit: unitToIdAndName(this.options.unit),
         to: tileToTileCoords(this.options.to),
       },
-      transport: this.transport ? this.transport.id : undefined,
+      transport: unitToIdAndName(this.transport),
       state: this.state,
     };
   }

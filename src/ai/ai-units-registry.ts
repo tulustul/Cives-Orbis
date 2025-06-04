@@ -1,13 +1,6 @@
 import { PlayerCore } from "@/core/player";
 import { UnitCore } from "@/core/unit";
-import { UnitTrait } from "@/shared";
-
-type UnitAssignmentType =
-  | "garrison"
-  | "exploration"
-  | "transport"
-  | "settling"
-  | "escort";
+import { UnitAssignmentType, UnitTrait } from "@/shared";
 
 type UnitAssignment = {
   unit: UnitCore;

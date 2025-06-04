@@ -46,7 +46,7 @@ import {
 } from "@/shared";
 import { shareReplay } from "rxjs";
 import { makeCommand, makeObservable } from "./worker";
-import { AiDebug } from "@/shared/debug";
+import { AiDebugTasks, AiDebugUnitsRegistry } from "@/shared/debug";
 
 export const bridge = {
   nextTask$: makeObservable<PlayerTask | null>("nextTask"),
@@ -183,9 +183,18 @@ export const bridge = {
       grantRevokeTech: (options: GrantRevokeTechOptions) =>
         makeCommand<void>("player.editor.grantRevokeTech", options),
       revealMap: () => makeCommand<void>("player.editor.revealMap"),
-      debugAi: () => makeCommand<AiDebug | null>("player.editor.debugAi"),
       giveGold: (options: PlayerEditorGiveGoldOptions) =>
         makeCommand<void>("player.editor.giveGold", options),
+    },
+  },
+  debug: {
+    player: {
+      getAiTasks: () =>
+        makeCommand<AiDebugTasks | null>("player.debug.getAiTasks"),
+      getAiUnitsRegistry: () =>
+        makeCommand<AiDebugUnitsRegistry | null>(
+          "player.debug.getAiUnitsRegistry",
+        ),
     },
   },
 };

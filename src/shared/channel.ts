@@ -345,3 +345,8 @@ export type CityOverviewChanneled = {
 export type PlayerEconomyChanneled = {
   cities: CityOverviewChanneled[];
 };
+
+export type UnitIdAndName = {
+  id: number;
+  name: string;
+};

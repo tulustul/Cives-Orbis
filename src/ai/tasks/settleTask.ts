@@ -1,13 +1,15 @@
-import { tileToTileCoords } from "@/core/serialization/channel";
+import {
+  tileToTileCoords,
+  unitToIdAndName,
+} from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { TileCoords } from "@/shared";
+import { TileCoords, UnitIdAndName } from "@/shared";
 import { findClosestUnit } from "../utils";
 import { CityProduceUnitTask } from "./cityProduceUnitTask";
 import { MoveUnitTask } from "./moveUnitTask";
 import { NavalTransportTask } from "./navalTransportTask";
 import { AiTask, AiTaskOptions } from "./task";
-import { AIPlayer } from "../ai-player";
 
 export type SettleTaskOptions = AiTaskOptions & {
   tile: TileCore;
@@ -17,7 +19,7 @@ export type SettleTaskSerialized = {
   options: {
     tile: TileCoords;
   };
-  settler?: number;
+  settler: UnitIdAndName | null;
 };
 
 type SettleState = "init" | "moving" | "settling";
@@ -32,28 +34,6 @@ export class SettleTask extends AiTask<
 
   state: SettleState = "init";
 
-  constructor(ai: AIPlayer, options: SettleTaskOptions) {
-    super(ai, options);
-    this.tick();
-  }
-
-  tick(): void {
-    if (this.options.tile.areaOf) {
-      return this.fail("Tile already claimed");
-    }
-
-    switch (this.state) {
-      case "init":
-        return this.init();
-
-      case "moving":
-        return this.move();
-
-      case "settling":
-        return this.settle();
-    }
-  }
-
   init() {
     this.settler = findClosestUnit(
       Array.from(this.ai.units.freeByTrait.settler),
@@ -63,7 +43,7 @@ export class SettleTask extends AiTask<
     if (this.settler) {
       this.ai.units.assign(this.settler, "settling");
     } else {
-      this.tasks.push(
+      this.addTask(
         new CityProduceUnitTask(this.ai, {
           focus: "expansion",
           priority: this.ai.player.cities.length < 3 ? 100 : 50,
@@ -86,20 +66,34 @@ export class SettleTask extends AiTask<
     }
   }
 
+  tick(): void {
+    if (this.options.tile.areaOf) {
+      return this.fail("Tile already claimed");
+    }
+
+    switch (this.state) {
+      case "moving":
+        return this.move();
+
+      case "settling":
+        return this.settle();
+    }
+  }
+
   move() {
     if (!this.settler) {
       return this.fail("No settler available to move");
     }
 
     if (this.options.tile.passableArea === this.settler.tile.passableArea) {
-      this.tasks.push(
+      this.addTask(
         new MoveUnitTask(this.ai, {
           tile: this.options.tile,
           unit: this.settler,
         }),
       );
     } else {
-      this.tasks.push(
+      this.addTask(
         new NavalTransportTask(this.ai, {
           to: this.options.tile,
           unit: this.settler,
@@ -140,7 +134,7 @@ export class SettleTask extends AiTask<
       options: {
         tile: tileToTileCoords(this.options.tile),
       },
-      settler: this.settler?.id,
+      settler: unitToIdAndName(this.settler),
     };
   }
 
