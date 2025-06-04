@@ -14,7 +14,7 @@ export class IdleUnitsAI extends AISystem {
       if (this.ai.units.assignments.has(unit)) {
         continue;
       }
-      
+
       const order = this.handleIdleUnit(unit);
       if (order) {
         yield order;
@@ -49,7 +49,7 @@ export class IdleUnitsAI extends AISystem {
     }
 
     const unexploredInArea = this.countUnexploredTilesInArea(area);
-    
+
     // If area is tiny and fully explored, destroy the explorer
     if (area.area < 10 && unexploredInArea === 0) {
       return this.destroyUnit(unit, "Tiny area fully explored");
@@ -66,18 +66,21 @@ export class IdleUnitsAI extends AISystem {
 
   private handleIdleWorker(unit: UnitCore): AiOrder | null {
     // Check if there are any improvements needed in the empire
-    const hasWorkToDo = this.ai.player.cities.some(city => {
+    const hasWorkToDo = this.ai.player.cities.some((city) => {
       // Simple check - see if city has unimproved tiles
-      const unimprovedTiles = Array.from(city.tile.getTilesInRange(2))
-        .filter((t: TileCore) => t.areaOf === city && !t.improvement);
+      const unimprovedTiles = Array.from(city.tile.getTilesInRange(2)).filter(
+        (t: TileCore) => t.areaOf === city && !t.improvement,
+      );
       return unimprovedTiles.length > 0;
     });
 
     if (!hasWorkToDo) {
       // No work available, consider destroying if we have too many workers
-      const workerCount = Array.from(this.ai.player.units).filter(u => u.definition.traits.includes("worker")).length;
+      const workerCount = Array.from(this.ai.player.units).filter((u) =>
+        u.definition.traits.includes("worker"),
+      ).length;
       const cityCount = this.ai.player.cities.length;
-      
+
       if (workerCount > cityCount * 2) {
         return this.destroyUnit(unit, "Excess worker");
       }
@@ -106,9 +109,11 @@ export class IdleUnitsAI extends AISystem {
     }
 
     // Too many military units and no threats
-    const militaryCount = Array.from(this.ai.player.units).filter(u => u.isMilitary).length;
+    const militaryCount = Array.from(this.ai.player.units).filter(
+      (u) => u.isMilitary,
+    ).length;
     const cityCount = this.ai.player.cities.length;
-    
+
     if (militaryCount > cityCount * 3) {
       return this.destroyUnit(unit, "Excess military");
     }
@@ -118,16 +123,21 @@ export class IdleUnitsAI extends AISystem {
 
   private handleIdleTransport(unit: UnitCore): AiOrder | null {
     // Check if any units need transport
-    const hasTransportDemand = this.ai.player.units.some(u => 
-      u.isLand && u.tile.passableArea !== this.ai.player.empireCenter?.passableArea
+    const hasTransportDemand = this.ai.player.units.some(
+      (u) =>
+        u.isLand &&
+        u.tile.passableArea !== this.ai.player.empireCenter?.passableArea,
     );
 
     if (!hasTransportDemand) {
       // No transport needed, check if we have too many transports
-      const transportCount = Array.from(this.ai.player.units).filter(u => u.isTransport).length;
-      const navalExplorationNeeded = Array.from(this.ai.player.knownPassableAreas.values())
-        .filter(area => area.type === "water" && area.area > 50).length;
-      
+      const transportCount = Array.from(this.ai.player.units).filter(
+        (u) => u.isTransport,
+      ).length;
+      const navalExplorationNeeded = Array.from(
+        this.ai.player.knownPassableAreas.values(),
+      ).filter((area) => area.type === "water" && area.area > 50).length;
+
       if (transportCount > Math.max(2, navalExplorationNeeded)) {
         return this.destroyUnit(unit, "Excess transport");
       }
@@ -175,7 +185,9 @@ export class IdleUnitsAI extends AISystem {
       focus: "economy",
       priority: 5,
       perform: () => {
-        console.log(`Destroying idle ${unit.definition.id} at ${unit.tile.id}: ${reason}`);
+        console.log(
+          `Destroying idle ${unit.definition.id} at ${unit.tile.id}: ${reason}`,
+        );
         unit.destroy();
       },
     };
@@ -190,7 +202,10 @@ export class IdleUnitsAI extends AISystem {
     let unexplored = 0;
     for (const row of this.ai.player.game.map.tiles) {
       for (const tile of row) {
-        if (tile.passableArea === area && !this.ai.player.exploredTiles.has(tile)) {
+        if (
+          tile.passableArea === area &&
+          !this.ai.player.exploredTiles.has(tile)
+        ) {
           unexplored++;
         }
       }
@@ -200,7 +215,9 @@ export class IdleUnitsAI extends AISystem {
 
   private isAreaIsolated(area: any): boolean {
     // Check if area has no cities and no way to reach it without naval transport
-    const hasCities = this.ai.player.cities.some(city => city.tile.passableArea === area);
+    const hasCities = this.ai.player.cities.some(
+      (city) => city.tile.passableArea === area,
+    );
     if (hasCities) return false;
 
     // Check if it's a small island
@@ -228,9 +245,10 @@ export class IdleUnitsAI extends AISystem {
 
     for (const city of this.ai.player.cities) {
       // Simple check - see if city has unimproved tiles
-      const unimprovedTiles = Array.from(city.tile.getTilesInRange(2))
-        .filter((t: TileCore) => t.areaOf === city && !t.improvement);
-      
+      const unimprovedTiles = Array.from(city.tile.getTilesInRange(2)).filter(
+        (t: TileCore) => t.areaOf === city && !t.improvement,
+      );
+
       if (unimprovedTiles.length > 0) {
         const distance = unit.tile.getDistanceTo(city.tile);
         if (distance < minDistance) {
@@ -248,7 +266,7 @@ export class IdleUnitsAI extends AISystem {
     let minDistance = Infinity;
 
     for (const city of this.ai.player.cities) {
-      const garrison = city.tile.units.filter(u => u.isMilitary).length;
+      const garrison = city.tile.units.filter((u) => u.isMilitary).length;
       if (garrison === 0) {
         const distance = unit.tile.getDistanceTo(city.tile);
         if (distance < minDistance) {
@@ -267,10 +285,11 @@ export class IdleUnitsAI extends AISystem {
     let minDistance = Infinity;
 
     for (const city of this.ai.player.cities) {
-      const isBorder = Array.from(city.tile.getTilesInRange(3)).some((tile: TileCore) => 
-        tile.areaOf && tile.areaOf.player !== this.ai.player
+      const isBorder = Array.from(city.tile.getTilesInRange(3)).some(
+        (tile: TileCore) =>
+          tile.areaOf && tile.areaOf.player !== this.ai.player,
       );
-      
+
       if (isBorder) {
         const distance = unit.tile.getDistanceTo(city.tile);
         if (distance < minDistance) {
@@ -288,7 +307,9 @@ export class IdleUnitsAI extends AISystem {
     let minDistance = Infinity;
 
     for (const city of this.ai.player.cities) {
-      const isCoastal = city.tile.neighbours.some(n => n.seaLevel !== SeaLevel.none);
+      const isCoastal = city.tile.neighbours.some(
+        (n) => n.seaLevel !== SeaLevel.none,
+      );
       if (isCoastal) {
         const distance = unit.tile.getDistanceTo(city.tile);
         if (distance < minDistance) {

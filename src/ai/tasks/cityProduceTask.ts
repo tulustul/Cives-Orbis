@@ -2,11 +2,11 @@ import { CityCore } from "@/core/city";
 import { ProductDefinition } from "@/core/data/types";
 import { PassableArea } from "@/core/tiles-map";
 import { UnitTrait } from "@/shared";
-import { AIPlayer } from "../ai-player";
 import { AiOrder } from "../types";
-import { AiTask } from "./task";
+import { AiTask, AiTaskOptions } from "./task";
+import { AIPlayer } from "../ai-player";
 
-export type CityProduceTaskOptions = {
+export type CityProduceTaskOptions = AiTaskOptions & {
   focus?: AiOrder["focus"];
   priority: AiOrder["priority"];
   unitTrait?: UnitTrait;
@@ -33,13 +33,16 @@ export type CityProduceTaskSerialized = {
   };
 };
 
-export class CityProduceTask extends AiTask<CityProduceTaskSerialized> {
+export class CityProduceTask extends AiTask<
+  CityProduceTaskOptions,
+  CityProduceTaskSerialized
+> {
   readonly type = "cityProduce";
 
   requestedProduction: RequestedProduction | null = null;
 
-  constructor(ai: AIPlayer, private options: CityProduceTaskOptions) {
-    super(ai);
+  constructor(ai: AIPlayer, options: CityProduceTaskOptions) {
+    super(ai, options);
     this.tick();
   }
 
@@ -60,7 +63,7 @@ export class CityProduceTask extends AiTask<CityProduceTaskSerialized> {
     let product = this.options.product;
 
     if (!product) {
-      return this.fail();
+      return this.fail("No product specified");
     }
 
     const cityCandidates = this.ai.player.citiesWithoutProduction.filter(

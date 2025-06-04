@@ -1,17 +1,17 @@
 import { findPath } from "@/core/pathfinding";
+import { tileToTileCoords } from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
-import { AIPlayer } from "../ai-player";
+import { TileCoords } from "@/shared";
 import { findClosestUnit } from "../utils";
 import { CityProduceUnitTask } from "./cityProduceUnitTask";
 import { MoveUnitOneTileTask } from "./moveUnitOneTileTask";
 import { MoveUnitTask } from "./moveUnitTask";
 import { ParallelTask } from "./parallelTask";
-import { AiTask, AiTaskResult } from "./task";
-import { tileToTileCoords } from "@/core/serialization/channel";
-import { TileCoords } from "@/shared";
+import { AiTask, AiTaskOptions } from "./task";
+import { AIPlayer } from "../ai-player";
 
-export type NavalTransportTaskOptions = {
+export type NavalTransportTaskOptions = AiTaskOptions & {
   unit: UnitCore;
   to: TileCore;
 };
@@ -31,15 +31,18 @@ type NavalTransportState =
   | "sailing"
   | "travelingToDestination";
 
-export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
+export class NavalTransportTask extends AiTask<
+  NavalTransportTaskOptions,
+  NavalTransportTaskSerialized
+> {
   readonly type = "navalTransport";
 
   transport: UnitCore | null = null;
 
   state: NavalTransportState = "init";
 
-  constructor(ai: AIPlayer, private options: NavalTransportTaskOptions) {
-    super(ai);
+  constructor(ai: AIPlayer, options: NavalTransportTaskOptions) {
+    super(ai, options);
     this.tick();
   }
 
@@ -69,7 +72,7 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
         new CityProduceUnitTask(this.ai, {
           focus: "expansion",
           priority: 70,
-          unitTrait: "transport",
+          unitTrait: ["transport"],
           onCompleted: (transport) => {
             this.transport = transport;
             this.ai.units.assign(transport, "transport");
@@ -84,13 +87,13 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
 
   private moveToGatheringPoint() {
     if (!this.transport) {
-      return this.fail();
+      return this.fail("No transport unit available");
     }
 
     const [gatheringLand, gatheringSea, targetSea] = this.findGatheringPoints();
 
     if (!gatheringLand || !gatheringSea || !targetSea) {
-      return this.fail();
+      return this.fail("No valid gathering points found");
     }
 
     this.tasks.push(
@@ -132,7 +135,7 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
     if (this.options.unit.tile === this.options.to) {
       this.complete();
     } else {
-      this.fail();
+      this.fail("Unit did not reach destination");
     }
   }
 
@@ -147,7 +150,6 @@ export class NavalTransportTask extends AiTask<NavalTransportTaskSerialized> {
     const path = findPath(unit, this.options.to);
     unit.isNaval = oldIsNaval;
     if (!path) {
-      this.result = AiTaskResult.failed;
       return [null, null, null];
     }
     let gatheringLand: TileCore | null = null;

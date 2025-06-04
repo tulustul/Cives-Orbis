@@ -1,18 +1,21 @@
+import { TileCore } from "@/core/tile";
 import { PassableArea } from "@/core/tiles-map";
 import { AISystem } from "./ai-system";
 import { ExploreTask } from "./tasks/exploreTask";
-import { AiTask } from "./tasks/task";
 
-const TILES_PER_EXPLORER = 500;
+const TILES_PER_LAND_EXPLORER = 20;
+const TILES_PER_SEA_EXPLORER = 50;
 const MAX_EXPLORERS_PER_AREA = 3;
-const MIN_EXPLORER_AREA = 2;
 
 export class ExploringAI extends AISystem {
   private tasks: ExploreTask[] = [];
 
-  *plan(): Generator<AiTask<any>> {
-    // Clean up completed tasks
+  public edgeOfUnknown = new Map<PassableArea, Set<TileCore>>();
+
+  *plan(): Generator<ExploreTask> {
     this.tasks = this.tasks.filter((task) => task.result === null);
+
+    this.computeEdgeOfUnknown();
 
     // Track which areas already have exploration tasks
     const areasWithTasks = new Set<PassableArea>();
@@ -21,101 +24,58 @@ export class ExploringAI extends AISystem {
     }
 
     // Check for areas that need explorers
-    for (const passableArea of this.ai.player.knownPassableAreas.values()) {
-      if (passableArea.area < MIN_EXPLORER_AREA) {
-        continue;
-      }
-
-      // Skip if we already have a task for this area
-      if (areasWithTasks.has(passableArea)) {
-        continue;
-      }
-
+    for (const [area, edge] of this.edgeOfUnknown.entries()) {
       // Calculate how many explorers we need for this area
+      const tilesPerExplorer =
+        area.type === "land" ? TILES_PER_LAND_EXPLORER : TILES_PER_SEA_EXPLORER;
       const explorersNeeded = Math.min(
         MAX_EXPLORERS_PER_AREA,
-        Math.ceil(passableArea.area / TILES_PER_EXPLORER),
+        Math.ceil(edge.size / tilesPerExplorer),
       );
 
-      // Count current explorers in this area
-      const currentExplorers = Array.from(this.ai.units.byAssignment.exploration).filter(
-        (unit) => unit.tile.passableArea === passableArea
+      const currentTasks = this.tasks.filter(
+        (t) => t.options.passableArea === area,
       ).length;
 
       // Create tasks for needed explorers
-      const tasksToCreate = explorersNeeded - currentExplorers;
+      const tasksToCreate = explorersNeeded - currentTasks;
       for (let i = 0; i < tasksToCreate; i++) {
-        const priority = this.calculatePriority(passableArea);
         const task = new ExploreTask(this.ai, {
-          passableArea,
-          priority,
+          passableArea: area,
+          priority: 100,
         });
         this.tasks.push(task);
         yield task;
       }
     }
-
-    // Handle explorers that aren't assigned to any task
-    for (const explorer of this.ai.units.freeByTrait.explorer) {
-      // Check if this explorer's area needs exploration
-      const passableArea = explorer.tile.passableArea;
-      if (!passableArea || passableArea.area < MIN_EXPLORER_AREA) {
-        // Destroy explorer if in tiny area
-        explorer.destroy();
-        continue;
-      }
-
-      // Create a new exploration task for this free explorer
-      const task = new ExploreTask(this.ai, {
-        passableArea,
-        priority: 100,
-      });
-      this.tasks.push(task);
-      yield task;
-    }
   }
 
-  private calculatePriority(passableArea: PassableArea): number {
-    let priority = 100;
+  private computeEdgeOfUnknown(): void {
+    this.edgeOfUnknown.clear();
 
-    // Higher priority for larger areas
-    if (passableArea.area > 1000) {
-      priority += 20;
-    }
-
-    // Higher priority for land areas (more likely to have good settling spots)
-    if (passableArea.type === "land") {
-      priority += 10;
-    }
-
-    // Lower priority for areas we've already partially explored
-    const exploredTilesInArea = Array.from(this.ai.player.exploredTiles).filter(
-      (tile) => tile.passableArea === passableArea
-    ).length;
-    
-    const explorationRatio = exploredTilesInArea / passableArea.area;
-    if (explorationRatio > 0.5) {
-      priority -= 20;
-    }
-
-    // Check if area has cities
-    const hasCities = this.ai.player.cities.some(
-      (city) => city.tile.passableArea === passableArea
-    );
-    
-    if (hasCities) {
-      // Lower priority for areas with cities (we can produce explorers there)
-      priority += 5;
-    } else {
-      // Higher priority for areas without cities (need to transport explorers)
-      priority += 25;
-      
-      // Even higher if it's unexplored land
-      if (passableArea.type === "land" && explorationRatio < 0.1) {
-        priority += 20;
+    for (const tile of this.ai.player.exploredTiles) {
+      if (!tile.passableArea) {
+        continue;
+      }
+      let edge = this.edgeOfUnknown.get(tile.passableArea);
+      if (!edge) {
+        edge = new Set();
+        this.edgeOfUnknown.set(tile.passableArea, edge);
+      }
+      for (const neighbour of tile.neighbours) {
+        if (
+          !neighbour.isMapEdge &&
+          !this.ai.player.exploredTiles.has(neighbour)
+        ) {
+          edge.add(tile);
+        }
       }
     }
 
-    return priority;
+    for (const [area, edge] of this.edgeOfUnknown.entries()) {
+      if (edge.size === 0) {
+        this.edgeOfUnknown.delete(area);
+      }
+    }
   }
 }

@@ -1,11 +1,15 @@
 import { AIPlayer } from "../ai-player";
-import { AiTask } from "./task";
+import { AiTask, AiTaskOptions } from "./task";
 
-export class ParallelTask extends AiTask<void> {
+export class ParallelTask extends AiTask<AiTaskOptions, void> {
   readonly type = "parallel";
 
-  constructor(ai: AIPlayer, public tasks: AiTask<any>[]) {
-    super(ai);
+  constructor(
+    ai: AIPlayer,
+    public tasks: AiTask<any, any>[],
+    public options: AiTaskOptions = {},
+  ) {
+    super(ai, options);
     this.tick();
   }
 

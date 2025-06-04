@@ -159,3 +159,6 @@ export type PlayerTask =
       id: number;
     }
   | { task: "chooseTech" };
+
+export type AiTaskResult = "completed" | "failed";
+export type AiTaskStatus = "pending" | "active";

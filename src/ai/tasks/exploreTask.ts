@@ -1,14 +1,14 @@
-import { PassableArea } from "@/core/tiles-map";
-import { getMoveResult, MoveResult } from "@/core/movement";
 import { TileCore } from "@/core/tile";
+import { PassableArea } from "@/core/tiles-map";
 import { UnitCore } from "@/core/unit";
-import { AIPlayer } from "../ai-player";
-import { AiTask } from "./task";
+import { CityProduceUnitTask } from "./cityProduceUnitTask";
 import { MoveUnitTask } from "./moveUnitTask";
 import { NavalTransportTask } from "./navalTransportTask";
-import { CityProduceUnitTask } from "./cityProduceUnitTask";
+import { AiTask, AiTaskOptions } from "./task";
+import { UnitTrait } from "@/shared";
+import { AIPlayer } from "../ai-player";
 
-export type ExploreTaskOptions = {
+export type ExploreTaskOptions = AiTaskOptions & {
   passableArea: PassableArea;
   priority?: number;
 };
@@ -25,16 +25,18 @@ export type ExploreTaskSerialized = {
 
 type ExploreState = "init" | "exploring";
 
-export class ExploreTask extends AiTask<ExploreTaskSerialized> {
+export class ExploreTask extends AiTask<
+  ExploreTaskOptions,
+  ExploreTaskSerialized
+> {
   readonly type = "explore";
 
   explorer: UnitCore | null = null;
   targetTile: TileCore | null = null;
   state: ExploreState = "init";
-  lastExplorerPosition: TileCore | null = null;
 
-  constructor(ai: AIPlayer, public options: ExploreTaskOptions) {
-    super(ai);
+  constructor(ai: AIPlayer, options: ExploreTaskOptions) {
+    super(ai, options);
     this.tick();
   }
 
@@ -48,68 +50,43 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
   }
 
   private init(): void {
-    // First, try to find an explorer already in this area
-    const localExplorers = Array.from(
-      this.ai.units.freeByTrait.explorer,
-    ).filter((unit) => unit.tile.passableArea === this.options.passableArea);
+    const trait: UnitTrait =
+      this.options.passableArea.type === "land" ? "land" : "naval";
 
-    if (localExplorers.length > 0) {
-      this.explorer = localExplorers[0];
+    let globalExplorels = Array.from(this.ai.units.freeByTrait.explorer).filter(
+      (unit) => unit.definition.traits.includes(trait),
+    );
+
+    if (this.options.passableArea.type === "water") {
+      globalExplorels = globalExplorels.filter(
+        (unit) => unit.tile.passableArea === this.options.passableArea,
+      );
+    }
+
+    const localExplorers = globalExplorels.filter((unit) =>
+      this.unitOnCorrectArea(unit),
+    );
+
+    const explorers =
+      localExplorers.length > 0 ? localExplorers : globalExplorels;
+
+    if (explorers.length > 0) {
+      this.explorer = explorers[0];
+      this.explorer.path = null;
+      this.explorer.setOrder(null);
       this.ai.units.assign(this.explorer, "exploration");
       this.state = "exploring";
       return;
     }
 
-    // Check if this area has any cities - if not, try to transport an explorer from elsewhere
-    const hasCity = this.ai.player.cities.some(
-      (city) => city.tile.passableArea === this.options.passableArea,
-    );
-
-    if (!hasCity) {
-      // Try to find an explorer from another area to transport
-      const availableExplorers = Array.from(
-        this.ai.units.freeByTrait.explorer,
-      ).filter((unit) => unit.tile.passableArea !== this.options.passableArea);
-
-      if (availableExplorers.length > 0) {
-        // Prefer land explorers over naval ones for overseas exploration
-        const landExplorers = availableExplorers.filter((unit) => unit.isLand);
-
-        if (landExplorers.length > 0) {
-          // Find the explorer closest to a coast
-          let bestExplorer = landExplorers[0];
-          let minDistanceToCoast = Infinity;
-
-          for (const explorer of landExplorers) {
-            const distanceToCoast = this.getDistanceToNearestCoast(explorer);
-            if (distanceToCoast < minDistanceToCoast) {
-              minDistanceToCoast = distanceToCoast;
-              bestExplorer = explorer;
-            }
-          }
-
-          this.explorer = bestExplorer;
-        } else {
-          // Use a naval explorer if no land explorers available
-          this.explorer = availableExplorers[0];
-        }
-
-        this.ai.units.assign(this.explorer, "exploration");
-        this.state = "exploring";
-        return;
-      }
-    }
-
-    // No existing explorer available, request production
     this.tasks.push(
       new CityProduceUnitTask(this.ai, {
         focus: "expansion",
         priority: this.options.priority || 100,
-        unitTrait: "explorer",
-        passableArea: hasCity ? this.options.passableArea : undefined, // Don't restrict if no city
+        unitTrait: ["explorer", trait],
         onCompleted: (unit) => {
           if (!unit) {
-            this.fail();
+            this.fail("No explorer produced");
             return;
           }
           this.explorer = unit;
@@ -122,25 +99,37 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
   }
 
   private explore(): void {
-    if (!this.explorer || !this.explorer.isAlive) {
-      return this.fail();
+    if (!this.explorer) {
+      return this.fail("Explorer is not available");
     }
 
-    // Check if we need to move to this area first (naval transport)
-    if (this.explorer.tile.passableArea !== this.options.passableArea) {
-      // Need naval transport to reach the target area
-      const coastalTile = this.findCoastalTileInArea(this.options.passableArea);
-      if (!coastalTile) {
-        return this.fail(); // No coastal access to target area
-      }
+    if (!this.explorer.isAlive) {
+      return this.fail("Explorer is dead");
+    }
 
-      this.tasks.push(
-        new NavalTransportTask(this.ai, {
-          unit: this.explorer,
-          to: coastalTile,
-        }),
-      );
-      return;
+    if (this.explorer.isLand) {
+      // Check if we need to move to this area first (naval transport)
+      if (!this.unitOnCorrectArea(this.explorer)) {
+        // Need naval transport to reach the target area
+        const coastalTile = this.findCoastalTileInArea(
+          this.options.passableArea,
+        );
+        if (!coastalTile) {
+          return this.fail("No coastal access to target area");
+        }
+
+        this.tasks.push(
+          new NavalTransportTask(this.ai, {
+            unit: this.explorer,
+            to: coastalTile,
+          }),
+        );
+        return;
+      }
+    } else {
+      if (!this.unitOnCorrectArea(this.explorer)) {
+        return this.fail("Explorer is not on the correct area");
+      }
     }
 
     // We're in the right area, find unexplored tiles
@@ -154,18 +143,6 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
       }
     }
 
-    // Check if explorer has made progress
-    if (this.lastExplorerPosition === this.explorer.tile) {
-      // Explorer hasn't moved, might be stuck
-      this.targetTile = this.findUnexploredTile();
-      if (!this.targetTile) {
-        this.complete();
-        return;
-      }
-    }
-    this.lastExplorerPosition = this.explorer.tile;
-
-    // Move towards target
     this.tasks.push(
       new MoveUnitTask(this.ai, {
         unit: this.explorer,
@@ -175,26 +152,11 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
   }
 
   private findUnexploredTile(): TileCore | null {
-    const edgeOfUnknown = new Set<TileCore>();
+    const edgeOfUnknown = this.ai.exploringAI.edgeOfUnknown.get(
+      this.options.passableArea,
+    );
 
-    // Find tiles at the edge of explored territory in this area
-    for (const tile of this.ai.player.exploredTiles) {
-      if (tile.passableArea !== this.options.passableArea) {
-        continue;
-      }
-
-      for (const neighbour of tile.neighbours) {
-        if (
-          !neighbour.isMapEdge &&
-          !this.ai.player.exploredTiles.has(neighbour) &&
-          getMoveResult(this.explorer!, tile, neighbour) === MoveResult.move
-        ) {
-          edgeOfUnknown.add(tile);
-        }
-      }
-    }
-
-    if (edgeOfUnknown.size === 0) {
+    if (!edgeOfUnknown?.size) {
       return null;
     }
 
@@ -233,23 +195,17 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
     return coastalTiles[Math.floor(Math.random() * coastalTiles.length)];
   }
 
-  private getDistanceToNearestCoast(unit: UnitCore): number {
-    let minDistance = Infinity;
-
-    // Find all coastal tiles in the unit's area
-    for (const tile of this.ai.player.exploredTiles) {
-      if (tile.passableArea === unit.tile.passableArea && tile.isLand) {
-        const hasWaterNeighbor = tile.neighbours.some((n) => n.isWater);
-        if (hasWaterNeighbor) {
-          const distance = unit.tile.getDistanceTo(tile);
-          if (distance < minDistance) {
-            minDistance = distance;
-          }
+  private unitOnCorrectArea(unit: UnitCore): boolean {
+    let ok = unit.tile.passableArea === this.options.passableArea;
+    if (unit.isNaval) {
+      for (const neighbour of unit.tile.neighbours) {
+        if (neighbour.passableArea === this.options.passableArea) {
+          ok = true;
+          break;
         }
       }
     }
-
-    return minDistance;
+    return ok;
   }
 
   cleanup(): void {
@@ -266,7 +222,6 @@ export class ExploreTask extends AiTask<ExploreTaskSerialized> {
       },
       explorer: this.explorer?.id,
       targetTile: this.targetTile?.id,
-      lastExplorerPosition: this.lastExplorerPosition?.id,
     };
   }
 

@@ -3,10 +3,10 @@ import { tileToTileCoords } from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { TileCoords } from "@/shared";
+import { AiTask, AiTaskOptions } from "./task";
 import { AIPlayer } from "../ai-player";
-import { AiTask } from "./task";
 
-export type MoveUnitOneTileTaskOptions = {
+export type MoveUnitOneTileTaskOptions = AiTaskOptions & {
   tile: TileCore;
   unit: UnitCore;
 };
@@ -16,11 +16,14 @@ export type MoveUnitOneTileTaskSerialized = {
   unit: number;
 };
 
-export class MoveUnitOneTileTask extends AiTask<MoveUnitOneTileTaskSerialized> {
+export class MoveUnitOneTileTask extends AiTask<
+  MoveUnitOneTileTaskOptions,
+  MoveUnitOneTileTaskSerialized
+> {
   readonly type = "moveUnitOneTile";
 
-  constructor(ai: AIPlayer, private options: MoveUnitOneTileTaskOptions) {
-    super(ai);
+  constructor(ai: AIPlayer, options: MoveUnitOneTileTaskOptions) {
+    super(ai, options);
     this.tick();
   }
 
@@ -30,7 +33,7 @@ export class MoveUnitOneTileTask extends AiTask<MoveUnitOneTileTaskSerialized> {
     if (this.options.unit.tile === this.options.tile) {
       this.complete();
     } else {
-      this.fail();
+      this.fail("Unit could not move to the specified tile");
     }
   }
 

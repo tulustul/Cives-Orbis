@@ -22,6 +22,7 @@ import {
 } from "./components";
 import { Icon } from "./components/Icon";
 import { mapUi } from "./mapUi";
+import { useUiState } from "./uiState";
 
 const ORDER_TO_ICON: Record<UnitOrder, TablerIcon> = {
   sleep: IconZzz,
@@ -31,6 +32,8 @@ const ORDER_TO_ICON: Record<UnitOrder, TablerIcon> = {
 
 export function UnitPanel() {
   const unit = useObservable(mapUi.selectedUnit$);
+
+  const { debug } = useUiState();
 
   function destroy() {
     if (unit) {
@@ -53,7 +56,12 @@ export function UnitPanel() {
     <Panel corner="bottom-left" className="p-2 w-90 min-h-40" rounded>
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-4">
-          <div className="text-2xl mb-1">{unit.definition.name}</div>
+          <div className="text-2xl mb-1">
+            {unit.definition.name}
+            {debug && (
+              <span className="text-xs text-gray-400"> (id: {unit.id})</span>
+            )}
+          </div>
           {unit.health < 100 && (
             <Tooltip
               className="w-46 pb-2"

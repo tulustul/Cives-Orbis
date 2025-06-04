@@ -2,15 +2,15 @@ import { ProductDefinition, UnitDefinition } from "@/core/data/types";
 import { PassableArea } from "@/core/tiles-map";
 import { UnitCore } from "@/core/unit";
 import { UnitTrait } from "@/shared";
-import { AIPlayer } from "../ai-player";
 import { AiOrder } from "../types";
 import { CityProduceTask } from "./cityProduceTask";
-import { AiTask } from "./task";
+import { AiTask, AiTaskOptions } from "./task";
+import { AIPlayer } from "../ai-player";
 
-export type CityProduceUnitTaskOptions = {
+export type CityProduceUnitTaskOptions = AiTaskOptions & {
   focus?: AiOrder["focus"];
   priority: AiOrder["priority"];
-  unitTrait: UnitTrait;
+  unitTrait: UnitTrait[];
   passableArea?: PassableArea;
   onCompleted?: (unit: UnitCore) => void;
 };
@@ -18,21 +18,24 @@ export type CityProduceUnitTaskOptions = {
 export type CityProduceUnitTaskSerialized = {
   focus?: AiOrder["focus"];
   priority: AiOrder["priority"];
-  unitTrait: UnitTrait;
+  unitTrait: UnitTrait[];
   passableArea?: number;
 };
 
 type State = "init" | "producing";
 
-export class CityProduceUnitTask extends AiTask<CityProduceUnitTaskSerialized> {
+export class CityProduceUnitTask extends AiTask<
+  CityProduceUnitTaskOptions,
+  CityProduceUnitTaskSerialized
+> {
   readonly type = "cityProduceUnit";
 
   produceTask: CityProduceTask | null = null;
 
   state: State = "init";
 
-  constructor(ai: AIPlayer, private options: CityProduceUnitTaskOptions) {
-    super(ai);
+  constructor(ai: AIPlayer, options: CityProduceUnitTaskOptions) {
+    super(ai, options);
     this.tick();
   }
 
@@ -47,12 +50,17 @@ export class CityProduceUnitTask extends AiTask<CityProduceUnitTaskSerialized> {
 
   private init(): void {
     let unitDefs = Array.from(this.ai.player.knowledge.discoveredEntities.unit);
-    unitDefs = unitDefs.filter((u) =>
-      u.traits.includes(this.options.unitTrait),
-    );
+    unitDefs = unitDefs.filter((u) => {
+      for (const trait of this.options.unitTrait) {
+        if (!u.traits.includes(trait)) {
+          return false;
+        }
+      }
+      return true;
+    });
     const product = getBestUnitDef(unitDefs) as ProductDefinition;
     if (!product) {
-      return this.fail();
+      return this.fail("No suitable unit definition found");
     }
 
     this.produceTask = new CityProduceTask(this.ai, {
@@ -75,7 +83,7 @@ export class CityProduceUnitTask extends AiTask<CityProduceUnitTaskSerialized> {
     const { city, product } = this.produceTask.requestedProduction;
     const unit = city.tile.units.find((u) => u.definition.id === product.id);
     if (!unit) {
-      return this.fail();
+      return this.fail("Produced unit not found in city tile");
     }
 
     if (this.options.onCompleted) {

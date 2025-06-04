@@ -17,7 +17,7 @@ const CONCURRENT_TASKS = 1;
 export class SettlingAI extends AISystem {
   private tasks: SettleTask[] = [];
 
-  *plan(): Generator<AiTask<any>> {
+  *plan(): Generator<AiTask<any, any>> {
     this.tasks = this.tasks.filter((op) => op.result === null);
 
     if (this.tasks.length < CONCURRENT_TASKS) {

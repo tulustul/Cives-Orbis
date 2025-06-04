@@ -1,7 +1,6 @@
 import { PlayerCore } from "@/core/player";
 import { CityAI } from "./ai-city";
 import { ExploringAI } from "./ai-exploring";
-import { MilitaryStrategyAI } from "./ai-military-strategy";
 import { SettlingAI } from "./ai-settling";
 import { AISystem } from "./ai-system";
 import { AiOrder } from "./types";
@@ -43,6 +42,7 @@ export class AIPlayer {
   strategicAI: StrategicAI;
   tacticalAI: MilitaryTacticalAI;
   transportAI: NavalTransportAI;
+  exploringAI: ExploringAI;
 
   // Collection of all AI systems
   systems: AISystem[] = [];
@@ -70,7 +70,7 @@ export class AIPlayer {
     techDiscount: 0.0, // Technology cost reduction
   };
 
-  tasks: AiTask<any>[] = [];
+  tasks: AiTask<any, any>[] = [];
   orders: AiOrder[] = [];
 
   constructor(
@@ -96,16 +96,18 @@ export class AIPlayer {
     // Initialize transport AI for naval transport coordination
     this.transportAI = new NavalTransportAI(this);
 
+    this.exploringAI = new ExploringAI(this);
+
     // Register all AI subsystems
     this.systems = [
       this.strategicAI, // Strategic AI should run first to influence other systems
       new TechAI(this),
       new CityAI(this),
       new SettlingAI(this),
-      new ExploringAI(this),
-      new MilitaryStrategyAI(this),
+      this.exploringAI,
       new WorkerAI(this),
-      this.tacticalAI, // Tactical AI should run after Military AI
+      // new MilitaryStrategyAI(this),
+      // this.tacticalAI, // Tactical AI should run after Military AI
       this.transportAI, // Transport AI for coordinating naval transport
       this.productionAi, // Production AI should run last to collect requests
       new IdleUnitsAI(this), // Idle units AI runs last to clean up any unassigned units
@@ -132,6 +134,8 @@ export class AIPlayer {
 
     this.units.update();
 
+    this.tasks = this.tasks.filter((task) => !task.result);
+
     this.orders = [];
     for (const system of this.systems) {
       const systemOrdersAndTasks = system.plan();
@@ -147,8 +151,6 @@ export class AIPlayer {
     for (const task of this.tasks) {
       task.tickBranch();
     }
-
-    this.tasks = this.tasks.filter((op) => op.result === null);
 
     this.processOrders(this.orders);
   }

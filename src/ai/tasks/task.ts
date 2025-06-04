@@ -1,24 +1,30 @@
 import { AiTaskSerialized } from "@/shared/debug";
 import { AIPlayer } from "../ai-player";
+import { AiTaskResult, AiTaskStatus } from "@/shared";
 
-export enum AiTaskResult {
-  completed,
-  failed,
+export interface AiTaskOptions {
+  onFail?: () => void;
+  onComplete?: () => void;
 }
 
-export abstract class AiTask<T> {
+export abstract class AiTask<O extends AiTaskOptions, S> {
   readonly type: string = "base";
 
-  tasks: AiTask<any>[] = [];
+  static lastId = 0;
+  id: number = ++AiTask.lastId;
+
+  tasks: AiTask<any, any>[] = [];
   result: AiTaskResult | null = null;
+  status: AiTaskStatus = "pending";
+  reason = "";
   private stateHistory: string[] = [];
   private static readonly MAX_HISTORY_LENGTH = 10;
   private static readonly CYCLE_DETECTION_LENGTH = 3;
 
-  constructor(protected ai: AIPlayer) {}
+  constructor(protected ai: AIPlayer, public options: O) {}
 
   abstract tick(): void;
-  abstract serialize(): T;
+  abstract serialize(): S;
   cleanup() {}
 
   /**
@@ -32,23 +38,34 @@ export abstract class AiTask<T> {
   }
 
   tickBranch(): void {
-    // Check for stuck state before processing
-    if (this.isStuck()) {
-      console.warn(`Task ${this.type} is stuck in a cycle. Failing task.`);
-      this.fail();
+    if (this.result) {
       return;
     }
 
-    while (this.tasks.length > 0) {
-      const task = this.tasks[0];
+    // Check for stuck state before processing
+    if (this.isStuck()) {
+      console.warn(`Task ${this.type} is stuck in a cycle. Failing task.`);
+      this.fail("Stuck in cycle");
+      return;
+    }
+
+    this.tasks = this.tasks.filter((task) => !task.result);
+
+    for (const task of this.tasks) {
       task.tickBranch();
       if (task.result === null) {
         break;
       }
-      this.tasks.shift();
+
+      // Handle child task failure
+      if (task.result === "failed" && !this.options.onFail) {
+        this.fail(`${task.type}: ${task.reason}`);
+        return;
+      }
     }
 
-    if (this.tasks.length == 0) {
+    if (!this.tasks.length || this.tasks.at(-1)?.result) {
+      this.status = "active";
       this.tick();
       // Track state after tick
       this.trackState();
@@ -86,20 +103,44 @@ export abstract class AiTask<T> {
   }
 
   complete() {
-    this.result = AiTaskResult.completed;
+    this.result = "completed";
     this.cleanupBranch();
+    if (this.options.onComplete) {
+      this.options.onComplete();
+    }
   }
 
-  fail() {
-    this.result = AiTaskResult.failed;
-    this.cleanupBranch();
+  fail(reason = "") {
+    this.result = "failed";
+    this.reason = reason;
+
+    for (const task of this.tasks) {
+      task.failSimple();
+    }
+    if (this.options.onFail) {
+      this.options.onFail();
+    }
   }
 
-  serializeBranch(): AiTaskSerialized<T> {
+  private failSimple() {
+    if (this.result === "failed") {
+      return;
+    }
+    this.cleanup();
+    this.result = "failed";
+    for (const task of this.tasks) {
+      task.failSimple();
+    }
+  }
+
+  serializeBranch(): AiTaskSerialized<S> {
     return {
       type: this.type,
+      id: this.id,
       tasks: this.tasks.map((op) => op.serializeBranch()),
       data: this.serialize(),
+      status: this.result ?? this.status,
+      reason: this.reason,
     };
   }
 

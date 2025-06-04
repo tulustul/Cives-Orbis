@@ -4,10 +4,10 @@ import { tileToTileCoords } from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { TileCoords } from "@/shared";
+import { AiTask, AiTaskOptions } from "./task";
 import { AIPlayer } from "../ai-player";
-import { AiTask } from "./task";
 
-export type MoveUnitTaskOptions = {
+export type MoveUnitTaskOptions = AiTaskOptions & {
   tile: TileCore;
   unit: UnitCore;
   onCompleted?: () => void;
@@ -18,36 +18,54 @@ export type MoveUnitTaskSerialized = {
   unit: number;
 };
 
-export class MoveUnitTask extends AiTask<MoveUnitTaskSerialized> {
+export class MoveUnitTask extends AiTask<
+  MoveUnitTaskOptions,
+  MoveUnitTaskSerialized
+> {
   readonly type = "moveUnit";
 
-  constructor(ai: AIPlayer, private options: MoveUnitTaskOptions) {
-    super(ai);
+  constructor(ai: AIPlayer, options: MoveUnitTaskOptions) {
+    super(ai, options);
     this.tick();
   }
 
   tick(): void {
     const unit = this.options.unit;
-    if (!unit || !unit.isAlive) {
-      return this.fail();
+    if (!unit) {
+      return this.fail("Unit not available");
     }
+    if (!unit.isAlive) {
+      return this.fail("Unit is dead");
+    }
+
+    if (this.checkCompleted()) {
+      return;
+    }
+
     if (unit.order !== "go" || !unit.path) {
       unit.path = findPath(unit, this.options.tile);
     }
     if (!unit.path) {
-      return this.fail();
+      return this.fail("No valid path found");
     }
 
     unit.setOrder("go");
     moveAlongPath(unit);
-    if (unit.tile === this.options.tile) {
+
+    this.checkCompleted();
+  }
+
+  checkCompleted() {
+    if (this.options.unit.tile === this.options.tile) {
       if (this.options.onCompleted) {
         this.options.onCompleted();
       }
       // Movement complete - unit is now free for other tasks
-      unit.setOrder(null);
+      this.options.unit.setOrder(null);
       this.complete();
+      return true;
     }
+    return false;
   }
 
   serialize(): MoveUnitTaskSerialized {
