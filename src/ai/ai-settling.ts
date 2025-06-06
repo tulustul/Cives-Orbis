@@ -20,11 +20,15 @@ export class SettlingAI extends AISystem {
   *plan(): Generator<AiTask<any, any>> {
     this.tasks = this.tasks.filter((op) => op.result === null);
 
+    this.handleStartingSettler();
+
+    if (!this.ai.features.knowSettlers) {
+      return;
+    }
+
     if (this.tasks.length < CONCURRENT_TASKS) {
       yield* this.generateSettleOperations();
     }
-
-    this.handleStartingSettler();
   }
 
   private *generateSettleOperations(): Generator<SettleTask> {

@@ -170,3 +170,11 @@ export type UnitAssignmentType =
   | "settling"
   | "escort"
   | "working";
+
+export type TileAssignmentType =
+  | "exploration"
+  | "transport"
+  | "settling"
+  | "working";
+
+export type AreaAssignmentType = "exploration";

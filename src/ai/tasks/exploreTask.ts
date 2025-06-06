@@ -33,6 +33,7 @@ export class ExploreTask extends AiTask<
   targetTile: TileCore | null = null;
 
   init() {
+    this.ai.areas.assign(this.options.passableArea, "exploration");
     const trait: UnitTrait =
       this.options.passableArea.type === "land" ? "land" : "naval";
 
@@ -102,9 +103,18 @@ export class ExploreTask extends AiTask<
           new NavalTransportTask(this.ai, {
             unit: this.explorer,
             to: coastalTile,
+            onFail: () => {
+              if (this.explorer?.tile.passableArea) {
+                this.ai.areas.unassign(
+                  this.options.passableArea,
+                  "exploration",
+                );
+                this.options.passableArea = this.explorer.tile.passableArea;
+                this.ai.areas.assign(this.options.passableArea, "exploration");
+              }
+            },
           }),
         );
-        return;
       }
     } else {
       if (!this.unitOnCorrectArea(this.explorer)) {
@@ -114,21 +124,24 @@ export class ExploreTask extends AiTask<
 
     // We're in the right area, find unexplored tiles
     if (!this.targetTile || this.explorer.tile === this.targetTile) {
+      this.ai.tiles.unassign(this.targetTile, "exploration");
       this.targetTile = this.findUnexploredTile();
+      this.ai.tiles.assign(this.targetTile, "exploration");
       if (!this.targetTile) {
-        // Area fully explored - unassign unit so IdleUnitsAI can handle it
-        this.ai.units.unassign(this.explorer);
         this.complete();
         return;
       }
     }
 
-    this.addTask(
-      new MoveUnitTask(this.ai, {
-        unit: this.explorer,
-        tile: this.targetTile,
-      }),
-    );
+    if (this.explorer.tile !== this.targetTile) {
+      this.addTask(
+        new MoveUnitTask(this.ai, {
+          unit: this.explorer,
+          tile: this.targetTile,
+        }),
+      );
+      this.tickBranch();
+    }
   }
 
   private findUnexploredTile(): TileCore | null {
@@ -145,6 +158,15 @@ export class ExploreTask extends AiTask<
     let closestDistance = Infinity;
 
     for (const tile of edgeOfUnknown) {
+      let skip = false;
+      for (const currentTarget of this.ai.tiles.byAssignment.exploration) {
+        if (currentTarget.getDistanceTo(tile) < 3) {
+          skip = true;
+        }
+      }
+      if (skip) {
+        continue;
+      }
       const distance = this.explorer!.tile.getDistanceTo(tile);
       if (distance < closestDistance) {
         closestDistance = distance;
@@ -192,6 +214,10 @@ export class ExploreTask extends AiTask<
     if (this.explorer) {
       this.ai.units.unassign(this.explorer);
     }
+    if (this.targetTile) {
+      this.ai.tiles.unassign(this.targetTile, "exploration");
+    }
+    this.ai.areas.unassign(this.options.passableArea, "exploration");
   }
 
   serialize(): ExploreTaskSerialized {

@@ -14,6 +14,9 @@ import { NavalTransportAI } from "./ai-naval-transport";
 import { IdleUnitsAI } from "./ai-idle-units";
 import { AiUnitsRegistry } from "./ai-units-registry";
 import { AiTask } from "./tasks/task";
+import { AiFeatures } from "./ai-features";
+import { AiTilesRegistry } from "./ai-tiles-registry";
+import { AiAreaRegistry } from "./areasRegistry";
 
 export type AiPriorities = {
   expansion: number;
@@ -35,6 +38,9 @@ export enum AIDifficulty {
 
 export class AIPlayer {
   units: AiUnitsRegistry;
+  tiles: AiTilesRegistry;
+  areas: AiAreaRegistry;
+  features: AiFeatures;
 
   // AI subsystems
   productionAi = new ProductionAI(this);
@@ -83,6 +89,9 @@ export class AIPlayer {
     this.applyDifficultySettings();
 
     this.units = new AiUnitsRegistry(this.player);
+    this.tiles = new AiTilesRegistry();
+    this.areas = new AiAreaRegistry();
+    this.features = new AiFeatures(this.player);
 
     // Initialize personality first since it affects other systems
     this.personalityAI = new PersonalityAI(this, personalityName);
@@ -133,6 +142,7 @@ export class AIPlayer {
     this.player.moveAllUnits();
 
     this.units.update();
+    this.features.update();
 
     this.tasks = this.tasks.filter((task) => !task.result);
 
