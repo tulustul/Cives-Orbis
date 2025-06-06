@@ -1,112 +1,86 @@
 import { CityCore } from "@/core/city";
-import { TileImprovementDefinition } from "@/core/data/types";
-import { findPath } from "@/core/pathfinding";
-import { TileCore } from "@/core/tile";
 import { PassableArea } from "@/core/tiles-map";
-import { UnitCore } from "@/core/unit";
-import { sumYields } from "@/core/yields";
+import { TileCore } from "@/core/tile";
 import { AISystem } from "./ai-system";
-import { AiOrder } from "./types";
+import { ConnectCitiesTask } from "./tasks/connectCitiesTask";
+import { ImproveTileTask } from "./tasks/improveTileTask";
+import { AiTask } from "./tasks/task";
 import { dataManager } from "@/core/data/dataManager";
-import { UnitAction } from "@/shared";
 import { isImprovementPossible } from "@/core/tile-utils";
+import { sumYields } from "@/core/yields";
+import { UnitAction } from "@/shared";
 
 const CITIES_PER_WORKER = 0.5;
 const MIN_WORKERS = 2;
 const MAX_ROAD_DISTANCE = 8;
+const MAX_CONCURRENT_ROAD_PROJECTS = 2;
+const MAX_IMPROVEMENT_TASKS = 4;
 
-type WorkerTask = {
-  tile: TileCore;
-  action: UnitAction;
-  priority: number;
-};
-
-type AssignedWorkerTask = WorkerTask & {
-  worker: UnitCore;
+type CityPair = {
+  cityA: CityCore;
+  cityB: CityCore;
+  value: number;
 };
 
 export class WorkerAI extends AISystem {
-  private possibleTasks: WorkerTask[] = [];
-  private assignedTasks: AssignedWorkerTask[] = [];
-  private assignedTiles = new Set<TileCore>();
-  private assignedTaskByWorker = new Map<UnitCore, AssignedWorkerTask>();
+  private roadTasks: ConnectCitiesTask[] = [];
+  private improvementTasks: ImproveTileTask[] = [];
 
-  private workersByArea = new Map<PassableArea, UnitCore[]>();
+  private workersByArea = new Map<PassableArea, number>();
 
-  private orders: AiOrder[] = [];
+  *plan(): Generator<AiTask<any, any>> {
+    // Clean up completed tasks
+    this.roadTasks = this.roadTasks.filter((task) => task.result === null);
+    this.improvementTasks = this.improvementTasks.filter(
+      (task) => task.result === null,
+    );
 
-  *plan(): Generator<AiOrder> {
-    this.orders = [];
-    this.possibleTasks = [];
+    // Count workers by area
+    this.countWorkersByArea();
 
-    this.validateAssignedTasks();
-
-    this.groupWorkersByArea();
-
+    // Plan worker production
     this.planWorkersProduction();
 
-    this.planRoads();
+    // Plan road connections
+    // yield* this.planRoadConnections();
 
-    this.planTileImprovements();
-
-    this.processWorkers();
-
-    yield* this.orders;
+    // Plan tile improvements
+    yield* this.planTileImprovements();
   }
 
-  private validateAssignedTasks() {
-    this.assignedTiles.clear();
-    this.assignedTaskByWorker.clear();
-    this.assignedTasks = this.assignedTasks.filter((task) => {
-      if (
-        task.worker.health <= 0 ||
-        (task.tile.areaOf !== null &&
-          task.tile.areaOf.player !== this.player) ||
-        (task.worker.tile === task.tile &&
-          !task.worker.canDoAction(task.action)) ||
-        (task.worker.tile !== task.tile && task.worker.path?.length === 0)
-      ) {
-        task.worker.order = null;
-        return false;
-      }
-      this.assignedTiles.add(task.tile);
-      this.assignedTaskByWorker.set(task.worker, task);
-      return true;
-    });
-  }
-
-  private groupWorkersByArea() {
+  private countWorkersByArea(): void {
     this.workersByArea.clear();
-    for (const unit of this.ai.units.freeByTrait.worker) {
-      if (unit.tile.passableArea) {
-        if (!this.workersByArea.has(unit.tile.passableArea)) {
-          this.workersByArea.set(unit.tile.passableArea, []);
-        }
-        this.workersByArea.get(unit.tile.passableArea)!.push(unit);
+
+    // Count all workers (both free and assigned)
+    for (const unit of this.ai.player.units) {
+      if (unit.definition.traits.includes("worker") && unit.tile.passableArea) {
+        const count = this.workersByArea.get(unit.tile.passableArea) || 0;
+        this.workersByArea.set(unit.tile.passableArea, count + 1);
       }
     }
   }
 
-  private planWorkersProduction() {
+  private planWorkersProduction(): void {
     for (const passableArea of this.ai.player.knownPassableAreas.values()) {
       if (passableArea.type !== "land") {
         continue;
       }
-      // Calculate how many cities are in this area
+
       const citiesInArea = this.player.cities.filter(
         (city) => city.tile.passableArea === passableArea,
       );
+
       if (citiesInArea.length === 0) {
         continue;
       }
-      // Calculate how many workers are needed
-      // At least MIN_WORKERS per city
+
       const workersNeeded = Math.max(
         MIN_WORKERS,
         Math.floor(citiesInArea.length * CITIES_PER_WORKER),
       );
-      const currentWorkers = this.workersByArea.get(passableArea)?.length ?? 0;
-      // Request more workers if needed
+
+      const currentWorkers = this.workersByArea.get(passableArea) || 0;
+
       if (currentWorkers < workersNeeded) {
         this.ai.productionAi.request({
           focus: "economy",
@@ -118,139 +92,76 @@ export class WorkerAI extends AISystem {
     }
   }
 
-  private processWorkers() {
-    for (const workers of this.workersByArea.values()) {
-      for (const worker of workers) {
-        this.processWorker(worker);
-      }
-    }
-  }
-
-  private processWorker(worker: UnitCore) {
-    if (worker.actionPointsLeft === 0 || worker.order) {
+  private *planRoadConnections(): Generator<ConnectCitiesTask> {
+    if (this.roadTasks.length >= MAX_CONCURRENT_ROAD_PROJECTS) {
       return;
     }
 
-    let task: AssignedWorkerTask | undefined;
+    // Find city pairs that need connections
+    const unconnectedPairs = this.findUnconnectedCityPairs();
 
-    if (this.assignedTaskByWorker.has(worker)) {
-      task = this.assignedTaskByWorker.get(worker)!;
-    } else {
-      const unassignedTask = this.findTaskForWorker(worker);
-      if (!unassignedTask) {
-        return;
-      }
-      task = { ...unassignedTask, worker };
-      this.assignedTasks.push(task);
-      this.possibleTasks.splice(this.possibleTasks.indexOf(unassignedTask), 1);
-    }
+    // Sort by value
+    unconnectedPairs.sort((a, b) => b.value - a.value);
 
-    this.orders.push({
-      group: "unit",
-      entityId: worker.id,
-      focus: "economy",
-      priority: task.priority,
-      perform: () => {
-        if (worker.tile.id === task.tile.id) {
-          worker.doAction(task.action);
-        } else {
-          worker.path = findPath(worker, task.tile);
-        }
-      },
-    });
-  }
-
-  findTaskForWorker(worker: UnitCore): WorkerTask | null {
-    let bestTask: WorkerTask | null = null;
-    let bestScore = -Infinity;
-    for (const task of this.possibleTasks) {
-      if (task.tile.passableArea !== worker.tile.passableArea) {
-        continue;
-      }
-      const score = worker.tile.getDistanceTo(task.tile) + task.priority / 30;
-      if (score > bestScore) {
-        bestScore = score;
-        bestTask = task;
-      }
-    }
-    return bestTask;
-  }
-
-  private planTileImprovements() {
-    const tasks: WorkerTask[] = [];
-    for (const city of this.player.cities) {
-      for (const tile of city.expansion.tiles) {
-        if (
-          tile.improvement !== null ||
-          tile.city ||
-          this.assignedTiles.has(tile)
-        ) {
-          continue;
-        }
-
-        const impr = this.getBestTileImpr(tile);
-        if (impr) {
-          let priority = 100;
-          if (tile.resource) {
-            priority += 200;
-          }
-          if (city.workers.workedTiles.has(tile)) {
-            priority += 100;
-          }
-          tasks.push({ tile, action: impr.action, priority });
-        }
-      }
-    }
-
-    tasks.sort((a, b) => b.priority - a.priority);
-    for (const task of tasks.slice(0, 2)) {
-      this.possibleTasks.push(task);
-    }
-  }
-
-  private getCityPairKey(cityA: CityCore, cityB: CityCore): string {
-    const ids = [cityA.id, cityB.id].sort();
-    return `${ids[0]}-${ids[1]}`;
-  }
-
-  private planRoads() {
-    for (const workers of this.workersByArea.values()) {
-      for (const tile of this.planAreaRoads(workers[0])) {
-        this.possibleTasks.push({ tile, action: "buildRoad", priority: 250 });
-      }
-    }
-  }
-
-  private planAreaRoads(worker: UnitCore): TileCore[] {
-    const pairs = new Set<string>();
-    const missingConnections: {
-      cityA: CityCore;
-      cityB: CityCore;
-      value: number;
-    }[] = [];
-
-    const cities = this.player.cities.filter(
-      (city) => city.tile.passableArea === worker.tile.passableArea,
+    // Create tasks for the most valuable connections
+    const tasksToCreate = Math.min(
+      MAX_CONCURRENT_ROAD_PROJECTS - this.roadTasks.length,
+      unconnectedPairs.length,
     );
 
-    for (const cityA of cities) {
-      for (const cityB of cities) {
-        if (cityA === cityB) {
-          continue;
-        }
+    for (let i = 0; i < tasksToCreate; i++) {
+      const pair = unconnectedPairs[i];
+      const task = new ConnectCitiesTask(this.ai, {
+        cityA: pair.cityA,
+        cityB: pair.cityB,
+        priority: 250,
+      });
+      this.roadTasks.push(task);
+      yield task;
+    }
+  }
+
+  private findUnconnectedCityPairs(): CityPair[] {
+    const pairs: CityPair[] = [];
+    const seenPairs = new Set<string>();
+
+    for (const cityA of this.player.cities) {
+      for (const cityB of this.player.cities) {
+        if (cityA === cityB) continue;
+
+        // Skip if already connected
         if (cityA.network && cityA.network === cityB.network) {
           continue;
         }
+
+        // Skip if too far
         if (cityA.tile.getDistanceTo(cityB.tile) > MAX_ROAD_DISTANCE) {
           continue;
         }
-        const pairKey = this.getCityPairKey(cityA, cityB);
-        if (pairs.has(pairKey)) {
+
+        // Skip if different areas
+        if (cityA.tile.passableArea !== cityB.tile.passableArea) {
           continue;
         }
-        pairs.add(pairKey);
 
-        missingConnections.push({
+        // Create unique key for pair
+        const pairKey = [cityA.id, cityB.id].sort().join("-");
+        if (seenPairs.has(pairKey)) {
+          continue;
+        }
+        seenPairs.add(pairKey);
+
+        // Skip if we already have a task for this pair
+        const hasTask = this.roadTasks.some(
+          (task) =>
+            (task.options.cityA === cityA && task.options.cityB === cityB) ||
+            (task.options.cityA === cityB && task.options.cityB === cityA),
+        );
+        if (hasTask) {
+          continue;
+        }
+
+        pairs.push({
           cityA,
           cityB,
           value: cityA.population.total + cityB.population.total,
@@ -258,42 +169,104 @@ export class WorkerAI extends AISystem {
       }
     }
 
-    if (missingConnections.length === 0) {
-      return [];
+    return pairs;
+  }
+
+  private *planTileImprovements(): Generator<ImproveTileTask> {
+    if (this.improvementTasks.length >= MAX_IMPROVEMENT_TASKS) {
+      return;
     }
 
-    missingConnections.sort((a, b) => b.value - a.value);
+    // Collect all candidates: resources first, then worked tiles, then others
+    const resourceTiles: { tile: TileCore; action: UnitAction }[] = [];
+    const workedTiles: { tile: TileCore; action: UnitAction }[] = [];
+    const otherTiles: { tile: TileCore; action: UnitAction }[] = [];
 
-    for (const connection of missingConnections) {
-      const path = findPath(
-        worker,
-        connection.cityA.tile,
-        connection.cityB.tile,
-      );
-      if (path) {
-        const tiles = path.flat().filter((tile) => tile.road === null);
-        if (tiles.length) {
-          return tiles;
+    // Find tiles that need improvements
+    for (const city of this.player.cities) {
+      for (const tile of city.expansion.tiles) {
+        if (tile.improvement !== null || tile.city) {
+          continue;
+        }
+
+        // Skip if we already have a task for this tile
+        const hasTask = this.improvementTasks.some(
+          (task) => task.options.tile === tile,
+        );
+        if (hasTask) {
+          continue;
+        }
+
+        // Determine what action to take
+        const action = this.getBestActionForTile(tile);
+        if (!action) {
+          continue;
+        }
+
+        // Categorize by priority
+        if (tile.resource) {
+          resourceTiles.push({ tile, action });
+        } else if (city.workers.workedTiles.has(tile)) {
+          workedTiles.push({ tile, action });
+        } else {
+          otherTiles.push({ tile, action });
         }
       }
     }
 
-    return [];
+    // Sort each category by distance to nearest city
+    const sortByDistance = (a: { tile: TileCore }, b: { tile: TileCore }) => {
+      const distA = Math.min(
+        ...this.player.cities.map((c) => c.tile.getDistanceTo(a.tile)),
+      );
+      const distB = Math.min(
+        ...this.player.cities.map((c) => c.tile.getDistanceTo(b.tile)),
+      );
+      return distA - distB;
+    };
+
+    resourceTiles.sort(sortByDistance);
+    workedTiles.sort(sortByDistance);
+    otherTiles.sort(sortByDistance);
+
+    // Combine in priority order
+    const allCandidates = [...resourceTiles, ...workedTiles, ...otherTiles];
+
+    // Create tasks for top candidates
+    const tasksToCreate = Math.min(
+      MAX_IMPROVEMENT_TASKS - this.improvementTasks.length,
+      allCandidates.length,
+    );
+
+    for (let i = 0; i < tasksToCreate; i++) {
+      const { tile, action } = allCandidates[i];
+
+      const task = new ImproveTileTask(this.ai, {
+        tile,
+        action,
+        priority: 100,
+      });
+
+      this.improvementTasks.push(task);
+      yield task;
+    }
   }
 
-  private getBestTileImpr(tile: TileCore): TileImprovementDefinition | null {
+  private getBestActionForTile(tile: TileCore): UnitAction | null {
+    // If tile has a resource, get the required improvement
     if (tile.resource?.def.depositDef) {
-      // TODO check if the resource is known to the player
+      const requiredImpr = tile.resource.def.depositDef.requiredImprovement;
       if (
         this.player.knowledge.discoveredEntities.tileImprovement.has(
-          tile.resource.def.depositDef.requiredImprovement,
+          requiredImpr,
         )
       ) {
-        return tile.resource.def.depositDef.requiredImprovement;
+        return requiredImpr.action as UnitAction;
       }
     }
 
-    let bestImpr: TileImprovementDefinition | null = null;
+    // Otherwise find the best general improvement
+    let bestImpr = null;
     let bestScore = 0;
 
     for (const impr of this.player.knowledge.discoveredEntities.tileImprovement.values()) {
@@ -303,6 +276,7 @@ export class WorkerAI extends AISystem {
       ) {
         continue;
       }
+
       const score = sumYields(impr.extraYields);
       if (score > bestScore) {
         bestScore = score;
@@ -310,6 +284,6 @@ export class WorkerAI extends AISystem {
       }
     }
 
-    return bestImpr;
+    return bestImpr ? (bestImpr.action as UnitAction) : null;
   }
 }

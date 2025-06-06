@@ -60,8 +60,13 @@ export function isImprovementPossible(
     return false;
   }
 
+  const requiredImpr = tile.resource?.def.depositDef?.requiredImprovement;
+  if (requiredImpr) {
+    return requiredImpr.id === impr.id;
+  }
+
   if (impr.requireResource) {
-    return tile.resource?.def.depositDef?.requiredImprovement.id === impr.id;
+    return false;
   }
 
   return (

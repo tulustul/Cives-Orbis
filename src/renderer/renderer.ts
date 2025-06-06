@@ -30,6 +30,7 @@ import { SelectedUnitDrawer } from "./selectedUnitDrawer";
 import { TerrainDrawer } from "./terrainDrawer";
 import { UnitsDrawer } from "./unitsDrawer";
 import { CitiesDrawer } from "./citiesDrawer";
+// import { BloomFilter } from "pixi-filters";
 
 function makeContainer(label: string, options: ContainerOptions = {}) {
   return new Container({

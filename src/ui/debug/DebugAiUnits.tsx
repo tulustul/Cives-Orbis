@@ -16,6 +16,8 @@ function getAssignmentColor(assignment: UnitAssignmentType): string {
       return "bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium";
     case "escort":
       return "bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium";
+    case "working":
+      return "bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium";
     default:
       return "bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs";
   }

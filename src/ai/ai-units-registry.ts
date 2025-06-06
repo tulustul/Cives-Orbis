@@ -17,6 +17,7 @@ function emptyUnitsByAssignmentSets(): Record<
     transport: new Set(),
     settling: new Set(),
     escort: new Set(),
+    working: new Set(),
   };
 }
 

@@ -28,9 +28,22 @@ export class ExploringAI extends AISystem {
       // Calculate how many explorers we need for this area
       const tilesPerExplorer =
         area.type === "land" ? TILES_PER_LAND_EXPLORER : TILES_PER_SEA_EXPLORER;
-      const explorersNeeded = Math.min(
-        MAX_EXPLORERS_PER_AREA,
-        Math.ceil(edge.size / tilesPerExplorer),
+      let explorersAvailable = Array.from(this.ai.units.freeByTrait.explorer);
+      if (area.type === "land") {
+        explorersAvailable = explorersAvailable.filter((unit) =>
+          unit.definition.traits.includes("land"),
+        );
+      } else {
+        explorersAvailable = explorersAvailable.filter((unit) =>
+          unit.definition.traits.includes("naval"),
+        );
+      }
+      const explorersNeeded = Math.max(
+        Math.min(
+          MAX_EXPLORERS_PER_AREA,
+          Math.ceil(edge.size / tilesPerExplorer),
+        ),
+        explorersAvailable.length,
       );
 
       const currentTasks = this.tasks.filter(

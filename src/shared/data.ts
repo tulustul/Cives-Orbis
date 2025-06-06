@@ -168,4 +168,5 @@ export type UnitAssignmentType =
   | "exploration"
   | "transport"
   | "settling"
-  | "escort";
+  | "escort"
+  | "working";
