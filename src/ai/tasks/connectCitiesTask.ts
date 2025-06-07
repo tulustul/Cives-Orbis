@@ -28,6 +28,8 @@ export class ConnectCitiesTask extends AiTask<ConnectCitiesTaskOptions, ConnectC
   state: State = "planning";
   roadTiles: TileCore[] = [];
   currentTileIndex = 0;
+  completedTiles = new Set<TileCore>();
+  assignedTiles = new Set<TileCore>();
 
   constructor(ai: AIPlayer, options: ConnectCitiesTaskOptions) {
     super(ai, options);
@@ -85,17 +87,44 @@ export class ConnectCitiesTask extends AiTask<ConnectCitiesTaskOptions, ConnectC
   }
 
   private buildRoad(): void {
-    // Remove completed tiles
-    this.roadTiles = this.roadTiles.filter((tile) => tile.road === null);
-
-    if (this.roadTiles.length === 0) {
-      return this.complete();
-    }
-
     // Check if cities are now connected
     if (this.options.cityA.network && 
         this.options.cityA.network === this.options.cityB.network) {
       return this.complete();
+    }
+
+    // Update completed tiles
+    for (const tile of this.roadTiles) {
+      if (tile.road !== null) {
+        this.completedTiles.add(tile);
+      }
+    }
+
+    // Get remaining tiles to build
+    const remainingTiles = this.roadTiles.filter(
+      (tile) => !this.completedTiles.has(tile) && !this.assignedTiles.has(tile)
+    );
+
+    if (remainingTiles.length === 0) {
+      // Check if all assigned tasks are complete
+      const activeTasks = this.tasks.filter(
+        (task) => task instanceof ImproveTileTask && task.result === null
+      );
+      
+      if (activeTasks.length === 0) {
+        // All tasks done, check if we need to replan
+        const needsRoad = this.roadTiles.some((tile) => tile.road === null);
+        if (needsRoad) {
+          // Some tiles still need roads, replan the route
+          this.state = "planning";
+          this.completedTiles.clear();
+          this.assignedTiles.clear();
+          return;
+        }
+        return this.complete();
+      }
+      // Wait for active tasks to complete
+      return;
     }
 
     // Limit concurrent road building tasks to allow multiple workers to cooperate
@@ -111,18 +140,25 @@ export class ConnectCitiesTask extends AiTask<ConnectCitiesTaskOptions, ConnectC
     // Add tasks for the next few tiles
     const tilesToBuild = Math.min(
       MAX_CONCURRENT_ROADS - currentRoadTasks,
-      this.roadTiles.length
+      remainingTiles.length
     );
 
     for (let i = 0; i < tilesToBuild; i++) {
-      const tile = this.roadTiles[i];
+      const tile = remainingTiles[i];
+      this.assignedTiles.add(tile);
+      
       this.addTask(
         new ImproveTileTask(this.ai, {
           tile,
           action: "buildRoad",
           priority: this.options.priority,
           onCompleted: () => {
+            this.completedTiles.add(tile);
+            this.assignedTiles.delete(tile);
             this.currentTileIndex++;
+          },
+          onFail: () => {
+            this.assignedTiles.delete(tile);
           },
         })
       );
@@ -140,6 +176,9 @@ export class ConnectCitiesTask extends AiTask<ConnectCitiesTaskOptions, ConnectC
   }
 
   getProgressState(): string | null {
-    return `${this.state}-${this.currentTileIndex}/${this.roadTiles.length}`;
+    const activeTasksCount = this.tasks.filter(
+      (task) => task instanceof ImproveTileTask && task.result === null
+    ).length;
+    return `${this.state}-completed:${this.completedTiles.size}-assigned:${this.assignedTiles.size}-active:${activeTasksCount}-total:${this.roadTiles.length}`;
   }
 }

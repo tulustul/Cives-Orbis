@@ -8,7 +8,7 @@ import { AiTask } from "./tasks/task";
 import { dataManager } from "@/core/data/dataManager";
 import { isImprovementPossible } from "@/core/tile-utils";
 import { sumYields } from "@/core/yields";
-import { UnitAction } from "@/shared";
+import { LandForm, UnitAction } from "@/shared";
 import { TileImprovementDefinition } from "@/core/data/types";
 
 const CITIES_PER_WORKER = 0.5;
@@ -186,7 +186,12 @@ export class WorkerAI extends AISystem {
     // Find tiles that need improvements
     for (const city of this.player.cities) {
       for (const tile of city.expansion.tiles) {
-        if (tile.improvement !== null || tile.city || tile.isWater) {
+        if (
+          tile.improvement !== null ||
+          tile.city ||
+          tile.isWater ||
+          tile.landForm === LandForm.mountains
+        ) {
           continue;
         }
 
