@@ -47,6 +47,10 @@ export class SettlingAI extends AISystem {
         continue;
       }
 
+      if (this.ai.tiles.isExcluded(tile, "settling")) {
+        continue;
+      }
+
       if (this.isTooCloseToTargets(tile)) {
         continue;
       }
@@ -62,8 +66,12 @@ export class SettlingAI extends AISystem {
 
     const availableSlots = 3 - this.tasks.length;
     for (let i = 0; i < Math.min(availableSlots, candidateTiles.length); i++) {
+      const tile = candidateTiles[i].tile;
       const settleOperation = new SettleTask(this.ai, {
-        tile: candidateTiles[i].tile,
+        tile,
+        onFail: () => {
+          this.ai.tiles.exclude(tile, "settling");
+        },
       });
       this.tasks.push(settleOperation);
       yield settleOperation;
@@ -71,13 +79,19 @@ export class SettlingAI extends AISystem {
   }
 
   private isTooCloseToTargets(tile: TileCore): boolean {
-    for (const target of this.tasks) {
-      const distance = tile.getDistanceTo(target.options.tile);
-
-      if (distance < MIN_CITY_DISTANCE) {
+    for (const settlingTile of this.ai.tiles.byAssignment.settling) {
+      if (settlingTile.getDistanceTo(tile) < MIN_CITY_DISTANCE) {
         return true;
       }
     }
+
+    // for (const target of this.tasks) {
+    //   const distance = tile.getDistanceTo(target.options.tile);
+
+    //   if (distance < MIN_CITY_DISTANCE) {
+    //     return true;
+    //   }
+    // }
 
     for (const city of this.player.cities) {
       const distance = tile.getDistanceTo(city.tile);

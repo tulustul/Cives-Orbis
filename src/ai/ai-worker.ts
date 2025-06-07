@@ -9,6 +9,7 @@ import { dataManager } from "@/core/data/dataManager";
 import { isImprovementPossible } from "@/core/tile-utils";
 import { sumYields } from "@/core/yields";
 import { UnitAction } from "@/shared";
+import { TileImprovementDefinition } from "@/core/data/types";
 
 const CITIES_PER_WORKER = 0.5;
 const MIN_WORKERS = 2;
@@ -42,7 +43,7 @@ export class WorkerAI extends AISystem {
     this.planWorkersProduction();
 
     // Plan road connections
-    // yield* this.planRoadConnections();
+    yield* this.planRoadConnections();
 
     // Plan tile improvements
     yield* this.planTileImprovements();
@@ -185,7 +186,7 @@ export class WorkerAI extends AISystem {
     // Find tiles that need improvements
     for (const city of this.player.cities) {
       for (const tile of city.expansion.tiles) {
-        if (tile.improvement !== null || tile.city) {
+        if (tile.improvement !== null || tile.city || tile.isWater) {
           continue;
         }
 
@@ -245,6 +246,9 @@ export class WorkerAI extends AISystem {
         tile,
         action,
         priority: 100,
+        onFail: () => {
+          this.ai.tiles.exclude(tile, "working");
+        },
       });
 
       this.improvementTasks.push(task);
@@ -266,7 +270,7 @@ export class WorkerAI extends AISystem {
     }
 
     // Otherwise find the best general improvement
-    let bestImpr = null;
+    let bestImpr: TileImprovementDefinition[] = [];
     let bestScore = 0;
 
     for (const impr of this.player.knowledge.discoveredEntities.tileImprovement.values()) {
@@ -280,10 +284,17 @@ export class WorkerAI extends AISystem {
       const score = sumYields(impr.extraYields);
       if (score > bestScore) {
         bestScore = score;
-        bestImpr = impr;
+        bestImpr = [impr];
+      } else if (score === bestScore) {
+        bestImpr.push(impr);
       }
     }
 
-    return bestImpr ? (bestImpr.action as UnitAction) : null;
+    if (!bestImpr.length) {
+      return null;
+    }
+
+    return bestImpr[Math.floor(Math.random() * bestImpr.length)]
+      .action as UnitAction;
   }
 }

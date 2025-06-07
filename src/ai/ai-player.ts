@@ -10,13 +10,12 @@ import { TechAI } from "./ai-tech";
 import { PersonalityAI } from "./ai-personality";
 import { StrategicAI } from "./ai-strategic";
 import { MilitaryTacticalAI } from "./ai-military-tactical";
-import { NavalTransportAI } from "./ai-naval-transport";
 import { IdleUnitsAI } from "./ai-idle-units";
-import { AiUnitsRegistry } from "./ai-units-registry";
+import { AiUnitsRegistry } from "./registries/aiUnitsRegistry";
 import { AiTask } from "./tasks/task";
 import { AiFeatures } from "./ai-features";
-import { AiTilesRegistry } from "./ai-tiles-registry";
-import { AiAreaRegistry } from "./areasRegistry";
+import { AiTilesRegistry } from "./registries/aiTilesRegistry";
+import { AiAreaRegistry } from "./registries/aiAreasRegistry";
 
 export type AiPriorities = {
   expansion: number;
@@ -47,7 +46,6 @@ export class AIPlayer {
   personalityAI: PersonalityAI;
   strategicAI: StrategicAI;
   tacticalAI: MilitaryTacticalAI;
-  transportAI: NavalTransportAI;
   exploringAI: ExploringAI;
 
   // Collection of all AI systems
@@ -89,7 +87,7 @@ export class AIPlayer {
     this.applyDifficultySettings();
 
     this.units = new AiUnitsRegistry(this.player);
-    this.tiles = new AiTilesRegistry();
+    this.tiles = new AiTilesRegistry(this.player);
     this.areas = new AiAreaRegistry();
     this.features = new AiFeatures(this.player);
 
@@ -101,9 +99,6 @@ export class AIPlayer {
 
     // Initialize tactical AI for combat coordination
     this.tacticalAI = new MilitaryTacticalAI(this);
-
-    // Initialize transport AI for naval transport coordination
-    this.transportAI = new NavalTransportAI(this);
 
     this.exploringAI = new ExploringAI(this);
 
@@ -117,7 +112,6 @@ export class AIPlayer {
       new WorkerAI(this),
       // new MilitaryStrategyAI(this),
       // this.tacticalAI, // Tactical AI should run after Military AI
-      this.transportAI, // Transport AI for coordinating naval transport
       this.productionAi, // Production AI should run last to collect requests
       new IdleUnitsAI(this), // Idle units AI runs last to clean up any unassigned units
     ];
@@ -142,6 +136,7 @@ export class AIPlayer {
     this.player.moveAllUnits();
 
     this.units.update();
+    this.tiles.update();
     this.features.update();
 
     this.tasks = this.tasks.filter((task) => !task.result);

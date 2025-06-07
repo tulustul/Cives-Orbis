@@ -1,4 +1,10 @@
-import { AiTaskResult, AiTaskStatus, UnitAssignmentType } from "./data";
+import { TileCoords } from "./channel";
+import {
+  AiTaskResult,
+  AiTaskStatus,
+  TileAssignmentType,
+  UnitAssignmentType,
+} from "./data";
 
 export type AiTaskSerialized<T> = {
   type: string;
@@ -21,4 +27,14 @@ export type AiDebugUnitsRegistryUnit = {
 
 export type AiDebugUnitsRegistry = {
   units: AiDebugUnitsRegistryUnit[];
+};
+
+export type AiDebugTilesRegistryTile = {
+  tile: TileCoords;
+  type: TileAssignmentType;
+  exclusion: number | null;
+};
+
+export type AiDebugTilesRegistry = {
+  tiles: AiDebugTilesRegistryTile[];
 };

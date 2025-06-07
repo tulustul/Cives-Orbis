@@ -32,10 +32,12 @@ export class ExploringAI extends AISystem {
       // Calculate how many explorers we need for this area
       const tilesPerExplorer =
         area.type === "land" ? TILES_PER_LAND_EXPLORER : TILES_PER_SEA_EXPLORER;
+
       let explorersAvailable = Array.from(
         this.ai.units.freeByTrait.explorer,
       ).filter(
         (unit) =>
+          unit.tile.passableArea === area &&
           !unit.definition.traits.includes("military") &&
           unit.definition.traits.includes(
             area.type === "land" ? "land" : "naval",

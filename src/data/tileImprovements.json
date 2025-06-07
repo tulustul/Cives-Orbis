@@ -100,6 +100,8 @@
       "id": "tile-impr-cottage",
       "name": "Cottage",
       "action": "buildCottage",
+      "landForms": ["plains"],
+      "forest": false,
       "baseTurns": 10,
       "extraYields": {
         "gold": 1
