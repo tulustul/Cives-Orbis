@@ -1,3 +1,4 @@
+export * from "./ai";
 export * from "./tile";
 export * from "./combat";
 export * from "./channel";

@@ -18,6 +18,10 @@ function emptyUnitsByAssignmentSets(): Record<
     settling: new Set(),
     escort: new Set(),
     working: new Set(),
+    defense: new Set(),
+    reinforcement: new Set(),
+    intercept: new Set(),
+    army: new Set(),
   };
 }
 

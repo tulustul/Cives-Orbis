@@ -169,7 +169,11 @@ export type UnitAssignmentType =
   | "transport"
   | "settling"
   | "escort"
-  | "working";
+  | "working"
+  | "defense"
+  | "reinforcement"
+  | "intercept"
+  | "army";
 
 export type TileAssignmentType =
   | "exploration"

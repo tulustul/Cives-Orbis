@@ -1,3 +1,4 @@
+import { PlainCityAssessment, TileInfluence } from "./ai";
 import { TileCoords } from "./channel";
 import {
   AiTaskResult,
@@ -37,4 +38,20 @@ export type AiDebugTilesRegistryTile = {
 
 export type AiDebugTilesRegistry = {
   tiles: AiDebugTilesRegistryTile[];
+};
+
+export type AiDebugMapAnalysisTile = {
+  tile: TileCoords;
+  influence: TileInfluence;
+};
+
+export type AiDebugMapAnalysisCityAssessment = PlainCityAssessment & {
+  cityId: number;
+  cityName: string;
+};
+
+export type AiDebugMapAnalysis = {
+  tiles: AiDebugMapAnalysisTile[];
+  attackTargets: AiDebugMapAnalysisCityAssessment[];
+  defenseTargets: AiDebugMapAnalysisCityAssessment[];
 };

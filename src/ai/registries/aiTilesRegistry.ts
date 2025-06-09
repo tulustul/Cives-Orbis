@@ -1,8 +1,6 @@
 import { PlayerCore } from "@/core/player";
-import { tileToTileCoords } from "@/core/serialization/channel";
 import { TileCore } from "@/core/tile";
 import { TileAssignmentType } from "@/shared";
-import { AiDebugTilesRegistry } from "@/shared/debug";
 
 type TileAssignment = {
   tile: TileCore;

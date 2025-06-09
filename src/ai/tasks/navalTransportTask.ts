@@ -57,6 +57,7 @@ export class NavalTransportTask extends AiTask<
           focus: "expansion",
           priority: 70,
           unitTrait: ["transport"],
+          passableArea: this.options.unit.tile.passableArea,
           onCompleted: (transport) => {
             this.transport = transport;
             this.ai.units.assign(transport, "transport");

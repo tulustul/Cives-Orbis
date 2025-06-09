@@ -12,6 +12,7 @@ import { AiTask, AiTaskOptions } from "./task";
 export type MoveUnitTaskOptions = AiTaskOptions & {
   tile: TileCore;
   unit: UnitCore;
+  priority?: number;
   onCompleted?: () => void;
 };
 

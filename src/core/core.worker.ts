@@ -3,6 +3,8 @@
 import { AIPlayer } from "@/ai/ai-player";
 import { RealisticMapGenerator } from "@/map-generators/realistic";
 import {
+  AiDebugMapAnalysis,
+  AiDebugMapAnalysisTile,
   AiDebugTasks,
   AiDebugUnitsRegistry,
   AiDebugUnitsRegistryUnit,
@@ -36,6 +38,7 @@ import {
   TileGetHoverDetailsOptions,
   TileGetInRangeOptions,
   TileHoverDetails,
+  TileInfluence,
   TileOwnershipChanneled,
   TilesCoordsWithNeighbours,
   TilesFogOfWarChanneled,
@@ -65,6 +68,7 @@ import { PlayerCore } from "./player";
 import { getFailedWeakRequirements } from "./requirements";
 import { ResourceDeposit } from "./resources";
 import {
+  cityAssessmentToChannel,
   cityDetailsToChannel,
   cityToChannel,
   cityToOverviewChanneled,
@@ -72,12 +76,14 @@ import {
   entityToChannel,
   gameToGameStartInfo,
   knowledgeTechToChannel,
+  mapAnalysisToChannel,
   playerToChannel,
   resourceWithTileToChannel,
   tileDetailsToChannel,
   tilesToTileCoordsWithNeighbours,
   tileToChannel,
   tileToFogOfWar,
+  tileToTileCoords,
   tileToTileOwnershipChannel,
   trackedPlayerToChannel,
   unitDetailsToChannel,
@@ -107,6 +113,8 @@ const HANDLERS = {
   "player.editor.giveGold": playerEditorGiveGold,
   "player.debug.getAiTasks": playerDebugGetAiTasks,
   "player.debug.getAiUnitsRegistry": playerDebugGetAiUnitsRegistry,
+  "player.debug.getAiMapAnalysis": playerDebugGetAiMapAnalysis,
+  "player.debug.getAiTileAnalysis": playerDebugGetAiTileAnalysis,
 
   "unit.spawn": unitSpawn,
   "unit.getDetails": getUnitDetails,
@@ -805,6 +813,27 @@ function playerDebugGetAiUnitsRegistry(): AiDebugUnitsRegistry | null {
     },
   );
   return { units };
+}
+
+function playerDebugGetAiMapAnalysis(): AiDebugMapAnalysis | null {
+  if (!game.trackedPlayer.ai) {
+    return null;
+  }
+
+  return mapAnalysisToChannel(game.trackedPlayer.ai.mapAnalysis);
+}
+
+function playerDebugGetAiTileAnalysis(tileId: number): TileInfluence | null {
+  if (!game.trackedPlayer.ai) {
+    return null;
+  }
+
+  const tile = game.map.tilesMap.get(tileId);
+  if (!tile) {
+    return null;
+  }
+
+  return game.trackedPlayer.ai.mapAnalysis.heatMap.influences.get(tile) ?? null;
 }
 
 function playerEditorGiveGold(options: PlayerEditorGiveGoldOptions): void {

@@ -255,6 +255,13 @@ export class MapUi {
     this._selectedCity$.next(city);
   }
 
+  async moveCameraToCity(cityId: number) {
+    const city = await bridge.cities.getDetails(cityId);
+    if (city) {
+      camera.moveToTileWithEasing(city.tile);
+    }
+  }
+
   setUnitDetails(unit: UnitDetailsChanneled) {
     this._selectedUnit$.next(unit);
   }
@@ -263,16 +270,27 @@ export class MapUi {
     this._hoveredCity$.next(cityId);
   }
 
-  async selectUnit(unitId: number | null) {
+  async selectUnit(
+    unitId: number | null,
+    options: { centerCamera?: boolean } = {},
+  ) {
     if (unitId === null) {
       this.clearSelectedUnit();
       return;
     }
 
     const unit = await bridge.units.getDetails(unitId);
-    if (unit?.canControl) {
+    if (!unit) {
+      return;
+    }
+
+    if (unit.canControl) {
       this._selectedUnit$.next(unit);
       this.setPath(unit.path);
+    }
+
+    if (options.centerCamera) {
+      camera.moveToTileWithEasing(unit.tile);
     }
   }
 

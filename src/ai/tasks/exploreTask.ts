@@ -7,6 +7,7 @@ import { NavalTransportTask } from "./navalTransportTask";
 import { AiTask, AiTaskOptions } from "./task";
 import { UnitIdAndName, UnitTrait } from "@/shared";
 import { unitToIdAndName } from "@/core/serialization/channel";
+import { getMoveResult, MoveResult } from "@/core/movement";
 
 export type ExploreTaskOptions = AiTaskOptions & {
   passableArea: PassableArea;
@@ -145,6 +146,10 @@ export class ExploreTask extends AiTask<
   }
 
   private findUnexploredTile(): TileCore | null {
+    if (!this.explorer) {
+      return null;
+    }
+
     const edgeOfUnknown = this.ai.exploringAI.edgeOfUnknown.get(
       this.options.passableArea,
     );
@@ -167,6 +172,12 @@ export class ExploreTask extends AiTask<
       if (skip) {
         continue;
       }
+
+      const moveResult = getMoveResult(this.explorer, this.explorer.tile, tile);
+      if (moveResult === MoveResult.none) {
+        continue;
+      }
+
       const distance = this.explorer!.tile.getDistanceTo(tile);
       if (distance < closestDistance) {
         closestDistance = distance;

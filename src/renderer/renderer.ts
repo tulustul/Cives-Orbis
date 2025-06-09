@@ -30,7 +30,7 @@ import { SelectedUnitDrawer } from "./selectedUnitDrawer";
 import { TerrainDrawer } from "./terrainDrawer";
 import { UnitsDrawer } from "./unitsDrawer";
 import { CitiesDrawer } from "./citiesDrawer";
-// import { BloomFilter } from "pixi-filters";
+import { HeatMapDrawer } from "./heatMapDrawer";
 
 function makeContainer(label: string, options: ContainerOptions = {}) {
   return new Container({
@@ -75,6 +75,7 @@ export class GameRenderer {
   overlays = new OverlaysDrawer(this.overlaysContainer);
   selectedUnitDrawer = new SelectedUnitDrawer(this.overlaysContainer);
   path = new PathDrawer(this.overlaysContainer);
+  heatMapDrawer = new HeatMapDrawer(this.politicsContainer);
   politicsDrawer = new PoliticsDrawer(this.politicsContainer);
   resourcesDrawer = new ResourcesDrawer(this.resourcesContainer);
   fogOfWarDrawer = new FogOfWarMaskDrawer(this.fogOfWarLayer.stage);

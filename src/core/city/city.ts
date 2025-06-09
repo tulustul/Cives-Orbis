@@ -54,6 +54,8 @@ export class CityCore {
 
   defense = new CityDefense(this);
 
+  value = 0;
+
   constructor(public tile: TileCore, public player: PlayerCore) {
     this.expansion.addTile(tile);
 
@@ -131,6 +133,8 @@ export class CityCore {
     this.storage.gatherResources();
 
     this.player.updateYields();
+
+    this.computeValue();
   }
 
   applyEffects(effects: ICityEffect<any>[]) {
@@ -196,5 +200,18 @@ export class CityCore {
       return "walled";
     }
     return "normal";
+  }
+
+  computeValue() {
+    this.value = this.population.total;
+
+    const yields = this.tile.yields;
+    this.value += yields.food * 2 + yields.production * 3 + yields.gold;
+
+    this.value += this.resources.length * 5;
+
+    if (this.tile.coast) {
+      this.value += 10;
+    }
   }
 }

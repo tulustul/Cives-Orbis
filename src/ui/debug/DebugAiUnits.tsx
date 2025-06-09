@@ -3,6 +3,7 @@ import { AiDebugUnitsRegistry } from "@/shared/debug";
 import { UnitAssignmentType } from "@/shared/data";
 import { useObservable } from "@/utils";
 import { useEffect, useState } from "react";
+import { mapUi } from "../mapUi";
 
 function getAssignmentColor(assignment: UnitAssignmentType): string {
   switch (assignment) {
@@ -55,7 +56,13 @@ export function DebugAiUnits() {
           </thead>
           <tbody>
             {debugInfo.units.map((unit, index) => (
-              <tr key={unit.id} className="hover:bg-gray-50">
+              <tr
+                key={unit.id}
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() =>
+                  mapUi.selectUnit(unit.id, { centerCamera: true })
+                }
+              >
                 <td className="border border-black/30 px-2 py-1 font-mono">
                   {index + 1}
                 </td>

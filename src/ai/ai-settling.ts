@@ -55,7 +55,8 @@ export class SettlingAI extends AISystem {
         continue;
       }
 
-      let score = tile.sweetSpotValue;
+      let score =
+        tile.sweetSpotValue - this.ai.mapAnalysis.heatMap.getThreatLevel(tile);
 
       score *= this.calculateTileScorePenalty(tile);
 

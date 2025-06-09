@@ -31,6 +31,7 @@ import {
   TileGetHoverDetailsOptions,
   TileGetInRangeOptions,
   TileHoverDetails,
+  TileInfluence,
   TileOwnershipChanneled,
   TilesCoordsWithNeighbours,
   TilesFogOfWarChanneled,
@@ -46,7 +47,11 @@ import {
 } from "@/shared";
 import { shareReplay } from "rxjs";
 import { makeCommand, makeObservable } from "./worker";
-import { AiDebugTasks, AiDebugUnitsRegistry } from "@/shared/debug";
+import {
+  AiDebugMapAnalysis,
+  AiDebugTasks,
+  AiDebugUnitsRegistry,
+} from "@/shared/debug";
 
 export const bridge = {
   nextTask$: makeObservable<PlayerTask | null>("nextTask"),
@@ -194,6 +199,13 @@ export const bridge = {
       getAiUnitsRegistry: () =>
         makeCommand<AiDebugUnitsRegistry | null>(
           "player.debug.getAiUnitsRegistry",
+        ),
+      getAiMapAnalysis: () =>
+        makeCommand<AiDebugMapAnalysis | null>("player.debug.getAiMapAnalysis"),
+      getAiTileAnalysis: (tileId: number) =>
+        makeCommand<TileInfluence | null>(
+          "player.debug.getAiTileAnalysis",
+          tileId,
         ),
     },
   },

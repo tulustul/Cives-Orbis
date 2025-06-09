@@ -58,6 +58,12 @@ import {
 } from "@/shared";
 import { CityDefense } from "../city/cityDefense";
 import { CombatSimulation, CombatSimulationSide } from "../combat";
+import { CityAssessment, MapAnalysis } from "@/ai/utils/mapAnalysis";
+import {
+  AiDebugMapAnalysis,
+  AiDebugMapAnalysisCityAssessment,
+  AiDebugMapAnalysisTile,
+} from "@/shared/debug";
 
 export function gameToChannel(game: Game): GameChanneled {
   return {
@@ -640,5 +646,38 @@ export function unitToIdAndName(unit: UnitCore | null): UnitIdAndName | null {
   return {
     id: unit.id,
     name: unit.definition.name,
+  };
+}
+
+export function mapAnalysisToChannel(
+  analysis: MapAnalysis,
+): AiDebugMapAnalysis {
+  const tiles: AiDebugMapAnalysisTile[] = [];
+  for (const [tile, influence] of analysis.heatMap.influences.entries()) {
+    tiles.push({
+      tile: tileToTileCoords(tile),
+      influence,
+    });
+  }
+
+  return {
+    tiles,
+    attackTargets: analysis.attackTargets.map(cityAssessmentToChannel),
+    defenseTargets: analysis.defenseTargets.map(cityAssessmentToChannel),
+  };
+}
+
+export function cityAssessmentToChannel(
+  cityAssessment: CityAssessment,
+): AiDebugMapAnalysisCityAssessment {
+  return {
+    cityId: cityAssessment.city.id,
+    cityName: cityAssessment.city.name,
+    effort: cityAssessment.effort,
+    value: cityAssessment.value,
+    score: cityAssessment.score,
+    distance: cityAssessment.distance,
+    friendlyInfluence: cityAssessment.friendlyInfluence,
+    enemyInfluence: cityAssessment.enemyInfluence,
   };
 }

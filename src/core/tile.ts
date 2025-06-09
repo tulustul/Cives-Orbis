@@ -219,18 +219,31 @@ export class TileCore {
   }
 
   getTilesInRange(range: number): Set<TileCore> {
-    const result = new Set<TileCore>([this]);
-    for (let i = 0; i < range; i++) {
-      const neighbours = new Set<TileCore>();
-      for (const tile of result) {
+    if (range === 0) return new Set([this]);
+
+    const result = new Set<TileCore>();
+    const visited = new Set<TileCore>();
+    const queue: { tile: TileCore; distance: number }[] = [
+      { tile: this, distance: 0 },
+    ];
+    let head = 0;
+
+    while (head < queue.length) {
+      const { tile, distance } = queue[head++];
+
+      if (visited.has(tile)) continue;
+      visited.add(tile);
+      result.add(tile);
+
+      if (distance < range) {
         for (const neighbour of tile.neighbours) {
-          neighbours.add(neighbour);
+          if (!visited.has(neighbour)) {
+            queue.push({ tile: neighbour, distance: distance + 1 });
+          }
         }
       }
-      for (const tile of neighbours) {
-        result.add(tile);
-      }
     }
+
     return result;
   }
 

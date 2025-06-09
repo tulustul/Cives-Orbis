@@ -17,7 +17,7 @@ import { TileUnits } from "./TileUnits";
 import { Toolbar } from "./Toolbar";
 import { TurnsCounter } from "./TurnCounter";
 import { UnitPanel } from "./UnitPanel";
-import { Debug } from "./debug";
+import { DebugAi } from "./debug";
 import { useUiState } from "./uiState";
 
 export function MapMode() {
@@ -55,7 +55,7 @@ export function MapMode() {
           </Panel>
           <Research />
 
-          {uiState.debug && <Debug />}
+          {uiState.debug && <DebugAi />}
         </div>
 
         <div className={styles.toolbar}>

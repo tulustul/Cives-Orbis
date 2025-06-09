@@ -10,3 +10,8 @@ export * from "./parallelTask";
 export * from "./settleTask";
 export * from "./task";
 export * from "./workerTask";
+export * from "./defendCityTask";
+export * from "./reinforcementTask";
+export * from "./interceptTask";
+export * from "./formArmyTask";
+export * from "./attackCityTask";

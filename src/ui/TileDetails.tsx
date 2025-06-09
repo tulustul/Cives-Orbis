@@ -1,9 +1,17 @@
-import { Climate, LandForm, SeaLevel } from "@/shared";
+import {
+  Climate,
+  LandForm,
+  SeaLevel,
+  TileDetailsChanneled,
+  TileInfluence,
+} from "@/shared";
 import { useObservable } from "@/utils";
 import { AtlasIcon2 } from "./components/AtlasIcon2";
 import { OrnateBox } from "./components/OrnateBox";
 import { mapUi } from "./mapUi";
 import { useUiState } from "./uiState";
+import { useEffect, useState } from "react";
+import { bridge } from "@/bridge";
 
 const CLIMATES: Record<Climate, string> = {
   [Climate.arctic]: "Arctic",
@@ -112,6 +120,7 @@ export function TileDetails() {
         {details.tile.passableArea !== null && (
           <div>passable area: {details.tile.passableArea}</div>
         )}
+        <AiTileAnalysis tileId={details.tile.id} />
       </div>
     );
   }
@@ -135,4 +144,18 @@ export function TileDetails() {
       </div>
     </OrnateBox>
   );
+}
+
+function AiTileAnalysis({ tileId }: { tileId: number }) {
+  const [analysis, setAnalysis] = useState<TileInfluence | null>(null);
+
+  useEffect(() => {
+    bridge.debug.player.getAiTileAnalysis(tileId).then(setAnalysis);
+  }, [tileId]);
+
+  if (!analysis) {
+    return null;
+  }
+
+  return <pre className="text-[10px]">{JSON.stringify(analysis, null, 2)}</pre>;
 }

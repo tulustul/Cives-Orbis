@@ -9,13 +9,15 @@ import { WorkerAI } from "./ai-worker";
 import { TechAI } from "./ai-tech";
 import { PersonalityAI } from "./ai-personality";
 import { StrategicAI } from "./ai-strategic";
-import { MilitaryTacticalAI } from "./ai-military-tactical";
+import { MilitaryAI } from "./ai-military";
 import { IdleUnitsAI } from "./ai-idle-units";
 import { AiUnitsRegistry } from "./registries/aiUnitsRegistry";
 import { AiTask } from "./tasks/task";
 import { AiFeatures } from "./ai-features";
 import { AiTilesRegistry } from "./registries/aiTilesRegistry";
 import { AiAreaRegistry } from "./registries/aiAreasRegistry";
+import { HeatMap } from "./utils/heatMap";
+import { MapAnalysis } from "./utils/mapAnalysis";
 
 export type AiPriorities = {
   expansion: number;
@@ -45,7 +47,7 @@ export class AIPlayer {
   productionAi = new ProductionAI(this);
   personalityAI: PersonalityAI;
   strategicAI: StrategicAI;
-  tacticalAI: MilitaryTacticalAI;
+  militaryAI: MilitaryAI;
   exploringAI: ExploringAI;
 
   // Collection of all AI systems
@@ -60,8 +62,9 @@ export class AIPlayer {
     none: 1,
   };
 
-  // AI difficulty level
   difficulty: AIDifficulty;
+
+  mapAnalysis: MapAnalysis;
 
   // Last turn the AI performed actions
   private lastTurn = -1;
@@ -82,7 +85,7 @@ export class AIPlayer {
     difficulty: AIDifficulty = AIDifficulty.NORMAL,
     personalityName?: string,
   ) {
-    // Set difficulty level
+    this.mapAnalysis = new MapAnalysis(this.player);
     this.difficulty = difficulty;
     this.applyDifficultySettings();
 
@@ -97,8 +100,8 @@ export class AIPlayer {
     // Initialize strategic AI for high-level coordination
     this.strategicAI = new StrategicAI(this);
 
-    // Initialize tactical AI for combat coordination
-    this.tacticalAI = new MilitaryTacticalAI(this);
+    // Initialize military AI for military operations
+    this.militaryAI = new MilitaryAI(this);
 
     this.exploringAI = new ExploringAI(this);
 
@@ -110,8 +113,7 @@ export class AIPlayer {
       new SettlingAI(this),
       this.exploringAI,
       new WorkerAI(this),
-      // new MilitaryStrategyAI(this),
-      // this.tacticalAI, // Tactical AI should run after Military AI
+      this.militaryAI, // New task-based military AI
       this.productionAi, // Production AI should run last to collect requests
       new IdleUnitsAI(this), // Idle units AI runs last to clean up any unassigned units
     ];
@@ -135,6 +137,7 @@ export class AIPlayer {
     // Move all units automatically first
     this.player.moveAllUnits();
 
+    this.mapAnalysis.update();
     this.units.update();
     this.tiles.update();
     this.features.update();
@@ -194,6 +197,14 @@ export class AIPlayer {
         this.priorities.randomize = 0.1; // Much less random behavior
         break;
     }
+  }
+
+  /**
+   * Add a root task to be executed
+   */
+  addRootTask(task: AiTask<any, any>) {
+    task.init();
+    this.tasks.push(task);
   }
 
   /**
