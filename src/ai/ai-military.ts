@@ -5,21 +5,8 @@ import { DefendCityTask } from "./tasks/defendCityTask";
 import { FormArmyTask } from "./tasks/formArmyTask";
 import { InterceptTask } from "./tasks/interceptTask";
 import { AiOrder } from "./types";
-
-interface ThreatAssessment {
-  city: CityCore;
-  threatLevel: number;
-  nearbyEnemies: UnitCore[];
-  requiredDefense: number;
-}
-
-interface TargetAssessment {
-  city: CityCore;
-  attractiveness: number;
-  difficulty: number;
-  requiredForce: number;
-  distance: number;
-}
+import { CityAssessment } from "./utils/mapAnalysis";
+import { AiTask } from "./tasks";
 
 export class MilitaryAI extends AISystem {
   private defenseTracker = new Map<CityCore, DefendCityTask>();
@@ -36,26 +23,24 @@ export class MilitaryAI extends AISystem {
     CITY_ATTACK: 85,
   };
 
-  *plan(): Generator<AiOrder> {
+  *plan(): Generator<AiOrder | AiTask<any, any>> {
     // Clean up completed tasks
     this.cleanupCompletedTasks();
 
-    // Assess threats to our cities
-    const threats = this.assessThreats();
-    this.handleThreats(threats);
+    // Update map analysis data
+    this.ai.mapAnalysis.update();
+
+    // Handle defense based on map analysis
+    this.handleThreats(this.ai.mapAnalysis.defenseTargets);
 
     // Look for interception opportunities
     this.handleInterceptions();
 
-    // Assess attack opportunities
-    const targets = this.assessTargets();
-    this.handleOffensiveOperations(targets);
+    // Handle offensive operations based on map analysis
+    this.handleOffensiveOperations(this.ai.mapAnalysis.attackTargets);
 
     // Request unit production if needed
     this.requestUnitProduction();
-
-    // Yield nothing - all work is done through tasks
-    return;
   }
 
   private cleanupCompletedTasks() {
@@ -85,57 +70,7 @@ export class MilitaryAI extends AISystem {
     }
   }
 
-  private assessThreats(): ThreatAssessment[] {
-    const threats: ThreatAssessment[] = [];
-
-    for (const city of this.player.cities) {
-      let threatLevel = 0;
-      const nearbyEnemies: UnitCore[] = [];
-
-      // Check for enemies within threat range
-      const threatRange = 5;
-      for (const tile of city.tile.getTilesInRange(threatRange)) {
-        const enemyUnits = tile.units.filter((u) =>
-          this.player.isEnemyWith(u.player),
-        );
-
-        if (enemyUnits.length > 0) {
-          nearbyEnemies.push(...enemyUnits);
-
-          // Calculate threat based on distance and strength
-          const distance = tile.getDistanceTo(city.tile);
-          const distanceFactor = 1 + (threatRange - distance) * 0.3;
-
-          for (const enemy of enemyUnits) {
-            threatLevel += enemy.definition.strength * distanceFactor;
-          }
-        }
-      }
-
-      if (threatLevel > 0) {
-        // Calculate required defense
-        const currentDefense = city.tile.units
-          .filter((u) => u.player === this.player && u.isMilitary)
-          .reduce((sum, u) => sum + u.definition.strength, 0);
-
-        const requiredDefense = Math.ceil(threatLevel * 0.8 + 10);
-
-        threats.push({
-          city,
-          threatLevel,
-          nearbyEnemies,
-          requiredDefense: Math.max(0, requiredDefense - currentDefense),
-        });
-      }
-    }
-
-    // Sort by threat level (highest first)
-    threats.sort((a, b) => b.threatLevel - a.threatLevel);
-
-    return threats;
-  }
-
-  private handleThreats(threats: ThreatAssessment[]) {
+  private handleThreats(threats: CityAssessment[]) {
     for (const threat of threats) {
       // Check if we already have a defense task for this city
       const existingTask = this.defenseTracker.get(threat.city);
@@ -143,15 +78,19 @@ export class MilitaryAI extends AISystem {
         continue; // Task already active
       }
 
-      // Determine priority based on threat level
+      // Calculate threat ratio for priority
+      const threatRatio =
+        threat.enemyInfluence / Math.max(1, threat.friendlyInfluence);
+
+      // Determine priority based on threat ratio
       let priority = this.PRIORITIES.CITY_DEFENSE_NORMAL;
-      if (threat.threatLevel > 50) {
+      if (threatRatio > 3.0) {
         priority = this.PRIORITIES.CITY_DEFENSE_CRITICAL;
-      } else if (threat.threatLevel > 25) {
+      } else if (threatRatio > 1.5) {
         priority = this.PRIORITIES.CITY_DEFENSE_HIGH;
       }
 
-      // Create defense task
+      // Create defense task even for influence-based threats (early warning)
       const defenseTask = new DefendCityTask(this.ai, {
         city: threat.city,
         priority,
@@ -159,6 +98,19 @@ export class MilitaryAI extends AISystem {
 
       this.ai.addRootTask(defenseTask);
       this.defenseTracker.set(threat.city, defenseTask);
+
+      // Log early warning detections
+      if (
+        threat.city.tile.units.filter((u) => this.player.isEnemyWith(u.player))
+          .length === 0 &&
+        threat.enemyInfluence > 0
+      ) {
+        console.log(
+          `[Military AI ${this.player.nation.name}] Early warning: ${
+            threat.city.name
+          } under influence threat (ratio: ${threatRatio.toFixed(2)})`,
+        );
+      }
     }
   }
 
@@ -230,82 +182,7 @@ export class MilitaryAI extends AISystem {
     }
   }
 
-  private assessTargets(): TargetAssessment[] {
-    const targets: TargetAssessment[] = [];
-
-    // Find enemy cities we can attack
-    for (const player of this.player.game.players) {
-      if (!this.player.isEnemyWith(player)) continue;
-
-      for (const city of player.cities) {
-        // Skip if not explored
-        if (!this.player.exploredTiles.has(city.tile)) {
-          continue;
-        }
-
-        // Calculate attractiveness (value of capturing)
-        const attractiveness =
-          city.population.total * 10 +
-          city.tile.yields.food * 5 +
-          city.tile.yields.production * 5 +
-          (city.tile.resource ? 20 : 0);
-
-        // Calculate difficulty
-        let difficulty = 0;
-
-        // City defenses
-        const defenders = city.tile.units.filter((u) => u.player === player);
-        difficulty += defenders.reduce(
-          (sum, u) => sum + u.definition.strength,
-          0,
-        );
-
-        // Nearby reinforcements
-        for (const tile of city.tile.getTilesInRange(3)) {
-          const reinforcements = tile.units.filter((u) => u.player === player);
-          const distance = tile.getDistanceTo(city.tile);
-          difficulty += reinforcements.reduce(
-            (sum, u) => sum + u.definition.strength / (distance + 1),
-            0,
-          );
-        }
-
-        // Base city defense (reduced to make AI more aggressive)
-        difficulty += 5;
-
-        // Calculate required force (with smaller safety margin to be more aggressive)
-        const requiredForce = Math.ceil(difficulty * 1.1);
-
-        // Calculate distance from our nearest city
-        let minDistance = Infinity;
-        for (const ourCity of this.player.cities) {
-          const distance = ourCity.tile.getDistanceTo(city.tile);
-          if (distance < minDistance) {
-            minDistance = distance;
-          }
-        }
-
-        targets.push({
-          city,
-          attractiveness,
-          difficulty,
-          requiredForce,
-          distance: minDistance,
-        });
-      }
-    }
-
-    // Sort by score (attractiveness vs difficulty and distance)
-    targets.sort((a, b) => {
-      const scoreA = a.attractiveness / (a.difficulty * (1 + a.distance * 0.1));
-      const scoreB = b.attractiveness / (b.difficulty * (1 + b.distance * 0.1));
-      return scoreB - scoreA;
-    });
-
-    return targets;
-  }
-
-  private handleOffensiveOperations(targets: TargetAssessment[]) {
+  private handleOffensiveOperations(targets: CityAssessment[]) {
     // Limit number of concurrent attacks based on empire size
     const maxConcurrentAttacks = Math.max(
       1,
@@ -325,53 +202,69 @@ export class MilitaryAI extends AISystem {
       );
       if (targets[0]) {
         console.log(
-          `  Best target: ${targets[0].city.name}, required: ${
-            targets[0].requiredForce
-          }, score: ${targets[0].attractiveness / targets[0].difficulty}`,
+          `  Best target: ${targets[0].city.name}, effort: ${targets[0].effort}, score: ${targets[0].score}`,
         );
       }
     }
 
-    // Try to form armies for best targets
+    // Try to form armies for best targets (already sorted by score)
     for (const target of targets) {
       if (currentAttacks >= maxConcurrentAttacks) break;
 
       // Skip if we already have an army targeting this city
       if (this.activeArmies.has(target.city)) continue;
 
-      // Skip if we don't have enough available strength (be more aggressive)
-      if (availableMilitary < target.requiredForce * 0.3) {
+      // Calculate required force based on actual enemy strength
+      // Start with city defense strength
+      const cityDefense = target.city.defense.strength * (target.city.defense.health / target.city.defense.maxHealth);
+      
+      // Add enemy influence (represents nearby enemy units)
+      const enemyStrength = cityDefense + target.enemyInfluence;
+      
+      // Calculate force multiplier
+      let forceMultiplier = 2.0; // Base: we need 2x the enemy strength
+      
+      // Distance penalty: farther targets need more force for attrition
+      if (target.distance > 15) {
+        forceMultiplier += 0.5;
+      } else if (target.distance > 10) {
+        forceMultiplier += 0.3;
+      }
+      
+      // Subtract friendly influence already at the target
+      const effectiveEnemyStrength = Math.max(1, enemyStrength - target.friendlyInfluence * 0.5);
+      
+      // Calculate actual required force
+      const requiredForce = Math.ceil(effectiveEnemyStrength * forceMultiplier);
+      
+      // Skip if we don't have enough available strength (need at least 70% ready)
+      if (availableMilitary < requiredForce * 0.7) {
         if (this.player.game.turn % 10 === 0) {
           console.log(
-            `  Skipping ${
-              target.city.name
-            }: not enough strength (${availableMilitary} < ${
-              target.requiredForce * 0.3
-            })`,
+            `  Skipping ${target.city.name}: insufficient strength (${availableMilitary} < ${requiredForce * 0.7} needed, enemy: ${enemyStrength.toFixed(1)})`,
           );
         }
         continue;
       }
 
-      // Check if target is still worth attacking (very low threshold)
-      const score = target.attractiveness / target.difficulty;
-      if (score < 0.1) {
+      // Skip very low score targets
+      if (target.score < 1) {
         if (this.player.game.turn % 10 === 0) {
           console.log(
-            `  Skipping ${target.city.name}: low score (${score} < 0.1)`,
+            `  Skipping ${target.city.name}: low score (${target.score} < 1)`,
           );
         }
         continue;
       }
 
       console.log(
-        `[Military AI ${this.player.nation.name}] Creating army to attack ${target.city.name}`,
+        `[Military AI ${this.player.nation.name}] Creating army to attack ${target.city.name} (enemy: ${enemyStrength.toFixed(1)}, required: ${requiredForce})`,
       );
 
-      // Create army formation task
+      // Create army formation task with properly calculated force
       const armyTask = new FormArmyTask(this.ai, {
         targetCity: target.city,
-        requiredStrength: target.requiredForce,
+        requiredStrength: requiredForce,
         priority: this.PRIORITIES.ARMY_FORMATION,
       });
 
@@ -388,50 +281,112 @@ export class MilitaryAI extends AISystem {
       if (unit.parent) continue; // In transport
       if (unit.health < 30) continue; // Too damaged
 
-      totalStrength += unit.definition.strength * (unit.health / 100);
+      // Base strength
+      const baseStrength = unit.definition.strength * (unit.health / 100);
+
+      // Factor in influence at unit's location
+      const influence = this.ai.mapAnalysis.heatMap.getTileInfluence(unit.tile);
+      let availabilityMultiplier = 1.0;
+
+      if (influence) {
+        const friendly = influence.friendly.total;
+        const enemy = influence.enemy.total;
+
+        if (friendly > 0 || enemy > 0) {
+          // Units in friendly-dominated areas are more available
+          // Units in enemy-dominated areas are less available
+          const influenceRatio = friendly / (friendly + enemy);
+
+          // Scale from 0.5 (enemy dominated) to 1.2 (friendly dominated)
+          availabilityMultiplier = 0.5 + influenceRatio * 0.7;
+        }
+      }
+
+      totalStrength += baseStrength * availabilityMultiplier;
     }
 
     return totalStrength;
   }
 
   private requestUnitProduction() {
-    // Calculate military needs
+    // Calculate military needs more aggressively
     const totalCities = this.player.cities.length;
-    const totalMilitary = this.player.units.filter((u) => u.isMilitary).length;
+    const totalMilitary = this.player.units.filter((u) => u.isMilitary && !u.isNaval).length;
     const militaryRatio = totalMilitary / Math.max(1, totalCities);
 
-    // We want at least 2 military units per city
-    const targetRatio = 2;
+    // Calculate threats and opportunities
+    const threatenedCities = this.ai.mapAnalysis.defenseTargets.length;
+    const attackTargets = this.ai.mapAnalysis.attackTargets.length;
+    const activeArmies = this.activeArmies.size;
+    
+    // Dynamic target ratio based on situation
+    let targetRatio = 3; // Base: 3 units per city
+    
+    // Add more if we have threats
+    if (threatenedCities > 0) {
+      targetRatio += threatenedCities * 0.5;
+    }
+    
+    // Add more if we have attack opportunities but no armies
+    if (attackTargets > 0 && activeArmies === 0) {
+      targetRatio += 2;
+    }
+    
+    // Always produce military if we have very few
+    const needsUrgentMilitary = totalMilitary < totalCities * 1.5;
+    
+    if (militaryRatio < targetRatio || needsUrgentMilitary) {
+      // Calculate priority - much higher for urgent needs
+      let priority = Math.round((targetRatio - militaryRatio) * 150);
+      
+      // Boost priority if we have no active armies but have targets
+      if (activeArmies === 0 && attackTargets > 0) {
+        priority = Math.max(priority, 200);
+      }
+      
+      // Emergency priority if very low military
+      if (needsUrgentMilitary) {
+        priority = Math.max(priority, 250);
+      }
 
-    if (militaryRatio < targetRatio) {
-      // Request military production
-      const priority = Math.round((targetRatio - militaryRatio) * 100);
-
-      // Find best military unit we can produce
+      // Find best land military units we can produce
       const availableUnits = Array.from(
         this.player.knowledge.discoveredEntities.unit,
-      ).filter((u) => u.traits.includes("military"));
+      ).filter((u) => u.traits.includes("military") && !u.traits.includes("naval"));
 
-      // Sort by strength
-      availableUnits.sort((a, b) => b.strength - a.strength);
+      // Sort by strength/cost efficiency
+      availableUnits.sort((a, b) => {
+        const efficiencyA = a.strength / Math.max(1, a.productionCost);
+        const efficiencyB = b.strength / Math.max(1, b.productionCost);
+        return efficiencyB - efficiencyA;
+      });
 
-      for (const unitDef of availableUnits) {
+      // Request multiple unit types with decreasing priority
+      let requestPriority = priority;
+      for (const unitDef of availableUnits.slice(0, 3)) {
         this.ai.productionAi.request({
           focus: "military",
-          priority,
+          priority: requestPriority,
           product: unitDef,
         });
+        requestPriority = Math.max(100, requestPriority - 50);
+      }
+      
+      // Log military production requests
+      if (this.player.game.turn % 10 === 0) {
+        console.log(
+          `[Military AI ${this.player.nation.name}] Requesting military: ${totalMilitary}/${Math.ceil(targetRatio * totalCities)} units, priority: ${priority}`
+        );
       }
     }
 
-    // Special request for naval units if we have coastal cities
+    // Naval units - lower priority
     const coastalCities = this.player.cities.filter((c) => c.tile.coast);
     const navalUnits = this.player.units.filter((u) => u.isNaval).length;
 
-    if (coastalCities.length > 0 && navalUnits < coastalCities.length) {
-      const navalPriority = 70;
+    if (coastalCities.length > 0 && navalUnits < coastalCities.length * 0.5) {
+      const navalPriority = 50; // Lower priority than land units
 
-      // Request naval units
       const navalUnitDefs = Array.from(
         this.player.knowledge.discoveredEntities.unit,
       ).filter((u) => u.traits.includes("naval"));
