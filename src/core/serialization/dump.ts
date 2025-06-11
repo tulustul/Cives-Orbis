@@ -395,8 +395,14 @@ function loadCity(game: Game, cityData: CitySerialized) {
       productDefinition = dataManager.units.get(cityData.product.id);
     } else if (cityData.product.type === "building") {
       productDefinition = dataManager.buildings.get(cityData.product.id)!;
-    } else {
+    } else if (cityData.product.type === "idleProduct") {
       productDefinition = dataManager.idleProducts.get(cityData.product.id)!;
+    } else if (cityData.product.type === "district") {
+      productDefinition = dataManager.districts.get(cityData.product.id)!;
+    } else {
+      throw new Error(
+        `Unknown product type: ${cityData.product.type} for id ${cityData.product.id}`,
+      );
     }
 
     city.production.product = productDefinition;
@@ -408,11 +414,11 @@ function loadCity(game: Game, cityData: CitySerialized) {
   city.production.buildingsIds = new Set(
     city.production.buildings.map((b) => b.id),
   );
-  for (const resource of cityData.storage) {
-    const resourceDef = dataManager.resources.get(resource.id);
-    city.storage.resources.set(resourceDef, resource.amount);
-  }
   city.update();
+  for (const storageItem of cityData.storage) {
+    const resourceDef = dataManager.resources.get(storageItem.id);
+    city.storage.addResource(resourceDef, storageItem.amount);
+  }
 
   for (const districtData of cityData.districts) {
     const def = dataManager.districts.get(districtData.defId);
@@ -440,12 +446,10 @@ function dumpCity(city: CityCore): CitySerialized {
     tiles: Array.from(city.expansion.tiles).map((tile) => tile.id),
     workedTiles: Array.from(city.workers.workedTiles).map((tile) => tile.id),
     buildings: city.production.buildings.map((b) => b.id),
-    storage: Array.from(city.storage.resources.entries()).map(
-      ([resource, amount]) => ({
-        id: resource.id,
-        amount,
-      }),
-    ),
+    storage: Array.from(city.storage.resources.values()).map((storageItem) => ({
+      id: storageItem.resource.id,
+      amount: storageItem.amount,
+    })),
     health: city.defense.health,
     districts: city.districts.all.map((district) => ({
       defId: district.def.id,

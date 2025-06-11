@@ -289,12 +289,12 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
     workedTiles: Array.from(city.workers.workedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
-    storage: Array.from(city.storage.resources.entries()).map(
-      ([resource, amount]) => ({
-        resource: entityToMinimalChannel(resource),
-        amount,
-      }),
-    ),
+    storage: Array.from(city.storage.resources.values()).map((storageItem) => ({
+      resource: entityToMinimalChannel(storageItem.resource),
+      amount: storageItem.amount,
+      limit: storageItem.limit,
+      yield: storageItem.yield,
+    })),
     defense: cityDefenseToChannel(city.defense),
   };
 }

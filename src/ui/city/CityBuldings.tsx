@@ -6,7 +6,7 @@ export function CityBuildings() {
   const city = useCity();
 
   return (
-    <>
+    <div className="flex flex-col h-full overflow-y-auto">
       <div className="text-xl text-center my-4">Buildings</div>
 
       {city.buildings.length === 0 && (
@@ -30,6 +30,6 @@ export function CityBuildings() {
           </EntityTooltip>
         </div>
       ))}
-    </>
+    </div>
   );
 }

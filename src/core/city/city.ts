@@ -79,6 +79,7 @@ export class CityCore {
     this.production.progressProduction();
     this.population.progressGrowth();
     this.workers.updateWorkers();
+    this.storage.gatherResources();
 
     this.update();
     this.defense.update();
@@ -133,7 +134,7 @@ export class CityCore {
       );
     }
 
-    this.storage.gatherResources();
+    this.storage.update();
 
     this.player.updateYields();
 

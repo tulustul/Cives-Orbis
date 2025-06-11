@@ -5,12 +5,23 @@ import { AiOrder } from "./types";
 
 export class CityAI extends AISystem {
   *plan(): Generator<AiOrder> {
-    for (const city of this.player.citiesWithoutProduction) {
+    for (const city of this.player.cities) {
       yield* this.processCityProduct(city);
     }
   }
 
   private *processCityProduct(city: CityCore): Generator<AiOrder> {
+    const currentProduct = city.production.product;
+    if (currentProduct) {
+      if (currentProduct.entityType === "idleProduct") {
+        if (Math.random() < 0.8) {
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+
     const buildings = city.production.availableBuildings.filter(
       (b) => !city.production.disabledProducts.has(b),
     );
@@ -59,6 +70,10 @@ export class CityAI extends AISystem {
     const idleProducts = city.production.availableIdleProducts;
     const chosenProduct =
       idleProducts[Math.floor(Math.random() * idleProducts.length)];
+
+    if (!chosenProduct) {
+      return;
+    }
 
     yield {
       group: "city-produce",

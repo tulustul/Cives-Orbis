@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { mapUi } from "../mapUi";
 import { useCityView } from "./cityViewStore";
 import { useObservable } from "@/utils";
+import { CityStorage } from "./CityStorage";
 
 type Props = {
   city: CityDetailsChanneled;
@@ -50,7 +51,10 @@ export function CityView({ city }: Props) {
       </div>
 
       <Background className="text-white pointer-events-auto border-gray-900 border-l-3 w-80">
-        <CityBuildings />
+        <div className="flex flex-col">
+          <CityBuildings />
+          <CityStorage />
+        </div>
       </Background>
     </div>
   );

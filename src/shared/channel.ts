@@ -189,6 +189,8 @@ export type CityChanneled = {
 export type CityStorage = {
   resource: EntityMinimalChanneled;
   amount: number;
+  limit: number;
+  yield: number;
 };
 
 export type CityDetailsChanneled = {
