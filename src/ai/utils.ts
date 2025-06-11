@@ -1,4 +1,4 @@
-import { Building, ResourceDefinition } from "@/core/data/types";
+import { ResourceDefinition } from "@/core/data/types";
 import { TileCore } from "@/core/tile";
 import { UnitCore } from "@/core/unit";
 import { LandForm } from "@/shared";
@@ -94,14 +94,6 @@ export enum VictoryType {
   science = "science",
   cultural = "cultural",
   economic = "economic",
-}
-
-/**
- * Building definition interface with additional properties
- */
-export interface BuildingDefinition extends Building {
-  cost?: { value: number };
-  enables?: any[];
 }
 
 export function findClosestUnit(

@@ -86,8 +86,11 @@ export const useCityView = create<CityViewState>((set, get) => ({
     let updatedCity: CityDetailsChanneled | null = null;
     if (isWorked) {
       updatedCity = await bridge.cities.unworkTile(options);
+    } else {
+      updatedCity = await bridge.cities.workTile(options);
     }
-    updatedCity = await bridge.cities.workTile(options);
+
+    renderer.areaDrawer.onSelectedCity(updatedCity);
 
     set({ city: updatedCity });
   },
@@ -137,6 +140,8 @@ export const useCityView = create<CityViewState>((set, get) => ({
     if (updatedCity) {
       set({ city: updatedCity });
     }
+
+    renderer.areaDrawer.onSelectedCity(updatedCity);
   },
   clear: () => {
     renderer.areaDrawer.districtAvailableTiles.clear();

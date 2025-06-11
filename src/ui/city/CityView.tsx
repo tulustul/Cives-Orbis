@@ -13,7 +13,6 @@ type Props = {
 };
 export function CityView({ city }: Props) {
   const cityView = useCityView();
-  const tile = useObservable(mapUi.clickedTileDetails$);
 
   useEffect(() => {
     const wereYieldsEnabled = mapUi.yieldsEnabled;
@@ -34,12 +33,6 @@ export function CityView({ city }: Props) {
       cityView.clear();
     };
   }, [city]);
-
-  useEffect(() => {
-    if (tile) {
-      cityView.handleTileClick(tile);
-    }
-  }, [tile]);
 
   if (!cityView.city) {
     return null;

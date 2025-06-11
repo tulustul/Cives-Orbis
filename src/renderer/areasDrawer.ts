@@ -96,6 +96,9 @@ export class AreasDrawer {
   }
 
   private async onHoveredCity(cityId: number | null) {
+    if (mapUi.selectedCity) {
+      return;
+    }
     if (cityId === null) {
       this.cityWorkedTilesArea.clear();
       this.cityNotWorkedTilesArea.clear();
@@ -110,7 +113,7 @@ export class AreasDrawer {
     }
   }
 
-  private async onSelectedCity(city: CityDetailsChanneled | null) {
+  async onSelectedCity(city: CityDetailsChanneled | null) {
     this.cityRangeArea.setTiles([]);
     this.cityWorkedTilesArea.setTiles(city?.workedTiles || []);
   }
