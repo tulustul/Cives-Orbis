@@ -54,10 +54,7 @@ function tickGame(game: Game, expectedState: string[]) {
 
   console.log(currentState);
 
-  // expect(currentState).toEqual(expectedState);
-
-  // ai.units.update();
-  // task.tickBranch();
+  expect(currentState).toEqual(expectedState);
 
   game.nextTurn();
 }
@@ -141,7 +138,6 @@ describe("NavalTransportTask", () => {
     const game = makeGame(mapData, gameOptions);
     const ai = new AIPlayer(game.players[0]);
     const warrior = game.players[0].units[0];
-    const galley = game.players[0].units[1];
 
     // Target is on the far right island
     const targetTile = game.map.tiles[19][1];

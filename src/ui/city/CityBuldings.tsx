@@ -1,12 +1,10 @@
-import { CityDetailsChanneled } from "@/shared";
-import { EntityTooltip } from "../entity";
 import { ImageIcon } from "../components";
+import { EntityTooltip } from "../entity";
+import { useCity } from "./cityViewStore";
 
-type Props = {
-  city: CityDetailsChanneled;
-};
+export function CityBuildings() {
+  const city = useCity();
 
-export function CityBuildings({ city }: Props) {
   return (
     <>
       <div className="text-xl text-center my-4">Buildings</div>

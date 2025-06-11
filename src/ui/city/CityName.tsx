@@ -1,12 +1,10 @@
-import { CityDetailsChanneled } from "@/shared";
-
-import { mapUi } from "../mapUi";
 import { Button } from "../components";
+import { mapUi } from "../mapUi";
+import { useCity } from "./cityViewStore";
 
-type Props = {
-  city: CityDetailsChanneled;
-};
-export function CityName({ city }: Props) {
+export function CityName() {
+  const city = useCity();
+
   return (
     <div className="flex flex-col items-center pt-5">
       <Button

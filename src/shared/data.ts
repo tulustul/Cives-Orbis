@@ -6,6 +6,7 @@ export type NationColors = {
 export type EntityType =
   | "unit"
   | "building"
+  | "district"
   | "idleProduct"
   | "resource"
   | "technology"
@@ -121,7 +122,7 @@ export type UnitTrait =
   | "siege"
   | "transport";
 
-export type ProductType = "unit" | "building" | "idleProduct";
+export type ProductType = "unit" | "building" | "idleProduct" | "district";
 
 export type PlayerViewBoundingBox = {
   minX: number;

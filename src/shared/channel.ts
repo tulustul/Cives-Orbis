@@ -94,6 +94,8 @@ export type TileChanneled = {
   yields: Yields;
   areaOf: number | null;
   cityId: number | null;
+  district: string | null;
+  districtDirection: TileDirection;
   cityType: CityRenderType | null;
   unitsIds: number[];
   resource: ResourceChanneled | null;
@@ -136,7 +138,14 @@ export type UnitDefChanneled = EntityMinimalChanneled & {
 };
 
 export type BuildingChanneled = EntityMinimalChanneled & {
-  entityType: "building" | "idleProduct";
+  entityType: "building" | "idleProduct" | "district";
+  cost: number;
+  technology: EntityMinimalChanneled | null;
+  effects: CityEffect[];
+};
+
+export type DistrictChanneled = EntityMinimalChanneled & {
+  entityType: "district";
   cost: number;
   technology: EntityMinimalChanneled | null;
   effects: CityEffect[];

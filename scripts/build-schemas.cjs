@@ -21,6 +21,7 @@ const allTypes = [
   "JsonTileImprovements",
   "JsonBuildings",
   "JsonUnits",
+  "JsonDistricts",
 ]
 
 const cliTypes = getCliTypes();

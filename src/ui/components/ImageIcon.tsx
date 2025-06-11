@@ -23,6 +23,7 @@ const tint: Record<EntityType, string> = {
   resource: "#00ffff",
   nation: "#0000ff",
   populationType: "#000000",
+  district: "#000000",
 };
 
 const images = import.meta.glob("@/assets/rich-icons/**/*.png");

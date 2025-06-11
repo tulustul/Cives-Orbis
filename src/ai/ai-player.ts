@@ -1,22 +1,21 @@
 import { PlayerCore } from "@/core/player";
 import { CityAI } from "./ai-city";
 import { ExploringAI } from "./ai-exploring";
-import { SettlingAI } from "./ai-settling";
-import { AISystem } from "./ai-system";
-import { AiOrder } from "./types";
-import { ProductionAI } from "./ai-production";
-import { WorkerAI } from "./ai-worker";
-import { TechAI } from "./ai-tech";
-import { PersonalityAI } from "./ai-personality";
-import { StrategicAI } from "./ai-strategic";
-import { MilitaryAI } from "./ai-military";
+import { AiFeatures } from "./ai-features";
 import { IdleUnitsAI } from "./ai-idle-units";
+import { MilitaryAI } from "./ai-military";
+import { PersonalityAI } from "./ai-personality";
+import { ProductionAI } from "./ai-production";
+import { SettlingAI } from "./ai-settling";
+import { StrategicAI } from "./ai-strategic";
+import { AISystem } from "./ai-system";
+import { TechAI } from "./ai-tech";
+import { WorkerAI } from "./ai-worker";
+import { AiAreaRegistry } from "./registries/aiAreasRegistry";
+import { AiTilesRegistry } from "./registries/aiTilesRegistry";
 import { AiUnitsRegistry } from "./registries/aiUnitsRegistry";
 import { AiTask } from "./tasks/task";
-import { AiFeatures } from "./ai-features";
-import { AiTilesRegistry } from "./registries/aiTilesRegistry";
-import { AiAreaRegistry } from "./registries/aiAreasRegistry";
-import { HeatMap } from "./utils/heatMap";
+import { AiOrder } from "./types";
 import { MapAnalysis } from "./utils/mapAnalysis";
 
 export type AiPriorities = {

@@ -66,6 +66,11 @@ interface ProductSerialized {
   id: string;
 }
 
+type DistrictSerialized = {
+  defId: string;
+  tileId: number;
+};
+
 interface CitySerialized {
   id: number;
   name: string;
@@ -81,6 +86,7 @@ interface CitySerialized {
   buildings: string[];
   storage: { id: string; amount: number }[];
   health: number;
+  districts: DistrictSerialized[];
 }
 
 interface PlayerSerialized {
@@ -407,6 +413,12 @@ function loadCity(game: Game, cityData: CitySerialized) {
     city.storage.resources.set(resourceDef, resource.amount);
   }
   city.update();
+
+  for (const districtData of cityData.districts) {
+    const def = dataManager.districts.get(districtData.defId);
+    const tile = game.map.getTileSafe(districtData.tileId);
+    city.districts.add(def, tile);
+  }
 }
 
 function dumpCity(city: CityCore): CitySerialized {
@@ -435,6 +447,10 @@ function dumpCity(city: CityCore): CitySerialized {
       }),
     ),
     health: city.defense.health,
+    districts: city.districts.all.map((district) => ({
+      defId: district.def.id,
+      tileId: district.tile.id,
+    })),
   };
 }
 

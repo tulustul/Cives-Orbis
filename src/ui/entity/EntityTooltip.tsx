@@ -118,4 +118,5 @@ const entityTypeRenderers: Record<
   technology: () => null,
   nation: () => null,
   populationType: () => null,
+  district: () => null,
 };

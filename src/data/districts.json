@@ -1,0 +1,14 @@
+{
+  "$schema": "./schemas/Districts.schema.json",
+  "items": [
+    {
+      "id": "district_port",
+      "name": "Port",
+      "productionCost": 100,
+      "seaLevel": "shallow",
+      "effects": [{ "type": "city.addYields", "yield": "gold", "value": 2 }],
+      "weakRequirements": [],
+      "strongRequirements": [{ "type": "city.isCoastline" }]
+    }
+  ]
+}

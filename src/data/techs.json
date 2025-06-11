@@ -184,7 +184,12 @@
       "requiredTechnologies": ["tech_fishing"],
       "cost": 25,
       "era": "Copper Age",
-      "unlocks": ["unit_tireme", "unit_galley", "resource-pearl"],
+      "unlocks": [
+        "unit_tireme",
+        "unit_galley",
+        "resource-pearl",
+        "district_port"
+      ],
       "layout": {
         "x": 930.0000000000001,
         "y": 770.0000000000001,

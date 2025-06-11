@@ -22,26 +22,26 @@ export function getMoveResult(
   }
 
   if (unit.isNaval) {
-    if (
-      to.passableArea &&
-      from.passableArea !== to.passableArea &&
-      !unit.isLand
-    ) {
-      if (to.isLand && to.city?.tile.coast) {
-        if (unit.isMilitary || to.city?.player !== unit.player) {
-          return MoveResult.attack;
-        } else if (to.city?.player === unit.player) {
-          return MoveResult.move;
-        } else {
-          return MoveResult.none;
-        }
-      }
-      if (to.isWater && from.city) {
-        return MoveResult.move;
-      }
-      return MoveResult.none;
-    }
-    if (to.isLand && !unit.isLand && !to.city?.tile.coast) {
+    // if (
+    //   to.passableArea &&
+    //   from.passableArea !== to.passableArea &&
+    //   !unit.isLand
+    // ) {
+    //   if (to.isLand && to.city?.tile.coast) {
+    //     if (unit.isMilitary || to.city?.player !== unit.player) {
+    //       return MoveResult.attack;
+    //     } else if (to.city?.player === unit.player) {
+    //       return MoveResult.move;
+    //     } else {
+    //       return MoveResult.none;
+    //     }
+    //   }
+    //   if (to.isWater && from.city) {
+    //     return MoveResult.move;
+    //   }
+    //   return MoveResult.none;
+    // }
+    if (to.isLand && !unit.isLand) {
       return MoveResult.none;
     }
   }

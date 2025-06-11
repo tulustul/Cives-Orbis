@@ -1,0 +1,298 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "CityAddYieldsEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "city.addYields",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "yield": {
+          "$ref": "#/definitions/YieldKey"
+        }
+      },
+      "required": [
+        "type",
+        "value",
+        "yield"
+      ],
+      "type": "object"
+    },
+    "CityEffect": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CityAddYieldsEffect"
+        },
+        {
+          "$ref": "#/definitions/CityMultiplyYieldsEffect"
+        },
+        {
+          "$ref": "#/definitions/CityTransferProductionToYieldsEffect"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "defenseBonus": {
+              "type": "number"
+            },
+            "type": {
+              "const": "city.defenseBonus",
+              "type": "string"
+            }
+          },
+          "required": [
+            "defenseBonus",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "maxHealth": {
+              "type": "number"
+            },
+            "type": {
+              "const": "city.maxHealth",
+              "type": "string"
+            }
+          },
+          "required": [
+            "maxHealth",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "strength": {
+              "type": "number"
+            },
+            "type": {
+              "const": "city.strength",
+              "type": "string"
+            }
+          },
+          "required": [
+            "strength",
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "CityMultiplyYieldsEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "city.multiplyYields",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "yield": {
+          "$ref": "#/definitions/YieldKey"
+        }
+      },
+      "required": [
+        "type",
+        "value",
+        "yield"
+      ],
+      "type": "object"
+    },
+    "CityTransferProductionToYieldsEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "city.transferProductionToYields",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "yield": {
+          "$ref": "#/definitions/YieldKey"
+        }
+      },
+      "required": [
+        "type",
+        "value",
+        "yield"
+      ],
+      "type": "object"
+    },
+    "JsonDistrict": {
+      "additionalProperties": false,
+      "properties": {
+        "effects": {
+          "items": {
+            "$ref": "#/definitions/CityEffect"
+          },
+          "type": "array"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "productionCost": {
+          "type": "number"
+        },
+        "resourceRequirements": {
+          "$ref": "#/definitions/Record<string,number>"
+        },
+        "seaLevel": {
+          "$ref": "#/definitions/SeaLevelName"
+        },
+        "strongRequirements": {
+          "items": {
+            "$ref": "#/definitions/Requirement"
+          },
+          "type": "array"
+        },
+        "weakRequirements": {
+          "items": {
+            "$ref": "#/definitions/Requirement"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "effects",
+        "id",
+        "name",
+        "productionCost",
+        "seaLevel",
+        "strongRequirements",
+        "weakRequirements"
+      ],
+      "type": "object"
+    },
+    "Record<string,number>": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Requirement": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "city.never",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "building": {
+              "type": "string"
+            },
+            "type": {
+              "const": "city.haveBuilding",
+              "type": "string"
+            }
+          },
+          "required": [
+            "building",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "size": {
+              "type": "number"
+            },
+            "type": {
+              "const": "city.size",
+              "type": "string"
+            }
+          },
+          "required": [
+            "size",
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "city.isCoastline",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "city.needGoldInTreasury",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "SeaLevelName": {
+      "enum": [
+        "deep",
+        "none",
+        "shallow"
+      ],
+      "type": "string"
+    },
+    "YieldKey": {
+      "enum": [
+        "culture",
+        "faith",
+        "food",
+        "gold",
+        "knowledge",
+        "production",
+        "publicWorks"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/definitions/JsonDistrict"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "items"
+  ],
+  "type": "object"
+}

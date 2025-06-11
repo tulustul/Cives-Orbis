@@ -76,7 +76,17 @@ export type IdleProduct = _ProductDefinition & {
   effects: ICityEffect<any>[];
 };
 
-export type ProductDefinition = UnitDefinition | Building | IdleProduct;
+export type DistrictDefinition = _ProductDefinition & {
+  entityType: "district";
+  seaLevel: SeaLevel;
+  effects: ICityEffect<any>[];
+};
+
+export type ProductDefinition =
+  | UnitDefinition
+  | Building
+  | IdleProduct
+  | DistrictDefinition;
 
 export type Nation = Entity & JsonNation;
 

@@ -118,7 +118,9 @@
       "capacity": 0,
       "supplyRange": 0,
       "strongRequirements": [{ "type": "city.isCoastline" }],
-      "weakRequirements": []
+      "weakRequirements": [
+        { "type": "city.needDistrict", "district": "district_port" }
+      ]
     },
     {
       "id": "unit_galley",
@@ -131,7 +133,9 @@
       "capacity": 2,
       "supplyRange": 0,
       "strongRequirements": [{ "type": "city.isCoastline" }],
-      "weakRequirements": []
+      "weakRequirements": [
+        { "type": "city.needDistrict", "district": "district_port" }
+      ]
     }
   ]
 }

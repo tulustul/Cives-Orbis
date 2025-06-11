@@ -15,6 +15,7 @@ import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
 import { UnitCore } from "./unit";
 import { EMPTY_YIELDS, addYields } from "./yields";
+import { District } from "./city/cityDistricts";
 
 const BASE_CLIMATE_YIELDS: Record<Climate, Yields> = {
   [Climate.arctic]: { ...EMPTY_YIELDS },
@@ -75,6 +76,7 @@ export class TileCore {
 
   units: UnitCore[] = [];
   city: CityCore | null = null;
+  district: District | null = null;
   areaOf: CityCore | null = null;
 
   // Worker slots

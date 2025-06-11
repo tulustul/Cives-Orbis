@@ -4,7 +4,6 @@ import { AIPlayer } from "@/ai/ai-player";
 import { RealisticMapGenerator } from "@/map-generators/realistic";
 import {
   AiDebugMapAnalysis,
-  AiDebugMapAnalysisTile,
   AiDebugTasks,
   AiDebugUnitsRegistry,
   AiDebugUnitsRegistryUnit,
@@ -12,6 +11,7 @@ import {
 import {
   CityChanneled,
   CityDetailsChanneled,
+  CityGetDistrictAvailableTilesOptions,
   CityGetWorkTilesResult,
   CityProduceOptions,
   CityRange,
@@ -68,7 +68,6 @@ import { PlayerCore } from "./player";
 import { getFailedWeakRequirements } from "./requirements";
 import { ResourceDeposit } from "./resources";
 import {
-  cityAssessmentToChannel,
   cityDetailsToChannel,
   cityToChannel,
   cityToOverviewChanneled,
@@ -83,7 +82,6 @@ import {
   tilesToTileCoordsWithNeighbours,
   tileToChannel,
   tileToFogOfWar,
-  tileToTileCoords,
   tileToTileOwnershipChannel,
   trackedPlayerToChannel,
   unitDetailsToChannel,
@@ -147,6 +145,7 @@ const HANDLERS = {
   "city.workTile": cityWorkTile,
   "city.unworkTile": cityUnworkTile,
   "city.optimizeYields": cityOptimizeYields,
+  "city.getDistrictAvailableTiles": cityGetDistrictAvailableTiles,
 
   "entity.getFailedWeakRequirements": entityGetFailedWeakRequirements,
   "entity.getDetails": entityGetDetails,
@@ -631,11 +630,26 @@ export function cityProduce(options: CityProduceOptions) {
   }
 
   if (options.entityType === "building") {
-    city.production.produce(dataManager.buildings.get(options.productId)!);
+    city.production.produceBuilding(
+      dataManager.buildings.get(options.productId)!,
+    );
   } else if (options.entityType === "unit") {
-    city.production.produce(dataManager.units.get(options.productId)!);
+    city.production.produceUnit(dataManager.units.get(options.productId)!);
+  } else if (options.entityType === "idleProduct") {
+    city.production.workOnIdleProduct(
+      dataManager.idleProducts.get(options.productId)!,
+    );
+  } else if (options.entityType === "district") {
+    const tile = game.map.tilesMap.get(options.tileId!);
+    if (!tile) {
+      throw new Error(`Tile with ID ${options.tileId} not found.`);
+    }
+    const def = dataManager.districts.get(options.productId)!;
+    city.production.produceDistrict(def, tile);
   } else {
-    city.production.produce(dataManager.idleProducts.get(options.productId)!);
+    throw new Error(
+      `Unknown entity type for city production: ${options.entityType}`,
+    );
   }
 
   return cityDetailsToChannel(city);
@@ -712,6 +726,21 @@ export function cityOptimizeYields(cityId: number) {
   city.workers.optimizeYields();
 
   return cityDetailsToChannel(city);
+}
+
+export function cityGetDistrictAvailableTiles(
+  options: CityGetDistrictAvailableTilesOptions,
+): TilesCoordsWithNeighbours[] {
+  const city = game.citiesManager.citiesMap.get(options.cityId);
+  const district = dataManager.districts.get(options.districtId);
+
+  if (!city || !district) {
+    return [];
+  }
+
+  const tiles = city.districts.getAvailableTiles(district);
+
+  return tiles.map(tilesToTileCoordsWithNeighbours);
 }
 
 export function entityGetFailedWeakRequirements(

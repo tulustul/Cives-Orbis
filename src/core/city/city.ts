@@ -18,6 +18,7 @@ import { CityStorage } from "./cityStorage";
 import { IdleProduct, ResourceDefinition } from "@/core/data/types";
 import { ICityEffect } from "../effects";
 import { CityDefense } from "./cityDefense";
+import { CityDistricts } from "./cityDistricts";
 import { CityExpansion } from "./cityExpansion";
 import { CityPopulation } from "./cityPopulation";
 import { CityProduction } from "./cityProduction";
@@ -53,6 +54,8 @@ export class CityCore {
   storage = new CityStorage(this);
 
   defense = new CityDefense(this);
+
+  districts = new CityDistricts(this);
 
   value = 0;
 

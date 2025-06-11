@@ -1,6 +1,7 @@
 import { collector } from "./collector";
 import {
   Building,
+  DistrictDefinition,
   IdleProduct,
   ResourceDefinition,
   Technology,
@@ -18,6 +19,7 @@ export class Knowledge {
     building: new Set<Building>(),
     unit: new Set<UnitDefinition>(),
     idleProduct: new Set<IdleProduct>(),
+    district: new Set<DistrictDefinition>(),
     resource: new Set<ResourceDefinition>(),
     tileImprovement: new Set<TileImprovementDefinition>(),
   };

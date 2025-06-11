@@ -4,6 +4,7 @@ import { PlayerCore } from "./player";
 import {
   CityHaveBuildingRequirement,
   CityIsCoastlineRequirement,
+  CityNeedDistrictRequirement,
   CityNeedGoldInTreasuryRequirement,
   CityNeverRequirement,
   CitySizeRequirement,
@@ -105,6 +106,19 @@ export class CityNeedGoldInTreasuryRequirementImpl
   }
 }
 
+export class CityNeedDistrictRequirementImpl
+  implements IRequirement<CityNeedDistrictRequirement>
+{
+  constructor(public options: CityNeedDistrictRequirement) {}
+
+  check(_: PlayerCore, city: CityCore | null) {
+    if (!city) {
+      return false;
+    }
+    return !!city.districts.get(this.options.district);
+  }
+}
+
 export const requirements: Record<
   RequirementType,
   new (...args: any[]) => IRequirement<any>
@@ -114,6 +128,7 @@ export const requirements: Record<
   "city.size": CitySizeRequirementImpl,
   "city.isCoastline": CityIsCoastlineRequirementImpl,
   "city.needGoldInTreasury": CityNeedGoldInTreasuryRequirementImpl,
+  "city.needDistrict": CityNeedDistrictRequirementImpl,
 };
 
 export function createRequirement(requirement: Requirement): IRequirement<any> {

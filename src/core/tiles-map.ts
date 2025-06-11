@@ -132,4 +132,12 @@ export class TilesMapCore {
     }
     return resources;
   }
+
+  getTileSafe(tileId: number): TileCore {
+    const tile = this.tilesMap.get(tileId);
+    if (!tile) {
+      throw new Error(`Tile with id ${tileId} not found`);
+    }
+    return tile;
+  }
 }

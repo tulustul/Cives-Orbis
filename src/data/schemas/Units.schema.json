@@ -147,6 +147,23 @@
             "type"
           ],
           "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "district": {
+              "type": "string"
+            },
+            "type": {
+              "const": "city.needDistrict",
+              "type": "string"
+            }
+          },
+          "required": [
+            "district",
+            "type"
+          ],
+          "type": "object"
         }
       ]
     },

@@ -1,6 +1,7 @@
 import {
   CityChanneled,
   CityDetailsChanneled,
+  CityGetDistrictAvailableTilesOptions,
   CityGetWorkTilesResult,
   CityProduceOptions,
   CityRange,
@@ -45,13 +46,13 @@ import {
   UnitSetOrderOptions,
   UnitSpawnOptions,
 } from "@/shared";
-import { shareReplay } from "rxjs";
-import { makeCommand, makeObservable } from "./worker";
 import {
   AiDebugMapAnalysis,
   AiDebugTasks,
   AiDebugUnitsRegistry,
 } from "@/shared/debug";
+import { shareReplay } from "rxjs";
+import { makeCommand, makeObservable } from "./worker";
 
 export const bridge = {
   nextTask$: makeObservable<PlayerTask | null>("nextTask"),
@@ -153,6 +154,13 @@ export const bridge = {
       makeCommand<CityDetailsChanneled | null>("city.unworkTile", options),
     optimizeYields: (cityId: number) =>
       makeCommand<CityDetailsChanneled | null>("city.optimizeYields", cityId),
+    getDistrictAvailableTiles: (
+      options: CityGetDistrictAvailableTilesOptions,
+    ) =>
+      makeCommand<TilesCoordsWithNeighbours[]>(
+        "city.getDistrictAvailableTiles",
+        options,
+      ),
   },
   technologies: {
     researchUpdated$: makeObservable<TechKnowledgeChanneled | null>(

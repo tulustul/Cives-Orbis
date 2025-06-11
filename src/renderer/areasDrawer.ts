@@ -9,6 +9,7 @@ export class AreasDrawer {
   cityRangeArea: Area;
   cityWorkedTilesArea: Area;
   cityNotWorkedTilesArea: Area;
+  districtAvailableTiles: Area;
   editorArea: Area;
 
   constructor(private container: Container) {
@@ -52,6 +53,16 @@ export class AreasDrawer {
       visibleOnWater: false,
     });
 
+    this.districtAvailableTiles = new Area({
+      color: "#33ff33",
+      container: this.container,
+      backgroundOpacity: 0.2,
+      shadowSize: 0.3,
+      borderSize: 0,
+      shadowStrength: 3.5,
+      visibleOnWater: true,
+    });
+
     this.editorArea = new Area({
       color: "#ffffff",
       container: this.container,
@@ -81,6 +92,7 @@ export class AreasDrawer {
     this.unitRangeArea.clear();
     this.cityWorkedTilesArea.clear();
     this.cityNotWorkedTilesArea.clear();
+    this.districtAvailableTiles.clear();
   }
 
   private async onHoveredCity(cityId: number | null) {

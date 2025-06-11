@@ -1,10 +1,4 @@
-import {
-  Climate,
-  LandForm,
-  SeaLevel,
-  TileDetailsChanneled,
-  TileInfluence,
-} from "@/shared";
+import { Climate, LandForm, SeaLevel, TileInfluence } from "@/shared";
 import { useObservable } from "@/utils";
 import { AtlasIcon2 } from "./components/AtlasIcon2";
 import { OrnateBox } from "./components/OrnateBox";

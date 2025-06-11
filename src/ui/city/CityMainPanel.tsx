@@ -2,37 +2,32 @@ import { CityDetailsChanneled, CityProductChanneled } from "@/shared";
 import { Button, ImageIcon, ProgressBar, Tooltip } from "@/ui/components";
 import clsx from "clsx";
 
-import { bridge } from "@/bridge";
 import { formatTurns } from "@/utils";
 import { PropsWithChildren } from "react";
 import { EntityTooltip } from "../entity";
-import { mapUi } from "../mapUi";
 import { RawUnitIcon } from "../UnitIcon";
+import { useCity, useCityView } from "./cityViewStore";
 
-type Props = {
-  city: CityDetailsChanneled;
-};
-
-export function CityMainPanel({ city }: Props) {
+export function CityMainPanel() {
   return (
     <div className="flex flex-col h-full">
       <Section>
-        <CityGrowth city={city} />
+        <CityGrowth />
       </Section>
 
       <Section title="Yields">
-        <CityYields city={city} />
+        <CityYields />
       </Section>
 
       <Section title="Expansion">
-        <CityExpansion city={city} />
+        <CityExpansion />
       </Section>
 
       <div className="grow flex flex-col justify-end">
         <div className="text-xl text-center mb-2">Production</div>
-        <CityProductsList city={city} />
+        <CityProductsList />
         <div>
-          <CityProduct city={city} />
+          <CityProduct />
         </div>
       </div>
     </div>
@@ -63,16 +58,20 @@ function Separator() {
   return <div className="w-full h-[2px] bg-primary-500 my-4" />;
 }
 
-function CityGrowth({ city }: Props) {
+function CityGrowth() {
+  const city = useCity();
+
   return (
     <div className="flex gap-4 items-center mt-4">
       <div className="text-4xl">{city.size}</div>
-      <CityGrowthProgressBar city={city} />
+      <CityGrowthProgressBar />
     </div>
   );
 }
 
-function CityGrowthProgressBar({ city }: Props) {
+function CityGrowthProgressBar() {
+  const city = useCity();
+
   return (
     <Tooltip
       className="grow"
@@ -105,13 +104,9 @@ function CityGrowthProgressBar({ city }: Props) {
   );
 }
 
-function CityYields({ city }: Props) {
-  async function optimizeYields() {
-    const updatedCity = await bridge.cities.optimizeYields(city.id);
-    if (updatedCity) {
-      mapUi.setCityDetails(updatedCity);
-    }
-  }
+function CityYields() {
+  const city = useCity();
+  const { optimizeYields } = useCityView();
 
   return (
     <>
@@ -161,7 +156,9 @@ function Yield({ className, label, children }: YieldProps) {
   );
 }
 
-function CityExpansion({ city }: Props) {
+function CityExpansion() {
+  const city = useCity();
+
   return (
     <Tooltip
       content={
@@ -185,7 +182,9 @@ function CityExpansion({ city }: Props) {
   );
 }
 
-function CityProduct({ city }: Props) {
+function CityProduct() {
+  const city = useCity();
+
   if (!city.product) {
     return null;
   }
@@ -218,21 +217,9 @@ function CityProduct({ city }: Props) {
   );
 }
 
-function CityProductsList({ city }: Props) {
-  async function produce(product: CityProductChanneled) {
-    if (!product.enabled) {
-      return;
-    }
-    const updatedCity = await bridge.cities.produce({
-      cityId: city.id,
-      productId: product.definition.id,
-      entityType: product.definition.entityType,
-    });
-
-    if (updatedCity) {
-      mapUi.setCityDetails(updatedCity);
-    }
-  }
+function CityProductsList() {
+  const city = useCity();
+  const { produce } = useCityView();
 
   return (
     <div className="grow relative">

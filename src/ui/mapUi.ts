@@ -117,30 +117,12 @@ export class MapUi {
         return;
       }
 
-      const selectedCity = this.selectedCity;
-      if (selectedCity && tileDetails.areaOf === selectedCity.id) {
-        const isWorked = !!selectedCity.workedTiles.find(
-          (t) => t.id === tileDetails.id,
-        );
-        let updatedCityDetails: CityDetailsChanneled | null;
-        if (isWorked) {
-          updatedCityDetails = await bridge.cities.unworkTile({
-            cityId: selectedCity.id,
-            tileId: tileDetails.id,
-          });
-        } else {
-          updatedCityDetails = await bridge.cities.workTile({
-            cityId: selectedCity.id,
-            tileId: tileDetails.id,
-          });
-        }
-        if (updatedCityDetails) {
-          this.setCityDetails(updatedCityDetails);
-        }
+      this._clickedTileDetails$.next(tileDetails);
+
+      if (this.selectedCity && tileDetails.areaOf === this.selectedCity.id) {
         return;
       }
 
-      this._clickedTileDetails$.next(tileDetails);
       if (this.selectingTileEnabled) {
         this._selectedTile$.next(tileDetails);
       } else if (tileDetails.units.length) {
@@ -249,10 +231,6 @@ export class MapUi {
       this._selectedCity$.next(city);
       camera.moveToTileWithEasing(city.tile);
     }
-  }
-
-  setCityDetails(city: CityDetailsChanneled) {
-    this._selectedCity$.next(city);
   }
 
   async moveCameraToCity(cityId: number) {

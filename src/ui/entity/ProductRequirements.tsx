@@ -2,6 +2,7 @@ import { bridge } from "@/bridge";
 import {
   CityDetailsChanneled,
   CityHaveBuildingRequirement,
+  CityNeedDistrictRequirement,
   CityNeverRequirement,
   CitySizeRequirement,
   ProductChanneled,
@@ -58,5 +59,10 @@ const renderers: Record<RequirementType, (value: any) => React.ReactNode> = {
   ),
   "city.needGoldInTreasury": (_: CitySizeRequirement) => (
     <Value>No gold in treasury</Value>
+  ),
+  "city.needDistrict": (requirement: CityNeedDistrictRequirement) => (
+    <Value>
+      <b>{requirement.district}</b> district is required
+    </Value>
   ),
 };

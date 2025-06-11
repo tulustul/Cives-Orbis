@@ -20,11 +20,17 @@ export type CityNeedGoldInTreasuryRequirement = {
   type: "city.needGoldInTreasury";
 };
 
+export type CityNeedDistrictRequirement = {
+  type: "city.needDistrict";
+  district: string;
+};
+
 export type Requirement =
   | CityNeverRequirement
   | CityHaveBuildingRequirement
   | CitySizeRequirement
   | CityIsCoastlineRequirement
-  | CityNeedGoldInTreasuryRequirement;
+  | CityNeedGoldInTreasuryRequirement
+  | CityNeedDistrictRequirement;
 
 export type RequirementType = Requirement["type"];

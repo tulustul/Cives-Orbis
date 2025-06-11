@@ -1,6 +1,6 @@
 import * as terrainData from "@/assets/atlas-tiles.json";
 import { bridge } from "@/bridge";
-import { LandForm, TileChanneled } from "@/shared";
+import { LandForm, TileChanneled, TileDirection } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { measureTime } from "@/utils";
 import { Container, Graphics, IRenderLayer, Sprite } from "pixi.js";
@@ -12,6 +12,16 @@ import { MOUNTAIN_BY_CLIMATE } from "./tileTextures";
 import { putContainerAtTileCentered } from "./utils";
 
 type TileTextureName = keyof typeof terrainData.frames;
+
+const districtOffsets: Record<TileDirection, { x: number; y: number }> = {
+  [TileDirection.NW]: { x: 0, y: -0.35 },
+  [TileDirection.NE]: { x: 0.35, y: -0.15 },
+  [TileDirection.E]: { x: 0.35, y: 0 },
+  [TileDirection.SE]: { x: 0, y: 0.35 },
+  [TileDirection.SW]: { x: -0.35, y: 0.15 },
+  [TileDirection.W]: { x: -0.35, y: 0 },
+  [TileDirection.NONE]: { x: 0, y: 0 },
+};
 
 export class MapDecorsDrawer {
   tileDrawers = new Map<number, TileDrawer>();
@@ -108,6 +118,7 @@ class TileDrawer {
     this.tile = tile;
     this.drawDecors();
     this.drawImprovement();
+    this.drawDistrict();
     this.drawYields();
   }
 
@@ -194,6 +205,22 @@ class TileDrawer {
 
     this.container.addChild(this.yieldsGraphics);
     this.yieldsLayer.attach(this.yieldsGraphics);
+  }
+
+  private drawDistrict() {
+    if (!this.tile.district) {
+      return;
+    }
+    const sprite = this.nextSprite();
+    sprite.anchor.set(0.5, 0.5);
+    const textureName = `${this.tile.district}_${this.tile.districtDirection}.png`;
+    sprite.texture = this.tilesTextures[textureName];
+    // Move sprite to touch neighboring tile based on direction
+
+    const offset = districtOffsets[this.tile.districtDirection];
+    putContainerAtTileCentered(sprite, this.tile);
+    sprite.position.x += offset.x;
+    sprite.position.y += offset.y;
   }
 
   private drawYield(y: number, quantity: number, color: number) {

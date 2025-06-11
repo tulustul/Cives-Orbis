@@ -2,6 +2,7 @@ import { EntityType, ResourceCategory } from "@/shared";
 
 import {
   Building,
+  DistrictDefinition,
   Entity,
   IdleProduct,
   Nation,
@@ -21,6 +22,7 @@ import resourcesUrl from "@/data/resources.json?url";
 import techsUrl from "@/data/techs.json?url";
 import tileImprovementsUrl from "@/data/tileImprovements.json?url";
 import unitsUrl from "@/data/units.json?url";
+import districtsUrl from "@/data/districts.json?url";
 import path from "node:path";
 import { createCityEffect } from "../effects";
 import {
@@ -35,6 +37,7 @@ import {
 import {
   JsonBuilding,
   JsonData,
+  JsonDistrict,
   JsonEntity,
   JsonNation,
   JsonPopulationType,
@@ -59,6 +62,7 @@ export class DataManager {
   resources = new ResourceProvider(this, resourcesUrl);
   populationTypes = new PopulationTypeProvider(this, populationTypesUrl);
   technologies = new TechProvider(this, techsUrl);
+  districts = new DistrictProvider(this, districtsUrl);
 
   providers: Record<EntityType, EntityProvider<any, any>> = {
     building: this.buildings,
@@ -69,6 +73,7 @@ export class DataManager {
     nation: this.nations,
     populationType: this.populationTypes,
     technology: this.technologies,
+    district: this.districts,
   };
 
   map = new Map<string, Entity>();
@@ -81,6 +86,7 @@ export class DataManager {
     const providers: EntityProvider<any, any>[] = [
       this.nations,
       this.buildings,
+      this.districts,
       this.idleProducts,
       this.units,
       this.tileImprovements,
@@ -192,6 +198,26 @@ class IdleProductProvider extends EntityProvider<IdleProduct, JsonBuilding> {
 
   resolveReferences(idleProduct: IdleProduct, json: JsonBuilding) {
     idleProduct.technology = this.manager.technologies.unlocks.get(json.id);
+  }
+}
+
+class DistrictProvider extends EntityProvider<
+  DistrictDefinition,
+  JsonDistrict
+> {
+  parse(json: JsonDistrict): DistrictDefinition {
+    return {
+      ...json,
+      entityType: "district",
+      seaLevel: seaLevelNamesInverse[json.seaLevel],
+      weakRequirements: json.weakRequirements.map(createRequirement),
+      strongRequirements: json.strongRequirements.map(createRequirement),
+      effects: json.effects.map(createCityEffect),
+    };
+  }
+
+  resolveReferences(district: DistrictDefinition, json: JsonDistrict) {
+    district.technology = this.manager.technologies.unlocks.get(json.id);
   }
 }
 

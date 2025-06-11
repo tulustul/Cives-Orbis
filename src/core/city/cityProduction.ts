@@ -1,11 +1,13 @@
 import { collector } from "@/core/collector";
 import {
   Building,
+  DistrictDefinition,
   IdleProduct,
   ProductDefinition,
   UnitDefinition,
 } from "@/core/data/types";
 import { checkRequirements } from "@/core/requirements";
+import { TileCore } from "../tile";
 import { CityCore } from "./city";
 
 export class CityProduction {
@@ -18,7 +20,11 @@ export class CityProduction {
 
   availableIdleProducts: IdleProduct[] = [];
 
+  availableDistricts: DistrictDefinition[] = [];
+
   disabledProducts = new Set<ProductDefinition>();
+
+  districtTile: TileCore | null = null;
 
   buildings: Building[] = [];
   buildingsIds = new Set<string>();
@@ -53,6 +59,11 @@ export class CityProduction {
     } else if (product.entityType === "idleProduct") {
       this.workOnIdleProduct(product as IdleProduct);
     }
+  }
+
+  produceDistrict(district: DistrictDefinition, tile: TileCore) {
+    this.districtTile = tile ?? null;
+    this.startProducing(district);
   }
 
   cancelProduction() {
@@ -105,11 +116,18 @@ export class CityProduction {
       if (this.product.entityType === "unit") {
         this.city.player.game.unitsManager.spawn(
           this.product.id,
-          this.city.tile,
+          this.findUnitSpawnTile(this.product),
           this.city.player,
         );
       } else if (this.product.entityType === "building") {
         this.addBuilding(this.product);
+      } else if (this.product.entityType === "district") {
+        if (!this.districtTile) {
+          throw new Error(
+            "District tile must be set before producing a district.",
+          );
+        }
+        this.city.districts.add(this.product, this.districtTile);
       }
       this.totalProduction = 0;
       this.product = null;
@@ -185,10 +203,34 @@ export class CityProduction {
       knowledge.discoveredEntities.idleProduct,
     );
 
+    const notBuildDistricts = Array.from(
+      this.city.player.knowledge.discoveredEntities.district,
+    ).filter((d) => this.product !== d && !this.city.districts.get(d.id));
+
+    this.availableDistricts =
+      this.getAvailableProducts<DistrictDefinition>(notBuildDistricts);
+
     this.disabledProducts = this.getDisabledProducts<ProductDefinition>([
       ...this.availableUnits,
       ...this.availableBuildings,
       ...this.availableIdleProducts,
+      ...this.availableDistricts,
     ]);
+  }
+
+  private findUnitSpawnTile(unit: UnitDefinition): TileCore {
+    if (unit.traits.includes("naval")) {
+      const port = this.city.districts.get("district_port");
+      if (port) {
+        return port.tile;
+      }
+      const waterTile = this.city.tile.neighbours.find(
+        (tile) => tile.isWater && tile.areaOf === this.city,
+      );
+      if (waterTile) {
+        return waterTile;
+      }
+    }
+    return this.city.tile;
   }
 }

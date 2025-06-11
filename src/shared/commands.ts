@@ -6,6 +6,7 @@ import {
 import {
   EntityType,
   PlayerViewBoundingBox,
+  ProductType,
   StatsData,
   TileRoad,
   UnitAction,
@@ -99,7 +100,8 @@ export type FogOfWarFilter = {
 export type CityProduceOptions = {
   cityId: number;
   productId: string;
-  entityType: "building" | "unit" | "idleProduct";
+  entityType: ProductType;
+  tileId?: number;
 };
 
 export type CityRange = {
@@ -142,4 +144,9 @@ export type GrantRevokeTechOptions = {
 export type PlayerEditorGiveGoldOptions = {
   playerId: number;
   amount: number;
+};
+
+export type CityGetDistrictAvailableTilesOptions = {
+  cityId: number;
+  districtId: string;
 };

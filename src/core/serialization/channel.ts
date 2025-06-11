@@ -1,6 +1,7 @@
 import { CityCore } from "@/core/city";
 import {
   Building,
+  DistrictDefinition,
   Entity,
   IdleProduct,
   ProductDefinition,
@@ -132,6 +133,8 @@ export function tileToChannel(tile: TileCore): TileChanneled {
     unitsIds: tile.units.map((u) => u.id),
     cityId: tile.city ? tile.city.id : null,
     cityType: tile.city ? tile.city.renderType : null,
+    district: tile.district ? tile.district.def.id : null,
+    districtDirection: tile.district ? tile.district.direction : 0,
     resource: tile.resource ? resourceToChannel(tile.resource) : null,
     roads: tile.fullNeighbours
       .map((n) => (!n || n.road === null ? "0" : "1"))
@@ -270,6 +273,7 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
       ...city.production.availableUnits,
       ...city.production.availableBuildings,
       ...city.production.availableIdleProducts,
+      ...city.production.availableDistricts,
     ].map((p) =>
       cityProductToChannel(city, p, city.production.disabledProducts),
     ),
@@ -538,7 +542,7 @@ export function unitDefToChannel(entity: UnitDefinition): UnitDefChanneled {
 }
 
 export function buildingToChannel(
-  entity: Building | IdleProduct,
+  entity: Building | IdleProduct | DistrictDefinition,
 ): BuildingChanneled {
   return {
     id: entity.id,
@@ -582,6 +586,10 @@ export function productToChannel(entity: Entity): ProductChanneled {
 
   if (entity.entityType === "idleProduct") {
     return buildingToChannel(entity as IdleProduct);
+  }
+
+  if (entity.entityType === "district") {
+    return buildingToChannel(entity as DistrictDefinition);
   }
 
   throw new Error(`Unknown entity type ${entity.entityType}`);

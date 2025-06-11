@@ -148,6 +148,11 @@ export type JsonPopulationType = {
   resourceNeeds: ResourceNeed[];
 };
 
+export type JsonDistrict = JsonProduct & {
+  seaLevel: SeaLevelName;
+  effects: CityEffect[];
+};
+
 export type JsonData<T> = {
   $schema: string;
   items: T[];
@@ -160,3 +165,4 @@ export type JsonPopulationTypes = JsonData<JsonPopulationType>;
 export type JsonTileImprovements = JsonData<JsonTileImprovement>;
 export type JsonBuildings = JsonData<JsonBuilding>;
 export type JsonUnits = JsonData<JsonUnit>;
+export type JsonDistricts = JsonData<JsonDistrict>;
