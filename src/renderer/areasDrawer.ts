@@ -8,6 +8,7 @@ export class AreasDrawer {
   unitRangeArea: Area;
   cityRangeArea: Area;
   cityWorkedTilesArea: Area;
+  cityBlockedTilesArea: Area;
   cityNotWorkedTilesArea: Area;
   districtAvailableTiles: Area;
   editorArea: Area;
@@ -35,6 +36,16 @@ export class AreasDrawer {
 
     this.cityWorkedTilesArea = new Area({
       color: "#ffa001",
+      container: this.container,
+      backgroundOpacity: 0.2,
+      shadowSize: 0.8,
+      borderSize: 0,
+      shadowStrength: 1,
+      visibleOnWater: true,
+    });
+
+    this.cityBlockedTilesArea = new Area({
+      color: "#ff0000",
       container: this.container,
       backgroundOpacity: 0.2,
       shadowSize: 0.8,
@@ -91,6 +102,7 @@ export class AreasDrawer {
     this.cityRangeArea.clear();
     this.unitRangeArea.clear();
     this.cityWorkedTilesArea.clear();
+    this.cityBlockedTilesArea.clear();
     this.cityNotWorkedTilesArea.clear();
     this.districtAvailableTiles.clear();
   }
@@ -101,6 +113,7 @@ export class AreasDrawer {
     }
     if (cityId === null) {
       this.cityWorkedTilesArea.clear();
+      this.cityBlockedTilesArea.clear();
       this.cityNotWorkedTilesArea.clear();
       this.cityRangeArea.clear();
       return;
@@ -110,12 +123,14 @@ export class AreasDrawer {
     if (cityRange) {
       this.cityRangeArea.setTiles(cityRange.tiles);
       this.cityWorkedTilesArea.setTiles(cityRange.workedTiles);
+      this.cityBlockedTilesArea.setTiles(cityRange.blockedTiles);
     }
   }
 
   async onSelectedCity(city: CityDetailsChanneled | null) {
     this.cityRangeArea.setTiles([]);
     this.cityWorkedTilesArea.setTiles(city?.workedTiles || []);
+    this.cityBlockedTilesArea.setTiles(city?.blockedTiles || []);
   }
 
   private async onSelectedUnit(unit: UnitDetailsChanneled | null) {

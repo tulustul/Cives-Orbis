@@ -107,10 +107,12 @@ export type CityProduceOptions = {
 export type CityRange = {
   tiles: TilesCoordsWithNeighbours[];
   workedTiles: TilesCoordsWithNeighbours[];
+  blockedTiles: TilesCoordsWithNeighbours[];
 };
 
 export type CityGetWorkTilesResult = {
   workedTiles: TilesCoordsWithNeighbours[];
+  blockedTiles: TilesCoordsWithNeighbours[];
   notWorkedTiles: TilesCoordsWithNeighbours[];
 };
 

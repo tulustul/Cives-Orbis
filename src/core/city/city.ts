@@ -78,7 +78,7 @@ export class CityCore {
     this.expansion.progressExpansion();
     this.production.progressProduction();
     this.population.nextTurn();
-    this.workers.updateWorkers();
+    this.workers.nextTurn();
     this.storage.gatherResources();
 
     this.update();
@@ -103,6 +103,8 @@ export class CityCore {
 
     this.tileYields.food = 2;
     this.tileYields.production = 1;
+
+    this.workers.update();
 
     for (const tile of this.workers.workedTiles) {
       addYields(this.tileYields, tile.yields);

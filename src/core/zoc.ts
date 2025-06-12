@@ -7,19 +7,7 @@ import { UnitCore } from "./unit";
 export function zocForgetUnit(unit: UnitCore) {
   for (const tile of unit.zoc) {
     tile.zocUnits.delete(unit);
-    let zocPlayer: PlayerCore | null | undefined = undefined;
-    if (tile.zocUnits.size === 0) {
-      zocPlayer = null;
-    } else if (tile.zocNoMansLand) {
-      updateNoMansLand(tile);
-    }
-    if (!tile.zocNoMansLand && tile.zocUnits.size) {
-      zocPlayer = Array.from(tile.zocUnits)[0].player;
-    }
-
-    if (zocPlayer !== undefined) {
-      setZocPlayer(tile, zocPlayer);
-    }
+    updateZocPlayer(tile);
   }
   unit.zoc = [];
 }
@@ -29,9 +17,9 @@ export function zocAddUnit(unit: UnitCore) {
     return;
   }
 
-  setZocPlayer(unit.tile, unit.player);
   unit.tile.zocUnits.add(unit);
   unit.zoc.push(unit.tile);
+  updateZocPlayer(unit.tile, unit.player);
 
   for (let dir = 0; dir < unit.tile.fullNeighbours.length; dir++) {
     const tile = unit.tile.fullNeighbours[dir];
@@ -45,28 +33,46 @@ export function zocAddUnit(unit: UnitCore) {
       continue;
     }
     tile.zocUnits.add(unit);
-    if (!tile.getBestEnemyMilitaryUnit(unit)) {
-      setZocPlayer(tile, unit.player);
-      unit.zoc.push(tile);
-      updateNoMansLand(tile);
-    }
+    unit.zoc.push(tile);
+    updateZocPlayer(tile);
   }
 }
 
-function updateNoMansLand(tile: TileCore) {
-  tile.zocNoMansLand = false;
-  if (tile.zocUnits.size > 1) {
-    const players = new Set(Array.from(tile.zocUnits).map((u) => u.player));
-    if (players.size > 1) {
+function updateZocPlayer(tile: TileCore, player?: PlayerCore) {
+  const oldPlayer = tile.zocPlayer;
+
+  _updateZocPlayer(tile, player);
+
+  if (
+    tile.areaOf &&
+    ((tile.zocPlayer && tile.zocPlayer.isEnemyWith(tile.areaOf.player)) ||
+      (!tile.zocPlayer &&
+        oldPlayer &&
+        oldPlayer.isEnemyWith(tile.areaOf.player)))
+  ) {
+    tile.areaOf?.update();
+  }
+}
+
+function _updateZocPlayer(tile: TileCore, player?: PlayerCore) {
+  if (player) {
+    tile.zocPlayer = player;
+    return;
+  }
+
+  if (tile.zocUnits.size === 0) {
+    tile.zocPlayer = null;
+    return;
+  }
+
+  for (const unit of tile.zocUnits) {
+    if (!player) {
+      player = unit.player;
+    } else if (unit.player !== player) {
       tile.zocPlayer = null;
-      tile.zocNoMansLand = true;
+      break;
     }
   }
-}
 
-function setZocPlayer(tile: TileCore, player: PlayerCore | null) {
-  tile.zocPlayer = player;
-  if (tile.district) {
-    tile.district.city.update();
-  }
+  tile.zocPlayer = player ?? null;
 }

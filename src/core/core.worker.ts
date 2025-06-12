@@ -141,7 +141,6 @@ const HANDLERS = {
   "city.getDetails": cityGetCityDetails,
   "city.produce": cityProduce,
   "city.getRange": cityGetRange,
-  "city.getWorkTiles": cityGetWorkTiles,
   "city.workTile": cityWorkTile,
   "city.unworkTile": cityUnworkTile,
   "city.optimizeYields": cityOptimizeYields,
@@ -668,23 +667,7 @@ export function cityGetRange(cityId: number): CityRange | null {
     workedTiles: Array.from(city.workers.workedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
-  };
-}
-
-export function cityGetWorkTiles(
-  cityId: number,
-): CityGetWorkTilesResult | null {
-  const city = game.citiesManager.citiesMap.get(cityId);
-
-  if (!city) {
-    return null;
-  }
-
-  return {
-    workedTiles: Array.from(city.workers.workedTiles).map(
-      tilesToTileCoordsWithNeighbours,
-    ),
-    notWorkedTiles: Array.from(city.workers.notWorkedTiles).map(
+    blockedTiles: Array.from(city.workers.blockedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
   };

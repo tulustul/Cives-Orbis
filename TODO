@@ -17,7 +17,7 @@ Bugs:
   ✔ land units can access sea and vice versa under some cirmumstances @done(21-04-03 12:41)
   ☐ disembark + attack is broken
   ✔ fix destroying units doesn't update the units occupying the same tile @done(25-05-08 23:56)
-  ☐ settler still in the UI after founding the city
+  ✔ settler still in the UI after founding the city @done(25-06-12 12:52)
   ✔ clear CityInfo whne changing tracked player @done(25-05-04 21:56)
   ☐ units drawer layout broken after some time
   ☐ units remnants on the map
@@ -71,6 +71,18 @@ Minor features:
   ✔ optimize fog of war - partial update @done(25-04-21 14:37)
   ☐ remove plantation/mine etc. Instead just make "improve resource" action
   ☐ cultivation mechanic - allow to cultivate organic resources on a tile
+  ☐ deforestation/reforestation mechanic
+  ✔ zoc blocking worked tiles @done(25-06-12 18:40)
+  ☐ zoc performance improvements (mark for update)
+  ☐ workers management:
+    ☐ focus on resource
+    ☐ focus on yield
+    ☐ preserve forests switch
+    ☐ tile state: worked, not worked, blocked, locked, lockedButBlocked
+    ☐ updated with each city update
+    ☐ tiles slots - improvements increase slots number, resources only
+    ☐ buildings slots
+  ☐ city manpower - new way for conscripting units (?)
 
 Next version:
   ✔ higher defence for cities @done(25-05-17 11:17)

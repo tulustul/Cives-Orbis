@@ -7,11 +7,32 @@ export class CityWorkers {
 
   notWorkedTiles = new Set<TileCore>();
 
+  blockedTiles = new Set<TileCore>();
+
   workedResources = new Set<ResourceDeposit>();
 
   constructor(public city: CityCore) {}
 
+  update() {
+    this.blockedTiles.clear();
+    for (const tile of this.city.expansion.tiles) {
+      if (tile.zocPlayer && this.city.player.isEnemyWith(tile.zocPlayer)) {
+        this.blockedTiles.add(tile);
+        if (this.workedTiles.has(tile)) {
+          this.unworkTile(tile, false);
+          const bestTile = this.pickBestTile(this.notWorkedTiles);
+          if (bestTile) {
+            this.workTile(bestTile, false);
+          }
+        }
+      }
+    }
+  }
+
   workTile(tile: TileCore, updateYields = true) {
+    if (this.blockedTiles.has(tile)) {
+      return;
+    }
     if (this.freeTileWorkers && this.city.expansion.tiles.has(tile)) {
       this.workedTiles.add(tile);
       this.notWorkedTiles.delete(tile);
@@ -57,7 +78,10 @@ export class CityWorkers {
     let bestYields = 0;
 
     for (const tile of tiles) {
-      const yields = tile.totalYields;
+      if (this.blockedTiles.has(tile)) {
+        continue;
+      }
+      const yields = tile.totalYields + (tile.resource?.quantity ?? 0);
       if (yields > bestYields) {
         bestYields = yields;
         bestTile = tile;
@@ -82,7 +106,7 @@ export class CityWorkers {
     return worstTile;
   }
 
-  updateWorkers() {
+  nextTurn() {
     while (this.freeTileWorkers != 0) {
       if (this.freeTileWorkers > 0) {
         const tile = this.pickBestTile(this.notWorkedTiles);

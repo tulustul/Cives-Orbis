@@ -289,6 +289,9 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
     workedTiles: Array.from(city.workers.workedTiles).map(
       tilesToTileCoordsWithNeighbours,
     ),
+    blockedTiles: Array.from(city.workers.blockedTiles).map(
+      tilesToTileCoordsWithNeighbours,
+    ),
     storage: Array.from(city.storage.resources.values()).map((storageItem) => ({
       resource: entityToMinimalChannel(storageItem.resource),
       amount: storageItem.amount,
@@ -409,7 +412,6 @@ export function tileDetailsToChannel(
   return {
     ...tileToChannel(tile),
     zocPlayerId: tile.zocPlayer?.id ?? null,
-    zocNoMansLand: tile.zocNoMansLand,
     isSupplied: tile.isSuppliedByPlayer(forPlayer),
     units,
     isExplored: forPlayer.exploredTiles.has(tile),

@@ -146,8 +146,6 @@ export const bridge = {
       makeCommand<CityDetailsChanneled | null>("city.produce", options),
     getRange: (cityId: number) =>
       makeCommand<CityRange | null>("city.getRange", cityId),
-    getWorkTiles: (cityId: number) =>
-      makeCommand<CityGetWorkTilesResult | null>("city.getWorkTiles", cityId),
     workTile: (options: CityWorkTileOptions) =>
       makeCommand<CityDetailsChanneled | null>("city.workTile", options),
     unworkTile: (options: CityWorkTileOptions) =>

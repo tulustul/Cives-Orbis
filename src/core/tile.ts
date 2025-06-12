@@ -107,9 +107,6 @@ export class TileCore {
   zocPlayer: PlayerCore | null = null;
   zocUnits = new Set<UnitCore>();
 
-  // In case of more then one player competing to control the tile, we mark it as no man's land. Such tile cannot be worked on. Supply lines cannot pass it.
-  zocNoMansLand = false;
-
   potentiallySuppliedBy = new Set<SuppliesProducer>();
   suppliedBy = new Set<SuppliesProducer>();
   // canBeSuppliedByCities = new Set<CityCore>();

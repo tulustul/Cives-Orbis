@@ -117,7 +117,6 @@ export type TileOwnershipChanneled = TileCoords & {
 export type TileDetailsChanneled = Omit<TileChanneled, "unitsIds"> & {
   units: UnitChanneled[];
   zocPlayerId: number | null;
-  zocNoMansLand: boolean;
   isSupplied: boolean;
   isExplored: boolean;
   passableArea: number | null;
@@ -221,6 +220,7 @@ export type CityDetailsChanneled = {
 
   tiles: TileCoords[];
   workedTiles: TilesCoordsWithNeighbours[];
+  blockedTiles: TilesCoordsWithNeighbours[];
 
   turnsToExpand: number;
 
