@@ -2,7 +2,7 @@ import { CityDetailsChanneled, CityProductChanneled } from "@/shared";
 import { Button, ImageIcon, ProgressBar, Tooltip } from "@/ui/components";
 import clsx from "clsx";
 
-import { formatTurns } from "@/utils";
+import { formatTurns, formatValue, formatValueWithSign } from "@/utils";
 import { PropsWithChildren } from "react";
 import { EntityTooltip } from "../entity";
 import { RawUnitIcon } from "../UnitIcon";
@@ -76,7 +76,8 @@ function CityGrowthProgressBar() {
     <Tooltip
       className="grow"
       content=<div className="text-food">
-        {city.totalFood.toFixed(1)} (+{city.yields.food}) /{city.foodToGrow}
+        {formatValue(city.totalFood)} ({formatValueWithSign(city.perTurn.food)})
+        / {city.foodToGrow}
       </div>
     >
       <ProgressBar
@@ -87,13 +88,13 @@ function CityGrowthProgressBar() {
       >
         {city.perTurn.food > 0 && (
           <span className="turns">
-            will grow in {formatTurns(city.turnsToGrow)} turns
+            will grow in {formatTurns(city.turnsToChangeSize)} turns
           </span>
         )}
 
         {city.perTurn.food < 0 && (
           <span className="turns">
-            will shrink in {-city.turnsToGrow} turns
+            will shrink in {formatTurns(city.turnsToChangeSize)} turns
           </span>
         )}
         {city.perTurn.food === 0 && (
@@ -112,20 +113,20 @@ function CityYields() {
     <>
       <div className="">
         <Yield className="text-food-400" label="Food">
-          {city.yields.food} - {city.foodConsumed.toFixed(0)} =
-          {city.perTurn.food.toFixed(0)}
+          {formatValue(city.yields.food)} - {formatValue(city.foodConsumed)} =
+          {formatValue(city.perTurn.food)}
         </Yield>
         <Yield className="text-production-400" label="Production">
-          {city.perTurn.production}
+          {formatValue(city.perTurn.production)}
         </Yield>
         <Yield className="text-gold" label="Gold">
-          {city.perTurn.gold}
+          {formatValue(city.perTurn.gold)}
         </Yield>
         <Yield className="text-culture-400" label="Culture">
-          {city.perTurn.culture}
+          {formatValue(city.perTurn.culture)}
         </Yield>
         <Yield className="text-knowledge" label="Knowledge">
-          {city.perTurn.knowledge}
+          {formatValue(city.perTurn.knowledge)}
         </Yield>
       </div>
 
@@ -163,8 +164,8 @@ function CityExpansion() {
     <Tooltip
       content={
         <div className="text-culture">
-          {city.totalCulture.toFixed(1)} (+{city.yields.culture}) /
-          {city.cultureToExpand}
+          {formatValue(city.totalCulture)} (
+          {formatValueWithSign(city.perTurn.culture)}) / {city.cultureToExpand}
         </div>
       }
     >

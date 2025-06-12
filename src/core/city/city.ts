@@ -77,18 +77,16 @@ export class CityCore {
 
     this.expansion.progressExpansion();
     this.production.progressProduction();
-    this.population.progressGrowth();
+    this.population.nextTurn();
     this.workers.updateWorkers();
     this.storage.gatherResources();
 
     this.update();
     this.defense.update();
-    this.perTurn.food -= this.population.foodConsumed;
 
     if (
-      this.player === this.player.game.trackedPlayer ||
-      this.population.changedSize ||
-      this.defense.changed
+      this.player !== this.player.game.trackedPlayer &&
+      (this.population.changedSize || this.defense.changed)
     ) {
       collector.cities.add(this);
     }
@@ -126,6 +124,7 @@ export class CityCore {
     roundYields(this.yields);
 
     copyYields(this.perTurn, this.yields);
+    this.perTurn.food -= this.population.foodConsumed;
 
     if (this.network) {
       this.tradeYields.gold = Math.min(
@@ -139,6 +138,12 @@ export class CityCore {
     this.player.updateYields();
 
     this.computeValue();
+
+    this.production.updateProductsList();
+
+    if (this.player === this.player.game.trackedPlayer) {
+      collector.cities.add(this);
+    }
   }
 
   applyEffects(effects: ICityEffect<any>[]) {

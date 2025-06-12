@@ -23,7 +23,7 @@ export class CityPopulation {
     return Math.ceil(15 * this.total ** 2);
   }
 
-  public progressGrowth() {
+  public nextTurn() {
     this.processSlaves();
     this.processPeasants();
 
@@ -32,15 +32,12 @@ export class CityPopulation {
     this.foodConsumed = this.total ** 1.5;
   }
 
-  get turnsToGrow() {
+  get turnsToChangeSize() {
     if (this.city.perTurn.food >= 0) {
       const remainingFood = this.getFoodToGrow() - this.totalFood;
       return Math.max(0, Math.ceil(remainingFood / this.city.perTurn.food));
     } else {
-      return Math.max(
-        0,
-        Math.ceil(this.totalFood / this.city.perTurn.food) - 1,
-      );
+      return Math.max(0, Math.ceil(this.totalFood / -this.city.perTurn.food));
     }
   }
 

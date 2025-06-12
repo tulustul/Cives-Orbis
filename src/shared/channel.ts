@@ -204,7 +204,7 @@ export type CityDetailsChanneled = {
 
   totalFood: number;
   foodToGrow: number;
-  turnsToGrow: number;
+  turnsToChangeSize: number;
 
   totalProduction: number;
   turnsToProductionEnd: number | null;

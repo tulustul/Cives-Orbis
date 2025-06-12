@@ -115,7 +115,14 @@ export class CityNeedDistrictRequirementImpl
     if (!city) {
       return false;
     }
-    return !!city.districts.get(this.options.district);
+    const district = city.districts.get(this.options.district);
+    if (!district) {
+      return false;
+    }
+    return (
+      district.tile.zocPlayer === null ||
+      district.tile.zocPlayer === city.player
+    );
   }
 }
 

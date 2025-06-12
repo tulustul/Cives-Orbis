@@ -81,6 +81,7 @@ interface CitySerialized {
   totalCulture: number;
   totalProduction: number;
   product: ProductSerialized | null;
+  districtTile: number | null;
   tiles: number[];
   workedTiles: number[];
   buildings: string[];
@@ -408,6 +409,11 @@ function loadCity(game: Game, cityData: CitySerialized) {
     city.production.product = productDefinition;
   }
 
+  if (cityData.districtTile !== null) {
+    city.production.districtTile =
+      game.map.tilesMap.get(cityData.districtTile) ?? null;
+  }
+
   city.production.buildings = cityData.buildings.map((b) =>
     dataManager.buildings.get(b),
   );
@@ -442,6 +448,9 @@ function dumpCity(city: CityCore): CitySerialized {
           type: city.production.product.entityType,
           id: city.production.product.id,
         }
+      : null,
+    districtTile: city.production.districtTile
+      ? city.production.districtTile.id
       : null,
     tiles: Array.from(city.expansion.tiles).map((tile) => tile.id),
     workedTiles: Array.from(city.workers.workedTiles).map((tile) => tile.id),

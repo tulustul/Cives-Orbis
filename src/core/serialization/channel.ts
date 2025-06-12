@@ -223,7 +223,7 @@ export function cityToChannel(city: CityCore): CityChanneled {
     size: city.population.total,
     totalFood: city.population.totalFood,
     foodToGrow: city.population.getFoodToGrow(),
-    turnsToGrow: city.population.turnsToGrow,
+    turnsToGrow: city.population.turnsToChangeSize,
 
     productionPerTurn: city.yields.production,
     totalProduction: city.production.totalProduction,
@@ -263,7 +263,7 @@ export function cityDetailsToChannel(city: CityCore): CityDetailsChanneled {
 
     totalFood: city.population.totalFood,
     foodToGrow: city.population.getFoodToGrow(),
-    turnsToGrow: city.population.turnsToGrow,
+    turnsToChangeSize: city.population.turnsToChangeSize,
     foodConsumed: city.population.foodConsumed,
 
     totalProduction: city.production.totalProduction,

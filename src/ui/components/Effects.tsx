@@ -1,3 +1,4 @@
+import { formatPct, formatPctWithSign, formatValue } from "@/utils";
 import { Value } from "./Value";
 import {
   CityAddYieldsEffect,
@@ -13,18 +14,6 @@ import {
 type Props = {
   effects: CityEffect[];
 };
-
-function formatPct(value: number) {
-  return `${(value * 100).toFixed(0)}%`;
-}
-
-function formatPctWithSign(value: number) {
-  return `${value < 0 ? "-" : "+"}${(value * 100).toFixed(0)}%`;
-}
-
-function formatValue(value: number) {
-  return value < 0 ? `-${-value}` : `+${value}`;
-}
 
 const renderers: Record<CityEffectType, (value: any) => React.ReactNode> = {
   "city.addYields": (effect: CityAddYieldsEffect) => (

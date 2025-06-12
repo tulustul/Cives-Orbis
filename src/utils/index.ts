@@ -5,3 +5,4 @@ export * from "./useForceRender";
 export * from "./formatTurns";
 export * from "./useEntityOptions";
 export * from "./usePromise";
+export * from "./formatNumber";

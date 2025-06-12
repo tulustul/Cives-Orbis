@@ -1,6 +1,7 @@
 import { ResourceDefinition } from "@/core/data/types";
 import { CityCore } from "./city";
 import { ResourceCategory } from "@/shared";
+import { dataManager } from "../data/dataManager";
 
 export type CityStorageItem = {
   resource: ResourceDefinition;
@@ -13,23 +14,25 @@ export class CityStorage {
   resources = new Map<ResourceDefinition, CityStorageItem>();
 
   storageLimits: Record<ResourceCategory, number> = {
-    food: 100,
-    primaryFood: 100,
-    secondaryFood: 100,
-    livestock: 100,
-    crop: 100,
-    luxury: 100,
-    material: 100,
-    mineral: 100,
-    natural: 100,
-    organic: 100,
-    manmade: 100,
-    strategic: 100,
+    food: 1000,
+    primaryFood: 1000,
+    secondaryFood: 1000,
+    livestock: 1000,
+    crop: 1000,
+    luxury: 1000,
+    material: 1000,
+    mineral: 1000,
+    natural: 1000,
+    organic: 1000,
+    manmade: 1000,
+    strategic: 1000,
   };
 
   constructor(public city: CityCore) {}
 
   update() {
+    const wood = dataManager.resources.get("resource-wood");
+
     for (const item of this.resources.values()) {
       item.yield = 0;
     }
@@ -38,6 +41,14 @@ export class CityStorage {
       let item = this.getOrCreateItem(deposit.def);
       item.yield += deposit.quantity;
       item.limit = this.computeLimit(deposit.def);
+    }
+
+    for (const tile of this.city.workers.workedTiles) {
+      if (tile.forest) {
+        let item = this.getOrCreateItem(wood);
+        item.yield++;
+        item.limit = this.computeLimit(wood);
+      }
     }
 
     for (const item of this.resources.values()) {

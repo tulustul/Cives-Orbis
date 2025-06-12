@@ -1,18 +1,24 @@
 // Zone of control
 
+import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
 
 export function zocForgetUnit(unit: UnitCore) {
   for (const tile of unit.zoc) {
     tile.zocUnits.delete(unit);
+    let zocPlayer: PlayerCore | null | undefined = undefined;
     if (tile.zocUnits.size === 0) {
-      tile.zocPlayer = null;
+      zocPlayer = null;
     } else if (tile.zocNoMansLand) {
       updateNoMansLand(tile);
     }
     if (!tile.zocNoMansLand && tile.zocUnits.size) {
-      tile.zocPlayer = Array.from(tile.zocUnits)[0].player;
+      zocPlayer = Array.from(tile.zocUnits)[0].player;
+    }
+
+    if (zocPlayer !== undefined) {
+      setZocPlayer(tile, zocPlayer);
     }
   }
   unit.zoc = [];
@@ -23,7 +29,7 @@ export function zocAddUnit(unit: UnitCore) {
     return;
   }
 
-  unit.tile.zocPlayer = unit.player;
+  setZocPlayer(unit.tile, unit.player);
   unit.tile.zocUnits.add(unit);
   unit.zoc.push(unit.tile);
 
@@ -40,7 +46,7 @@ export function zocAddUnit(unit: UnitCore) {
     }
     tile.zocUnits.add(unit);
     if (!tile.getBestEnemyMilitaryUnit(unit)) {
-      tile.zocPlayer = unit.player;
+      setZocPlayer(tile, unit.player);
       unit.zoc.push(tile);
       updateNoMansLand(tile);
     }
@@ -55,5 +61,12 @@ function updateNoMansLand(tile: TileCore) {
       tile.zocPlayer = null;
       tile.zocNoMansLand = true;
     }
+  }
+}
+
+function setZocPlayer(tile: TileCore, player: PlayerCore | null) {
+  tile.zocPlayer = player;
+  if (tile.district) {
+    tile.district.city.update();
   }
 }
