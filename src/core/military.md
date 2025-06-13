@@ -1,0 +1,13 @@
+- units stacking is unlimited
+- when moved to the same tile, the units merge into one
+- the unit has size property e.g. a warrior with strength 3 and size 10 (float) - meaning it's 10 warriors stacked
+- the units can split (1 is a minimal division)
+- the unit starts with size 1 and it can dropped below it after the combat. It's like hitpoints but cannot be restored
+- stacks of units of different types form an army with stacks as children
+- stack/army combat is a series of 1 on 1 fights - always pick the best unit from both stacks/armies
+- stacks of doom mitigation:
+  - flanking - surrounded stacks perform worse
+  - artillery does collateral damage to the stack
+  - slow - moves with the speed of the slowest unit
+  - easy to cut from supply lines (is supplies are a thing)
+- flanking, must be the opposite sides of the attacked units

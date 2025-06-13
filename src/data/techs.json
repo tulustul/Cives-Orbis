@@ -346,7 +346,7 @@
       "requiredTechnologies": ["tech_writing"],
       "cost": 45,
       "era": "Bronze Age",
-      "unlocks": [],
+      "unlocks": ["unit_catapult"],
       "layout": {
         "x": 1810.0000000000002,
         "y": 253.00000000000003,

@@ -26,11 +26,7 @@ const gameOptions: Partial<GameFactoryOptions> = {
 };
 
 function dumpZoc(game: Game) {
-  return dumpMap(
-    game.map,
-    (tile) =>
-      ((tile.zocNoMansLand && "-") || tile.zocPlayer?.id.toString()) ?? ".",
-  );
+  return dumpMap(game.map, (tile) => tile.zocPlayer?.id.toString() ?? ".");
 }
 
 describe("zone of control", () => {

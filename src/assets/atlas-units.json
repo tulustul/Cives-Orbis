@@ -1,7 +1,7 @@
 {
 	"meta": {
 		"image": "atlas-units.png",
-		"size": {"w":278,"h":202},
+		"size": {"w":316,"h":230},
 		"scale": "1"
 	},
 	"frames": {
@@ -29,9 +29,17 @@
 			"spriteSourceSize": {"x":0,"y":0,"w":45,"h":72},
 			"sourceSize": {"w":45,"h":72}
 		},
+		"unit_catapult.png":
+		{
+			"frame": {"x":45,"y":100,"w":67,"h":51},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":67,"h":51},
+			"sourceSize": {"w":67,"h":51}
+		},
 		"unit_swordsman.png":
 		{
-			"frame": {"x":45,"y":100,"w":46,"h":66},
+			"frame": {"x":178,"y":0,"w":46,"h":66},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":46,"h":66},
@@ -39,7 +47,7 @@
 		},
 		"unit_settler.png":
 		{
-			"frame": {"x":91,"y":100,"w":52,"h":65},
+			"frame": {"x":224,"y":0,"w":52,"h":65},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":52,"h":65},
@@ -47,7 +55,7 @@
 		},
 		"unit_warrior.png":
 		{
-			"frame": {"x":178,"y":0,"w":40,"h":61},
+			"frame": {"x":224,"y":65,"w":40,"h":61},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":40,"h":61},
@@ -55,7 +63,7 @@
 		},
 		"unit_galley.png":
 		{
-			"frame": {"x":218,"y":0,"w":60,"h":58},
+			"frame": {"x":0,"y":172,"w":60,"h":58},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":60,"h":58},
@@ -63,7 +71,7 @@
 		},
 		"unit_tireme.png":
 		{
-			"frame": {"x":218,"y":58,"w":60,"h":44},
+			"frame": {"x":112,"y":100,"w":60,"h":44},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":60,"h":44},
@@ -71,7 +79,7 @@
 		},
 		"unit_worker.png":
 		{
-			"frame": {"x":218,"y":102,"w":40,"h":59},
+			"frame": {"x":178,"y":66,"w":40,"h":59},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":40,"h":59},
@@ -79,7 +87,7 @@
 		},
 		"unit_scout.png":
 		{
-			"frame": {"x":0,"y":172,"w":56,"h":30},
+			"frame": {"x":60,"y":172,"w":56,"h":30},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":56,"h":30},
@@ -87,7 +95,7 @@
 		},
 		"unit_undefined.png":
 		{
-			"frame": {"x":178,"y":61,"w":40,"h":55},
+			"frame": {"x":276,"y":0,"w":40,"h":55},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":40,"h":55},

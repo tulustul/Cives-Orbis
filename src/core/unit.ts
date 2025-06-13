@@ -7,6 +7,7 @@ import { UnitsManager } from "./unit-manager";
 import { getMoveCost, getMoveResult, MoveResult } from "./movement";
 import { SuppliesBlocker, SuppliesProducer } from "./supplies";
 import { UnitDefinition } from "./data/types";
+import { UnitGroup } from "./unitGroup";
 
 export class UnitCore {
   id!: number;
@@ -33,6 +34,8 @@ export class UnitCore {
   isSettler: boolean;
 
   hasWage = true;
+
+  // group: UnitGroup
 
   constructor(
     public tile: TileCore,
@@ -107,15 +110,6 @@ export class UnitCore {
     if (this.isPlayerTracked) {
       collector.units.add(this);
     }
-  }
-
-  getPathDestination(): TileCore | null {
-    if (!this.path) {
-      return null;
-    }
-
-    const lastPathTurn = this.path[this.path.length - 1];
-    return lastPathTurn[lastPathTurn.length - 1];
   }
 
   getRange(): Set<TileCore> {
