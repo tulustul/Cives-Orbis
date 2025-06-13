@@ -1,22 +1,23 @@
 import { UnitAction, UnitOrder } from "@/shared";
-import { TileCore } from "./tile";
-import { PlayerCore } from "./player";
-import { ACTIONS } from "./unit-actions";
 import { collector } from "./collector";
-import { UnitsManager } from "./unit-manager";
-import { getMoveCost, getMoveResult, MoveResult } from "./movement";
-import { SuppliesBlocker, SuppliesProducer } from "./supplies";
 import { UnitDefinition } from "./data/types";
+import { PlayerCore } from "./player";
+import { SuppliesBlocker, SuppliesProducer } from "./supplies";
+import { TileCore } from "./tile";
+import { ACTIONS } from "./unit-actions";
+import { UnitsManager } from "./unit-manager";
+import { UnitGroup } from "./unitGroup";
 
 export class UnitCore {
   id!: number;
   actionPointsLeft: number;
-  maxHealth = 100;
-  health = this.maxHealth;
+  // maxHealth = 100;
+  // health = this.maxHealth;
   supplies = 100;
   path: TileCore[][] | null = null;
   parent: UnitCore | null = null;
   children: UnitCore[] = [];
+  count = 1;
 
   order: UnitOrder | null = null;
 
@@ -29,6 +30,7 @@ export class UnitCore {
   isNaval: boolean;
   isMilitary: boolean;
   isTransport: boolean;
+  isWorker: boolean;
   isExplorer: boolean;
   isSettler: boolean;
 
@@ -39,6 +41,7 @@ export class UnitCore {
     public definition: UnitDefinition,
     public player: PlayerCore,
     private unitManager: UnitsManager,
+    public group: UnitGroup,
   ) {
     this.actionPointsLeft = definition.actionPoints;
     this.isLand = definition.traits.includes("land");
@@ -47,13 +50,15 @@ export class UnitCore {
     this.isTransport = definition.traits.includes("transport");
     this.isExplorer = definition.traits.includes("explorer");
     this.isSettler = definition.traits.includes("settler");
+    this.isWorker = definition.traits.includes("worker");
   }
 
-  changeHealth(amount: number) {
-    this.health = Math.min(this.health + amount, this.maxHealth);
-    if (this.health <= 0) {
+  changeCount(count: number) {
+    this.count += count;
+    if (this.count <= 0) {
       this.destroy();
     }
+    this.group.changeCount(count);
   }
 
   doAction(action: UnitAction) {
@@ -63,9 +68,9 @@ export class UnitCore {
 
     ACTIONS[action].fn(this.player.game, this);
 
-    if (!collector.unitsDestroyed.has(this.id)) {
+    if (!collector.unitsGroupsDestroyed.has(this.id)) {
       if (this.isPlayerTracked) {
-        collector.units.add(this);
+        collector.unitGroups.add(this.group);
       }
     }
   }
@@ -98,84 +103,6 @@ export class UnitCore {
       .map((r) => r.id);
   }
 
-  setOrder(order: UnitOrder | null) {
-    this.order = order;
-    this.player.updateUnitsWithoutOrders();
-    if (order !== "go") {
-      this.path = null;
-    }
-    if (this.isPlayerTracked) {
-      collector.units.add(this);
-    }
-  }
-
-  getPathDestination(): TileCore | null {
-    if (!this.path) {
-      return null;
-    }
-
-    const lastPathTurn = this.path[this.path.length - 1];
-    return lastPathTurn[lastPathTurn.length - 1];
-  }
-
-  getRange(): Set<TileCore> {
-    const result = new Set<TileCore>([this.tile]);
-    const actionPointsLeftAtTile = new Map<TileCore, number>();
-
-    this._getRange(
-      this.tile,
-      this.actionPointsLeft,
-      result,
-      actionPointsLeftAtTile,
-    );
-
-    if (result.size === 1) {
-      result.delete(this.tile);
-    }
-
-    return result;
-  }
-
-  private _getRange(
-    tile = this.tile,
-    actionPointsLeft = this.actionPointsLeft,
-    result: Set<TileCore>,
-    actionPointsLeftAtTile: Map<TileCore, number>,
-  ) {
-    if (actionPointsLeft <= 0) {
-      return result;
-    }
-
-    for (const neighbour of tile.neighbours) {
-      const moveResult = getMoveResult(this, tile, neighbour);
-      const cost = getMoveCost(this, moveResult, tile, neighbour);
-
-      if (moveResult === MoveResult.none) {
-        continue;
-      }
-
-      const oldActionPointsLeft = actionPointsLeftAtTile.get(neighbour);
-      const newActionPointsLeft = actionPointsLeft - cost;
-
-      if (!oldActionPointsLeft || newActionPointsLeft > oldActionPointsLeft) {
-        actionPointsLeftAtTile.set(neighbour, newActionPointsLeft);
-
-        result.add(neighbour);
-
-        if (moveResult !== MoveResult.attack) {
-          this._getRange(
-            neighbour,
-            newActionPointsLeft,
-            result,
-            actionPointsLeftAtTile,
-          );
-        }
-      }
-    }
-
-    return result;
-  }
-
   addChild(unit: UnitCore) {
     if (this.children.includes(unit)) {
       return;
@@ -185,7 +112,7 @@ export class UnitCore {
     }
     this.children.push(unit);
     unit.parent = this;
-    collector.units.add(this);
+    collector.unitGroups.add(this.group);
   }
 
   removeChild(unit: UnitCore) {
@@ -193,12 +120,12 @@ export class UnitCore {
     if (index !== -1) {
       this.children.splice(index, 1);
       unit.parent = null;
-      collector.units.add(this);
+      collector.unitGroups.add(this.group);
     }
   }
 
   destroy() {
-    this.health = 0;
+    this.count = 0;
     this.actionPointsLeft = 0;
     this.unitManager.destroy(this);
   }
@@ -227,6 +154,6 @@ export class UnitCore {
   }
 
   get isAlive() {
-    return this.health > 0;
+    return this.count > 0;
   }
 }

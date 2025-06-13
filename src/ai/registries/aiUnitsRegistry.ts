@@ -1,15 +1,15 @@
 import { PlayerCore } from "@/core/player";
-import { UnitCore } from "@/core/unit";
+import { UnitGroup } from "@/core/unitGroup";
 import { UnitAssignmentType, UnitTrait } from "@/shared";
 
 type UnitAssignment = {
-  unit: UnitCore;
+  unit: UnitGroup;
   type: UnitAssignmentType;
 };
 
 function emptyUnitsByAssignmentSets(): Record<
   UnitAssignmentType,
-  Set<UnitCore>
+  Set<UnitGroup>
 > {
   return {
     garrison: new Set(),
@@ -25,7 +25,7 @@ function emptyUnitsByAssignmentSets(): Record<
   };
 }
 
-function emptyUnitsByTraits(): Record<UnitTrait, UnitCore[]> {
+function emptyUnitsByTraits(): Record<UnitTrait, UnitGroup[]> {
   return {
     settler: [],
     worker: [],
@@ -39,7 +39,7 @@ function emptyUnitsByTraits(): Record<UnitTrait, UnitCore[]> {
   };
 }
 
-function emptyUnitsByTraitsSets(): Record<UnitTrait, Set<UnitCore>> {
+function emptyUnitsByTraitsSets(): Record<UnitTrait, Set<UnitGroup>> {
   return {
     settler: new Set(),
     worker: new Set(),
@@ -54,12 +54,12 @@ function emptyUnitsByTraitsSets(): Record<UnitTrait, Set<UnitCore>> {
 }
 
 export class AiUnitsRegistry {
-  byTrait: Record<UnitTrait, UnitCore[]> = emptyUnitsByTraits();
-  freeByTrait: Record<UnitTrait, Set<UnitCore>> = emptyUnitsByTraitsSets();
-  byAssignment: Record<UnitAssignmentType, Set<UnitCore>> =
+  byTrait: Record<UnitTrait, UnitGroup[]> = emptyUnitsByTraits();
+  freeByTrait: Record<UnitTrait, Set<UnitGroup>> = emptyUnitsByTraitsSets();
+  byAssignment: Record<UnitAssignmentType, Set<UnitGroup>> =
     emptyUnitsByAssignmentSets();
 
-  assignments = new Map<UnitCore, UnitAssignment>();
+  assignments = new Map<UnitGroup, UnitAssignment>();
 
   constructor(private player: PlayerCore) {}
 
@@ -67,8 +67,8 @@ export class AiUnitsRegistry {
     this.byTrait = emptyUnitsByTraits();
     this.freeByTrait = emptyUnitsByTraitsSets();
     this.byAssignment = emptyUnitsByAssignmentSets();
-    for (const unit of this.player.units) {
-      for (const trait of unit.definition.traits) {
+    for (const unit of this.player.unitGroups) {
+      for (const trait of unit.traits) {
         this.byTrait[trait].push(unit);
         if (this.assignments.has(unit)) {
           this.byAssignment[this.assignments.get(unit)!.type].add(unit);
@@ -79,23 +79,23 @@ export class AiUnitsRegistry {
     }
   }
 
-  assign(unit: UnitCore, type: UnitAssignmentType) {
+  assign(unit: UnitGroup, type: UnitAssignmentType) {
     this.unassign(unit);
     this.assignments.set(unit, { unit, type });
     this.byAssignment[type].add(unit);
-    for (const trait of unit.definition.traits) {
+    for (const trait of unit.traits) {
       this.freeByTrait[trait].delete(unit);
     }
   }
 
-  unassign(unit: UnitCore) {
+  unassign(unit: UnitGroup) {
     const assignmentType = this.assignments.get(unit)?.type;
     if (!assignmentType) {
       return;
     }
     this.byAssignment[assignmentType].delete(unit);
     this.assignments.delete(unit);
-    for (const trait of unit.definition.traits) {
+    for (const trait of unit.traits) {
       this.freeByTrait[trait].add(unit);
     }
   }

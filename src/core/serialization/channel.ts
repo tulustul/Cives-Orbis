@@ -1,3 +1,4 @@
+import { CityAssessment, MapAnalysis } from "@/ai/utils/mapAnalysis";
 import { CityCore } from "@/core/city";
 import {
   Building,
@@ -52,19 +53,20 @@ import {
   TrackedPlayerChanneled,
   UnitChanneled,
   UnitDefChanneled,
-  UnitDetailsChanneled,
+  UnitGroupChanneled,
+  UnitGroupDetailsChanneled,
   UnitIdAndName,
   UnitMoveChanneled,
   UnitPathChanneled,
 } from "@/shared";
-import { CityDefense } from "../city/cityDefense";
-import { CombatSimulation, CombatSimulationSide } from "../combat";
-import { CityAssessment, MapAnalysis } from "@/ai/utils/mapAnalysis";
 import {
   AiDebugMapAnalysis,
   AiDebugMapAnalysisCityAssessment,
   AiDebugMapAnalysisTile,
 } from "@/shared/debug";
+import { CityDefense } from "../city/cityDefense";
+import { CombatSimulation, CombatSimulationSide } from "../combat";
+import { UnitGroup } from "../unitGroup";
 
 export function gameToChannel(game: Game): GameChanneled {
   return {
@@ -78,7 +80,7 @@ export function gameToChannel(game: Game): GameChanneled {
 }
 
 export function gameToGameStartInfo(game: Game): GameStartInfo {
-  const unitToSelect = game.trackedPlayer.unitsWithoutOrders[0];
+  const unitToSelect = game.trackedPlayer.unitGroupsWithoutOrders[0];
   const city = game.trackedPlayer.cities[0];
   let tileToGo = unitToSelect ? unitToSelect.tile : city ? city.tile : null;
   if (!tileToGo) {
@@ -326,73 +328,73 @@ export function trackedPlayerToChannel(
   };
 }
 
+export function unitGroupToChannel(group: UnitGroup): UnitGroupChanneled {
+  return {
+    id: group.id,
+    tile: tileToTileCoordsWithUnits(group.tile),
+    colors: group.player.nation.colors,
+    actionPointsLeft: group.actionPointsLeft,
+    playerId: group.player.id,
+    canControl: group.player === group.player.game.trackedPlayer,
+    order: group.order,
+    actions:
+      group.actionPointsLeft === group.actionPointsMax
+        ? "all"
+        : group.actionPointsLeft > 0
+        ? "some"
+        : "none",
+    totalStrength: 0,
+    units: group.units.map(unitToChannel),
+  };
+}
+
 export function unitToChannel(unit: UnitCore): UnitChanneled {
   return {
     id: unit.id,
     name: unit.definition.name,
     type: unit.definition.strength > 0 ? "military" : "civilian",
-    tile: tileToTileCoordsWithUnits(unit.tile),
     definitionId: unit.definition.id,
-    colors: unit.player.nation.colors,
     parentId: unit.parent?.id || null,
     childrenIds: unit.children.map((c) => c.id),
-    health: unit.health,
-    supplies: unit.supplies,
-    actionPointsLeft: unit.actionPointsLeft,
-    playerId: unit.player.id,
-    canControl: unit.player === unit.player.game.trackedPlayer,
-    order: unit.order,
-    actions:
-      unit.actionPointsLeft === unit.definition.actionPoints
-        ? "all"
-        : unit.actionPointsLeft > 0
-        ? "some"
-        : "none",
+    count: unit.count,
   };
 }
 
-export function unitDetailsToChannel(unit: UnitCore): UnitDetailsChanneled {
+export function unitGroupDetailsToChannel(
+  group: UnitGroup,
+): UnitGroupDetailsChanneled {
   return {
-    id: unit.id,
-    type: unit.definition.strength > 0 ? "military" : "civilian",
-    tile: tileToTileCoords(unit.tile),
-    definition: unitDefToChannel(unit.definition),
-    colors: unit.player.nation.colors,
-    parentId: unit.parent?.id || null,
-    childrenIds: unit.children.map((c) => c.id),
-    actionPointsLeft: unit.actionPointsLeft,
-    health: unit.health,
-    supplies: unit.supplies,
-    order: unit.order,
-    path: unitToUnitPathChannelled(unit),
-    isSupplied: unit.isSupplied,
-    playerId: unit.player.id,
-    canControl: unit.player === unit.player.game.trackedPlayer,
-    actions: unit.definition.actions.filter((action) =>
-      unit.checkActionRequirements(action),
-    ),
+    ...unitGroupToChannel(group),
+    path: unitToUnitPathChannelled(group),
+    actionPointsMax: group.actionPointsMax,
+    actions: [],
+
+    // TODO
+    // actions: unit.definition.actions.filter((action) =>
+    //   unit.checkActionRequirements(action),
+    // ),
   };
 }
 
 export function unitToUnitPathChannelled(
-  unit: UnitCore,
+  group: UnitGroup,
 ): UnitPathChanneled | null {
-  if (!unit.path) {
+  if (!group.path) {
     return null;
   }
 
-  const i = unit.path.length - 1;
-  const lastTile = unit.path[i][unit.path[i].length - 1];
+  const i = group.path.length - 1;
+  const lastTile = group.path[i][group.path[i].length - 1];
 
   return {
-    turns: unit.path?.map((row) => row.map(tileToTileCoords)) || null,
-    startTurn: unit.actionPointsLeft > 0 ? 0 : 1,
-    endType: lastTile.getEnemyUnit(unit) ? "attack" : "move",
+    turns: group.path?.map((row) => row.map(tileToTileCoords)) || null,
+    startTurn: group.actionPointsLeft > 0 ? 0 : 1,
+    endType: lastTile.getEnemyUnit(group) ? "attack" : "move",
   };
 }
 
 export function unitMoveToChannel(
-  unit: UnitCore,
+  unit: UnitGroup,
   tiles: TileCore[],
 ): UnitMoveChanneled {
   return {
@@ -405,15 +407,15 @@ export function tileDetailsToChannel(
   tile: TileCore,
   forPlayer: PlayerCore,
 ): TileDetailsChanneled {
-  let units: UnitChanneled[] = [];
+  let unitGroups: UnitGroupChanneled[] = [];
   if (forPlayer.visibleTiles.has(tile)) {
-    units = tile.units.map((u) => unitToChannel(u));
+    unitGroups = tile.units.map((u) => unitGroupToChannel(u));
   }
   return {
     ...tileToChannel(tile),
     zocPlayerId: tile.zocPlayer?.id ?? null,
     isSupplied: tile.isSuppliedByPlayer(forPlayer),
-    units,
+    unitGroups,
     isExplored: forPlayer.exploredTiles.has(tile),
     passableArea: tile.passableArea?.id ?? null,
   };
@@ -462,8 +464,8 @@ export function tileToFogOfWar(tile: TileCore, game: Game): TileFogOfWar {
 export function tileToTileCoordsWithUnits(tile: TileCore): TileCoordsWithUnits {
   return {
     ...tileToTileCoords(tile),
-    units: tile.units.map((u) => {
-      return { id: u.id, parentId: u.parent?.id ?? null };
+    unitGroups: tile.units.map((u) => {
+      return { id: u.id };
     }),
   };
 }

@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { UnitDetailsChanneled, UnitOrder, UnitAction } from "@/shared";
+import { UnitAction, UnitGroupDetailsChanneled, UnitOrder } from "@/shared";
 import { useObservable } from "@/utils";
 import {
   IconArrowBigRightLine,
@@ -31,24 +31,26 @@ const ORDER_TO_ICON: Record<UnitOrder, TablerIcon> = {
 };
 
 export function UnitPanel() {
-  const unit = useObservable(mapUi.selectedUnit$);
+  const group = useObservable(mapUi.selectedUnit$);
 
   const { debug } = useUiState();
 
   function destroy() {
-    if (unit) {
-      bridge.units.disband(unit.id);
+    if (group) {
+      bridge.units.disband(group.id);
     }
   }
 
-  if (!unit) {
+  if (!group) {
     return null;
   }
 
+  const unit = group.units[0];
+
   let barColor = "[--progress-bar-color:theme(colors.food-400)]";
-  if (unit.health < 35) {
+  if (unit.count < 35) {
     barColor = "[--progress-bar-color:theme(colors.danger)]";
-  } else if (unit.health < 70) {
+  } else if (unit.count < 70) {
     barColor = "[--progress-bar-color:theme(colors.warning)]";
   }
 
@@ -57,30 +59,30 @@ export function UnitPanel() {
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-4">
           <div className="text-2xl mb-1">
-            {unit.definition.name}
+            {unit.name}
             {debug && (
-              <span className="text-xs text-gray-400"> (id: {unit.id})</span>
+              <span className="text-xs text-gray-400"> (id: {group.id})</span>
             )}
           </div>
-          {unit.health < 100 && (
+          {unit.count < 100 && (
             <Tooltip
               className="w-46 pb-2"
-              content={<div>Health: {unit.health} / 100</div>}
+              content={<div>Health: {unit.count}</div>}
               placementVertical="top"
             >
               <ProgressBar
                 className={`${barColor} [--progress-bar-height:5px]`}
-                progress={unit.health}
+                progress={unit.count * 100}
                 total={100}
-                nextProgress={unit.health}
+                nextProgress={unit.count * 100}
               />
             </Tooltip>
           )}
-          <UnitSummaryBar unit={unit} />
+          <UnitSummaryBar unit={group} />
         </div>
 
         <div className="absolute -z-1 -right-5 -top-5">
-          <ImageIcon name={unit.definition.id} size="large" frameType="unit" />
+          <ImageIcon name={unit.definitionId} size="large" frameType="unit" />
         </div>
       </div>
 
@@ -107,13 +109,13 @@ export function UnitPanel() {
         />
       </div>
 
-      <UnitActions unit={unit} />
+      <UnitActions unit={group} />
     </Panel>
   );
 }
 
 type Props = {
-  unit: UnitDetailsChanneled;
+  unit: UnitGroupDetailsChanneled;
 };
 function UnitSummaryBar({ unit }: Props) {
   return (
@@ -123,7 +125,7 @@ function UnitSummaryBar({ unit }: Props) {
         content="Strength"
       >
         <Icon icon={IconSword} />
-        {unit.definition.strength}
+        {unit.totalStrength}
       </Tooltip>
 
       <Tooltip
@@ -131,7 +133,7 @@ function UnitSummaryBar({ unit }: Props) {
         content="Moves left"
       >
         <Icon icon={IconArrowBigRightLine} />
-        {unit.actionPointsLeft.toFixed(1)} / {unit.definition.actionPoints}
+        {unit.actionPointsLeft.toFixed(1)} / {unit.actionPointsLeft}
       </Tooltip>
 
       {unit.order && (

@@ -10,6 +10,7 @@ import { ResourceDeposit } from "./resources";
 import { TileCore } from "./tile";
 import { PassableArea } from "./tiles-map";
 import { UnitCore } from "./unit";
+import { UnitGroup } from "./unitGroup";
 import {
   addYields,
   copyYields,
@@ -29,11 +30,13 @@ export class PlayerCore {
 
   units: UnitCore[] = [];
 
+  unitGroups: UnitGroup[] = [];
+
   cities: CityCore[] = [];
 
   citiesWithoutProduction: CityCore[] = [];
 
-  unitsWithoutOrders: UnitCore[] = [];
+  unitGroupsWithoutOrders: UnitGroup[] = [];
 
   yields: PlayerYields = {
     costs: { ...EMPTY_YIELDS },
@@ -237,8 +240,8 @@ export class PlayerCore {
   }
 
   updateUnitsWithoutOrders() {
-    this.unitsWithoutOrders = this.units.filter(
-      (c) => !c.order && !c.parent && c.actionPointsLeft,
+    this.unitGroupsWithoutOrders = this.unitGroups.filter(
+      (c) => !c.order && c.actionPointsLeft,
     );
   }
 
@@ -259,9 +262,9 @@ export class PlayerCore {
   }
 
   moveAllUnits() {
-    for (const unit of this.units) {
-      if (unit.path) {
-        moveAlongPath(unit);
+    for (const group of this.unitGroups) {
+      if (group.path) {
+        moveAlongPath(group);
       }
     }
   }

@@ -1,7 +1,7 @@
-import { TileCore } from "./tile";
-import { UnitCore } from "./unit";
-import { attack } from "./combat";
 import { collector } from "./collector";
+import { attack } from "./combat";
+import { TileCore } from "./tile";
+import { UnitGroup } from "./unitGroup";
 import { zocAddUnit, zocForgetUnit } from "./zoc";
 
 export enum MoveResult {
@@ -13,7 +13,7 @@ export enum MoveResult {
 }
 
 export function getMoveResult(
-  unit: UnitCore,
+  unit: UnitGroup,
   from: TileCore,
   to: TileCore,
 ): MoveResult {
@@ -47,10 +47,11 @@ export function getMoveResult(
   }
 
   if (unit.isLand) {
-    if (to.isWater && to.getEmbarkmentTarget(unit)) {
-      return MoveResult.embark;
-    }
-    if (unit.parent && from.isWater && to.isLand) {
+    // TODO
+    // if (to.isWater && to.getEmbarkmentTarget(unit)) {
+    //   return MoveResult.embark;
+    // }
+    if (unit.hasChildren && from.isWater && to.isLand) {
       return MoveResult.disembark;
     }
     if (
@@ -77,7 +78,7 @@ export function getMoveResult(
 }
 
 export function getMoveCost(
-  unit: UnitCore,
+  unit: UnitGroup,
   moveResult: MoveResult,
   from: TileCore,
   to: TileCore,
@@ -99,7 +100,7 @@ export function getMoveCost(
   return Infinity;
 }
 
-export function move(unit: UnitCore, tile: TileCore) {
+export function move(unit: UnitGroup, tile: TileCore) {
   if (!unit.actionPointsLeft) {
     return;
   }
@@ -112,14 +113,16 @@ export function move(unit: UnitCore, tile: TileCore) {
   }
 
   if (moveResult === MoveResult.embark) {
-    const embarkmentTarget = tile.getEmbarkmentTarget(unit);
-    if (embarkmentTarget) {
-      embarkmentTarget.addChild(unit);
-    }
-    _move(unit, tile, cost);
+    // TODO
+    // const embarkmentTarget = tile.getEmbarkmentTarget(unit);
+    // if (embarkmentTarget) {
+    //   embarkmentTarget.addChild(unit);
+    // }
+    // _move(unit, tile, cost);
   } else if (moveResult === MoveResult.disembark) {
-    unit.parent?.removeChild(unit);
-    _move(unit, tile, cost);
+    // TODO
+    // unit.parent?.removeChild(unit);
+    // _move(unit, tile, cost);
   } else if (moveResult === MoveResult.attack) {
     if (attack(unit, tile)) {
       _move(unit, tile, cost);
@@ -129,7 +132,7 @@ export function move(unit: UnitCore, tile: TileCore) {
   }
 }
 
-function _move(unit: UnitCore, tile: TileCore, cost: number) {
+function _move(unit: UnitGroup, tile: TileCore, cost: number) {
   zocForgetUnit(unit);
   // unit.suppliesProducer?.forget();
 
@@ -145,10 +148,6 @@ function _move(unit: UnitCore, tile: TileCore, cost: number) {
   const visibleTiles = unit.getVisibleTiles();
   unit.player.exploreTiles(visibleTiles);
   unit.player.showTiles(visibleTiles);
-  for (const child of unit.children) {
-    _move(child, tile, 0);
-    // collector.units.add(child);
-  }
 
   zocAddUnit(unit);
   // if (unit.suppliesProducer) {
@@ -158,7 +157,7 @@ function _move(unit: UnitCore, tile: TileCore, cost: number) {
   // unit.suppliesBlocker?.update(tile);
 }
 
-export function moveAlongPath(unit: UnitCore) {
+export function moveAlongPath(unit: UnitGroup) {
   if (!unit.path || !unit.isAlive) {
     unit.setOrder(null);
     return;

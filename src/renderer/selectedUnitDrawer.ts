@@ -1,4 +1,4 @@
-import { UnitDetailsChanneled } from "@/shared";
+import { UnitGroupDetailsChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container, Graphics } from "pixi.js";
 import { getTileCenter } from "./utils";
@@ -31,7 +31,7 @@ export class SelectedUnitDrawer {
     this.g.clear();
   }
 
-  private drawSpinner(unit: UnitDetailsChanneled) {
+  private drawSpinner(unit: UnitGroupDetailsChanneled) {
     const [centerX, centerY] = getTileCenter(unit.tile);
     const radius = RADIUS * HACKY_SCALE;
     const spinnerWidth = WIDTH * HACKY_SCALE;

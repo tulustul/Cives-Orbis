@@ -7,6 +7,7 @@ import {
   Yields,
 } from "@/shared";
 import { CityCore } from "./city";
+import { District } from "./city/cityDistricts";
 import { collector } from "./collector";
 import { Nation, TileImprovementDefinition } from "./data/types";
 import { PlayerCore } from "./player";
@@ -14,8 +15,8 @@ import { ResourceDeposit } from "./resources";
 import { SuppliesProducer } from "./supplies";
 import { PassableArea } from "./tiles-map";
 import { UnitCore } from "./unit";
+import { UnitGroup } from "./unitGroup";
 import { EMPTY_YIELDS, addYields } from "./yields";
-import { District } from "./city/cityDistricts";
 
 const BASE_CLIMATE_YIELDS: Record<Climate, Yields> = {
   [Climate.arctic]: { ...EMPTY_YIELDS },
@@ -74,7 +75,7 @@ export class TileCore {
   road: TileRoad | null = null;
   resource: ResourceDeposit | null = null;
 
-  units: UnitCore[] = [];
+  units: UnitGroup[] = [];
   city: CityCore | null = null;
   district: District | null = null;
   areaOf: CityCore | null = null;
@@ -105,7 +106,7 @@ export class TileCore {
 
   // Zone of control. Which player is militarly in control of the tile.
   zocPlayer: PlayerCore | null = null;
-  zocUnits = new Set<UnitCore>();
+  zocUnits = new Set<UnitGroup>();
 
   potentiallySuppliedBy = new Set<SuppliesProducer>();
   suppliedBy = new Set<SuppliesProducer>();
@@ -312,41 +313,49 @@ export class TileCore {
     return !this.isWater;
   }
 
-  getBestEnemyMilitaryUnit(unit: UnitCore): UnitCore | null {
+  getBestEnemyMilitaryUnit(unit: UnitGroup): UnitCore | null {
     // TODO implement war state between players
     let bestEnemy: UnitCore | null = null;
     let bestScore = -Infinity;
-    for (const u of this.units) {
-      if (u.player === unit.player) {
+    for (const group of this.units) {
+      if (group.player === unit.player) {
         continue;
       }
-      if (u.definition.strength) {
-        const score = u.definition.strength * u.health;
-        if (score > bestScore) {
-          bestScore = score;
-          bestEnemy = u;
+      for (const u of group.units) {
+        if (u.definition.strength) {
+          const score = u.definition.strength * Math.min(1, u.count);
+          if (score > bestScore) {
+            bestScore = score;
+            bestEnemy = u;
+          }
         }
       }
     }
     return bestEnemy;
   }
 
-  getEnemyUnit(unit: UnitCore): UnitCore | undefined {
+  getEnemyUnit(unit: UnitGroup): UnitCore | undefined {
     // TODO implement war state between players
     const militaryEnemy = this.getBestEnemyMilitaryUnit(unit);
     if (militaryEnemy) {
       return militaryEnemy;
     }
-    return this.units.find((u) => u.player !== unit.player);
+    const enemyGroup = this.units.find((u) => u.player !== unit.player);
+    return enemyGroup?.units[0];
   }
 
   getEmbarkmentTarget(unit: UnitCore): UnitCore | undefined {
-    return this.units.find(
-      (u) =>
-        u.player === unit.player &&
-        u.definition.capacity &&
-        u.children.length < u.definition.capacity,
-    );
+    for (const group of this.units) {
+      const transport = group.units.find(
+        (u) =>
+          u.player === unit.player &&
+          u.definition.capacity &&
+          u.children.length < u.definition.capacity,
+      );
+      if (transport) {
+        return transport;
+      }
+    }
   }
 
   isSuppliedByPlayer(player: PlayerCore): boolean {

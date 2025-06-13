@@ -1,14 +1,14 @@
 import { bridge } from "@/bridge";
+import { camera } from "@/renderer/camera";
 import {
   CityDetailsChanneled,
   TileCoords,
   TileDetailsChanneled,
   TileHoverDetails,
   UnitChanneled,
-  UnitDetailsChanneled,
+  UnitGroupDetailsChanneled,
   UnitPathChanneled,
 } from "@/shared";
-import { camera } from "@/renderer/camera";
 import { BehaviorSubject, Subject } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs/operators";
 import { nextTurnService } from "./nextTurn";
@@ -50,9 +50,8 @@ export class MapUi {
   private _yieldsVisible$ = new BehaviorSubject<boolean>(true);
   yieldsVisible$ = this._yieldsVisible$.pipe(distinctUntilChanged());
 
-  private _selectedUnit$ = new BehaviorSubject<UnitDetailsChanneled | null>(
-    null,
-  );
+  private _selectedUnit$ =
+    new BehaviorSubject<UnitGroupDetailsChanneled | null>(null);
   selectedUnit$ = this._selectedUnit$.asObservable();
 
   private _hoveredUnit$ = new BehaviorSubject<UnitChanneled | null>(null);
@@ -125,7 +124,7 @@ export class MapUi {
 
       if (this.selectingTileEnabled) {
         this._selectedTile$.next(tileDetails);
-      } else if (tileDetails.units.length) {
+      } else if (tileDetails.unitGroups.length) {
         if (this.selectedUnit?.tile.id !== tile.id) {
           this.selectFirstUnitFromTile(tileDetails);
         }
@@ -240,7 +239,7 @@ export class MapUi {
     }
   }
 
-  setUnitDetails(unit: UnitDetailsChanneled) {
+  setUnitDetails(unit: UnitGroupDetailsChanneled) {
     this._selectedUnit$.next(unit);
   }
 
@@ -278,8 +277,8 @@ export class MapUi {
   }
 
   private async selectFirstUnitFromTile(tile: TileDetailsChanneled) {
-    if (tile.units.length) {
-      this.selectUnit(tile.units[0].id);
+    if (tile.unitGroups.length) {
+      this.selectUnit(tile.unitGroups[0].id);
     }
   }
 

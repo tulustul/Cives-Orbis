@@ -115,7 +115,7 @@ export type TileOwnershipChanneled = TileCoords & {
 };
 
 export type TileDetailsChanneled = Omit<TileChanneled, "unitsIds"> & {
-  units: UnitChanneled[];
+  unitGroups: UnitGroupChanneled[];
   zocPlayerId: number | null;
   isSupplied: boolean;
   isExplored: boolean;
@@ -259,19 +259,24 @@ export type TrackedPlayerChanneled = {
 export type UnitChanneled = {
   id: number;
   name: string;
-  tile: TileCoordsWithUnits;
   definitionId: string;
   type: "military" | "civilian";
-  actions: "all" | "some" | "none";
-  colors: NationColors;
   parentId: number | null;
   childrenIds: number[];
+  count: number;
+};
+
+export type UnitGroupChanneled = {
+  id: number;
+  tile: TileCoordsWithUnits;
+  actions: "all" | "some" | "none";
+  colors: NationColors;
   actionPointsLeft: number;
-  health: number;
-  supplies: number;
   playerId: number;
   canControl: boolean;
   order: UnitOrder | null;
+  units: UnitChanneled[];
+  totalStrength: number;
 };
 
 export type UnitPathChanneled = {
@@ -280,27 +285,14 @@ export type UnitPathChanneled = {
   endType: "move" | "attack";
 };
 
-export type UnitDetailsChanneled = {
-  id: number;
-  tile: TileCoords;
-  definition: UnitDefChanneled;
-  type: "military" | "civilian";
-  colors: NationColors;
-  parentId: number | null;
-  childrenIds: number[];
-  actionPointsLeft: number;
-  health: number;
-  supplies: number;
-  order: UnitOrder | null;
+export type UnitGroupDetailsChanneled = Omit<UnitGroupChanneled, "actions"> & {
   path: UnitPathChanneled | null;
-  isSupplied: boolean;
-  playerId: number;
-  canControl: boolean;
   actions: UnitAction[];
+  actionPointsMax: number;
 };
 
 export type TileCoordsWithUnits = TileCoords & {
-  units: { id: number; parentId: number | null }[];
+  unitGroups: { id: number }[];
 };
 
 export type TilesCoordsWithNeighbours = TileCoords & {

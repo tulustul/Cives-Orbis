@@ -12,7 +12,6 @@ import {
   CityChanneled,
   CityDetailsChanneled,
   CityGetDistrictAvailableTilesOptions,
-  CityGetWorkTilesResult,
   CityProduceOptions,
   CityRange,
   CityWorkTileOptions,
@@ -84,7 +83,7 @@ import {
   tileToFogOfWar,
   tileToTileOwnershipChannel,
   trackedPlayerToChannel,
-  unitDetailsToChannel,
+  unitGroupDetailsToChannel,
   unitToChannel,
 } from "./serialization/channel";
 import { dumpGame, loadGame } from "./serialization/dump";
@@ -188,10 +187,10 @@ function getNextTask(): PlayerTask | null {
     return null;
   }
 
-  if (p.unitsWithoutOrders.length) {
+  if (p.unitGroupsWithoutOrders.length) {
     return {
       task: "unit",
-      id: p.unitsWithoutOrders[0].id,
+      id: p.unitGroupsWithoutOrders[0].id,
     };
   }
 
@@ -372,38 +371,38 @@ function unitSpawn(options: UnitSpawnOptions): void {
 }
 
 function getUnitDetails(unitId: number) {
-  const unit = game.unitsManager.unitsMap.get(unitId);
+  const unit = game.unitGroupsManager.groupsMap.get(unitId);
   if (!unit) {
     return null;
   }
 
-  return unitDetailsToChannel(unit);
+  return unitGroupDetailsToChannel(unit);
 }
 
 function unitDoAction(data: UnitDoActionOptions) {
-  const unit = game.unitsManager.unitsMap.get(data.unitId);
+  const unit = game.unitGroupsManager.groupsMap.get(data.unitId);
   if (!unit) {
     return null;
   }
 
   unit.doAction(data.action);
 
-  return unitDetailsToChannel(unit);
+  return unitGroupDetailsToChannel(unit);
 }
 
 function unitSetOrder(data: UnitSetOrderOptions) {
-  const unit = game.unitsManager.unitsMap.get(data.unitId);
+  const unit = game.unitGroupsManager.groupsMap.get(data.unitId);
   if (!unit) {
     return null;
   }
 
   unit.setOrder(data.order);
 
-  return unitDetailsToChannel(unit);
+  return unitGroupDetailsToChannel(unit);
 }
 
 function unitFindPath(data: UnitFindPathOptions) {
-  const unit = game.unitsManager.unitsMap.get(data.unitId);
+  const unit = game.unitGroupsManager.groupsMap.get(data.unitId);
   const tile = game.map.tilesMap.get(data.destinationId);
   if (!unit || !tile) {
     return null;
@@ -414,7 +413,7 @@ function unitFindPath(data: UnitFindPathOptions) {
   // const endTime = performance.now();
   // console.log(`findPath took ${(endTime - startTime).toFixed(2)} milliseconds`);
 
-  return unitDetailsToChannel(unit);
+  return unitGroupDetailsToChannel(unit);
 }
 
 function unitDisband(unitId: number): void {
@@ -427,18 +426,18 @@ function unitDisband(unitId: number): void {
 }
 
 function unitMoveAlongPath(unitId: number) {
-  const unit = game.unitsManager.unitsMap.get(unitId);
+  const unit = game.unitGroupsManager.groupsMap.get(unitId);
   if (!unit) {
     return null;
   }
 
   moveAlongPath(unit);
 
-  return unitDetailsToChannel(unit);
+  return unitGroupDetailsToChannel(unit);
 }
 
 function unitGetRange(unitId: number): TilesCoordsWithNeighbours[] {
-  const unit = game.unitsManager.unitsMap.get(unitId);
+  const unit = game.unitGroupsManager.groupsMap.get(unitId);
   if (!unit) {
     return [];
   }
@@ -505,7 +504,9 @@ export function tileGetHoverDetails(
   let simulation: CombatSimulation | null = null;
 
   if (options.selectedUnitId && game.trackedPlayer.visibleTiles.has(tile)) {
-    const selectedUnit = game.unitsManager.unitsMap.get(options.selectedUnitId);
+    const selectedUnit = game.unitGroupsManager.groupsMap.get(
+      options.selectedUnitId,
+    );
     if (selectedUnit) {
       simulation = simulateCombat(selectedUnit, tile);
     }

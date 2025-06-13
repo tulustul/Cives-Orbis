@@ -2,10 +2,10 @@ import { LandForm, SeaLevel, TileDirection } from "@/shared";
 import { Game } from "./game";
 import { moveAlongPath } from "./movement";
 import {
+  alterGame,
+  GameFactoryOptions,
   makeGame,
   SymbolCallbacks,
-  GameFactoryOptions,
-  alterGame,
 } from "./tests/game-factory";
 import { dumpMap, putRiver } from "./tests/map-utils";
 import { zocAddUnit, zocForgetUnit } from "./zoc";
@@ -26,11 +26,7 @@ const gameOptions: Partial<GameFactoryOptions> = {
 };
 
 function dumpZoc(game: Game) {
-  return dumpMap(
-    game.map,
-    (tile) =>
-      ((tile.zocNoMansLand && "-") || tile.zocPlayer?.id.toString()) ?? ".",
-  );
+  return dumpMap(game.map, (tile) => tile.zocPlayer?.id.toString() ?? ".");
 }
 
 describe("zone of control", () => {
@@ -53,7 +49,7 @@ describe("zone of control", () => {
       ". . . . .",
     ]);
 
-    const unit = game.players[0].units[0];
+    const unit = game.players[0].unitGroups[0];
     zocForgetUnit(unit);
     expect(dumpZoc(game)).toEqual([
       ". . . . .",
@@ -92,7 +88,7 @@ describe("zone of control", () => {
       ". . 1 1 .",
     ]);
 
-    const unit = game.players[1].units[0];
+    const unit = game.players[1].unitGroups[0];
     zocForgetUnit(unit);
     expect(dumpZoc(game)).toEqual([
       ". . . . .",
@@ -123,7 +119,7 @@ describe("zone of control", () => {
       "0 0 . . .",
     ]);
 
-    const unit = game.players[0].units[0];
+    const unit = game.players[0].unitGroups[0];
     unit.path = [[unit.tile.fullNeighbours[TileDirection.E]!]];
     moveAlongPath(unit);
 

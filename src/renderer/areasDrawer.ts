@@ -1,5 +1,5 @@
 import { bridge } from "@/bridge";
-import { CityDetailsChanneled, UnitDetailsChanneled } from "@/shared";
+import { CityDetailsChanneled, UnitGroupDetailsChanneled } from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { Container } from "pixi.js";
 import { Area } from "./area";
@@ -133,7 +133,7 @@ export class AreasDrawer {
     this.cityBlockedTilesArea.setTiles(city?.blockedTiles || []);
   }
 
-  private async onSelectedUnit(unit: UnitDetailsChanneled | null) {
+  private async onSelectedUnit(unit: UnitGroupDetailsChanneled | null) {
     if (!unit) {
       this.unitRangeArea.clear();
       return;

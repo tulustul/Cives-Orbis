@@ -4,6 +4,7 @@ import { collector } from "./collector";
 import { PlayerCore } from "./player";
 import { Stats } from "./stats";
 import { TilesMapCore } from "./tiles-map";
+import { UnitGroupsManager } from "./unit-group-manager";
 import { UnitsManager } from "./unit-manager";
 
 export class Game {
@@ -20,7 +21,9 @@ export class Game {
 
   turn = 1;
 
-  unitsManager = new UnitsManager();
+  unitGroupsManager = new UnitGroupsManager();
+
+  unitsManager = new UnitsManager(this);
 
   citiesManager = new CitiesManager(this);
 

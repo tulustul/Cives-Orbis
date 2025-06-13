@@ -1,5 +1,10 @@
-import { TileCoords, TileCoordsWithUnits, UnitChanneled } from "@/shared";
 import { bridge } from "@/bridge";
+import {
+  TileCoords,
+  TileCoordsWithUnits,
+  UnitChanneled,
+  UnitGroupChanneled,
+} from "@/shared";
 import { mapUi } from "@/ui/mapUi";
 import { OutlineFilter } from "pixi-filters";
 import { Container, Graphics, Sprite, Text } from "pixi.js";
@@ -43,21 +48,21 @@ export class UnitsDrawer {
       if (drawer) {
         // Cancel any ongoing animations first
         drawer.cancelAnimation();
-        
+
         // Explicitly remove from parent containers
         if (drawer.container.parent) {
           drawer.container.parent.removeChild(drawer.container);
         }
-        
+
         this.units.delete(unitId);
-        this.removeUnitFromTile(unitId, drawer.unit.tile.id);
-        const unitIndex = drawer.unit.tile.units.findIndex(
+        this.removeUnitFromTile(unitId, drawer.group.tile.id);
+        const unitIndex = drawer.group.tile.units.findIndex(
           (u) => u.id === unitId,
         );
         if (unitIndex !== -1) {
-          drawer.unit.tile.units.splice(unitIndex, 1);
+          drawer.group.tile.units.splice(unitIndex, 1);
         }
-        this.scheduleNeighboursUpdate(drawer.unit.tile);
+        this.scheduleNeighboursUpdate(drawer.group.tile);
         drawer.destroy();
       }
     });
@@ -135,7 +140,7 @@ export class UnitsDrawer {
   private updateUnit(unit: UnitChanneled) {
     let drawer = this.units.get(unit.id);
     if (drawer) {
-      drawer.unit = unit;
+      drawer.group = unit;
     } else {
       drawer = this.makeUnitDrawer(unit);
     }
@@ -144,7 +149,7 @@ export class UnitsDrawer {
 
   private updateDrawer(drawer: UnitDrawer) {
     drawer.updateUi();
-    this.scheduleNeighboursUpdate(drawer.unit.tile);
+    this.scheduleNeighboursUpdate(drawer.group.tile);
   }
 
   private scheduleNeighboursUpdate(tile: TileCoordsWithUnits) {
@@ -167,12 +172,12 @@ export class UnitsDrawer {
 
   private updateTileUnits(tile: TileCoordsWithUnits) {
     let i = 0;
-    for (const unit of tile.units) {
+    for (const unit of tile.unitGroups) {
       const drawer = this.units.get(unit.id);
       if (drawer && !drawer.container.destroyed) {
         drawer.container.zIndex = i++;
         // Always update the tile reference to match real position
-        drawer.unit.tile = tile;
+        drawer.group.tile = tile;
         // Only correct position if not animating (animation handles position)
         if (!drawer.animation) {
           drawer.correctPosition();
@@ -279,13 +284,13 @@ export class UnitDrawer {
     quality: 1,
   });
 
-  constructor(public unit: UnitChanneled) {
+  constructor(public group: UnitGroupChanneled) {
     const textures = getAssets().unitsSpritesheet.textures;
-    const banner = new Sprite(textures[`unitBackground-${unit.type}.png`]);
-    const icon = new Sprite(textures[`${unit.definitionId}.png`]);
-    banner.tint = hexColorToNumber(unit.colors.primary);
+    const banner = new Sprite(textures[`unitBackground-${group.type}.png`]);
+    const icon = new Sprite(textures[`${group.definitionId}.png`]);
+    banner.tint = hexColorToNumber(group.colors.primary);
     banner.anchor.set(0.5, 0.5);
-    icon.tint = hexColorToNumber(unit.colors.secondary);
+    icon.tint = hexColorToNumber(group.colors.secondary);
     icon.anchor.set(0.5, 0.5);
     this.updateUi();
     this.updatePosition();
@@ -295,7 +300,7 @@ export class UnitDrawer {
 
     this.container.on("pointerover", () => this.highlight());
     this.container.on("pointerout", () => this.dehighlight());
-    this.container.on("click", () => mapUi.selectUnit(this.unit.id));
+    this.container.on("click", () => mapUi.selectUnit(this.group.id));
   }
 
   destroy() {
@@ -304,13 +309,13 @@ export class UnitDrawer {
   }
 
   updateUi() {
-    this.container.visible = this.unit.parentId === null;
+    this.container.visible = this.group.parentId === null;
     this.g.clear();
 
-    if (this.unit.canControl) {
-      if (this.unit.actions === "none") {
+    if (this.group.canControl) {
+      if (this.group.actions === "none") {
         this.iconContainer.alpha = 0.5;
-      } else if (this.unit.order === "skip" || this.unit.order === "sleep") {
+      } else if (this.group.order === "skip" || this.group.order === "sleep") {
         this.iconContainer.alpha = 0.8;
       } else {
         this.iconContainer.alpha = 1;
@@ -325,9 +330,9 @@ export class UnitDrawer {
   private drawStatusIcon() {
     let color = 0;
 
-    if (!this.unit.actionPointsLeft) {
+    if (!this.group.actionPointsLeft) {
       color = 0xff2222;
-    } else if (this.unit.order === "skip" || this.unit.order === "sleep") {
+    } else if (this.group.order === "skip" || this.group.order === "sleep") {
       color = 0x6666ff;
     }
 
@@ -340,7 +345,7 @@ export class UnitDrawer {
   }
 
   private drawHealthBar() {
-    if (this.unit.health === 100) {
+    if (this.group.health === 100) {
       return;
     }
 
@@ -350,16 +355,16 @@ export class UnitDrawer {
       .fill(0x999999);
 
     let healthColor = 0x45d845;
-    if (this.unit.health < 35) {
+    if (this.group.health < 35) {
       healthColor = 0xff0000;
-    } else if (this.unit.health < 70) {
+    } else if (this.group.health < 70) {
       healthColor = 0xffa500;
     }
-    this.g.rect(-40, -65, (this.unit.health / 100) * 80, 13).fill(healthColor);
+    this.g.rect(-40, -65, (this.group.health / 100) * 80, 13).fill(healthColor);
   }
 
   private drawChildrenCount() {
-    if (this.unit.childrenIds.length === 0) {
+    if (this.group.childrenIds.length === 0) {
       if (this.childrenCountText) {
         this.childrenCountText.visible = false;
       }
@@ -382,12 +387,12 @@ export class UnitDrawer {
       .fill(0x555555);
 
     this.childrenCountText.visible = true;
-    this.childrenCountText.text = this.unit.childrenIds.length.toString();
+    this.childrenCountText.text = this.group.childrenIds.length.toString();
   }
 
   private updatePosition() {
     this.updateZIndex();
-    const [x, y] = this.tileToUnitPosition(this.unit.tile);
+    const [x, y] = this.tileToUnitPosition(this.group.tile);
     this.container.x = x;
     this.container.y = y;
   }
@@ -396,7 +401,7 @@ export class UnitDrawer {
     this.cancelAnimation();
     this.animation = Animations.run({
       from: [this.container.x, this.container.y],
-      to: this.tileToUnitPosition(this.unit.tile),
+      to: this.tileToUnitPosition(this.group.tile),
       duration: 100,
       fn: (pos) => {
         if (this.container && !this.container.destroyed) {
@@ -454,7 +459,7 @@ export class UnitDrawer {
   }
 
   highlight() {
-    if (this.isSelected || !this.unit.canControl) {
+    if (this.isSelected || !this.group.canControl) {
       return;
     }
     this.container.filters = [UnitDrawer.highlightFilter];
@@ -481,8 +486,8 @@ export class UnitDrawer {
   }
 
   updateZIndex() {
-    this.container.zIndex = this.unit.tile.units.findIndex(
-      (u) => u.id === this.unit.id,
+    this.container.zIndex = this.group.tile.units.findIndex(
+      (u) => u.id === this.group.id,
     );
   }
 
@@ -492,9 +497,9 @@ export class UnitDrawer {
   ): [number, number] {
     let x = tile.x + (tile.y % 2 ? 1 : 0.5);
 
-    const parentUnits = tile.units.filter((u) => u.parentId === null);
+    const parentUnits = tile.unitGroups.filter((u) => u.parentId === null);
     if (!ignoreOthers && parentUnits.length > 1) {
-      const index = parentUnits.findIndex((u) => u.id === this.unit.id);
+      const index = parentUnits.findIndex((u) => u.id === this.group.id);
       x += ((index - (parentUnits.length - 1) / 2) / parentUnits.length) * 0.8;
     }
 

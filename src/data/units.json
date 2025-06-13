@@ -136,6 +136,19 @@
       "weakRequirements": [
         { "type": "city.needDistrict", "district": "district_port" }
       ]
+    },
+    {
+      "id": "unit_catapult",
+      "name": "Catapult",
+      "traits": ["military", "siege"],
+      "actionPoints": 2,
+      "strength": 3,
+      "actions": [],
+      "productionCost": 50,
+      "capacity": 2,
+      "supplyRange": 0,
+      "strongRequirements": [],
+      "weakRequirements": []
     }
   ]
 }

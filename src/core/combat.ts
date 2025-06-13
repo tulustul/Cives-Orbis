@@ -4,27 +4,52 @@ import {
   CombatModifierType,
   LandForm,
 } from "@/shared";
+import { CityCore } from "./city";
 import { CityDefense } from "./city/cityDefense";
 import { collector } from "./collector";
 import { TileCore } from "./tile";
 import { UnitCore } from "./unit";
+import { UnitGroup } from "./unitGroup";
 
 export type Combatant = UnitCore | CityDefense;
 
-export type CombatSimulationSide = {
+export type CombatSimulationUnitType = {
+  casualties: number;
+  modifiers: CombatModifier[];
+  unit: UnitCore;
+};
+
+export type CombatUnitSimulationSide = {
   damage: number;
   strength: number;
   modifiers: CombatModifier[];
-  combatant: Combatant;
+  combatant: UnitCore;
+};
+
+export type CombatUnitSimulation = {
+  attacker: CombatUnitSimulationSide;
+  defender: CombatUnitSimulationSide;
+};
+
+export type CombatCitySimulation = {
+  city: CityCore;
+  damage: number;
+  modifiers: CombatModifier[];
+};
+
+export type CombatSimulationSide = {
+  units: Map<UnitCore, CombatSimulationUnitType>;
+  group: UnitGroup;
 };
 
 export type CombatSimulation = {
   attacker: CombatSimulationSide;
-  defender: CombatSimulationSide;
+  defender: Map<UnitGroup, CombatSimulationSide>;
+  city?: CombatCitySimulation;
 };
 
 // Returns true if the unit can move to the tile
-export function attack(unit: UnitCore, tile: TileCore): boolean {
+export function attack(unit: UnitGroup, tile: TileCore): boolean {
   const simulation = simulateCombat(unit, tile);
 
   if (simulation) {
@@ -59,69 +84,130 @@ export function attack(unit: UnitCore, tile: TileCore): boolean {
 }
 
 function executeSimulation(sim: CombatSimulation): BattleResult {
-  sim.attacker.combatant.changeHealth(-sim.attacker.damage);
-  sim.defender.combatant.changeHealth(-sim.defender.damage);
-
-  if (sim.attacker.combatant.health > 0) {
-    if (sim.attacker.combatant instanceof UnitCore) {
-      collector.units.add(sim.attacker.combatant);
-    }
-    if (sim.attacker.combatant instanceof CityDefense) {
-      collector.cities.add(sim.attacker.combatant.city);
+  for (const attacker of sim.attacker.units.values()) {
+    executeUnitSimulation(attacker);
+  }
+  for (const defenderGroup of sim.defender.values()) {
+    for (const defender of defenderGroup.units.values()) {
+      executeUnitSimulation(defender);
     }
   }
 
-  if (sim.defender.combatant.health > 0) {
-    if (sim.defender.combatant instanceof UnitCore) {
-      collector.units.add(sim.defender.combatant);
-    }
-    if (sim.defender.combatant instanceof CityDefense) {
-      collector.cities.add(sim.defender.combatant.city);
-    }
+  if (sim.city) {
+    // collector.cities.add(sim.defender.combatant.city);
   }
 
-  if (sim.attacker.combatant.health <= 0) {
-    if (sim.attacker.combatant instanceof UnitCore) {
-      sim.attacker.combatant.destroy();
-    }
+  if (sim.attacker.group.units.length === 0) {
     return BattleResult.defeat;
   }
 
-  if (sim.defender.combatant.health <= 0) {
-    if (sim.defender.combatant instanceof UnitCore) {
-      sim.defender.combatant.destroy();
+  for (const defenderGroup of sim.defender.values()) {
+    if (defenderGroup.group.units.length > 0) {
+      return BattleResult.undecided;
     }
-    return BattleResult.victory;
   }
 
-  return BattleResult.undecided;
+  return BattleResult.victory;
+}
+
+function executeUnitSimulation(sim: CombatSimulationUnitType) {
+  sim.unit.changeCount(-sim.casualties);
+
+  if (sim.unit.count > 0) {
+    collector.unitGroups.add(sim.unit.group);
+  } else {
+    sim.unit.destroy();
+  }
 }
 
 export function simulateCombat(
-  unit: UnitCore,
+  group: UnitGroup,
   tile: TileCore,
 ): CombatSimulation | null {
-  const enemyUnit = tile.getEnemyUnit(unit);
-
-  if (enemyUnit) {
-    return simulateCombatants(unit, enemyUnit);
+  const tempCount = new Map<UnitCore, number>();
+  for (const unit of group.units) {
+    tempCount.set(unit, unit.count);
+  }
+  for (const group of tile.units) {
+    for (const unit of group.units) {
+      tempCount.set(unit, unit.count);
+    }
   }
 
-  if (
-    tile.city &&
-    tile.city.player !== unit.player &&
-    tile.city.defense.health > 0
-  ) {
-    return simulateCombatants(unit, tile.city.defense);
+  const result: CombatSimulation = {
+    attacker: { group, units: new Map() },
+    defender: new Map(),
+  };
+
+  for (const unit of group.units) {
+    const attacker: CombatSimulationUnitType = {
+      casualties: 0,
+      unit: unit,
+      modifiers: [],
+    };
+    result.attacker.units.set(unit, attacker);
+    for (let i = 0; i < Math.ceil(unit.count); i++) {
+      const enemyUnit = getBestEnemyUnit(unit, tile, tempCount);
+
+      if (enemyUnit) {
+        let enemyGroup = result.defender.get(enemyUnit.group);
+        if (!enemyGroup) {
+          enemyGroup = { group: enemyUnit.group, units: new Map() };
+          result.defender.set(enemyUnit.group, enemyGroup);
+        }
+        let defender = enemyGroup.units.get(enemyUnit);
+        if (!defender) {
+          defender = {
+            casualties: 0,
+            unit: enemyUnit,
+            modifiers: [],
+          };
+          enemyGroup.units.set(enemyUnit, defender);
+        }
+        const sim = simulateUnitsCombat(unit, enemyUnit);
+        attacker.casualties += sim.attacker.damage;
+        defender.casualties += sim.defender.damage;
+      } else if (
+        tile.city &&
+        tile.city.player !== unit.player &&
+        tile.city.defense.health > 0
+      ) {
+        // return simulateCombatants(unit, tile.city.defense);
+      }
+    }
   }
 
-  return null;
+  return result;
 }
 
-function simulateCombatants(
-  attacker: Combatant,
-  defender: Combatant,
-): CombatSimulation {
+function getBestEnemyUnit(
+  unit: UnitCore,
+  tile: TileCore,
+  tempHp: Map<UnitCore, number>,
+): UnitCore | null {
+  let bestEnemy: UnitCore | null = null;
+  let bestScore = -Infinity;
+  for (const group of tile.units) {
+    if (group.player === unit.player) {
+      continue;
+    }
+    for (const u of group.units) {
+      if (u.definition.strength) {
+        const score = u.definition.strength * (tempHp.get(u) ?? 0);
+        if (score > bestScore) {
+          bestScore = score;
+          bestEnemy = u;
+        }
+      }
+    }
+  }
+  return bestEnemy;
+}
+
+function simulateUnitsCombat(
+  attacker: UnitCore,
+  defender: UnitCore,
+): CombatUnitSimulation {
   const attackerModifiers = [
     ...getUnitModifiers(attacker),
     ...getAttackerModifiers(attacker, defender),
@@ -155,12 +241,49 @@ function simulateCombatants(
   };
 }
 
-function getUnitModifiers(unit: Combatant): CombatModifier[] {
+// function simulateCombatants(
+//   attacker: Combatant,
+//   defender: Combatant,
+// ): CombatSimulation {
+//   const attackerModifiers = [
+//     ...getUnitModifiers(attacker),
+//     ...getAttackerModifiers(attacker, defender),
+//   ];
+//   const defenderModifiers = [
+//     ...getUnitModifiers(defender),
+//     ...getDefenderModifiers(attacker, defender),
+//   ];
+
+//   const attackerStrength =
+//     attacker.strength *
+//     attackerModifiers.reduce((total, bonus) => total + bonus.value, 1);
+
+//   const defenderStrength =
+//     defender.strength *
+//     defenderModifiers.reduce((total, bonus) => total + bonus.value, 1);
+
+//   return {
+//     attacker: {
+//       strength: attackerStrength,
+//       modifiers: attackerModifiers,
+//       damage: getDamage(defenderStrength, attackerStrength),
+//       combatant: attacker,
+//     },
+//     defender: {
+//       strength: defenderStrength,
+//       modifiers: defenderModifiers,
+//       damage: getDamage(attackerStrength, defenderStrength),
+//       combatant: defender,
+//     },
+//   };
+// }
+
+function getUnitModifiers(unit: UnitCore): CombatModifier[] {
   const modifiers: CombatModifier[] = [];
-  if (unit.health < unit.maxHealth) {
+  if (unit.count < 1) {
     modifiers.push({
       type: CombatModifierType.health,
-      value: (unit.health - unit.maxHealth) / (unit.maxHealth * 2),
+      value: (unit.count - 1) / 2,
     });
   }
 
@@ -224,16 +347,14 @@ function getDefenderModifiers(
 export function getDamage(strengthA: number, strengthB: number): number {
   const ratio = strengthA / strengthB;
   const modifier = Math.pow(ratio, 1.2);
-  return Math.max(0, Math.min(100, Math.round(30 * modifier)));
+  return Math.max(0, Math.min(1, Math.round(0.3 * modifier)));
 }
 
 function getFlanks(unit: Combatant, enemy: Combatant) {
   return (
     enemy.tile.neighbours.filter(
       (tile) =>
-        !!tile.units.find(
-          (u) => u.player === unit.player && u.definition.strength,
-        ),
+        !!tile.units.find((u) => u.player === unit.player && u.isMilitary),
     ).length - 1
   );
 }

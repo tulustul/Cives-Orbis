@@ -1,10 +1,11 @@
 import {
-  TilesFogOfWarChanneled,
   CityChanneled,
   PlayerYields,
   TechKnowledgeChanneled,
+  TilesFogOfWarChanneled,
 } from "@/shared";
 import { CityCore } from "./city";
+import { Technology } from "./data/types";
 import { Game } from "./game";
 import { PlayerCore } from "./player";
 import { ResourceDeposit } from "./resources";
@@ -17,12 +18,11 @@ import {
   tileToFogOfWar,
   tileToTileOwnershipChannel,
   trackedPlayerToChannel,
+  unitGroupToChannel,
   unitMoveToChannel,
-  unitToChannel,
 } from "./serialization/channel";
 import { TileCore } from "./tile";
-import { UnitCore } from "./unit";
-import { Technology } from "./data/types";
+import { UnitGroup } from "./unitGroup";
 
 export type CityRevealedResult = {
   city: CityChanneled;
@@ -39,10 +39,10 @@ class Collector {
 
   tiles = new Set<TileCore>();
 
-  units = new Set<UnitCore>();
-  unitsDestroyed = new Set<number>();
+  unitGroups = new Set<UnitGroup>();
+  unitsGroupsDestroyed = new Set<number>();
 
-  moves = new Map<UnitCore, TileCore[]>();
+  moves = new Map<UnitGroup, TileCore[]>();
 
   cities = new Set<CityCore>();
   citiesDestroyed = new Set<number>();
@@ -66,12 +66,12 @@ class Collector {
   flush(game: Game) {
     const changes = this.changes;
 
-    for (const unit of this.units) {
+    for (const unit of this.unitGroups) {
       if (unit.isAlive) {
-        changes.push({ type: "unit.updated", data: unitToChannel(unit) });
+        changes.push({ type: "unit.updated", data: unitGroupToChannel(unit) });
       }
     }
-    for (const id of this.unitsDestroyed) {
+    for (const id of this.unitsGroupsDestroyed) {
       changes.push({ type: "unit.destroyed", data: id });
     }
 
@@ -205,8 +205,8 @@ class Collector {
 
     this.tiles.clear();
 
-    this.unitsDestroyed.clear();
-    this.units.clear();
+    this.unitsGroupsDestroyed.clear();
+    this.unitGroups.clear();
     this.moves.clear();
 
     this.cities.clear();
@@ -230,7 +230,7 @@ class Collector {
     return changes;
   }
 
-  addMove(unit: UnitCore, tiles: TileCore[]) {
+  addMove(unit: UnitGroup, tiles: TileCore[]) {
     const oldTiles = this.moves.get(unit);
     if (oldTiles === undefined) {
       this.moves.set(unit, tiles);

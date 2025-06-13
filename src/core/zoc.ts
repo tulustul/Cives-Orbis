@@ -2,9 +2,9 @@
 
 import { PlayerCore } from "./player";
 import { TileCore } from "./tile";
-import { UnitCore } from "./unit";
+import { UnitGroup } from "./unitGroup";
 
-export function zocForgetUnit(unit: UnitCore) {
+export function zocForgetUnit(unit: UnitGroup) {
   for (const tile of unit.zoc) {
     tile.zocUnits.delete(unit);
     updateZocPlayer(tile);
@@ -12,8 +12,8 @@ export function zocForgetUnit(unit: UnitCore) {
   unit.zoc = [];
 }
 
-export function zocAddUnit(unit: UnitCore) {
-  if (!unit.isMilitary || unit.parent) {
+export function zocAddUnit(unit: UnitGroup) {
+  if (!unit.isMilitary) {
     return;
   }
 

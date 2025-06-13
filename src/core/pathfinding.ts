@@ -1,11 +1,11 @@
-import { TileCore } from "./tile";
-import { UnitCore } from "./unit";
+import { getHexDistance } from "./hex-distance";
 import { getMoveCost, getMoveResult, MoveResult } from "./movement";
 import { PriorityQueue } from "./priority-queue";
-import { getHexDistance } from "./hex-distance";
+import { TileCore } from "./tile";
+import { UnitGroup } from "./unitGroup";
 
 export function findPath(
-  unit: UnitCore,
+  unit: UnitGroup,
   end: TileCore,
   start?: TileCore,
 ): TileCore[][] | null {
@@ -27,7 +27,7 @@ export function findPath(
   const cameFrom = new Map<TileCore, [number, number, TileCore | null]>();
   const costsSoFar = new Map<TileCore, number>();
 
-  const turnCost = 1 / unit.definition.actionPoints;
+  const turnCost = 1 / unit.actionPointsMax;
   const startHeuristic = getHexDistance(start, end) * turnCost;
   tilesToVisit.push(start, startHeuristic);
   costsSoFar.set(start, 0);
@@ -46,7 +46,7 @@ export function findPath(
     let actionPointsLeft = cameFromData[1];
 
     if (!actionPointsLeft) {
-      actionPointsLeft = unit.definition.actionPoints;
+      actionPointsLeft = unit.actionPointsMax;
       turn++;
     }
 
@@ -64,7 +64,7 @@ export function findPath(
     // Use for loop instead of for...of for better performance
     for (let i = 0; i < neighboursLength; i++) {
       const neighbour = neighbours[i];
-      
+
       if (visitedTiles.has(neighbour)) {
         continue;
       }

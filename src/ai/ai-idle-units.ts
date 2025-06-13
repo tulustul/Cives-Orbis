@@ -1,15 +1,16 @@
-import { UnitCore } from "@/core/unit";
 import { CityCore } from "@/core/city";
+import { findPath } from "@/core/pathfinding";
 import { TileCore } from "@/core/tile";
+import { UnitCore } from "@/core/unit";
+import { UnitGroup } from "@/core/unitGroup";
+import { SeaLevel } from "@/shared";
 import { AISystem } from "./ai-system";
 import { AiOrder } from "./types";
-import { findPath } from "@/core/pathfinding";
-import { SeaLevel } from "@/shared";
 
 export class IdleUnitsAI extends AISystem {
   *plan(): Generator<AiOrder> {
     // Process all units that have no assignment
-    for (const unit of this.ai.player.units) {
+    for (const unit of this.ai.player.unitGroups) {
       // Skip if unit is assigned to a task
       if (this.ai.units.assignments.has(unit)) {
         continue;
@@ -25,11 +26,11 @@ export class IdleUnitsAI extends AISystem {
     this.checkForUselessUnits();
   }
 
-  private handleIdleUnit(unit: UnitCore): AiOrder | null {
+  private handleIdleUnit(unit: UnitGroup): AiOrder | null {
     // Handle based on unit traits
     if (unit.isExplorer) {
       return this.handleIdleExplorer(unit);
-    } else if (unit.definition.traits.includes("worker")) {
+    } else if (unit.isWorker) {
       return this.handleIdleWorker(unit);
     } else if (unit.isMilitary) {
       return this.handleIdleMilitary(unit);
@@ -41,30 +42,12 @@ export class IdleUnitsAI extends AISystem {
     return this.returnToNearestCity(unit);
   }
 
-  private handleIdleExplorer(unit: UnitCore): AiOrder | null {
-    // Check if the area is fully explored
-    const area = unit.tile.passableArea;
-    if (!area) {
-      return this.destroyUnit(unit, "No passable area");
-    }
-
-    const unexploredInArea = this.countUnexploredTilesInArea(area);
-
-    // If area is tiny and fully explored, destroy the explorer
-    if (area.area < 10 && unexploredInArea === 0) {
-      return this.destroyUnit(unit, "Tiny area fully explored");
-    }
-
-    // If area is mostly explored and isolated, destroy the explorer
-    if (unexploredInArea < area.area * 0.1 && this.isAreaIsolated(area)) {
-      return this.destroyUnit(unit, "Isolated area mostly explored");
-    }
-
+  private handleIdleExplorer(unit: UnitGroup): AiOrder | null {
     // Otherwise, return to nearest city to await reassignment
     return this.returnToNearestCity(unit);
   }
 
-  private handleIdleWorker(unit: UnitCore): AiOrder | null {
+  private handleIdleWorker(unit: UnitGroup): AiOrder | null {
     // Check if there are any improvements needed in the empire
     const hasWorkToDo = this.ai.player.cities.some((city) => {
       // Simple check - see if city has unimproved tiles
@@ -75,15 +58,7 @@ export class IdleUnitsAI extends AISystem {
     });
 
     if (!hasWorkToDo) {
-      // No work available, consider destroying if we have too many workers
-      const workerCount = Array.from(this.ai.player.units).filter((u) =>
-        u.definition.traits.includes("worker"),
-      ).length;
-      const cityCount = this.ai.player.cities.length;
-
-      if (workerCount > cityCount * 2) {
-        return this.destroyUnit(unit, "Excess worker");
-      }
+      return null;
     }
 
     // Return to nearest city that needs improvements
@@ -95,7 +70,7 @@ export class IdleUnitsAI extends AISystem {
     return this.returnToNearestCity(unit);
   }
 
-  private handleIdleMilitary(unit: UnitCore): AiOrder | null {
+  private handleIdleMilitary(unit: UnitGroup): AiOrder | null {
     // Find the nearest city that needs garrison
     const undefendedCity = this.findNearestUndefendedCity(unit);
     if (undefendedCity) {
@@ -108,20 +83,10 @@ export class IdleUnitsAI extends AISystem {
       return this.moveToCity(unit, borderCity);
     }
 
-    // Too many military units and no threats
-    const militaryCount = Array.from(this.ai.player.units).filter(
-      (u) => u.isMilitary,
-    ).length;
-    const cityCount = this.ai.player.cities.length;
-
-    if (militaryCount > cityCount * 3) {
-      return this.destroyUnit(unit, "Excess military");
-    }
-
     return this.returnToNearestCity(unit);
   }
 
-  private handleIdleTransport(unit: UnitCore): AiOrder | null {
+  private handleIdleTransport(unit: UnitGroup): AiOrder | null {
     // Check if any units need transport
     const hasTransportDemand = this.ai.player.units.some(
       (u) =>
@@ -130,17 +95,7 @@ export class IdleUnitsAI extends AISystem {
     );
 
     if (!hasTransportDemand) {
-      // No transport needed, check if we have too many transports
-      const transportCount = Array.from(this.ai.player.units).filter(
-        (u) => u.isTransport,
-      ).length;
-      const navalExplorationNeeded = Array.from(
-        this.ai.player.knownPassableAreas.values(),
-      ).filter((area) => area.type === "water" && area.area > 50).length;
-
-      if (transportCount > Math.max(2, navalExplorationNeeded)) {
-        return this.destroyUnit(unit, "Excess transport");
-      }
+      return null;
     }
 
     // Return to nearest coastal city
@@ -152,17 +107,16 @@ export class IdleUnitsAI extends AISystem {
     return null;
   }
 
-  private returnToNearestCity(unit: UnitCore): AiOrder | null {
+  private returnToNearestCity(unit: UnitGroup): AiOrder | null {
     const nearestCity = this.findNearestCity(unit);
     if (!nearestCity) {
-      // No cities at all - this shouldn't happen but destroy unit if it does
-      return this.destroyUnit(unit, "No cities exist");
+      return null;
     }
 
     return this.moveToCity(unit, nearestCity);
   }
 
-  private moveToCity(unit: UnitCore, city: CityCore): AiOrder {
+  private moveToCity(unit: UnitGroup, city: CityCore): AiOrder {
     return {
       group: "unit",
       entityId: unit.id,
@@ -224,7 +178,7 @@ export class IdleUnitsAI extends AISystem {
     return area.type === "land" && area.area < 50;
   }
 
-  private findNearestCity(unit: UnitCore): CityCore | null {
+  private findNearestCity(unit: UnitGroup): CityCore | null {
     let nearest: CityCore | null = null;
     let minDistance = Infinity;
 
@@ -239,7 +193,7 @@ export class IdleUnitsAI extends AISystem {
     return nearest;
   }
 
-  private findNearestCityNeedingWork(unit: UnitCore): CityCore | null {
+  private findNearestCityNeedingWork(unit: UnitGroup): CityCore | null {
     let nearest: CityCore | null = null;
     let minDistance = Infinity;
 
@@ -261,7 +215,7 @@ export class IdleUnitsAI extends AISystem {
     return nearest;
   }
 
-  private findNearestUndefendedCity(unit: UnitCore): CityCore | null {
+  private findNearestUndefendedCity(unit: UnitGroup): CityCore | null {
     let nearest: CityCore | null = null;
     let minDistance = Infinity;
 
@@ -279,7 +233,7 @@ export class IdleUnitsAI extends AISystem {
     return nearest;
   }
 
-  private findNearestBorderCity(unit: UnitCore): CityCore | null {
+  private findNearestBorderCity(unit: UnitGroup): CityCore | null {
     // Find cities that are close to the edge of our territory
     let nearest: CityCore | null = null;
     let minDistance = Infinity;
@@ -302,7 +256,7 @@ export class IdleUnitsAI extends AISystem {
     return nearest;
   }
 
-  private findNearestCoastalCity(unit: UnitCore): CityCore | null {
+  private findNearestCoastalCity(unit: UnitGroup): CityCore | null {
     let nearest: CityCore | null = null;
     let minDistance = Infinity;
 
